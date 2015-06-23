@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:gravity="center_horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="大运选择:"
+        android:id="@+id/textView" android:textColor="@android:color/darker_gray"
+        android:layout_gravity="left"
+        android:layout_margin="10dp" />
+    <!--<HorizontalScrollView-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="5dp" >-->
+        <LinearLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <GridView
+            android:background="@drawable/gv_border_ltr_border"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gv_daYun_dialog"
+            android:paddingLeft="1dp" android:paddingTop="1dp" android:paddingRight="1dp"/>
+        </LinearLayout>
+    <!--</HorizontalScrollView>-->
+
+</LinearLayout>

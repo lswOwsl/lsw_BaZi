@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/cChongHe"
+        layout="@layout/common_viewpager_chonghe" />
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:stretchColumns="0,2,4,6,8,10"
+        android:shrinkColumns="1,3,5,7,9,11"
+        android:paddingLeft="3pt"
+        android:paddingRight="3pt">
+        <View
+            android:layout_height="1dip"
+            android:background="#CCC" />
+        <TableRow >
+            <TextView
+                android:text="劫财"
+                style="@style/StyleBaZiLiuQin"
+                android:id="@+id/tv_flowYear_c_liuQin"
+                />
+            <TextView
+                style="@style/StyleBaZiJiaGong"
+                android:text=""/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiLiuQin"
+                android:id="@+id/tv_daYun_c_liuQin" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiLiuQin"
+                android:id="@+id/tv_year_c_liuQin" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiLiuQin"
+                android:id="@+id/tv_month_c_liuQin" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                style="@style/StyleBaZiLiuQin"
+                android:id="@+id/tv_day_c_liuQin" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiLiuQin"
+                android:id="@+id/tv_hour_c_liuQin" />
+
+        </TableRow>
+        <View
+            android:layout_height="1dip"
+            android:background="#CCC" />
+        <TableRow >
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:text="流年\n100岁"
+                android:id="@+id/tv_flowYear_title"
+                />
+            <TextView android:text=""
+                android:layout_height="0dp" />
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:text="大运"
+                android:id="@+id/tv_dayun_title"/>
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_year_title"
+                style="@style/StyleBaZiHidden"
+                android:text="年" />
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_month_title"
+                style="@style/StyleBaZiHidden"
+                android:text="月" />
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_day_title"
+                style="@style/StyleBaZiHidden"
+                android:text="日" />
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_hour_title"
+                style="@style/StyleBaZiHidden"
+                android:text="时" />
+
+        </TableRow>
+        <TableRow >
+            <TextView
+                android:text="   "
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_flowYear_c"
+                />
+            <TextView
+                style="@style/StyleBaZiJiaGong"
+                android:text="" />
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_daYun_c" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_year_c" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_month_c" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_day_c" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                android:text="乙"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_hour_c" />
+
+        </TableRow>
+        <TableRow >
+            <TextView
+                android:text="   "
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_flowYear_t"
+                 />
+            <TextView
+                style="@style/StyleBaZiJiaGong"
+                android:id="@+id/tv_flowYear_daYun_t_jiaGong" />
+            <TextView
+                android:text="未"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_daYun_t" />
+            <TextView
+                style="@style/StyleBaZiJiaGong"
+                android:id="@+id/tv_daYun_year_t_jiaGong" />
+            <TextView
+                android:text="未"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_year_t" />
+            <TextView
+                style="@style/StyleBaZiJiaGong"
+                android:id="@+id/tv_year_month_t_jiaGong" />
+            <TextView
+                android:text="未"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_month_t" />
+            <TextView
+                style="@style/StyleBaZiJiaGong"
+                android:id="@+id/tv_month_day_t_jiaGong" />
+            <TextView
+                android:text="未"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_day_t" />
+            <TextView
+                style="@style/StyleBaZiJiaGong"
+                android:id="@+id/tv_day_hour_t_jiaGong" />
+            <TextView
+                android:text="未"
+                style="@style/StyleBaZiDefault"
+                android:id="@+id/tv_hour_t" />
+
+        </TableRow>
+        <View
+        android:layout_height="1dip"
+        android:background="#CCC" />
+        <TableRow >
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:id="@+id/tv_flowYear_t_hidden"
+                 />
+            <TextView
+                style="@style/StyleBaZiJiaGong" />
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:id="@+id/tv_daYun_t_hidden" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:id="@+id/tv_year_t_hidden" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:id="@+id/tv_month_t_hidden" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:id="@+id/tv_day_t_hidden" />
+            <TextView
+                android:text=""
+                style="@style/StyleBaZiJiaGong"/>
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:id="@+id/tv_hour_t_hidden" />
+
+        </TableRow>
+        <View
+            android:layout_height="1dip"
+            android:background="#CCC" />
+    </TableLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vPager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:persistentDrawingCache="animation" >
+
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/vPagertab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"/>
+
+    </android.support.v4.view.ViewPager>
+</LinearLayout>

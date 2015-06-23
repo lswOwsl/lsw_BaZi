@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="3pt"
+        android:paddingRight="3pt"
+        android:stretchColumns='0,2,4,6,8,10'
+        >
+        <TableRow android:gravity="left">
+            <TextView android:text="流年:" android:layout_column="0" android:layout_span="11" android:layout_width="wrap_content" android:layout_gravity="left"></TextView>
+        </TableRow>
+        <TableRow>
+            <TextView
+
+                style="@style/StyleBaZiJiaGong_ViewPager" />
+            <TextView android:id="@+id/tv_column_l1"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi" />
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="3" />
+            <TextView android:id="@+id/tv_column_l3"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="5" />
+            <TextView android:id="@+id/tv_column_l5"
+                android:text=""  style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="7" />
+            <TextView android:id="@+id/tv_column_l7"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="9" />
+            <TextView android:id="@+id/tv_column_l9"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="11"  />
+        </TableRow>
+        <!--<View-->
+            <!--android:layout_height="1dip"-->
+            <!--android:background="#CCC" />-->
+        <TableRow android:gravity="left">
+            <TextView android:text="大运:" android:layout_column="0" android:layout_span="11" android:layout_width="wrap_content" android:layout_gravity="left"></TextView>
+        </TableRow>
+        <TableRow>
+            <TextView
+
+                style="@style/StyleBaZiJiaGong_ViewPager" />
+            <TextView android:id="@+id/tv_column_d1"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi" />
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="3" />
+            <TextView android:id="@+id/tv_column_d3"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="5" />
+            <TextView android:id="@+id/tv_column_d5"
+                android:text=""  style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="7" />
+            <TextView android:id="@+id/tv_column_d7"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="9" />
+            <TextView android:id="@+id/tv_column_d9"
+                android:text="" style="@style/StyleBaZiJiaGong_ViewPager_Zi"/>
+            <TextView
+                style="@style/StyleBaZiJiaGong_ViewPager"
+                android:text="11"  />
+        </TableRow>
+        <View
+            android:layout_height="1dip" android:layout_marginTop="10dp"
+            android:background="#CCC" />
+
+    </TableLayout>
+</LinearLayout>

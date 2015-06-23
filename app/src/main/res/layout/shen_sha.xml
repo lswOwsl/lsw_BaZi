@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="年支："
+        android:id="@+id/tvYear"
+        android:minHeight="35dp"
+        android:autoText="false"
+        android:gravity="bottom"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="月支："
+        android:id="@+id/tvMonth"
+        android:minHeight="35dp"
+        android:autoText="false"
+        android:gravity="bottom"
+        android:textSize="25dp"
+        android:layout_below="@+id/tvYear"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="日："
+        android:id="@+id/tvDay"
+        android:minHeight="35dp"
+        android:autoText="false"
+        android:gravity="bottom"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/tvMonth"
+        android:layout_alignParentLeft="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spYearT"
+        android:spinnerMode="dialog"
+        android:layout_above="@+id/tvMonth"
+        android:layout_toRightOf="@+id/tvYear"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="200dp"
+        android:layout_alignTop="@+id/tvYear" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spMonthT"
+        android:spinnerMode="dialog"
+        android:layout_above="@+id/tvDay"
+        android:layout_alignLeft="@+id/spYearT"
+        android:layout_alignTop="@+id/tvMonth"
+        android:layout_alignRight="@+id/spYearT" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spDayC"
+        android:spinnerMode="dialog"
+        android:layout_alignBottom="@+id/tvDay"
+        android:layout_alignLeft="@+id/spMonthT"
+        android:layout_alignTop="@+id/tvDay"
+        android:layout_alignRight="@+id/spMonthT" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spDayT"
+        android:spinnerMode="dialog"
+        android:layout_alignTop="@+id/spDayC"
+        android:layout_toRightOf="@+id/spDayC"
+        android:layout_marginLeft="20dp"
+        android:layout_alignBottom="@+id/spDayC"
+        android:layout_marginRight="200dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="年神煞:"
+        android:id="@+id/tvYearContent"
+        android:layout_marginTop="100dp"
+        android:layout_below="@+id/spDayC"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
+        android:height="35dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="月神煞："
+        android:id="@+id/tvMonthContent"
+        android:height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/tvYearContent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="日神煞："
+        android:id="@+id/tvDayContent"
+        android:height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/tvMonthContent"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询神煞"
+        android:id="@+id/btnSearchShenSha"
+        android:layout_toRightOf="@+id/tvDay"
+        android:layout_below="@+id/spDayC"
+        android:layout_marginTop="20dp"
+        android:onClick="onBtnSearchShenShaClick" />
+</RelativeLayout>

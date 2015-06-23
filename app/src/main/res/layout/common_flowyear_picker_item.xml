@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1" android:id="@+id/ll_flowyear_item"
+    android:background="@drawable/tv_border_rb_bg"
+    android:paddingLeft="1dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/tv_flowyear_text"
+        android:gravity="center" android:paddingTop="2dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text=""
+        android:id="@+id/tv_flowyear_age"
+        android:gravity="center" android:paddingBottom="2dp"
+        />
+</LinearLayout>

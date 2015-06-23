@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <Enhance from="偏印">
+    <Same to="比肩"></Same>
+    <Different to="劫财"></Different> 
+  </Enhance>
+  <Enhance from="正印">
+    <Same to="劫财"></Same>
+    <Different to="比肩"></Different>
+  </Enhance>
+
+  <Enhance from="偏官">
+    <Same to="偏印"></Same>
+    <Different to="正印"></Different>
+  </Enhance>
+  <Enhance from="正官">
+    <Same to="正印"></Same>
+    <Different to="偏印"></Different>
+  </Enhance>
+
+  <Enhance from="劫财">
+    <Same to="伤官"></Same>
+    <Different to="食神"></Different>
+  </Enhance>
+  <Enhance from="比肩">
+    <Same to="食神"></Same>
+    <Different to="伤官"></Different>
+  </Enhance>
+
+  <Enhance from="食神">
+    <Same to="偏财"></Same>
+    <Different to="正财"></Different>
+  </Enhance>
+  <Enhance from="伤官">
+    <Same to="正财"></Same>
+    <Different to="偏财"></Different>
+  </Enhance>
+
+  <Enhance from="偏财">
+    <Same to="偏官"></Same>
+    <Different to="正官"></Different>
+  </Enhance>
+  <Enhance from="正财">
+    <Same to="正官"></Same>
+    <Different to="偏官"></Different>
+  </Enhance>
+
+  <Control from="正财">
+    <Same to="正印"></Same>
+    <Different to="偏印"></Different>
+  </Control>
+  <Control from="偏财">
+    <Same to="偏印"></Same>
+    <Different to="正印"></Different>
+  </Control>
+
+  <Control from="食神">
+    <Same to="偏官"></Same>
+    <Different to="正官"></Different>
+  </Control>
+  <Control from="伤官">
+    <Same to="正官"></Same>
+    <Different to="偏官"></Different>
+  </Control>
+
+  <Control from="比肩">
+    <Same to="偏财"></Same>
+    <Different to="正财"></Different>
+  </Control>
+  <Control from="劫财">
+    <Same to="正财"></Same>
+    <Different to="偏财"></Different>
+  </Control>
+
+  <Control from="偏印">
+    <Same to="食神"></Same>
+    <Different to="伤官"></Different>
+  </Control>
+  <Control from="正印">
+    <Same to="伤官"></Same>
+    <Different to="食神"></Different>
+  </Control>
+
+  <Control from="偏官">
+    <Same to="比肩"></Same>
+    <Different to="劫财"></Different>
+  </Control>
+  <Control from="正官">
+    <Same to="劫财"></Same>
+    <Different to="比肩"></Different>
+  </Control>
+
+  <LiuQin from="riZhu">
+    <Relation action="equal">
+      <YinYang isSame="true">比肩</YinYang>
+      <YinYang isSame="false">劫财</YinYang>
+    </Relation>
+    <Relation action="enhance">
+      <YinYang isSame="true">食神</YinYang>
+      <YinYang isSame="false">伤官</YinYang>
+    </Relation>
+    <Relation action="consume">
+      <YinYang isSame="true">偏财</YinYang>
+      <YinYang isSame="false">正财</YinYang>
+    </Relation>
+    <Relation action="support">
+      <YinYang isSame="true">偏印</YinYang>
+      <YinYang isSame="false">正印</YinYang>
+    </Relation>
+    <Relation action="control">
+      <YinYang isSame="true">偏官</YinYang>
+      <YinYang isSame="false">正官</YinYang>
+    </Relation>
+  </LiuQin>
+  
+</Root>
+<!--
+克我，抑我者为官杀。同性-偏官，异性-正官
+生我、扶我者为印星。同性-偏印，异性-正印
+同我、助我者为比劫。同性-比肩，异性-劫财
+我生、泄我者为食伤。同性-食神，异性-伤官
+我克、耗我者为财星。同性-偏财，异性-正财
+-->

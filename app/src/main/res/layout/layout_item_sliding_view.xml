@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@android:color/darker_gray" >
+    <!--<Button-->
+        <!--android:id="@+id/sliding_row_shensha"-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:text="@string/sliding_button_shensha"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:gravity="center"-->
+        <!--android:focusable="false"-->
+        <!--android:focusableInTouchMode="false"-->
+        <!--android:background="@drawable/button_bg"/>-->
+    <Button
+        android:id="@+id/sliding_row_edit"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:text="@string/sliding_button_edit"
+        android:textColor="@android:color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:gravity="center"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@drawable/button_bg"/>
+    <Button
+        android:id="@+id/sliding_row_delete"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:text="@string/sliding_button_delete"
+        android:textColor="@android:color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:gravity="center"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@drawable/button_bg"/>
+</LinearLayout>

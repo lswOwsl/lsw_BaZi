@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:padding="5dp" >
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tv_dayun_range"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:gravity="center"
+        android:text="甲子"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="#555555" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:paddingLeft="5dp" >
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tv_dayun_range_tc"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#555555"
+            android:text="10-20"/>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tv_dayun_range_year"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#555555"
+            android:text="1000-2000"/>
+    </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

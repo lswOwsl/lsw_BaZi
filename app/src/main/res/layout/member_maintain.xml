@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:padding="5dp">
+
+    <EditText android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text=""
+        android:hint="姓名"
+        android:ems="10"
+        android:id="@+id/etMemeberName" />
+
+    <EditText android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etDateTimeOfBirth"
+        android:text=""
+        android:hint="阳历生日"/>
+
+    <TextView android:layout_marginTop="10dp"
+        android:hint="阴历生日"
+        android:paddingLeft="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:text="" android:textSize="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvMemberLunarBirthday"/>
+
+    <RadioGroup android:layout_marginTop="10dp"
+        android:id="@+id/rgGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="男"
+        android:checked="true"
+        android:id="@+id/rbIsMale" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="女"
+        android:id="@+id/rbIsFemale" />
+</RadioGroup>
+    <LinearLayout android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <Button android:layout_weight="1" android:onClick="btnSaveMemberClick"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="保  存"
+        android:id="@+id/btnSaveMember" android:layout_marginRight="20dp" />
+        <Button android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="分  析"
+            android:id="@+id/btnAnalyzeMember" android:onClick="btnAnalyzeMemberClick" />
+    </LinearLayout>
+</LinearLayout>

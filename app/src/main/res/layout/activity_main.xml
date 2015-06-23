@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查 询"
+        android:id="@+id/btnChangeText"
+        android:onClick="onSearchButtonClick"
+        android:singleLine="false"
+        android:textSize="15dp"
+        android:layout_toRightOf="@+id/spRiZhu"
+        android:layout_marginLeft="-100dp"
+        android:padding="0dp"
+        android:layout_alignBottom="@+id/tvRiZhu"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/tvYearContent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="月："
+        android:id="@+id/tvYue"
+        android:layout_below="@+id/btnChangeText"
+        android:layout_alignParentLeft="true"
+        android:minHeight="35dp"
+        android:autoText="false"
+        android:gravity="bottom"
+        android:textSize="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="日主："
+        android:id="@+id/tvRiZhu"
+        android:layout_alignParentLeft="true"
+        android:minHeight="35dp"
+        android:gravity="bottom"
+        android:textSize="25dp"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内容"
+        android:id="@+id/tvYearContent"
+        android:minHeight="150dp"
+        android:layout_below="@+id/spYue"
+        android:layout_toRightOf="@+id/tvYue"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spYue"
+        android:dropDownWidth="50dp"
+        android:spinnerMode="dialog"
+        android:layout_below="@+id/tvRiZhu"
+        android:layout_toRightOf="@+id/tvRiZhu"
+        android:layout_alignRight="@+id/spRiZhu"
+        android:layout_alignBottom="@+id/tvYue" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spRiZhu"
+        android:dropDownWidth="50dp"
+        android:spinnerMode="dialog"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/tvRiZhu"
+        android:layout_above="@+id/spYue"
+        android:layout_toLeftOf="@+id/tvRiZhu"
+        android:layout_marginRight="200dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="神 煞 查 询"
+        android:textSize="15dp"
+        android:id="@+id/btnShenShaRedirect"
+        android:onClick="btnShenShaClick"
+        android:layout_below="@+id/tvYearContent"
+        android:layout_marginTop="30dp"
+        android:layout_alignLeft="@+id/tvYearContent"
+        android:singleLine="false"
+        android:padding="0dp"
+        android:width="80dp"
+        android:layout_alignRight="@+id/tvYearContent"
+        android:layout_marginRight="150dp"
+        android:layout_alignBottom="@+id/tvYearContent"
+        android:layout_marginBottom="-65dp" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/svTop"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btnShenShaRedirect"
+        android:layout_marginTop="70dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户维护"
+        android:id="@+id/btnMember"
+        android:onClick="onMemberButtonClick"
+        android:singleLine="false"
+        android:textSize="15dp"
+        android:padding="0dp"
+        android:layout_alignBottom="@+id/spYue"
+        android:layout_alignLeft="@+id/btnChangeText"
+        android:layout_alignTop="@+id/spYue"
+        android:layout_alignRight="@+id/btnChangeText" />
+
+
+</RelativeLayout>

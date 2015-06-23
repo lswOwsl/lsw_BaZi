@@ -1,0 +1,88 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="StyleBaZiJiaGong">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">15pt</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:padding">1pt</item>
+    </style>
+    <style name="StyleBaZiJiaGong_ViewPager" >
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#CCC</item>
+        <item name="android:layout_width">13dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="StyleBaZiJiaGong_ViewPager_Zi" >
+        <item name="android:layout_width">18dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="Style_CXHH_Text">
+        <item name="android:textSize">15dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="Style_CXHH_Wrapper">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="Style_CXHH_Tip">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+    <style name="Style_CXHH_Line">
+        <item name="android:background">#CCC</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+    <style name="StyleBaZiDefault">
+        <item name="android:padding">0pt</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">30dp</item>
+    </style>
+    <style name="StyleBaZiLiuQin">
+        <item name="android:padding">1pt</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">18dp</item>
+        <!--<item name="android:minWidth">40dp</item>-->
+    </style>
+    <style name="StyleBaZiHidden">
+        <item name="android:padding">0pt</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">10dp</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <!--<style name="CustomDialog" parent="@android:style/Theme.Holo.Light.DialogWhenLarge">-->
+    <style name="CustomDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:background">@android:color/background_light</item>
+    </style>
+
+    <style name="CustomDialog_Animation" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="@android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
+
+</resources>
