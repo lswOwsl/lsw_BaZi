@@ -8,7 +8,7 @@ import java.util.Comparator;
 public class PinyinComparator implements Comparator<SortModel> {
 
     public int compare(SortModel o1, SortModel o2) {
-        //ÕâÀïÖ÷ÒªÊÇÓÃÀ´¶ÔListViewÀïÃæµÄÊı¾İ¸ù¾İABCDEFG...À´ÅÅĞò
+        //è¿™é‡Œä¸»è¦æ˜¯ç”¨æ¥å¯¹ListViewé‡Œé¢çš„æ•°æ®æ ¹æ®ABCDEFG...æ¥æ’åº
         if (o2.getSortLetters().equals("#")) {
             return -1;
         } else if (o1.getSortLetters().equals("#")) {

@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -18,6 +22,9 @@ import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.DateLunar;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
+import com.example.swli.myapplication20150519.phone.base.Contact;
+
+import java.util.HashMap;
 
 /**
  * Created by swli on 5/26/2015.
@@ -27,6 +34,7 @@ public class MemberMaintain extends Activity {
     /** Called when the activity is first created. */
     private EditText etDateTimeOfBirth;
     private EditText etMemberName;
+    private AutoCompleteTextView actMemberName;
     private TextView tvLunarBirthday;
     private RadioButton rbIsMale;
     private RadioButton rbIsFemale;
@@ -37,6 +45,8 @@ public class MemberMaintain extends Activity {
     private String preActivitySearchText;
 
     private DBManager dbManager;
+    private Contact contact;
+    HashMap<String,Pair<Integer,Integer>> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +58,7 @@ public class MemberMaintain extends Activity {
         //getActionBar().setDisplayShowTitleEnabled(true);
 
         dbManager = new DBManager(this);
+        contact = new Contact(this);
 
         initControls();
         initContent();
@@ -70,6 +81,7 @@ public class MemberMaintain extends Activity {
         etDateTimeOfBirth = (EditText) findViewById(R.id.etDateTimeOfBirth);
         etDateTimeOfBirth.setKeyListener(null);
 
+        actMemberName = (AutoCompleteTextView)findViewById(R.id.actPersonName);
         etMemberName = (EditText)findViewById(R.id.etMemeberName);
         tvLunarBirthday = (TextView)findViewById(R.id.tvMemberLunarBirthday);
         rbIsMale = (RadioButton)findViewById(R.id.rbIsMale);
@@ -136,15 +148,46 @@ public class MemberMaintain extends Activity {
 
         final DateExt tempDateExt = now;
         etDateTimeOfBirth.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                DateTimePickDialog dateTimePicKDialog=new DateTimePickDialog(
-                        MemberMaintain.this,tempDateExt);
+            public void onClick(View v) {
+                DateTimePickDialog dateTimePicKDialog = new DateTimePickDialog(
+                        MemberMaintain.this, tempDateExt);
                 dateTimePicKDialog.dateTimePicKDialog(etDateTimeOfBirth);
             }
         });
 
         etDateTimeOfBirth.setText(now.getFormatDateTime());
         loadLunarBirthday(now);
+
+
+        contacts = contact.getContactNameAndPhone();
+
+        final String[] actValues = contacts.keySet().toArray(new String[]{});
+
+        actMemberName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(etMemberName.getText().toString().trim().equals("")) {
+                    etMemberName.setText(actValues[i]);
+                }
+            }
+        });
+
+        ArrayAdapter<String> actAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, actValues);
+        actMemberName.setAdapter(actAdapter);
+    }
+
+    public void btnSaveToContactClick(View view)
+    {
+       String key =  actMemberName.getText().toString().trim();
+        if(contacts.containsKey(key)) {
+            contact.updateContactBirthday(contacts.get(key),new DateExt(etDateTimeOfBirth.getText().toString()));
+            Toast.makeText(MemberMaintain.this, "保存生日至联系人成功!", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(MemberMaintain.this, "联系人不存在!", Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
     public void btnSaveMemberClick(View view)

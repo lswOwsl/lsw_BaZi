@@ -139,7 +139,7 @@ public class BaZiActivityWrapper {
         XmlTerrestrial xmlTerrestrial = XmlTerrestrial.getInstance(textView.getContext());
         ArrayList<Pair<String,String>> arrayList =  xmlTerrestrial.getHiddenCelestialStem(terrestrial);
         int size = arrayList.size();
-        //ÅĞ¶ÏsizeÊÇÎªÁËÈÃÎÄ×Ö¾ÓÖĞÅÅÁĞ
+        //åˆ¤æ–­sizeæ˜¯ä¸ºäº†è®©æ–‡å­—å±…ä¸­æ’åˆ—
         for (int i=0;i< size ;i++) {
             if (size == 1)
                 textView.append("\n");
@@ -291,15 +291,15 @@ public class BaZiActivityWrapper {
     }
 
     private Pair<Integer,Integer> getBeginYunAgeMonth() {
-        //ÆğÔËÄêÁä
+        //èµ·è¿å¹´é¾„
         int hoursQiYun = Math.abs(BaZiHelper.getBeginYunHours(birthday, isMale, getYearEraIndex()));
-        //ÈıÌìÒ»Ëê£¬1Ìì4¸öÔÂ£¬1¸öÊ±³½10Ìì
+        //ä¸‰å¤©ä¸€å²ï¼Œ1å¤©4ä¸ªæœˆï¼Œ1ä¸ªæ—¶è¾°10å¤©
         int ageQiYun = (int) ((double) hoursQiYun / 24) / 3;
         int tempAge = ageQiYun;
         int monthQiYun = (int) ((double) hoursQiYun / 24 % 3 * 4);
-        //ÆğÔËµÄÌìÊıÓà¶àÉÙĞ¡Ê±
+        //èµ·è¿çš„å¤©æ•°ä½™å¤šå°‘å°æ—¶
         int hourQiYun = hoursQiYun % 24;
-        //Á½¸öĞ¡Ê±Ò»¸öÊ±³½£¬ËùÒÔÏÈ³ı2£¬³ËÒÔ10ÊÇÒòÎªÒ»¸öÊ±³½10Ìì£¬Èç¹ûÌìÊı³¬¹ıÒ»¸öÔÂ£¬ÄÇÄêÁä¾ÍÓ¦¸Ã¼Ó1Ëê£¬ÊÇÎªÁËÏÔÊ¾ÓÃ
+        //ä¸¤ä¸ªå°æ—¶ä¸€ä¸ªæ—¶è¾°ï¼Œæ‰€ä»¥å…ˆé™¤2ï¼Œä¹˜ä»¥10æ˜¯å› ä¸ºä¸€ä¸ªæ—¶è¾°10å¤©ï¼Œå¦‚æœå¤©æ•°è¶…è¿‡ä¸€ä¸ªæœˆï¼Œé‚£å¹´é¾„å°±åº”è¯¥åŠ 1å²ï¼Œæ˜¯ä¸ºäº†æ˜¾ç¤ºç”¨
         int dayQiYun = (int) ((double) hourQiYun / 2 * 10 / 30);
         if (dayQiYun != 0) {
             ageQiYun += 1;

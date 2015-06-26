@@ -62,4 +62,21 @@
             android:text="分  析"
             android:id="@+id/btnAnalyzeMember" android:onClick="btnAnalyzeMemberClick" />
     </LinearLayout>
+
+
+    <AutoCompleteTextView android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="联系人名称-电话"
+        android:ems="10"
+        android:id="@+id/actPersonName"
+        android:completionThreshold="1"/>
+
+    <Button
+        android:layout_gravity="center_horizontal"
+        android:onClick="btnSaveToContactClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="保 存 生 日 至 联 系 人"
+        android:id="@+id/btnSaveToContact"  />
 </LinearLayout>

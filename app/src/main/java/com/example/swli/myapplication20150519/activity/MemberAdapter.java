@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.example.swli.myapplication20150519.MemberHome;
 import com.example.swli.myapplication20150519.MemberMaintain;
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.ShenSha;
 import com.example.swli.myapplication20150519.model.Member;
 
 import java.util.List;
@@ -81,7 +80,7 @@ public class MemberAdapter extends BaseAdapter implements SectionIndexer {
             controls = (Controls) view.getTag();
         }
         final Member member = data.get(i);
-        controls.tvName.setText(member.getName());
+        controls.tvName.setText(member.getName().trim());
         controls.tvGender.setText("性别：" + member.getGender());
         controls.tvLunarBirthday.setText("阴历：" + member.getLunarBirthday());
         controls.tvBirthday.setText("阳历：" + member.getBirthday().getFormatDateTime());
@@ -157,7 +156,7 @@ public class MemberAdapter extends BaseAdapter implements SectionIndexer {
         Bundle bundle = new Bundle();
                 /*字符、字符串、布尔、字节数组、浮点数等等，都可以传*/
         bundle.putInt("Id", member.getId());
-        bundle.putString("Name", member.getName());
+        bundle.putString("Name", member.getName().trim());
         bundle.putBoolean("Ismale", member.getIsMale());
         bundle.putString("Birthday", member.getBirthday().getFormatDateTime());
 

@@ -2,7 +2,9 @@ package com.example.swli.myapplication20150519;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +32,8 @@ import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.SwipeListView;
 import com.example.swli.myapplication20150519.model.Member;
+import com.example.swli.myapplication20150519.service.TimerConstant;
+import com.example.swli.myapplication20150519.service.TimerReceiver;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -122,6 +126,20 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
                 return true;
             }
         });
+
+        initTimerService();
+    }
+
+    private static final int INTERVAL = 1000 * 60 * 60 * 24;//一天
+    private static final int INTERVAL_10s = 1000*10;
+
+    private void initTimerService()
+    {
+        Intent intent = new Intent(this, TimerReceiver.class);
+        intent.setAction(TimerConstant.Send_Message);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), INTERVAL_10s, pendingIntent);
     }
 
     @Override

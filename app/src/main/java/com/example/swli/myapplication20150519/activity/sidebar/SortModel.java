@@ -5,8 +5,8 @@ package com.example.swli.myapplication20150519.activity.sidebar;
  */
 public class SortModel {
 
-    private String name;   //ÏÔÊ¾µÄÊı¾İ
-    private String sortLetters;  //ÏÔÊ¾Êı¾İÆ´ÒôµÄÊ××ÖÄ¸
+    private String name;   //æ˜¾ç¤ºçš„æ•°æ®
+    private String sortLetters;  //æ˜¾ç¤ºæ•°æ®æ‹¼éŸ³çš„é¦–å­—æ¯
 
     public String getName() {
         return name;
