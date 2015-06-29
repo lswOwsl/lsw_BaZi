@@ -146,16 +146,17 @@ public class MemberMaintain extends Activity {
             getActionBar().setTitle("新增");
         }
 
-        final DateExt tempDateExt = now;
+        //final DateExt tempDateExt = now;
+        etDateTimeOfBirth.setText(now.getFormatDateTime());
         etDateTimeOfBirth.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 DateTimePickDialog dateTimePicKDialog = new DateTimePickDialog(
-                        MemberMaintain.this, tempDateExt);
-                dateTimePicKDialog.dateTimePicKDialog(etDateTimeOfBirth);
+                        MemberMaintain.this);
+                //dateTimePicKDialog.setInitDateExt(tempDateExt);
+                dateTimePicKDialog.dateTimePicKDialog();
             }
         });
 
-        etDateTimeOfBirth.setText(now.getFormatDateTime());
         loadLunarBirthday(now);
 
 

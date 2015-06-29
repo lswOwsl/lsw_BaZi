@@ -22,30 +22,29 @@ public class DateTimePickDialog implements OnDateChangedListener, OnTimeChangedL
     private DatePicker datePicker;
     private TimePicker timePicker;
     private AlertDialog ad;
-    private DateExt dateExt;
+    //private DateExt dateExt;
     private DateExt initDateExt;
     private Activity activity;
+    private EditText etDateTimeOfBirth;
 
-    public DateTimePickDialog(Activity activity, DateExt initDateExt) {
+    public DateTimePickDialog(Activity activity) {
         this.activity = activity;
-        this.initDateExt = initDateExt;
-
+        etDateTimeOfBirth = (EditText) activity.findViewById(R.id.etDateTimeOfBirth);
     }
 
     public void init(DatePicker datePicker, TimePicker timePicker) {
 
-        if(initDateExt == null)
-            initDateExt = DateExt.getCurrentTime();
+        initDateExt = new DateExt(etDateTimeOfBirth.getText().toString());
 
         //-1 是因为java时间月份从0开始，但是DateExt已经默认加1了
         datePicker.init(initDateExt.getYear(),
-                initDateExt.getMonth()-1,
+                initDateExt.getMonth() - 1,
                 initDateExt.getDay(), this);
         timePicker.setCurrentHour(initDateExt.getHour());
         timePicker.setCurrentMinute(initDateExt.getMinute());
     }
 
-    public AlertDialog dateTimePicKDialog(final EditText inputDate) {
+    public AlertDialog dateTimePicKDialog() {
         LinearLayout dateTimeLayout = (LinearLayout) activity
                 .getLayoutInflater().inflate(R.layout.common_datetime_picker, null);
         datePicker = (DatePicker) dateTimeLayout.findViewById(R.id.datepicker);
@@ -59,10 +58,10 @@ public class DateTimePickDialog implements OnDateChangedListener, OnTimeChangedL
                 .setView(dateTimeLayout)
                 .setPositiveButton("设置", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        inputDate.setText(dateExt.getFormatDateTime());
+                        etDateTimeOfBirth.setText(initDateExt.getFormatDateTime());
                         if(activity instanceof MemberMaintain)
                         {
-                            ((MemberMaintain)activity).loadLunarBirthday(dateExt);
+                            ((MemberMaintain)activity).loadLunarBirthday(initDateExt);
                         }
                     }
                 })
@@ -76,14 +75,14 @@ public class DateTimePickDialog implements OnDateChangedListener, OnTimeChangedL
         return ad;
     }
 
-
     @Override
     public void onDateChanged(DatePicker view, int i, int i2, int i3) {
-       DateExt de = new DateExt(datePicker.getYear(), datePicker.getMonth(),
+       DateExt de = new DateExt(datePicker.getYear(), datePicker.getMonth()+1,
                datePicker.getDayOfMonth(), timePicker.getCurrentHour(),
                timePicker.getCurrentMinute(),0);
 
-        dateExt = de;
+        //dateExt = de;
+        initDateExt = de;
         ad.setTitle(de.getFormatDateTime());
     }
 

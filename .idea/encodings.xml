@@ -23,6 +23,7 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/swli/myapplication20150519/common/LunarSolarTerm.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/swli/myapplication20150519/model/Member.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/swli/myapplication20150519/phone/base/Contact.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/swli/myapplication20150519/service/TimerReceiver.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/swli/myapplication20150519/service/TimerService.java" charset="UTF-8" />
     <file url="PROJECT" charset="GBK" />
   </component>
