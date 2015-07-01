@@ -13,9 +13,6 @@ import com.example.swli.myapplication20150519.model.XmlTerrestrial;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by swli on 6/11/2015.
- */
 public class BaZiActivityWrapper {
     DateExt birthday;
     LunarCalendarWrapper calendarWrapper;
@@ -113,7 +110,7 @@ public class BaZiActivityWrapper {
 
         XmlSixRelation xmlSixRelation = XmlSixRelation.getInstance(context);
 
-        boolean flag = riZhuEP.getYinYang().equals(celestialStemEP.getYinYang())? true: false;
+        boolean flag = riZhuEP.getYinYang().equals(celestialStemEP.getYinYang());
 
         if(riZhuEP.getWuXing().equals(celestialStemEP.getWuXing()))
             return xmlSixRelation.getRelation().get("equal").get(flag);
@@ -158,16 +155,16 @@ public class BaZiActivityWrapper {
         }
     }
 
-    private String getJiaGongByList(HashMap<String,ArrayList<String>> list, Pair<String,String> str12)
-    {
-        for (Object key: list.keySet()) {
+    private String getJiaGongByList(HashMap<String,ArrayList<String>> list, Pair<String,String> str12) {
+        for (String key : list.keySet()) {
             ArrayList<String> temp = new ArrayList<String>();
+
             temp.addAll(list.get(key));
             if (temp.contains(str12.first))
                 temp.remove(str12.first);
             if (temp.contains(str12.second))
                 temp.remove(str12.second);
-            if(temp.size() == 1) {
+            if (temp.size() == 1) {
                 return temp.get(0);
             }
         }
@@ -312,7 +309,8 @@ public class BaZiActivityWrapper {
     {
         int currentAge = flowYear - birthday.getYear();
         ArrayList<Integer> daYuns = getDaYuns(currentAge/10+1);
-        return BaZiHelper.getDaYunByFlowYear(currentAge, beginYunAgeAndMonth.first, daYuns);
+        //因为有的人是0岁几个月起运，所以不能按0岁起运看，应该按1岁起运看
+        return BaZiHelper.getDaYunByFlowYear(currentAge, getBeginYunAge(), daYuns);
     }
 }
 
