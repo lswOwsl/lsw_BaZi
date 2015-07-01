@@ -112,7 +112,8 @@ public class MemberAnalyze extends MemberBase {
         baZiActivityWrapper.setControl(this.monthC,this.monthT,this.monthLiuQin,this.monthHidden,baZiActivityWrapper.getMonthEraIndex());
         baZiActivityWrapper.setControl(this.yearC, this.yearT, this.yearLiuQin, this.yearHidden, baZiActivityWrapper.getYearEraIndex());
 
-        int beginYunYear = fixBeginYunAge(birthdayDateExt) + birthdayDateExt.getYear();
+        final int fixBeginYunAge = fixBeginYunAge(birthdayDateExt);
+        int beginYunYear = fixBeginYunAge + birthdayDateExt.getYear();
         final DateExt current = DateExt.getCurrentTime();
         final int indexFlowYear = baZiActivityWrapper.getFlowYearEraIndex(current.getYear(), current.getMonth(), current.getDay());
         boolean isBeginYun= false;
@@ -122,7 +123,7 @@ public class MemberAnalyze extends MemberBase {
         }
         Pair<Integer,Integer> yearMonth = baZiActivityWrapper.getBeginYunAge_Month();
         getActionBar().setSubtitle(getActionBar().getSubtitle() + "     " + yearMonth.first + "岁" + yearMonth.second + "个月起运");
-        final int indexDaYun = baZiActivityWrapper.getDaYunByFlowYear(current.getYear());
+        final int indexDaYun = baZiActivityWrapper.getDaYunByFlowYear(current.getYear(),fixBeginYunAge);
         baZiActivityWrapper.setControl(this.daYunC, this.daYunT, this.daYunLiuQin, this.daYunHidden, indexDaYun);
         loadTitle((current.getYear() - birthdayDateExt.getYear()), birthdayDateExt, indexDaYun, indexFlowYear);
 
@@ -154,7 +155,7 @@ public class MemberAnalyze extends MemberBase {
                 if(currentDaYun == null)
                     currentDaYun = indexDaYun;
                     DaYunPickDialog daYunPickDialog = new DaYunPickDialog(MemberAnalyze.this, baZiActivityWrapper.getDaYuns(10),
-                            baZiActivityWrapper.getBeginYunAge(), currentDaYun );
+                            fixBeginYunAge, currentDaYun );
                     daYunPickDialog.setCallBackDialog(callBackDialogDaYun);
                     daYunPickDialog.show();
 
@@ -175,9 +176,17 @@ public class MemberAnalyze extends MemberBase {
             @Override
             public void onCall(CallBackArgs args) {
 
-                loadFlowYear(args);
-                loadTitle(args.getCurrentAge(), birthdayDateExt, args.getDaYunEraIndex(), args.getFlowYearEraIndex());
-                viewPagerHandler.init(args.getFlowYearEraIndex(), args.getDaYunEraIndex());
+                if(args.isFlowMonthClick())
+                {
+                    loadFlowYear(args);
+                    loadTitle(args.getCurrentAge(), birthdayDateExt, args.getDaYunEraIndex(), args.getFlowYearEraIndex());
+                    viewPagerHandler.init(args.getFlowYearEraIndex(), args.getDaYunEraIndex());
+                }
+                else {
+                    loadFlowYear(args);
+                    loadTitle(args.getCurrentAge(), birthdayDateExt, args.getDaYunEraIndex(), args.getFlowYearEraIndex());
+                    viewPagerHandler.init(args.getFlowYearEraIndex(), args.getDaYunEraIndex());
+                }
             }
         };
 

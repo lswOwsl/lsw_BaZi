@@ -7,6 +7,24 @@ public class CallBackArgs {
     private Integer daYunEraIndex;
     private Integer flowYearEraIndex;
     private Integer currentAge;
+    private Integer flowMonthEraIndex;
+    private boolean isFlowMonthClick;
+
+    public boolean isFlowMonthClick() {
+        return isFlowMonthClick;
+    }
+
+    public void setIsFlowMonthClick(boolean isFlowMonthClick) {
+        this.isFlowMonthClick = isFlowMonthClick;
+    }
+
+    public Integer getFlowMonthEraIndex() {
+        return flowMonthEraIndex;
+    }
+
+    public void setFlowMonthEraIndex(Integer flowMonthEraIndex) {
+        this.flowMonthEraIndex = flowMonthEraIndex;
+    }
 
     public Integer getDaYunEraIndex() {
         return daYunEraIndex;

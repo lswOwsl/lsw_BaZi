@@ -133,7 +133,7 @@ public class DaYunPickDialog {
                 } else {
                     controls = (PickerItem) view.getTag();
                 }
-                String c = LunarSolarTerm.getCelestialStemTextBy(source.get(i));
+                String c = LunarSolarTerm.getCelestialStem(source.get(i));
                 String t = LunarSolarTerm.getTerrestrialBranch(source.get(i));
                 String age = beginYunAge + i * 10 + "岁";
 

@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -35,7 +37,8 @@ public class FlowYearPickDialog {
     private Dialog dialog;
     private Activity activity;
     private ArrayList<Integer> sourceDaYunsIndex;
-    private ArrayList<SolarTerm> sourceFlowMonthIndex;
+    private ArrayList<Integer> sourceFlowMonthIndex;
+    private ArrayList<SolarTerm> sourceFlowMonthSolarTerms;
     private int beginYunAge;
     private Integer currentAge;
     private Spinner spYearsRange;
@@ -71,14 +74,24 @@ public class FlowYearPickDialog {
         spinner.setAdapter(baseAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean isFirstLoad = true;
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if(isFirstLoad)
+                {
+                    isFirstLoad = false;
+                    return;
+                }
 
                 int tempAge = beginYunAge + position*10;
                 String tempStr = ": "+ tempAge+"岁"+"-----"+(tempAge+9)+"岁";
                 Toast.makeText(activity, "已选择" + tempStr, Toast.LENGTH_SHORT).show();
-                initGridView(tempAge);
                 tempDaYunReturnValue = sourceDaYunsIndex.get(position);
+                //这个是用来选定大运后，默认成该大运下头一年被选中，在view的adpter里会对全局的currentAge做比较
+                currentAge = tempAge;
+                initGridView(tempAge);
+
             }
 
             @Override
@@ -89,14 +102,17 @@ public class FlowYearPickDialog {
         Integer selectedDaYunEraIndex = null;
         if (currentAge != null) {
             selectedDaYunEraIndex = BaZiHelper.getDaYunByFlowYear(currentAge.intValue(), beginYunAge, sourceDaYunsIndex);
-
             int index = sourceDaYunsIndex.indexOf(selectedDaYunEraIndex);
             if (index != -1)
                 spinner.setSelection(index);
+
+            tempDaYunReturnValue = selectedDaYunEraIndex;
         }
     }
     private BaseAdapter getFlowMonthSpinnerAdapter()
     {
+        this.sourceFlowMonthIndex = new ArrayList<Integer>();
+
         return new BaseAdapter() {
 
             int beginMonthEraIndex = -1;
@@ -104,12 +120,12 @@ public class FlowYearPickDialog {
 
             @Override
             public int getCount() {
-                return sourceFlowMonthIndex.size()-1;
+                return sourceFlowMonthSolarTerms.size()-1;
             }
 
             @Override
             public Object getItem(int i) {
-                return sourceFlowMonthIndex.get(i);
+                return sourceFlowMonthSolarTerms.get(i);
             }
 
             @Override
@@ -119,46 +135,45 @@ public class FlowYearPickDialog {
 
             @Override
             public View getView(int i, View view, ViewGroup viewGroup) {
-                PickerItem controls;
+                PickerItemMonth controls;
                 if (view == null) {
-                    controls = new PickerItem();
+                    controls = new PickerItemMonth();
                     view = layoutInflater.inflate(R.layout.common_flowmonth_range_textview, null);
                     controls.tvTextItem = (TextView) view.findViewById(R.id.tv_flowmonth_item);
                     controls.tvTextMonthTip = (TextView) view.findViewById(R.id.tv_flowmonth_tip);
                     view.setTag(controls);
                 } else {
-                    controls = (PickerItem) view.getTag();
+                    controls = (PickerItemMonth) view.getTag();
                 }
 
                 //因为12个月的eraIndex是顺序来的所以得到第一个立春的后面就不用再算了，加1就行了
                 if(beginMonthEraIndex ==-1) {
-                    beginMonthEraIndex = lunarSolarTerm.getChineseEraOfMonth(sourceFlowMonthIndex.get(i).getSolarTermDate());
+                    beginMonthEraIndex = lunarSolarTerm.getChineseEraOfMonth(sourceFlowMonthSolarTerms.get(i).getSolarTermDate());
                 }
-                else
-                {
-                    beginMonthEraIndex +=1;
-                }
-                String c = LunarSolarTerm.getCelestialStemTextBy(beginMonthEraIndex);
-                String t = LunarSolarTerm.getTerrestrialBranch(beginMonthEraIndex);
+
+                String c = LunarSolarTerm.getCelestialStem(beginMonthEraIndex+i);
+                String t = LunarSolarTerm.getTerrestrialBranch(beginMonthEraIndex+i);
+
+                sourceFlowMonthIndex.add(beginMonthEraIndex+i);
 
                 controls.tvTextItem.setText("");
                 controls.tvTextItem.append(ColorHelper.getColorCelestialStem(activity, c));
                 controls.tvTextItem.append(ColorHelper.getColorTerrestrial(activity, t));
-                controls.tvTextItem.append(":");
+                controls.tvTextItem.append(": ");
 
-                SolarTerm tempSt1 =sourceFlowMonthIndex.get(i);
-                String tempStr1 = tempSt1.getSolarTermDate().getFormatDateTime("yyyy/MM/dd");
-                //SolarTerm tempSt2 = sourceFlowMonthIndex.get(i+1);
-                //String tempStr2 = tempSt2.getSolarTermDate().getFormatDateTime("yyyy/MM/dd");
+                SolarTerm tempSt1 = sourceFlowMonthSolarTerms.get(i);
+                String tempStr1 = tempSt1.getSolarTermDate().getFormatDateTime("MM/dd");
+                SolarTerm tempSt2 = sourceFlowMonthSolarTerms.get(i + 1);
+                String tempStr2 = tempSt2.getSolarTermDate().getFormatDateTime("MM/dd");
 
-                String tempStr = tempStr1 + "---";
+                String tempStr = sourceFlowMonthSolarTerms.get(i).getSolarTermDate().getFormatDateTime("MM月 (") + tempStr1 + "---" + tempStr2+")";
 
-                controls.tvTextMonthTip.setText(tempStr);
+                controls.tvTextMonthTip.setText(ColorHelper.getSmalllerText(activity, tempStr,0.6f));
 
                 return view;
             }
 
-            class PickerItem {
+            class PickerItemMonth {
                 public TextView tvTextItem;
                 public TextView tvTextMonthTip;
             }
@@ -202,7 +217,7 @@ public class FlowYearPickDialog {
                 int tempAge = beginYunAge + i*10;
                 String tempStr = tempAge+"岁"+"-----"+(tempAge+9)+"岁";
 
-                String c = LunarSolarTerm.getCelestialStemTextBy(sourceDaYunsIndex.get(i));
+                String c = LunarSolarTerm.getCelestialStem(sourceDaYunsIndex.get(i));
                 String t = LunarSolarTerm.getTerrestrialBranch(sourceDaYunsIndex.get(i));
 
                 controls.tvText.setText("");
@@ -251,8 +266,16 @@ public class FlowYearPickDialog {
         gridView.setStretchMode(GridView.NO_STRETCH);
         gridView.setNumColumns(5); // 设置列数量=列表集合数
 
+    }
 
-
+    private int getAtWhichYun()
+    {
+        int ageSub = currentAge - beginYunAge;
+        int atWhichYun = ageSub / 10;
+        if (atWhichYun != 0) {
+            atWhichYun = atWhichYun * 10;
+        }
+        return atWhichYun;
     }
 
     private void initGridView(Integer currentAge)
@@ -281,7 +304,7 @@ public class FlowYearPickDialog {
             tempGVSource = gvSource;
             final int tempAtWhichYun = atWhichYun + beginYunAge;
 
-            gridView.setAdapter(getAdapterGridView(gvSource,atWhichYun+beginYunAge));
+            gridView.setAdapter(getAdapterGridView(gvSource, atWhichYun + beginYunAge));
             gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -307,33 +330,68 @@ public class FlowYearPickDialog {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     //Toast.makeText(activity, "test", Toast.LENGTH_SHORT).show();
                     int childCount = adapterView.getChildCount();
-                    for(int index=0;index<childCount;index++)
-                    {
+                    for (int index = 0; index < childCount; index++) {
                         adapterView.getChildAt(index).setBackgroundResource(R.drawable.tv_border_rb_unpressed);
                     }
                     view.setBackgroundResource(R.drawable.tv_border_rb_pressed);
 
-                    initFlowMonth(i);
+                    tempFlowYearReturnValue = tempGVSource.get(i);
+                    CallBackArgs callBackArgs = new CallBackArgs();
+                    callBackArgs.setDaYunEraIndex(tempDaYunReturnValue);
+                    callBackArgs.setFlowYearEraIndex(tempFlowYearReturnValue);
+                    callBackArgs.setCurrentAge(tempAtWhichYun + i);
+
+                    initFlowMonth(i,getAtWhichYun(), callBackArgs);
                 }
 
             });
 
+            CallBackArgs callBackArgs = new CallBackArgs();
+            callBackArgs.setCurrentAge(currentAge);
+            callBackArgs.setDaYunEraIndex(tempDaYunReturnValue);
+            int tempAtWhichDaYun = getAtWhichYun();
+            int flowYearIndex = currentAge-(tempAtWhichDaYun+ beginYunAge);
+            tempFlowYearReturnValue = tempGVSource.get(flowYearIndex%10);
+            callBackArgs.setFlowYearEraIndex(tempFlowYearReturnValue);
+            //为了算出来当前的年的索引currentAge-(atWhichYun+ beginYunAge)，为了跟在每一年上调用一至，所以减来减去
+            initFlowMonth(flowYearIndex, tempAtWhichDaYun, callBackArgs);
         }
     }
-    public void initFlowMonth(int flowYearIndex)
-    {
+    public void initFlowMonth(int flowYearIndex, int atWhichYun, final CallBackArgs callBackArgs) {
 
-        int ageSub = currentAge - beginYunAge;
-        int atWhichYun = ageSub/10;
-        if(atWhichYun != 0) {
-            atWhichYun = atWhichYun*10;
-        }
-        int tempAtWhichYun = atWhichYun + beginYunAge;
+        final int tempAtWhichYun = atWhichYun + beginYunAge;
 
         //选中当年年的时候查询对应年的月
-        sourceFlowMonthIndex = BaZiHelper.getSolarTermsInLunarYear(birthdayYear+tempAtWhichYun+flowYearIndex);
+        sourceFlowMonthSolarTerms = BaZiHelper.getSolarTermsInLunarYear(birthdayYear + tempAtWhichYun + flowYearIndex);
         BaseAdapter baseAdapter = getFlowMonthSpinnerAdapter();
         spMonthesRange.setAdapter(baseAdapter);
+        //spMonthesRange.setSelection(0, true);
+        //阻止第一次加载调用
+        spMonthesRange.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean isFirstLoad = true;
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(isFirstLoad)
+                {
+                    isFirstLoad = false;
+                    return;
+                }
+                if (callBackDialog != null) {
+                    callBackArgs.setFlowMonthEraIndex(sourceFlowMonthIndex.get(position));
+                    callBackArgs.setIsFlowMonthClick(true);
+                    callBackDialog.onCall(callBackArgs);
+                    dialog.dismiss();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+
     }
 
     public void show() {
@@ -379,7 +437,7 @@ public class FlowYearPickDialog {
                 } else {
                     controls = (PickerItem) view.getTag();
                 }
-                String c = LunarSolarTerm.getCelestialStemTextBy(gvSource.get(i));
+                String c = LunarSolarTerm.getCelestialStem(gvSource.get(i));
                 String t = LunarSolarTerm.getTerrestrialBranch(gvSource.get(i));
                 String age = ageBegin + i + "岁";
 
