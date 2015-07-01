@@ -114,6 +114,28 @@ public class BaZiHelper {
         return Pair.create(begin,end);
     }
 
+    public static ArrayList<SolarTerm> getSolarTermsInLunarYear(int year)
+    {
+        ArrayList<SolarTerm> list = new ArrayList<SolarTerm>();
+        //从2月开始，因为立春都是在2月4,5日
+        //小雨等于14是为了多算一个月的，好显示到转年的立春
+        for(int month = 2; month<=14;month++) {
+            SolarTerm st;
+            if(month <13) {
+                //因为每年立春都是2月4号5号左右所以某个月，第一个就是节
+                st  = lunarSolarTerm.getSolarTerm(year, month)[0];
+            }
+            else
+            {
+                int tempMonth = month -12;
+                int tempYear = year + 1;
+                st = lunarSolarTerm.getSolarTerm(tempYear,tempMonth)[0];
+            }
+            list.add(st);
+        }
+        return list;
+    }
+
     public static boolean onDemandSolarTerm(String solarTermName, boolean isMainSolarTerm)
     {
         String[] allSolarTerms = LunarCalendar.lunarHoliDayName;
