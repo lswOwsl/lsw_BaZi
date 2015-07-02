@@ -2,16 +2,11 @@ package com.example.swli.myapplication20150519.activity;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.Handler;
 import android.text.SpannableString;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -27,9 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by swli on 6/18/2015.
- */
 public class MemberAnalyzeViewPager_XCHH {
 
     private MemberAnalyzeViewPager viewPager;
@@ -39,6 +31,7 @@ public class MemberAnalyzeViewPager_XCHH {
     private XmlCelestialStem xmlCelestialStem;
     private LinearLayout linearLayoutC;
     private View cChongHe;
+    private boolean haveFlowMonth;
 
     public MemberAnalyzeViewPager_XCHH(MemberAnalyzeViewPager viewPager)
     {
@@ -53,9 +46,23 @@ public class MemberAnalyzeViewPager_XCHH {
         this.linearLayoutC = (LinearLayout)cChongHe.findViewById(R.id.ll_containerC);
     }
 
-    public void init(Integer daYunEraIndex, Integer flowYearEraIndex)
+    public void init(Integer daYunEraIndex, Integer flowYearEraIndex, Integer flowMonthEraIndex)
     {
+        if(flowMonthEraIndex != null)
+            haveFlowMonth = true;
+
         HashMap<EnumPart,Pair<String,String>> tList = new HashMap<EnumPart, Pair<String,String>>();
+
+        if(flowMonthEraIndex != null)
+        {
+            tList.put(EnumPart.FlowMonth, Pair.create(viewPager.getBaZiActivityWrapper().getT(flowMonthEraIndex),
+                    viewPager.getBaZiActivityWrapper().getC(flowMonthEraIndex)));
+        }
+        else
+        {
+            tList.put(EnumPart.FlowMonth, Pair.create("", ""));
+        }
+
         if(flowYearEraIndex != null) {
             tList.put(EnumPart.FlowYear, Pair.create(viewPager.getBaZiActivityWrapper().getT(flowYearEraIndex),
                     viewPager.getBaZiActivityWrapper().getC(flowYearEraIndex)));
@@ -86,7 +93,12 @@ public class MemberAnalyzeViewPager_XCHH {
                         viewPager.getBaZiActivityWrapper().getC(viewPager.getBaZiActivityWrapper().getHourEraIndex())));
 
         ArrayList<String> arrays = new ArrayList<String>();
-        arrays.add(tList.get(EnumPart.FlowYear).first);
+        if(haveFlowMonth){
+            arrays.add(tList.get(EnumPart.FlowMonth).first);
+        }
+        else {
+            arrays.add(tList.get(EnumPart.FlowYear).first);
+        }
         arrays.add(tList.get(EnumPart.DaYun).first);
         arrays.add(tList.get(EnumPart.Year).first);
         arrays.add(tList.get(EnumPart.Month).first);
@@ -94,7 +106,12 @@ public class MemberAnalyzeViewPager_XCHH {
         arrays.add(tList.get(EnumPart.Hour).first);
 
         ArrayList<String> arraysC = new ArrayList<String>();
-        arraysC.add(tList.get(EnumPart.FlowYear).second);
+        if(haveFlowMonth) {
+            arraysC.add(tList.get(EnumPart.FlowMonth).second);
+        }
+        else {
+            arraysC.add(tList.get(EnumPart.FlowYear).second);
+        }
         arraysC.add(tList.get(EnumPart.DaYun).second);
         arraysC.add(tList.get(EnumPart.Year).second);
         arraysC.add(tList.get(EnumPart.Month).second);
@@ -105,6 +122,7 @@ public class MemberAnalyzeViewPager_XCHH {
         buildControlsC(arraysC);
     }
 
+    //天干
     private void buildControlsC(ArrayList<String> arrayList)
     {
         linearLayoutC.removeAllViews();
@@ -113,6 +131,10 @@ public class MemberAnalyzeViewPager_XCHH {
         {
             for (int j= i+1; j<arrayList.size();j++)
             {
+                //因为流月占了流年的位置是0,并且流月只跟大运有关，大运的索引是1，所以大于大运的索引全不处理
+                if(i==0 && haveFlowMonth && j>1)
+                    break;
+
                 for(Pair<String,String> key: xmlCelestialStem.getPairSuits().keySet())
                 {
                     boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
@@ -145,24 +167,23 @@ public class MemberAnalyzeViewPager_XCHH {
         cChongHe.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
-                int innerHeight = ((ScrollView)cChongHe).getChildAt(0).getHeight();
-                if(300 >innerHeight) {
+                int innerHeight = ((ScrollView) cChongHe).getChildAt(0).getHeight();
+                if (300 > innerHeight) {
                     ViewGroup.LayoutParams lp = cChongHe.getLayoutParams();
                     lp.height = innerHeight;
                     cChongHe.setLayoutParams(lp);
-                }
-                else
-                {
+                } else {
                     ViewGroup.LayoutParams lp = cChongHe.getLayoutParams();
                     lp.height = 300;
                     cChongHe.setLayoutParams(lp);
-                    ((ScrollView)cChongHe).scrollTo(0, innerHeight-lp.height);
+                    cChongHe.scrollTo(0, innerHeight - lp.height);
                 }
             }
         });
 
     }
 
+    //地支
     private void buildControls(ArrayList<String> arrayList)
     {
         linearLayout.removeAllViews();
@@ -170,6 +191,10 @@ public class MemberAnalyzeViewPager_XCHH {
         {
             for (int j= i+1; j<arrayList.size();j++)
             {
+                //因为流月占了流年的位置是0,并且流月只跟大运有关，大运的索引是1，所以大于大运的索引全不处理
+                if(i==0 && haveFlowMonth && j>1)
+                    break;
+
                 //六合
                 for(Pair<String,String> key: xmlTerrestrial.getSixSuits().keySet())
                 {
@@ -210,6 +235,10 @@ public class MemberAnalyzeViewPager_XCHH {
 
                 for(int m=j+1; m<arrayList.size(); m++)
                 {
+                    //因为流月占了流年的位置是0,并且流月只跟大运有关，大运的索引是1，所以大于大运的索引全不处理
+                    if(i==0 && haveFlowMonth && j==1)
+                        break;
+
                     //三合
                     for(String key: xmlTerrestrial.getThreeSuits().keySet())
                     {

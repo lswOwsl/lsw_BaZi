@@ -4,9 +4,6 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 
-/**
- * Created by swli on 6/4/2015.
- */
 public class BaZiHelper {
 
     static LunarSolarTerm lunarSolarTerm = new LunarSolarTerm();
@@ -70,15 +67,9 @@ public class BaZiHelper {
         }
     }
 
-    public static boolean isForward(int yearIndex, boolean isMale)
-    {
+    public static boolean isForward(int yearIndex, boolean isMale) {
         //"癸甲乙丙丁戊己庚辛壬",单数为阳
-        if(yearIndex % 2 == 1 && isMale)
-            return true;
-        else if(yearIndex %2 == 0 && !isMale)
-            return true;
-        else
-            return false;
+        return (yearIndex % 2 == 1 && isMale) || (yearIndex % 2 == 0 && !isMale);
     }
 
     public static Pair<SolarTerm,SolarTerm> getPairJie(DateExt dateExt) {
@@ -133,6 +124,7 @@ public class BaZiHelper {
             }
             list.add(st);
         }
+
         return list;
     }
 
@@ -144,7 +136,7 @@ public class BaZiHelper {
         int i= isMainSolarTerm ? 0  :1;
         while (i<allSolarTerms.length)
         {
-            if(allSolarTerms[i] == solarTermName)
+            if(allSolarTerms[i].equals(solarTermName))
             {
                 return true;
             }

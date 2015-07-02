@@ -10,9 +10,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
@@ -24,9 +21,6 @@ import com.example.swli.myapplication20150519.common.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by swli on 6/16/2015.
- */
 public class MemberAnalyzeViewPager {
 
     private Activity activity;
@@ -69,7 +63,7 @@ public class MemberAnalyzeViewPager {
         this.baZiActivityWrapper = baZiActivityWrapper;
     }
 
-    public void init(Integer flowYearEraIndex, int daYunEraIndex)
+    public void init(Integer flowYearEraIndex, int daYunEraIndex, Integer flowMonthEraIndex)
     {
         pagerTabStrip.setTabIndicatorColor(Color.GRAY);
         pagerTabStrip.setDrawFullUnderline(false);
@@ -97,7 +91,7 @@ public class MemberAnalyzeViewPager {
         final View cChongHe = activity.findViewById(R.id.cChongHe);
         cChongHe.setVisibility(View.GONE);
 
-        viewPager.setAdapter(getPagerAdapter(flowYearEraIndex, daYunEraIndex));
+        viewPager.setAdapter(getPagerAdapter(flowYearEraIndex, daYunEraIndex, flowMonthEraIndex));
         dbManager = new DBManager(activity);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -126,7 +120,7 @@ public class MemberAnalyzeViewPager {
         });
     }
 
-    public PagerAdapter getPagerAdapter(final Integer flowYearEraIndex, final int daYunEraIndex)
+    public PagerAdapter getPagerAdapter(final Integer flowYearEraIndex, final int daYunEraIndex, final Integer flowMonthEraIndex)
     {
 
         final MemberAnalyzeViewPager memberAnalyzeViewPager = this;
@@ -168,17 +162,34 @@ public class MemberAnalyzeViewPager {
                 if(position == 0)
                 {
                     loadJiaGongControls();
-                    loadJiaGongView(flowYearEraIndex, daYunEraIndex);
+                    if(flowMonthEraIndex != null) {
+                        loadJiaGongView(null,daYunEraIndex);
+                    }
+                    else {
+                        loadJiaGongView(flowYearEraIndex, daYunEraIndex);
+                    }
                 }
                 else if(position == 1)
                 {
                     Pair<ArrayList<String>,ArrayList<String>> pair = loadShenShaControls();
-                    loadShenShaInUsing(pair,flowYearEraIndex,daYunEraIndex);
+                    if(flowMonthEraIndex != null) {
+                        loadShenShaInUsing(pair, null, daYunEraIndex, flowMonthEraIndex);
+                    }
+                    else
+                    {
+                        loadShenShaInUsing(pair, flowYearEraIndex, daYunEraIndex, null);
+                    }
                 }
                 else if(position == 2)
                 {
                     MemberAnalyzeViewPager_XCHH xchh = new MemberAnalyzeViewPager_XCHH(memberAnalyzeViewPager);
-                    xchh.init(daYunEraIndex,flowYearEraIndex);
+                    if(flowMonthEraIndex != null)
+                    {
+                        xchh.init(daYunEraIndex, null, flowMonthEraIndex);
+                    }
+                    else {
+                        xchh.init(daYunEraIndex, flowYearEraIndex,null);
+                    }
                 }
                 else if(position == 3)
                 {
@@ -321,7 +332,7 @@ public class MemberAnalyzeViewPager {
         return Pair.create(names,values);
     }
 
-    private void loadShenShaInUsing(Pair<ArrayList<String>,ArrayList<String>> pair,Integer flowYearEraIndex, int daYunEraIndex)
+    private void loadShenShaInUsing(Pair<ArrayList<String>,ArrayList<String>> pair,Integer flowYearEraIndex, int daYunEraIndex, Integer flowMonthEraIndex)
     {
         tvShenShaContent = (TextView) activity.findViewById(R.id.tvShenShaContent);
         String contentDaYun = "";
@@ -335,6 +346,11 @@ public class MemberAnalyzeViewPager {
             if(flowYearEraIndex != null)
             {
                 contentFlowYear += buildShenShaContent(flowYearEraIndex,"流年",pair.first.get(i),pair.second.get(i));
+            }
+
+            if(flowMonthEraIndex != null)
+            {
+                contentFlowYear += buildShenShaContent(flowMonthEraIndex,"流月",pair.first.get(i),pair.second.get(i));
             }
 
             contentDaYun += buildShenShaContent(daYunEraIndex,"大运",pair.first.get(i),pair.second.get(i));

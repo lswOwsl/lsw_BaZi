@@ -3,7 +3,6 @@ package com.example.swli.myapplication20150519;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.activity.DaYunPickDialog;
@@ -14,13 +13,11 @@ import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.EnumPart;
 import com.example.swli.myapplication20150519.common.LunarSolarTerm;
+import com.example.swli.myapplication20150519.common.SolarTerm;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
 
-/**
- * Created by swli on 6/4/2015.
- */
 public class MemberAnalyze extends MemberBase {
 
     TextView flowYearC, flowYearT, flowYearLiuQin, flowYearHidden,
@@ -37,6 +34,7 @@ public class MemberAnalyze extends MemberBase {
 
     Integer currentAge;
     Integer currentDaYun;
+    SolarTerm currentMonth;
 
     MemberAnalyzeViewPager viewPagerHandler;
 
@@ -137,7 +135,7 @@ public class MemberAnalyze extends MemberBase {
         baZiActivityWrapper.setJiaGong(this.m_d_jg, Pair.create(EnumPart.Month, EnumPart.Day));
         baZiActivityWrapper.setJiaGong(this.d_h_jg,  Pair.create(EnumPart.Day, EnumPart.Hour));
 
-        viewPagerHandler.init(tempIndexFlowYear, indexDaYun);
+        viewPagerHandler.init(tempIndexFlowYear, indexDaYun, null);
 
         final ICallBackDialog<CallBackArgs> callBackDialogDaYun = new ICallBackDialog<CallBackArgs>() {
             @Override
@@ -145,7 +143,7 @@ public class MemberAnalyze extends MemberBase {
                 clearFlowYear();
                 loadDaYun(callBackArgs);
                 loadTitle(callBackArgs.getCurrentAge(), birthdayDateExt, callBackArgs.getDaYunEraIndex(),null);
-                viewPagerHandler.init(null, callBackArgs.getDaYunEraIndex());
+                viewPagerHandler.init(null, callBackArgs.getDaYunEraIndex(),null);
             }
         };
 
@@ -178,14 +176,16 @@ public class MemberAnalyze extends MemberBase {
 
                 if(args.isFlowMonthClick())
                 {
-                    loadFlowYear(args);
-                    loadTitle(args.getCurrentAge(), birthdayDateExt, args.getDaYunEraIndex(), args.getFlowYearEraIndex());
-                    viewPagerHandler.init(args.getFlowYearEraIndex(), args.getDaYunEraIndex());
+                    loadFlowMonth(args);
+                    loadTitle(args.getCurrentAge(), birthdayDateExt, args.getDaYunEraIndex(), args.getFlowYearEraIndex(),args.getFlowMonthEraIndex(), args.getFlowMonthSolarTerm());
+                    viewPagerHandler.init(args.getFlowYearEraIndex(), args.getDaYunEraIndex(), args.getFlowMonthEraIndex());
+                    currentMonth = args.getFlowMonthSolarTerm();
                 }
                 else {
                     loadFlowYear(args);
                     loadTitle(args.getCurrentAge(), birthdayDateExt, args.getDaYunEraIndex(), args.getFlowYearEraIndex());
-                    viewPagerHandler.init(args.getFlowYearEraIndex(), args.getDaYunEraIndex());
+                    viewPagerHandler.init(args.getFlowYearEraIndex(), args.getDaYunEraIndex(),null);
+                    currentMonth = null;
                 }
             }
         };
@@ -205,6 +205,7 @@ public class MemberAnalyze extends MemberBase {
                         tempBeginYunAge, baZiActivityWrapper.getYearEraIndex(baZiActivityWrapper.getBeginYunAge()),
                         currentAge, birthdayDateExt.getYear());
                 flowYearPickDialog.setCallBackDialog(callBackDialogFlowYear);
+                flowYearPickDialog.setCurrentMonth(currentMonth);
                 flowYearPickDialog.show();
             }
         };
@@ -226,20 +227,33 @@ public class MemberAnalyze extends MemberBase {
             tempBeginYunAge = tempBeginYunAge - 1;
         return tempBeginYunAge;
     }
-
-    private void loadTitle(int currentAge, DateExt birthdate, Integer eraDaYunIndex, Integer eraFlowYearIndex)
+    private void loadTitle(int currentAge, DateExt birthdate, Integer eraDaYunIndex, Integer eraFlowYearIndex, Integer eraFlowMonthIndex, SolarTerm flowMonth)
     {
         int birthdayYear = birthdate.getYear();
         int month = birthdate.getMonth();
         int day = birthdate.getDay();
         int hour = birthdate.getHour();
 
-        tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+currentAge+"岁"+"\n"+loadXunByEraIndex(eraFlowYearIndex));
+        if(flowMonth != null)
+        {
+
+            tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+flowMonth.getSolarTermDate().getFormatDateTime("M月")+"\n"+loadXunByEraIndex(eraFlowMonthIndex));
+        }
+        else
+        {
+            tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+currentAge+"岁"+"\n"+loadXunByEraIndex(eraFlowYearIndex));
+        }
+
         tv_year_title.setText(""+birthdayYear + "年" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getYearEraIndex()));
         tv_month_title.setText(""+month + "月" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
         tv_day_title.setText("" + day + "日" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
         tv_hour_title.setText("" + hour + "时" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
         tv_dayun_title.setText("大运\n\n"+loadXunByEraIndex(eraDaYunIndex));
+    }
+
+    private void loadTitle(int currentAge, DateExt birthdate, Integer eraDaYunIndex, Integer eraFlowYearIndex)
+    {
+       loadTitle(currentAge,birthdate,eraDaYunIndex,eraFlowYearIndex,null, null);
     }
 
     private String loadXunByEraIndex(Integer eraIndex)
@@ -262,8 +276,20 @@ public class MemberAnalyze extends MemberBase {
         {
             eraXunEraIndex = eraIndex;
         }
-        String text = baZiActivityWrapper.getC(eraXunEraIndex)+baZiActivityWrapper.getT(eraXunEraIndex);
-        return text;
+        return baZiActivityWrapper.getC(eraXunEraIndex)+baZiActivityWrapper.getT(eraXunEraIndex);
+    }
+
+    private void loadFlowMonth(CallBackArgs args) {
+        clearFlowYear();
+
+        LunarSolarTerm lunarSolarTerm = new LunarSolarTerm();
+        int flowMonthEraIndex = lunarSolarTerm.getChineseEraOfMonth(args.getFlowMonthSolarTerm().getSolarTermDate());
+
+        baZiActivityWrapper.setControl(this.flowYearC, this.flowYearT, this.flowYearLiuQin, this.flowYearHidden, flowMonthEraIndex);
+        baZiActivityWrapper.setJiaGong(this.fy_dy_jg, Pair.create(EnumPart.FlowYear, EnumPart.DaYun), args.getDaYunEraIndex(), flowMonthEraIndex);
+        loadDaYun(args);
+
+        currentAge = args.getCurrentAge();
     }
 
     private void loadFlowYear(CallBackArgs args) {

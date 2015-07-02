@@ -1,13 +1,22 @@
 package com.example.swli.myapplication20150519.model;
 
-/**
- * Created by swli on 6/15/2015.
- */
+import com.example.swli.myapplication20150519.common.SolarTerm;
+
 public class CallBackArgs {
     private Integer daYunEraIndex;
     private Integer flowYearEraIndex;
-    private Integer currentAge;
     private Integer flowMonthEraIndex;
+    private Integer currentAge;
+
+    public Integer getFlowMonthEraIndex() {
+        return flowMonthEraIndex;
+    }
+
+    public void setFlowMonthEraIndex(Integer flowMonthEraIndex) {
+        this.flowMonthEraIndex = flowMonthEraIndex;
+    }
+
+    private SolarTerm flowMonthSolarTerm;
     private boolean isFlowMonthClick;
 
     public boolean isFlowMonthClick() {
@@ -18,12 +27,12 @@ public class CallBackArgs {
         this.isFlowMonthClick = isFlowMonthClick;
     }
 
-    public Integer getFlowMonthEraIndex() {
-        return flowMonthEraIndex;
+    public SolarTerm getFlowMonthSolarTerm() {
+        return flowMonthSolarTerm;
     }
 
-    public void setFlowMonthEraIndex(Integer flowMonthEraIndex) {
-        this.flowMonthEraIndex = flowMonthEraIndex;
+    public void setFlowMonthSolarTerm(SolarTerm flowMonthSolarTerm) {
+        this.flowMonthSolarTerm = flowMonthSolarTerm;
     }
 
     public Integer getDaYunEraIndex() {
