@@ -237,7 +237,7 @@ public class MemberAnalyze extends MemberBase {
         if(flowMonth != null)
         {
 
-            tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+flowMonth.getSolarTermDate().getFormatDateTime("M月")+"\n"+loadXunByEraIndex(eraFlowMonthIndex));
+            tv_flowYear_title.setText("" + flowMonth.getSolarTermDate().getFormatDateTime("yyyy") + "\n"+flowMonth.getSolarTermDate().getFormatDateTime("M月")+"\n"+loadXunByEraIndex(eraFlowMonthIndex));
         }
         else
         {
