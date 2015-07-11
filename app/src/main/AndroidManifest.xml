@@ -15,7 +15,8 @@
         <activity android:name=".MemberMaintain">
         </activity>
         <activity android:name=".MemberAnalyze">
-
+        </activity>
+        <activity android:name=".ContactAuthor">
         </activity>
         <activity android:name=".MemberHome">
             <intent-filter>
@@ -34,6 +35,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />-->
 </manifest>

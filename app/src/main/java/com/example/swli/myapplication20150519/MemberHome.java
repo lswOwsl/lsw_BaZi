@@ -9,11 +9,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -142,6 +146,77 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
 //        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), INTERVAL_10s, pendingIntent);
     }
 
+    int mSortMode = -1;
+
+    public void menuOnSort(MenuItem item) {
+        mSortMode = item.getItemId();
+        // Request a call to onPrepareOptionsMenu so we can change the sort icon
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (mSortMode != -1) {
+//            Drawable icon = menu.findItem(mSortMode).getIcon();
+//            menu.findItem(R.id.action_sort).setIcon(icon);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
+        searchView.setQueryHint(this.getBaseContext().getResources().getString(R.string.member_search_hint));
+        searchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextListener(this);
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setOnCloseListener(this);
+
+        int searhViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) searchView.findViewById(searhViewId);
+        textView.setTextColor(Color.WHITE);
+        textView.setHintTextColor(Color.WHITE);
+        try {
+            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+            mCursorDrawableRes.setAccessible(true);
+            mCursorDrawableRes.set(textView, 0);
+            //This sets the cursor resource ID to 0 or @null which will make it visible on white background
+        } catch (Exception e) {}
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.menuAdd) {
+            Intent intent = new Intent();
+            intent.setClass(MemberHome.this, MemberMaintain.class);
+            startActivityForResult(intent, 0);
+            return true;
+        }
+        if(id == R.id.menuContact)
+        {
+            Intent intentContact = new Intent();
+            intentContact.setClass(MemberHome.this, ContactAuthor.class);
+            startActivityForResult(intentContact, 0);
+            return true;
+        }
+//        if(id == R.id.menuSearch) {
+//
+//            return true;
+//        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) { //resultCode为回传的标记，我在B中回传的是RESULT_OK
@@ -223,45 +298,6 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
         getActionBar().setDisplayHomeAsUpEnabled(false);
         getActionBar().setDisplayShowCustomEnabled(true);
         //getActionBar().setDisplayShowTitleEnabled(true);
-
-        LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.member_search,null);
-
-        getActionBar().setCustomView(view,
-                new ActionBar.LayoutParams(
-                        ActionBar.LayoutParams.MATCH_PARENT,
-                        ActionBar.LayoutParams.WRAP_CONTENT
-                ));
-
-        ImageButton imgBtn = (ImageButton)view.findViewById(R.id.imgAddButton);
-        imgBtn.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_input_add));
-        imgBtn.getBackground().setAlpha(0);
-
-        imgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                //intent.putExtras(createBundle(member));
-                intent.setClass(MemberHome.this, MemberMaintain.class);
-                startActivityForResult(intent, 0);
-            }
-        });
-
-        searchView = (SearchView)view.findViewById(R.id.svMember);
-        searchView.setOnQueryTextListener(this);
-        searchView.setSubmitButtonEnabled(false);
-        searchView.setOnCloseListener(this);
-
-        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = (TextView) searchView.findViewById(id);
-        textView.setTextColor(Color.WHITE);
-        textView.setHintTextColor(Color.WHITE);
-        try {
-            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
-            mCursorDrawableRes.setAccessible(true);
-            mCursorDrawableRes.set(textView, 0);
-             //This sets the cursor resource ID to 0 or @null which will make it visible on white background
-        } catch (Exception e) {}
     }
 
     @Override
