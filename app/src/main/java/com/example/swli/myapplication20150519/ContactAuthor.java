@@ -46,6 +46,16 @@ public class ContactAuthor extends Activity {
             }
         });
 
+        TextView tvWeiDian = (TextView) findViewById(R.id.tvWeiDian);
+
+        tvWeiDian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WebView mobView = new WebView(ContactAuthor.this);
+                mobView.loadUrl("http://kdt.im/wk6XcyRV1");
+            }
+        });
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
