@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView"
+    android:layout_gravity="center_horizontal" >
+<LinearLayout
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingTop="10dp" android:paddingLeft="10dp" android:paddingRight="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="日主：甲\n月份：子"
+        android:id="@+id/tv_jinbuhuan_title"
+       />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="子月即癸正印，阴男阳女大运逆走就是戌申酉官杀大运。故此，印用官杀为佳运。若阳男阴女顺运，即是入寅卯辰比刃大运，月令印格何劳行比劫运。月令印旺，最好四柱本身有官或杀成气候。然而不论四柱有没有官和杀，都不喜行午未大运，基于午即是己财，即是冲提大运，又是财克子印之双重不佳。未即是己财，于午冲子（己癸冲）相同。故此午未两运皆不妥"
+        android:id="@+id/tv_jinbuhuan_detail"
+        android:layout_marginTop="10dp"
+      />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="调候喜：丁\n调候忌：壬癸"
+        android:id="@+id/tv_tiaohou_title"
+        android:paddingTop="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="调候推理在明代中业之时，是以单纯五行论，即是一般所说喜金水，忌火土。金不换则用地支代表，即是西方寿不齐。余春台则是用天干代表，丁日子月取甲木为调候。"
+        android:id="@+id/tv_jinbuhuan_note"
+        android:paddingTop="10dp"/>
+</LinearLayout>
+    </ScrollView>

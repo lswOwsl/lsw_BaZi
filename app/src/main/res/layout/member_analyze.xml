@@ -186,6 +186,44 @@
                 android:id="@+id/tv_hour_t" />
 
         </TableRow>
+        <TableRow >
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:text=""
+                android:id="@+id/tv_flowYear_bottom"
+                />
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView
+                style="@style/StyleBaZiHidden"
+                android:text=""
+                android:id="@+id/tv_dayun_bottom"/>
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_year_bottom"
+                style="@style/StyleBaZiHidden"
+                android:text="" />
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_month_bottom"
+                style="@style/StyleBaZiHidden"
+                android:text="" />
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_day_bottom"
+                style="@style/StyleBaZiHidden"
+                android:text="" />
+            <TextView
+                android:text=""
+                android:layout_height="0dp" />
+            <TextView android:id="@+id/tv_hour_bottom"
+                style="@style/StyleBaZiHidden"
+                android:text="" />
+        </TableRow>
         <View
         android:layout_height="1dip"
         android:background="#CCC" />

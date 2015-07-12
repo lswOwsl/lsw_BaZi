@@ -10,6 +10,7 @@ import com.example.swli.myapplication20150519.activity.FlowYearPickDialog;
 import com.example.swli.myapplication20150519.activity.ICallBackDialog;
 import com.example.swli.myapplication20150519.activity.MemberAnalyzeViewPager;
 import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
+import com.example.swli.myapplication20150519.common.BaZiHelper;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.EnumPart;
 import com.example.swli.myapplication20150519.common.LunarSolarTerm;
@@ -30,7 +31,8 @@ public class MemberAnalyze extends MemberBase {
 
     BaZiActivityWrapper baZiActivityWrapper;
 
-    TextView tv_flowYear_title, tv_year_title, tv_month_title, tv_day_title, tv_hour_title, tv_dayun_title ;
+    TextView tv_flowYear_title, tv_year_title, tv_month_title, tv_day_title, tv_hour_title, tv_dayun_title;
+    TextView tv_flowYear_bottom, tv_year_bottom, tv_month_bottom, tv_day_bottom, tv_hour_bottom, tv_dayun_bottom;
 
     Integer currentAge;
     Integer currentDaYun;
@@ -86,6 +88,13 @@ public class MemberAnalyze extends MemberBase {
         tv_day_title = (TextView)findViewById(R.id.tv_day_title);
         tv_hour_title = (TextView)findViewById(R.id.tv_hour_title);
         tv_dayun_title = (TextView)findViewById(R.id.tv_dayun_title);
+
+        tv_flowYear_bottom = (TextView)findViewById(R.id.tv_flowYear_bottom);
+        tv_year_bottom = (TextView)findViewById(R.id.tv_year_bottom);
+        tv_month_bottom = (TextView)findViewById(R.id.tv_month_bottom);
+        tv_day_bottom = (TextView)findViewById(R.id.tv_day_bottom);
+        tv_hour_bottom = (TextView)findViewById(R.id.tv_hour_bottom);
+        tv_dayun_bottom = (TextView)findViewById(R.id.tv_dayun_bottom);
 
     }
 
@@ -164,10 +173,10 @@ public class MemberAnalyze extends MemberBase {
         this.daYunT.setOnClickListener(onClickListenerDaYun);
 
         this.daYunC.setBackgroundResource(R.drawable.text_view_border);
-        this.daYunT.setBackgroundResource(R.drawable.text_view_border);
+        this.daYunT.setBackgroundResource(R.drawable.text_view_border_all);
 ///////////////////////////////////////////////////////////////////////////////////
         this.flowYearC.setBackgroundResource(R.drawable.text_view_border);
-        this.flowYearT.setBackgroundResource(R.drawable.text_view_border);
+        this.flowYearT.setBackgroundResource(R.drawable.text_view_border_all);
 
 
         final ICallBackDialog<CallBackArgs> callBackDialogFlowYear = new ICallBackDialog<CallBackArgs>() {
@@ -248,12 +257,19 @@ public class MemberAnalyze extends MemberBase {
         tv_month_title.setText(""+month + "月" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
         tv_day_title.setText("" + day + "日" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
         tv_hour_title.setText("" + hour + "时" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
-        tv_dayun_title.setText("大运\n\n"+loadXunByEraIndex(eraDaYunIndex));
+        tv_dayun_title.setText("大运\n\n" + loadXunByEraIndex(eraDaYunIndex));
+
+        setStemBottom(flowYearC.getText().toString(), flowYearT.getText().toString(), tv_flowYear_bottom);
+        setStemBottom(daYunC.getText().toString(), daYunT.getText().toString(), tv_dayun_bottom);
+        setStemBottom(yearC.getText().toString(), yearT.getText().toString(), tv_year_bottom);
+        setStemBottom(monthC.getText().toString(), monthT.getText().toString(), tv_month_bottom);
+        setStemBottom(hourC.getText().toString(), hourT.getText().toString(), tv_hour_bottom);
+
     }
 
     private void loadTitle(int currentAge, DateExt birthdate, Integer eraDaYunIndex, Integer eraFlowYearIndex)
     {
-       loadTitle(currentAge,birthdate,eraDaYunIndex,eraFlowYearIndex,null, null);
+       loadTitle(currentAge, birthdate, eraDaYunIndex, eraFlowYearIndex, null, null);
     }
 
     private String loadXunByEraIndex(Integer eraIndex)
@@ -322,5 +338,30 @@ public class MemberAnalyze extends MemberBase {
         this.dy_y_jg.setText("");
         //this.flowYearLiuQin.setTextColor(Color.GRAY);
     }
+
+    private void setStemBottom(String celestrialStem, String terrestrial, TextView tv)
+    {
+        String result = BaZiHelper.getGrowTrick(this, celestrialStem, terrestrial);
+        boolean isXunKong = isXunKongText(terrestrial);
+        if(isXunKong)
+        {
+            result = result + "\n空";
+        }
+        tv.setText(result);
+    }
+
+    private boolean isXunKongText(String terrestrialText)
+    {
+        Pair<String,String> kong = BaZiHelper.getXunKong(this,
+                baZiActivityWrapper.getC(baZiActivityWrapper.getDayEraIndex()),
+                baZiActivityWrapper.getT(baZiActivityWrapper.getDayEraIndex()));
+
+        if(terrestrialText.equals(kong.first) || terrestrialText.equals(kong.second))
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
 

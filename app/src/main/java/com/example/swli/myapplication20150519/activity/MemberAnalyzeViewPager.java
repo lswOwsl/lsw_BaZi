@@ -26,7 +26,7 @@ public class MemberAnalyzeViewPager {
     private Activity activity;
     private ViewPager viewPager;
     private PagerTabStrip pagerTabStrip;
-    private View vJiaGong, vShenSha,vTiaoHou,vChongXing;
+    private View vJiaGong, vShenSha,vTiaoHou,vChongXing, vJinBuHuan;
     private List<View> viewList;
     private List<String> titleList;
     private TextView tv_column_l1 ,tv_column_l3,tv_column_l5,tv_column_l7,tv_column_l9,
@@ -36,6 +36,8 @@ public class MemberAnalyzeViewPager {
     TextView tvMonthContent;
 
     TextView tv_vp_tiaoHou;
+
+    TextView tv_jinbuhuan_title, tv_tiaohou_title, tv_jinbuhuan_detail, tv_jinbuhuan_note;
 
     public Activity getActivity() {
         return activity;
@@ -75,18 +77,21 @@ public class MemberAnalyzeViewPager {
         this.vShenSha = inflater.inflate(R.layout.common_viewpager_shensha,null);
         this.vChongXing = inflater.inflate(R.layout.common_viewpager_xingchonghehui,null);
         this.vTiaoHou = inflater.inflate(R.layout.common_viewpager_tiaohou,null);
+        this.vJinBuHuan = inflater.inflate(R.layout.common_viewpager_jinbuhuandayun,null);
 
         viewList = new ArrayList<View>();
         viewList.add(vJiaGong);
         viewList.add(vShenSha);
         viewList.add(vChongXing);
         viewList.add(vTiaoHou);
+        viewList.add(vJinBuHuan);
 
         titleList = new ArrayList<String>();
         titleList.add("夹拱");
         titleList.add("神煞");
         titleList.add("行冲合会");
         titleList.add("调候");
+        titleList.add("金不换大运");
 
         final View cChongHe = activity.findViewById(R.id.cChongHe);
         cChongHe.setVisibility(View.GONE);
@@ -195,6 +200,11 @@ public class MemberAnalyzeViewPager {
                 {
                     loadTiaoHouControls();
                     loadTiaoHouView();
+                }
+                else if(position == 4)
+                {
+                    loadJinBuHuanControls();
+                    loadJinBuHuanView();
                 }
                 return viewList.get(position);
             }
@@ -442,7 +452,7 @@ public class MemberAnalyzeViewPager {
             String shiYongZhouqi = cur.getString(shiYongZhouQiIndex);
 
             result += "用神:" + StringHelper.getText(yongShen1) + " " + StringHelper.getText(yongShen2) + "\n";
-            result += "忌神:" + StringHelper.getText(jiShen) + "\n";
+            result += "忌神:" + StringHelper.getText(jiShen) + "\n\n";
             result += "适用周期:" + StringHelper.getText(shiYongZhouqi) + "\n";
             result += comment + "\n";
         }
@@ -451,5 +461,51 @@ public class MemberAnalyzeViewPager {
         dbManager.closeDatabase();
 
         tv_vp_tiaoHou.setText(result);
+    }
+
+    private void loadJinBuHuanControls()
+    {
+        tv_jinbuhuan_title = (TextView) activity.findViewById(R.id.tv_jinbuhuan_title);
+        tv_jinbuhuan_detail = (TextView) activity.findViewById(R.id.tv_jinbuhuan_detail);
+        tv_tiaohou_title = (TextView) activity.findViewById(R.id.tv_tiaohou_title);
+        tv_jinbuhuan_note = (TextView) activity.findViewById(R.id.tv_jinbuhuan_note);
+    }
+
+    private void loadJinBuHuanView()
+    {
+        dbManager.openDatabase();
+        String riZhu = baZiActivityWrapper.getC(baZiActivityWrapper.getDayEraIndex());
+        String yuFen = baZiActivityWrapper.getT(baZiActivityWrapper.getMonthEraIndex());
+
+        String sql = "SELECT * FROM JinBuHuanDaYun where RiZhu=? and YueFen=?";
+        Cursor cur = dbManager.execute(sql, new String[]
+                {riZhu, yuFen});
+        String resultJinBuHuanTitle = "日主:"+riZhu +"\n"+"月份:"+yuFen;
+        String resultTiaoHouTitle = "";
+        String resultJinBuHuanDetail = "";
+        String resultNote = "";
+
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int detailIndex = cur.getColumnIndex("Detail");
+            int tiaoHouXiIndex = cur.getColumnIndex("TiaoHouXi");
+            int tiaoHouJiIndex = cur.getColumnIndex("TiaoHouJi");
+            int noteIndex = cur.getColumnIndex("Note");
+
+            resultJinBuHuanDetail ="解释:\n"+ cur.getString(detailIndex).replaceAll("\n", "");
+            String tiaoHouXi = cur.getString(tiaoHouXiIndex);
+            String tiaoHouJi = cur.getString(tiaoHouJiIndex);
+            resultTiaoHouTitle = "调候喜:"+tiaoHouXi + "\n" +"调候忌:"+tiaoHouJi;
+            resultNote = cur.getString(noteIndex);
+            if(resultNote != null && !resultNote.equals(""))
+                resultNote = "备注:\n"+ resultNote;
+        }
+
+        cur.close();
+        dbManager.closeDatabase();
+
+        tv_jinbuhuan_title.setText(resultJinBuHuanTitle);
+        tv_jinbuhuan_detail.setText(resultJinBuHuanDetail);
+        tv_tiaohou_title.setText(resultTiaoHouTitle);
+        tv_jinbuhuan_note.setText(resultNote);
     }
 }
