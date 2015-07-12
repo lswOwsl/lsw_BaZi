@@ -458,9 +458,76 @@ public class MemberAnalyzeViewPager {
         }
 
         cur.close();
+
+        String sqlDetail = "SELECT * FROM YuShiTiaoHouDetail where RiZhu=? and YueFen=?";
+        Cursor curDetail = dbManager.execute(sqlDetail, new String[]
+                {riZhu, yuFen});
+        String resultDetail = "";
+
+        for (curDetail.moveToFirst(); !curDetail.isAfterLast(); curDetail.moveToNext()) {
+            int geJu1Index = curDetail.getColumnIndex("GeJu1");
+            int geJu2Index = curDetail.getColumnIndex("GeJu2");
+            int geJu3Index = curDetail.getColumnIndex("GeJu3");
+            int yongShen1Index = curDetail.getColumnIndex("YongShen1");
+            int yongShen2Index = curDetail.getColumnIndex("YongShen2");
+            int yongShen3Index = curDetail.getColumnIndex("YongShen3");
+            int noteIndex = curDetail.getColumnIndex("Note");
+            int likeIndex = curDetail.getColumnIndex("Like");
+            int hateIndex = curDetail.getColumnIndex("Hate");
+
+            String geJu1 = curDetail.getString(geJu1Index);
+            String tempValue = getValue(geJu1, ",");
+            resultDetail = resultDetail+"\n\n格局:"+tempValue;
+
+            String geJu2 = curDetail.getString(geJu2Index);
+            tempValue = getValue(geJu2,",");
+            resultDetail = resultDetail + tempValue;
+
+            String geJu3 = curDetail.getString(geJu3Index);
+            tempValue = getValue(geJu3,",");
+            resultDetail = resultDetail + tempValue;
+
+            String yongShen1 = curDetail.getString(yongShen1Index);
+            String yongShen2 = curDetail.getString(yongShen2Index);
+            String yongShen3 = curDetail.getString(yongShen3Index);
+
+            resultDetail = resultDetail + "\n用神:";
+            tempValue = getValue(yongShen1,",");
+            resultDetail = resultDetail + tempValue;
+            tempValue = getValue(yongShen2,",");
+            resultDetail = resultDetail + tempValue;
+            tempValue = getValue(yongShen3,",");
+            resultDetail = resultDetail + tempValue;
+
+            resultDetail = resultDetail +"\n注释:";
+            String note = curDetail.getString(noteIndex);
+            resultDetail = resultDetail + note;
+
+            resultDetail = resultDetail +"\n喜神:";
+            String like = curDetail.getString(likeIndex);
+            tempValue = getValue(like,"");
+            resultDetail = resultDetail + tempValue;
+
+            resultDetail = resultDetail +"\n忌神:";
+            String hate = curDetail.getString(hateIndex);
+            tempValue = getValue(hate,"");
+            resultDetail = resultDetail + tempValue;
+
+        }
+
+        curDetail.close();
+
         dbManager.closeDatabase();
 
-        tv_vp_tiaoHou.setText(result);
+        tv_vp_tiaoHou.setText(result +resultDetail+"\n\n\n");
+    }
+
+    private String getValue(String dbValue, String preFix)
+    {
+        if(dbValue != null && !dbValue.equals(""))
+            return dbValue+preFix;
+        else
+            return "";
     }
 
     private void loadJinBuHuanControls()
@@ -490,10 +557,13 @@ public class MemberAnalyzeViewPager {
             int tiaoHouXiIndex = cur.getColumnIndex("TiaoHouXi");
             int tiaoHouJiIndex = cur.getColumnIndex("TiaoHouJi");
             int noteIndex = cur.getColumnIndex("Note");
+            int poemIndex = cur.getColumnIndex("Poem");
 
-            resultJinBuHuanDetail ="解释:\n"+ cur.getString(detailIndex).replaceAll("\n", "");
+            String poem = cur.getString(poemIndex);
+            resultJinBuHuanDetail ="诗:\n"+poem+"\n\n解释:\n"+ cur.getString(detailIndex).replaceAll("\n", "");
             String tiaoHouXi = cur.getString(tiaoHouXiIndex);
             String tiaoHouJi = cur.getString(tiaoHouJiIndex);
+
             resultTiaoHouTitle = "调候喜:"+tiaoHouXi + "\n" +"调候忌:"+tiaoHouJi;
             resultNote = cur.getString(noteIndex);
             if(resultNote != null && !resultNote.equals(""))
