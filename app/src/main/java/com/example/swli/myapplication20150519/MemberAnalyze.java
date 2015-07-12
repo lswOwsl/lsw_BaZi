@@ -264,7 +264,7 @@ public class MemberAnalyze extends MemberBase {
         setStemBottom(yearC.getText().toString(), yearT.getText().toString(), tv_year_bottom);
         setStemBottom(monthC.getText().toString(), monthT.getText().toString(), tv_month_bottom);
         setStemBottom(hourC.getText().toString(), hourT.getText().toString(), tv_hour_bottom);
-
+        setStemBottom(dayC.getText().toString(),dayT.getText().toString(),tv_day_bottom);
     }
 
     private void loadTitle(int currentAge, DateExt birthdate, Integer eraDaYunIndex, Integer eraFlowYearIndex)
