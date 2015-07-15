@@ -44,6 +44,7 @@ public class ContactAuthor extends Activity {
 //
 //                });
             }
+
         });
 
         TextView tvWeiDian = (TextView) findViewById(R.id.tvWeiDian);
