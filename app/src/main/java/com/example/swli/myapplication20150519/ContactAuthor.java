@@ -58,6 +58,7 @@ public class ContactAuthor extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
+
     }
 
     @Override
