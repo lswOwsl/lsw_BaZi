@@ -1,12 +1,15 @@
 package com.example.swli.myapplication20150519.common;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.util.Pair;
 
-import java.util.ArrayList;
+import com.example.swli.myapplication20150519.R;
 
-/**
- * Created by swli on 6/4/2015.
- */
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class BaZiHelper {
 
     static LunarSolarTerm lunarSolarTerm = new LunarSolarTerm();
@@ -70,15 +73,9 @@ public class BaZiHelper {
         }
     }
 
-    public static boolean isForward(int yearIndex, boolean isMale)
-    {
+    public static boolean isForward(int yearIndex, boolean isMale) {
         //"癸甲乙丙丁戊己庚辛壬",单数为阳
-        if(yearIndex % 2 == 1 && isMale)
-            return true;
-        else if(yearIndex %2 == 0 && !isMale)
-            return true;
-        else
-            return false;
+        return (yearIndex % 2 == 1 && isMale) || (yearIndex % 2 == 0 && !isMale);
     }
 
     public static Pair<SolarTerm,SolarTerm> getPairJie(DateExt dateExt) {
@@ -133,6 +130,7 @@ public class BaZiHelper {
             }
             list.add(st);
         }
+
         return list;
     }
 
@@ -144,7 +142,7 @@ public class BaZiHelper {
         int i= isMainSolarTerm ? 0  :1;
         while (i<allSolarTerms.length)
         {
-            if(allSolarTerms[i] == solarTermName)
+            if(allSolarTerms[i].equals(solarTermName))
             {
                 return true;
             }
@@ -155,5 +153,45 @@ public class BaZiHelper {
         return false;
     }
 
+    public static Pair<String,String> getXunKong(Context context, String celestrialStem,String terrestrial)
+    {
+
+        int eraIndexC = Arrays.asList(context.getResources().getStringArray(R.array.tianGan)).indexOf(celestrialStem);
+        int eraIndexT = Arrays.asList(context.getResources().getStringArray(R.array.diZhi)).indexOf(terrestrial);
+
+        if(eraIndexC >= eraIndexT)
+        {
+            eraIndexT +=12;
+        }
+
+        int result = eraIndexT - eraIndexC;
+        String[] array = context.getResources().getStringArray(R.array.diZhi);
+        return Pair.create(array[result-2],array[result-1]);
+    }
+
+    public static String getGrowTrick(Context context, String celestrialStem, String terrestrial)
+    {
+        String[] strings = new String[]{"id","日主","长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"};
+
+        DBManager dbManager = new DBManager(context);
+        dbManager.openDatabase();
+
+        String sql = "SELECT * FROM GrowLiveTrick where CelestialStem = ?";
+        Cursor cur = dbManager.execute(sql, new String[]
+                {celestrialStem});
+        String result = "";
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            for(int i=2; i<strings.length; i++) {
+                String temp = cur.getString(i);
+                if(terrestrial.equals(temp)) {
+                    return strings[i];
+                }
+            }
+        }
+        cur.close();
+        dbManager.closeDatabase();
+
+        return result;
+    }
 
 }

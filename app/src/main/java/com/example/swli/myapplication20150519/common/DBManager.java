@@ -22,8 +22,8 @@ public class DBManager {
     private final int BUFFER_SIZE = 400000;
     public static final String DB_NAME = "myapplication20150519.db"; //保存的数据库文件名
     public static final String PACKAGE_NAME = "com.example.swli.myapplication20150519";
-//    private final String DB_PATH = Environment
-//            .getExternalStorageDirectory().getAbsolutePath();
+    //private final String DB_PATH = Environment
+      //      .getExternalStorageDirectory().getAbsolutePath() +"/"+ PACKAGE_NAME;
     public static final String DB_PATH = "/data"
             + Environment.getDataDirectory().getAbsolutePath() + "/"
             + PACKAGE_NAME;  //在手机里存放数据库的位置(/data/data/com.cssystem.activity/cssystem.db)

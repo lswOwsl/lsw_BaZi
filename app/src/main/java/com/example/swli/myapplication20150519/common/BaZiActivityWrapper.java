@@ -305,12 +305,12 @@ public class BaZiActivityWrapper {
         return Pair.create(tempAge,monthQiYun);
     }
 
-    public int getDaYunByFlowYear(int flowYear)
+    public int getDaYunByFlowYear(int flowYear, int beginYunAge)
     {
         int currentAge = flowYear - birthday.getYear();
         ArrayList<Integer> daYuns = getDaYuns(currentAge/10+1);
         //因为有的人是0岁几个月起运，所以不能按0岁起运看，应该按1岁起运看
-        return BaZiHelper.getDaYunByFlowYear(currentAge, getBeginYunAge(), daYuns);
+        return BaZiHelper.getDaYunByFlowYear(currentAge, beginYunAge, daYuns);
     }
 }
 

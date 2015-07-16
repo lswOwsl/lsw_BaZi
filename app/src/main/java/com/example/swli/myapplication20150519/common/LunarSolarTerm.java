@@ -48,7 +48,7 @@ public class LunarSolarTerm {
     }
 
     public String toStringWithCelestialStem(int x) {
-        return getCelestialStemTextBy(x);
+        return getCelestialStem(x);
     }
 
 
@@ -56,7 +56,7 @@ public class LunarSolarTerm {
         return getTerrestrialBranch(x);
     }
 
-    public static String getCelestialStemTextBy(int x)
+    public static String getCelestialStem(int x)
     {
         int index = x % 10;
         return "癸甲乙丙丁戊己庚辛壬".substring(index, index + 1);

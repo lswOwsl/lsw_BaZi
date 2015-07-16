@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baidu_appx_android_2.0.0/baidu_appx_android_2.0.0.iml" filepath="$PROJECT_DIR$/baidu_appx_android_2.0.0/baidu_appx_android_2.0.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baidu_cuid/baidu_cuid.iml" filepath="$PROJECT_DIR$/baidu_cuid/baidu_cuid.iml" />
       <module fileurl="file://$PROJECT_DIR$/lsw_BaZi.iml" filepath="$PROJECT_DIR$/lsw_BaZi.iml" />
     </modules>
   </component>

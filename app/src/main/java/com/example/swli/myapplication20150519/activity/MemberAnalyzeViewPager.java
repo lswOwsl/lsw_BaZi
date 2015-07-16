@@ -10,9 +10,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
@@ -24,15 +21,12 @@ import com.example.swli.myapplication20150519.common.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by swli on 6/16/2015.
- */
 public class MemberAnalyzeViewPager {
 
     private Activity activity;
     private ViewPager viewPager;
     private PagerTabStrip pagerTabStrip;
-    private View vJiaGong, vShenSha,vTiaoHou,vChongXing;
+    private View vJiaGong, vShenSha,vTiaoHou,vChongXing, vJinBuHuan;
     private List<View> viewList;
     private List<String> titleList;
     private TextView tv_column_l1 ,tv_column_l3,tv_column_l5,tv_column_l7,tv_column_l9,
@@ -42,6 +36,8 @@ public class MemberAnalyzeViewPager {
     TextView tvMonthContent;
 
     TextView tv_vp_tiaoHou;
+
+    TextView tv_jinbuhuan_title, tv_tiaohou_title, tv_jinbuhuan_detail, tv_jinbuhuan_note;
 
     public Activity getActivity() {
         return activity;
@@ -69,7 +65,7 @@ public class MemberAnalyzeViewPager {
         this.baZiActivityWrapper = baZiActivityWrapper;
     }
 
-    public void init(Integer flowYearEraIndex, int daYunEraIndex)
+    public void init(Integer flowYearEraIndex, int daYunEraIndex, Integer flowMonthEraIndex)
     {
         pagerTabStrip.setTabIndicatorColor(Color.GRAY);
         pagerTabStrip.setDrawFullUnderline(false);
@@ -81,23 +77,26 @@ public class MemberAnalyzeViewPager {
         this.vShenSha = inflater.inflate(R.layout.common_viewpager_shensha,null);
         this.vChongXing = inflater.inflate(R.layout.common_viewpager_xingchonghehui,null);
         this.vTiaoHou = inflater.inflate(R.layout.common_viewpager_tiaohou,null);
+        this.vJinBuHuan = inflater.inflate(R.layout.common_viewpager_jinbuhuandayun,null);
 
         viewList = new ArrayList<View>();
         viewList.add(vJiaGong);
         viewList.add(vShenSha);
         viewList.add(vChongXing);
         viewList.add(vTiaoHou);
+        viewList.add(vJinBuHuan);
 
         titleList = new ArrayList<String>();
         titleList.add("夹拱");
         titleList.add("神煞");
         titleList.add("行冲合会");
         titleList.add("调候");
+        titleList.add("金不换大运");
 
         final View cChongHe = activity.findViewById(R.id.cChongHe);
         cChongHe.setVisibility(View.GONE);
 
-        viewPager.setAdapter(getPagerAdapter(flowYearEraIndex, daYunEraIndex));
+        viewPager.setAdapter(getPagerAdapter(flowYearEraIndex, daYunEraIndex, flowMonthEraIndex));
         dbManager = new DBManager(activity);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -126,7 +125,7 @@ public class MemberAnalyzeViewPager {
         });
     }
 
-    public PagerAdapter getPagerAdapter(final Integer flowYearEraIndex, final int daYunEraIndex)
+    public PagerAdapter getPagerAdapter(final Integer flowYearEraIndex, final int daYunEraIndex, final Integer flowMonthEraIndex)
     {
 
         final MemberAnalyzeViewPager memberAnalyzeViewPager = this;
@@ -168,22 +167,44 @@ public class MemberAnalyzeViewPager {
                 if(position == 0)
                 {
                     loadJiaGongControls();
-                    loadJiaGongView(flowYearEraIndex, daYunEraIndex);
+                    if(flowMonthEraIndex != null) {
+                        loadJiaGongView(null,daYunEraIndex);
+                    }
+                    else {
+                        loadJiaGongView(flowYearEraIndex, daYunEraIndex);
+                    }
                 }
                 else if(position == 1)
                 {
                     Pair<ArrayList<String>,ArrayList<String>> pair = loadShenShaControls();
-                    loadShenShaInUsing(pair,flowYearEraIndex,daYunEraIndex);
+                    if(flowMonthEraIndex != null) {
+                        loadShenShaInUsing(pair, null, daYunEraIndex, flowMonthEraIndex);
+                    }
+                    else
+                    {
+                        loadShenShaInUsing(pair, flowYearEraIndex, daYunEraIndex, null);
+                    }
                 }
                 else if(position == 2)
                 {
                     MemberAnalyzeViewPager_XCHH xchh = new MemberAnalyzeViewPager_XCHH(memberAnalyzeViewPager);
-                    xchh.init(daYunEraIndex,flowYearEraIndex);
+                    if(flowMonthEraIndex != null)
+                    {
+                        xchh.init(daYunEraIndex, null, flowMonthEraIndex);
+                    }
+                    else {
+                        xchh.init(daYunEraIndex, flowYearEraIndex,null);
+                    }
                 }
                 else if(position == 3)
                 {
                     loadTiaoHouControls();
                     loadTiaoHouView();
+                }
+                else if(position == 4)
+                {
+                    loadJinBuHuanControls();
+                    loadJinBuHuanView();
                 }
                 return viewList.get(position);
             }
@@ -321,7 +342,7 @@ public class MemberAnalyzeViewPager {
         return Pair.create(names,values);
     }
 
-    private void loadShenShaInUsing(Pair<ArrayList<String>,ArrayList<String>> pair,Integer flowYearEraIndex, int daYunEraIndex)
+    private void loadShenShaInUsing(Pair<ArrayList<String>,ArrayList<String>> pair,Integer flowYearEraIndex, int daYunEraIndex, Integer flowMonthEraIndex)
     {
         tvShenShaContent = (TextView) activity.findViewById(R.id.tvShenShaContent);
         String contentDaYun = "";
@@ -335,6 +356,11 @@ public class MemberAnalyzeViewPager {
             if(flowYearEraIndex != null)
             {
                 contentFlowYear += buildShenShaContent(flowYearEraIndex,"流年",pair.first.get(i),pair.second.get(i));
+            }
+
+            if(flowMonthEraIndex != null)
+            {
+                contentFlowYear += buildShenShaContent(flowMonthEraIndex,"流月",pair.first.get(i),pair.second.get(i));
             }
 
             contentDaYun += buildShenShaContent(daYunEraIndex,"大运",pair.first.get(i),pair.second.get(i));
@@ -426,14 +452,130 @@ public class MemberAnalyzeViewPager {
             String shiYongZhouqi = cur.getString(shiYongZhouQiIndex);
 
             result += "用神:" + StringHelper.getText(yongShen1) + " " + StringHelper.getText(yongShen2) + "\n";
-            result += "忌神:" + StringHelper.getText(jiShen) + "\n";
+            result += "忌神:" + StringHelper.getText(jiShen) + "\n\n";
             result += "适用周期:" + StringHelper.getText(shiYongZhouqi) + "\n";
             result += comment + "\n";
         }
 
         cur.close();
+
+        String sqlDetail = "SELECT * FROM YuShiTiaoHouDetail where RiZhu=? and YueFen=?";
+        Cursor curDetail = dbManager.execute(sqlDetail, new String[]
+                {riZhu, yuFen});
+        String resultDetail = "";
+
+        for (curDetail.moveToFirst(); !curDetail.isAfterLast(); curDetail.moveToNext()) {
+            int geJu1Index = curDetail.getColumnIndex("GeJu1");
+            int geJu2Index = curDetail.getColumnIndex("GeJu2");
+            int geJu3Index = curDetail.getColumnIndex("GeJu3");
+            int yongShen1Index = curDetail.getColumnIndex("YongShen1");
+            int yongShen2Index = curDetail.getColumnIndex("YongShen2");
+            int yongShen3Index = curDetail.getColumnIndex("YongShen3");
+            int noteIndex = curDetail.getColumnIndex("Note");
+            int likeIndex = curDetail.getColumnIndex("Like");
+            int hateIndex = curDetail.getColumnIndex("Hate");
+
+            String geJu1 = curDetail.getString(geJu1Index);
+            String tempValue = getValue(geJu1, ",");
+            resultDetail = resultDetail+"\n\n格局:"+tempValue;
+
+            String geJu2 = curDetail.getString(geJu2Index);
+            tempValue = getValue(geJu2,",");
+            resultDetail = resultDetail + tempValue;
+
+            String geJu3 = curDetail.getString(geJu3Index);
+            tempValue = getValue(geJu3,",");
+            resultDetail = resultDetail + tempValue;
+
+            String yongShen1 = curDetail.getString(yongShen1Index);
+            String yongShen2 = curDetail.getString(yongShen2Index);
+            String yongShen3 = curDetail.getString(yongShen3Index);
+
+            resultDetail = resultDetail + "\n用神:";
+            tempValue = getValue(yongShen1,",");
+            resultDetail = resultDetail + tempValue;
+            tempValue = getValue(yongShen2,",");
+            resultDetail = resultDetail + tempValue;
+            tempValue = getValue(yongShen3,",");
+            resultDetail = resultDetail + tempValue;
+
+            resultDetail = resultDetail +"\n注释:";
+            String note = curDetail.getString(noteIndex);
+            resultDetail = resultDetail + note;
+
+            resultDetail = resultDetail +"\n喜神:";
+            String like = curDetail.getString(likeIndex);
+            tempValue = getValue(like,"");
+            resultDetail = resultDetail + tempValue;
+
+            resultDetail = resultDetail +"\n忌神:";
+            String hate = curDetail.getString(hateIndex);
+            tempValue = getValue(hate,"");
+            resultDetail = resultDetail + tempValue;
+
+        }
+
+        curDetail.close();
+
         dbManager.closeDatabase();
 
-        tv_vp_tiaoHou.setText(result);
+        tv_vp_tiaoHou.setText(result +resultDetail+"\n\n\n");
+    }
+
+    private String getValue(String dbValue, String preFix)
+    {
+        if(dbValue != null && !dbValue.equals(""))
+            return dbValue+preFix;
+        else
+            return "";
+    }
+
+    private void loadJinBuHuanControls()
+    {
+        tv_jinbuhuan_title = (TextView) activity.findViewById(R.id.tv_jinbuhuan_title);
+        tv_jinbuhuan_detail = (TextView) activity.findViewById(R.id.tv_jinbuhuan_detail);
+        tv_tiaohou_title = (TextView) activity.findViewById(R.id.tv_tiaohou_title);
+        tv_jinbuhuan_note = (TextView) activity.findViewById(R.id.tv_jinbuhuan_note);
+    }
+
+    private void loadJinBuHuanView()
+    {
+        dbManager.openDatabase();
+        String riZhu = baZiActivityWrapper.getC(baZiActivityWrapper.getDayEraIndex());
+        String yuFen = baZiActivityWrapper.getT(baZiActivityWrapper.getMonthEraIndex());
+
+        String sql = "SELECT * FROM JinBuHuanDaYun where RiZhu=? and YueFen=?";
+        Cursor cur = dbManager.execute(sql, new String[]
+                {riZhu, yuFen});
+        String resultJinBuHuanTitle = "日主:"+riZhu +"\n"+"月份:"+yuFen;
+        String resultTiaoHouTitle = "";
+        String resultJinBuHuanDetail = "";
+        String resultNote = "";
+
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int detailIndex = cur.getColumnIndex("Detail");
+            int tiaoHouXiIndex = cur.getColumnIndex("TiaoHouXi");
+            int tiaoHouJiIndex = cur.getColumnIndex("TiaoHouJi");
+            int noteIndex = cur.getColumnIndex("Note");
+            int poemIndex = cur.getColumnIndex("Poem");
+
+            String poem = cur.getString(poemIndex);
+            resultJinBuHuanDetail ="诗:\n"+poem+"\n\n解释:\n"+ cur.getString(detailIndex).replaceAll("\n", "");
+            String tiaoHouXi = cur.getString(tiaoHouXiIndex);
+            String tiaoHouJi = cur.getString(tiaoHouJiIndex);
+
+            resultTiaoHouTitle = "调候喜:"+tiaoHouXi + "\n" +"调候忌:"+tiaoHouJi;
+            resultNote = cur.getString(noteIndex);
+            if(resultNote != null && !resultNote.equals(""))
+                resultNote = "备注:\n"+ resultNote;
+        }
+
+        cur.close();
+        dbManager.closeDatabase();
+
+        tv_jinbuhuan_title.setText(resultJinBuHuanTitle);
+        tv_jinbuhuan_detail.setText(resultJinBuHuanDetail);
+        tv_tiaohou_title.setText(resultTiaoHouTitle);
+        tv_jinbuhuan_note.setText(resultNote);
     }
 }
