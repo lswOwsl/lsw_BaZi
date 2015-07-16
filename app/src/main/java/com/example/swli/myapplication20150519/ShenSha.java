@@ -171,4 +171,8 @@ public class ShenSha extends Activity {
         dayCursorT.close();
         //while (cursor.moveToNext())
     }
+
+    private void test2(){
+
+    }
 }
