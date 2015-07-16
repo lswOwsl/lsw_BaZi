@@ -176,4 +176,8 @@ public class ShenSha extends Activity {
     {
 
     }
+
+    private void test2(){
+
+    }
 }
