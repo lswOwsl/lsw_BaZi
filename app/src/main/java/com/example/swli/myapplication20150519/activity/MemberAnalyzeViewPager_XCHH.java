@@ -125,12 +125,12 @@ public class MemberAnalyzeViewPager_XCHH {
         arraysC.add(tList.get(EnumPart.Day).second);
         arraysC.add(tList.get(EnumPart.Hour).second);
 
-        buildControls(arrays);
-        buildControlsC(arraysC);
+        buildControls(arrays,arraysC);
+        buildControlsC(arraysC,arrays);
     }
 
     //天干
-    private void buildControlsC(ArrayList<String> arrayList)
+    private void buildControlsC(ArrayList<String> arrayList, ArrayList<String> arrayListT)
     {
         linearLayoutC.removeAllViews();
         List<View> list = new ArrayList<View>();
@@ -144,21 +144,41 @@ public class MemberAnalyzeViewPager_XCHH {
 
                 for(Pair<String,String> key: xmlCelestialStem.getPairSuits().keySet())
                 {
+                    String tip = "合";
                     boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
                     if(option1 || option2)
                     {
-                        list.add(createRowView(arrayList.get(i), arrayList.get(j), "合", xmlCelestialStem.getPairSuits().get(key), i, j,false));
+                        for(Pair<String,String> keyT: xmlTerrestrial.getSixSuits().keySet()) {
+                            boolean option1T = arrayListT.get(i).equals(keyT.first) && arrayListT.get(j).equals(keyT.second);
+                            boolean option2T = arrayListT.get(i).equals(keyT.second) && arrayListT.get(j).equals(keyT.first);
+                            //地支合
+                            if (option1T || option2T) {
+                                tip = "双" + tip;
+                            }
+                        }
+                        list.add(createRowView(arrayList.get(i), arrayList.get(j), tip, xmlCelestialStem.getPairSuits().get(key), i, j,false));
                     }
                 }
 
                 for(Pair<String,String> key: xmlCelestialStem.getPairInverses())
                 {
+                    String tip = "冲";
+
                     boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
                     if(option1 || option2)
                     {
-                        list.add(createRowView(arrayList.get(i), arrayList.get(j), "冲", "", i, j,false));
+                        for(Pair<String,String> keyT: xmlTerrestrial.getSixInverses())
+                        {
+                            boolean option1T = arrayListT.get(i).equals(keyT.first) && arrayListT.get(j).equals(keyT.second);
+                            boolean option2T = arrayListT.get(i).equals(keyT.second) && arrayListT.get(j).equals(keyT.first);
+                            if(option1T || option2T)
+                            {
+                                tip = "双" + tip;
+                            }
+                        }
+                        list.add(createRowView(arrayList.get(i), arrayList.get(j), tip, "", i, j,false));
                     }
                 }
             }
@@ -191,7 +211,7 @@ public class MemberAnalyzeViewPager_XCHH {
     }
 
     //地支
-    private void buildControls(ArrayList<String> arrayList)
+    private void buildControls(ArrayList<String> arrayList, ArrayList<String> arrayListC)
     {
         linearLayout.removeAllViews();
         for (int i=0; i<arrayList.size();i++)
@@ -207,9 +227,22 @@ public class MemberAnalyzeViewPager_XCHH {
                 {
                     boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
+                    //地支合
                     if(option1 || option2)
                     {
-                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), "合", xmlTerrestrial.getSixSuits().get(key), i, j));
+                        String tip = "合";
+                        //天干是不是也合
+                        for(Pair<String,String> keyC: xmlCelestialStem.getPairSuits().keySet())
+                        {
+                            boolean option1C = arrayListC.get(i).equals(keyC.first) && arrayListC.get(j).equals(keyC.second);
+                            boolean option2C = arrayListC.get(i).equals(keyC.second) && arrayListC.get(j).equals(keyC.first);
+                            if(option1C || option2C)
+                            {
+                                tip = "双" + tip;
+                            }
+                        }
+
+                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), tip, xmlTerrestrial.getSixSuits().get(key), i, j));
                     }
                 }
                 //六冲
@@ -219,7 +252,19 @@ public class MemberAnalyzeViewPager_XCHH {
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
                     if(option1 || option2)
                     {
-                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), "冲", "", i, j));
+                        String tip = "冲";
+
+                        for(Pair<String,String> keyC: xmlCelestialStem.getPairInverses())
+                        {
+                            boolean option1C = arrayListC.get(i).equals(keyC.first) && arrayListC.get(j).equals(keyC.second);
+                            boolean option2C = arrayListC.get(i).equals(keyC.second) && arrayListC.get(j).equals(keyC.first);
+                            if(option1C || option2C)
+                            {
+                                tip = "双" + tip;
+                            }
+                        }
+
+                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), tip, "", i, j));
                     }
                 }
                 //刑
