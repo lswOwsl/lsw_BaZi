@@ -96,6 +96,21 @@ public class LunarCalendar extends LunarSolarTerm{
 
     }
 
+    public String toStringLunarDate(DateExt dateExt)
+    {
+        DateLunar dateLunar = this.getDateLunar(dateExt);
+        if(dateLunar != null) {
+
+            return this.toStringWithChineseYear(dateLunar.getLunarYear()) + "年" +
+                    (dateLunar.getIsLeapMonth() ? "闰":"") +
+                    this.toStringWithChineseMonth(dateLunar.getLunarMonth()) + "月" +
+                    this.toStringWithChineseDay(dateLunar.getLunarDay());
+
+        }
+
+        return "";
+    }
+
     public DateLunar getDateLunar(DateExt dateExt)
     {
         DateLunar dl = new DateLunar();

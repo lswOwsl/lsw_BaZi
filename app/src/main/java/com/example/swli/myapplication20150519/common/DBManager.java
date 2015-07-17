@@ -54,8 +54,12 @@ public class DBManager {
         try {
             if (!(new File(dbfile).exists())) {
                 //判断数据库文件是否存在，若不存在则执行导入，否则直接打开数据库
+                int resourceId = R.raw.ba_zi_debug;
+                if(context.getResources().getBoolean(R.bool.isRelease))
+                    resourceId = R.raw.ba_zi_release;
+
                 InputStream is = this.context.getResources().openRawResource(
-                        R.raw.ba_zi); //欲导入的数据库
+                        resourceId); //欲导入的数据库
                 FileOutputStream fos = new FileOutputStream(dbfile);
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int count = 0;

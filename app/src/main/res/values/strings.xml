@@ -36,4 +36,7 @@
         <item>戌</item>
         <item>亥</item>
     </string-array>
+
+    <bool name="isRelease">false</bool>
+    <bool name="includeAD">false</bool>
 </resources>

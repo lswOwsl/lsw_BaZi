@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        lsw {
+            keyAlias 'li shi wei'
+            keyPassword '88216240'
+            storeFile file('/Users/lsw_wsl/Desktop/lsw20150711.jks')
+            storePassword '88216240'
+        }
+    }
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
     defaultConfig {
@@ -18,6 +26,7 @@ android {
     }
     productFlavors {
     }
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
 }
 
 dependencies {
