@@ -46,6 +46,13 @@ public class MemberAnalyzeViewPager_XCHH {
         this.linearLayoutC = (LinearLayout)cChongHe.findViewById(R.id.ll_containerC);
     }
 
+    public void clearTopScrollHeight()
+    {
+        ViewGroup.LayoutParams lp = cChongHe.getLayoutParams();
+        lp.height = 0;
+        cChongHe.setLayoutParams(lp);
+    }
+
     public void init(Integer daYunEraIndex, Integer flowYearEraIndex, Integer flowMonthEraIndex)
     {
         if(flowMonthEraIndex != null)

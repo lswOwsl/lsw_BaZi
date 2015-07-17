@@ -164,8 +164,14 @@ public class MemberAnalyzeViewPager {
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 container.addView(viewList.get(position));
+
+                MemberAnalyzeViewPager_XCHH xchh = new MemberAnalyzeViewPager_XCHH(memberAnalyzeViewPager);
+
                 if(position == 0)
                 {
+                    //每次从新选择流年或大运都会从新刷新第一个页面，在这清空下冲刑页面天干冲和的高度
+                    xchh.clearTopScrollHeight();
+
                     loadJiaGongControls();
                     if(flowMonthEraIndex != null) {
                         loadJiaGongView(null,daYunEraIndex);
@@ -187,13 +193,13 @@ public class MemberAnalyzeViewPager {
                 }
                 else if(position == 2)
                 {
-                    MemberAnalyzeViewPager_XCHH xchh = new MemberAnalyzeViewPager_XCHH(memberAnalyzeViewPager);
+
                     if(flowMonthEraIndex != null)
                     {
                         xchh.init(daYunEraIndex, null, flowMonthEraIndex);
                     }
                     else {
-                        xchh.init(daYunEraIndex, flowYearEraIndex,null);
+                        xchh.init(daYunEraIndex, flowYearEraIndex, null);
                     }
                 }
                 else if(position == 3)
