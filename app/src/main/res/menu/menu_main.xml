@@ -21,9 +21,11 @@
                 <!--android:onClick="menuOnSort" />-->
         <!--</menu>-->
     <!--</item>-->
+
+    <item android:id="@+id/menuExportMember" android:title="倒出记录"
+        android:showAsAction="always" android:icon="@android:drawable/ic_menu_set_as" />
     <item android:id="@+id/menuAdd" android:title="新增记录"
-        android:orderInCategory="100" android:showAsAction="never"
-     />
+        android:orderInCategory="100" android:showAsAction="never" />
     <item android:id="@+id/menuContact" android:title="联系作者"
         android:orderInCategory="100" android:showAsAction="never" />
 </menu>

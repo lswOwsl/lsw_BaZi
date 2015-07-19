@@ -6,7 +6,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="八字排盘"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:name=".common.MyApplication">
         <activity android:name=".MainActivity">
         </activity>
         <activity android:name=".ShenSha">

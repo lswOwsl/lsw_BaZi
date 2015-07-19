@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +34,7 @@ import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
 import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.SwipeListView;
+import com.example.swli.myapplication20150519.data.handler.MemberDataHandler;
 import com.example.swli.myapplication20150519.model.Member;
 
 import java.lang.reflect.Field;
@@ -210,10 +212,23 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
             startActivityForResult(intentContact, 0);
             return true;
         }
-//        if(id == R.id.menuSearch) {
-//
-//            return true;
-//        }
+        if(id == R.id.menuExportMember) {
+            MemberDataHandler memberDataHandler = new MemberDataHandler();
+            List<Member> members = memberDataHandler.loadMembersFromDb();
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() +"/八字lsw/";
+            memberDataHandler.saveMembersToXML(members,path);
+
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MemberHome.this);
+            dialog.setTitle("倒出记录成功!")
+                    .setMessage("文件位于目录"+path)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            }).create().show();
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
