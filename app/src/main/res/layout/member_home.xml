@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:swipelistview="http://schemas.android.com/apk/res-auto" >
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+
+    <FrameLayout android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" >
     <com.example.swli.myapplication20150519.common.SwipeListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,6 +31,15 @@
         android:layout_width="30.0dip"
         android:layout_height="fill_parent"
         android:layout_gravity="right|center" />
-    </FrameLayout>
 
+    </FrameLayout>
+    <View android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="#CCC" />
+    <fragment
+        android:id="@+id/id_fragment_bottom"
+        android:name="com.example.swli.myapplication20150519.activity.bottombar.BottomBarFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        tools:layout="@layout/fragment_bottom_bar" />
 </LinearLayout>
