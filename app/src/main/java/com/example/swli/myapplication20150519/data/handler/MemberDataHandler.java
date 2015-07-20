@@ -69,7 +69,7 @@ public class MemberDataHandler {
         File file = new File(localDir);
         if (!file.exists()) {
             try {
-                //°´ÕÕÖ¸¶¨µÄÂ·¾¶´´½¨ÎÄ¼þ¼Ð
+                //æŒ‰ç…§æŒ‡å®šçš„è·¯å¾„åˆ›å»ºæ–‡ä»¶å¤¹
                 file.mkdirs();
             } catch (Exception e) {
                 Log.d("member saving folder",e.getMessage());
@@ -101,7 +101,7 @@ public class MemberDataHandler {
                     // using UTF-8 encoding
                     serializer.setOutput(fileos, "UTF-8");
 
-                    // <?xml version=¡±1.0¡å encoding=¡±UTF-8¡å>
+                    // <?xml version=â€1.0â€³ encoding=â€UTF-8â€³>
                     // Write <?xml declaration with encoding (if encoding not
                     // null) and standalone flag (if stan dalone not null)
                     // This method can only be called just after setOutput.

@@ -4,7 +4,13 @@
     tools:context="com.example.swli.myapplication20150519.activity.bottombar.BottomBarFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="导入记录"
+        android:textSize="15dp"
+        android:id="@+id/btnImportDialog"
+        android:layout_gravity="center_horizontal|left" />
 </FrameLayout>

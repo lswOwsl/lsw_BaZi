@@ -7,8 +7,11 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.swli.myapplication20150519.R;
+import com.example.swli.myapplication20150519.activity.BackupFilePickDialog;
+import com.example.swli.myapplication20150519.activity.DaYunPickDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,11 +64,24 @@ public class BottomBarFragment extends Fragment {
         }
     }
 
+    private Button btnImportDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_bottom_bar, container, false);
+        btnImportDialog = (Button)view.findViewById(R.id.btnImportDialog);
+
+        btnImportDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BackupFilePickDialog backupFilePickDialog = new BackupFilePickDialog(getActivity());
+                backupFilePickDialog.pickDialog();
+            }
+        });
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bottom_bar, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
