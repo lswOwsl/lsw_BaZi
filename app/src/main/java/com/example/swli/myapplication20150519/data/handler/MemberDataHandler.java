@@ -6,17 +6,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.ListView;
 
 import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
 import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.MyApplication;
+import com.example.swli.myapplication20150519.common.XmlParser;
 import com.example.swli.myapplication20150519.model.Member;
 
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +135,26 @@ public class MemberDataHandler {
         //return bFlag;
     }
 
+    public List<Member> loadMembersFromXml(String path)
+    {
+        try {
+            InputStream is = new FileInputStream(path);
+
+            XmlParserData<List<Member>> parser = new XmlParserMember(is);
+            List<Member> members = parser.getT();
+            return members;
+        }
+        catch (Exception ex)
+        {
+            Log.d("import member xml", ex.getMessage());
+        }
+        return null;
+    }
+
     public void importMembersToDb(List<Member> members) {
         dbManager.openDatabase();
+
+        dbManager.execute("delete from Members",new String[]{});
 
         for (Member member: members) {
             ContentValues cv = new ContentValues();
@@ -144,4 +166,6 @@ public class MemberDataHandler {
 
         dbManager.closeDatabase();
     }
+
+
 }

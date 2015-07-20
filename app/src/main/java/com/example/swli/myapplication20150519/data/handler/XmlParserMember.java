@@ -30,7 +30,7 @@ public class XmlParserMember extends XmlParserData<List<Member>> {
 
     @Override
     public List<Member> getT() {
-        return null;
+        return memberList;
     }
 
     private String tempName;

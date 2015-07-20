@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,7 @@ public class BottomBarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bottom_bar, container, false);
+
         btnImportDialog = (Button)view.findViewById(R.id.btnImportDialog);
 
         btnImportDialog.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +81,8 @@ public class BottomBarFragment extends Fragment {
                 backupFilePickDialog.pickDialog();
             }
         });
+
+
 
         // Inflate the layout for this fragment
         return view;

@@ -40,6 +40,6 @@
         android:id="@+id/id_fragment_bottom"
         android:name="com.example.swli.myapplication20150519.activity.bottombar.BottomBarFragment"
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         tools:layout="@layout/fragment_bottom_bar" />
 </LinearLayout>
