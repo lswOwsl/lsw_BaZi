@@ -1,13 +1,16 @@
 package com.example.swli.myapplication20150519.data.handler;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.ListView;
 
+import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
 import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.DateExt;
@@ -96,7 +99,10 @@ public class MemberDataHandler {
             if (bFlag) {
 
                 if (newXmlFile.createNewFile()) {
+//                    file.setReadable(true,false);
+//                    file.setWritable(true,false);
                     fileos = new FileOutputStream(newXmlFile);
+                    //MyApplication.getInstance().openFileOutput("",Context.MODE_WORLD_WRITEABLE);
 
                     // we create a XmlSerializer in order to write xml data
                     XmlSerializer serializer = Xml.newSerializer();
@@ -152,9 +158,11 @@ public class MemberDataHandler {
     }
 
     public void importMembersToDb(List<Member> members) {
+        dbManager = new DBManager(MyApplication.getInstance());
         dbManager.openDatabase();
 
-        dbManager.execute("delete from Members",new String[]{});
+        //dbManager.getDatabase().beginTransaction();
+        dbManager.getDatabase().execSQL("delete from Members");
 
         for (Member member: members) {
             ContentValues cv = new ContentValues();
@@ -163,8 +171,35 @@ public class MemberDataHandler {
             cv.put("Name", member.getName());
             dbManager.getDatabase().insert("Members", null, cv);
         }
-
+        //dbManager.getDatabase().endTransaction();
         dbManager.closeDatabase();
+    }
+
+    public static String path = Environment.getExternalStorageDirectory() +"/"+
+            MyApplication.getInstance().getResources().getString(R.string.externalSavingFolder)+"/";
+
+    public static List<String> loadFilesFromFolder(String folder)
+    {
+        List<String> fileNames= new ArrayList<String>();
+
+        File[] files = new File(folder).listFiles();
+        if(files !=null) {
+            for (File file : files) {
+                if (getFileExtension(file).toLowerCase().equals("xml")) {
+                    fileNames.add(file.getName());
+                }
+            }
+        }
+        return fileNames;
+    }
+
+    public static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        } else {
+            return "";
+        }
     }
 
 

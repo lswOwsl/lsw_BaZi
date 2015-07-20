@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,8 @@ import android.widget.Button;
 import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.activity.BackupFilePickDialog;
 import com.example.swli.myapplication20150519.activity.DaYunPickDialog;
+import com.example.swli.myapplication20150519.common.MyApplication;
+import com.example.swli.myapplication20150519.data.handler.MemberDataHandler;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,23 +70,31 @@ public class BottomBarFragment extends Fragment {
     }
 
     private Button btnImportDialog;
+    String path = Environment.getExternalStorageDirectory() +"/"+
+            MyApplication.getInstance().getResources().getString(R.string.externalSavingFolder)+"/";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bottom_bar, container, false);
 
-        btnImportDialog = (Button)view.findViewById(R.id.btnImportDialog);
+        btnImportDialog = (Button) view.findViewById(R.id.btnImportDialog);
 
         btnImportDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 BackupFilePickDialog backupFilePickDialog = new BackupFilePickDialog(getActivity());
+                backupFilePickDialog.setCallBack(new BackupFilePickDialog.CallBack() {
+                    @Override
+                    public void invoke() {
+                        if (mListener != null) {
+                            mListener.onFragmentInteraction(null);
+                        }
+                    }
+                });
                 backupFilePickDialog.pickDialog();
             }
         });
-
-
 
         // Inflate the layout for this fragment
         return view;
@@ -98,12 +110,12 @@ public class BottomBarFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -111,7 +123,6 @@ public class BottomBarFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

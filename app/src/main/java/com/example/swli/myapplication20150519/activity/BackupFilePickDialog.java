@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
+import com.example.swli.myapplication20150519.common.MyApplication;
 import com.example.swli.myapplication20150519.data.handler.MemberDataHandler;
 import com.example.swli.myapplication20150519.model.Member;
 
@@ -34,42 +35,31 @@ import java.util.List;
  */
 public class BackupFilePickDialog {
 
-   Activity activity;
+    public interface CallBack
+    {
+        void invoke();
+    }
+
+    public CallBack callBack;
+    public void setCallBack(CallBack callBack)
+    {
+        this.callBack = callBack;
+    }
+
+    Activity activity;
 
     public BackupFilePickDialog(Activity activity)
     {
         this.activity = activity;
     }
 
-    private List<String> loadFilesFromFolder(String folder)
-    {
-        List<String> fileNames= new ArrayList<String>();
 
-        File[] files = new File(folder).listFiles();
-        for (File file : files) {
-            if (getFileExtension(file).toLowerCase().equals("xml")) {
-                fileNames.add(file.getName());
-            }
-        }
-
-        return fileNames;
-    }
-
-    private static String getFileExtension(File file) {
-        String fileName = file.getName();
-        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
-        } else {
-            return "";
-        }
-    }
 
     private ListView lvFiles;
     private Button btnImport;
     private Dialog ad;
     private String selectedFile;
     String[] source;
-    String path = Environment.getExternalStorageDirectory().getAbsolutePath() +"/八字lsw/";
 
     public Dialog pickDialog() {
 
@@ -80,7 +70,7 @@ public class BackupFilePickDialog {
         ad.getWindow().getDecorView().setPadding(0, 0, 0, 0);
 
         btnImport = (Button) ad.findViewById(R.id.btnImport);
-        source = loadFilesFromFolder(path).toArray(new String[]{});
+        source = MemberDataHandler.loadFilesFromFolder(MemberDataHandler.path).toArray(new String[]{});
         lvFiles = (ListView) ad.findViewById(R.id.lvFiles);
         lvFiles.setAdapter(getAdapter());
 
@@ -102,13 +92,18 @@ public class BackupFilePickDialog {
             }
         });
 
+        if(source.length <= 0)
+            btnImport.setEnabled(false);
+
         btnImport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 MemberDataHandler handler = new MemberDataHandler();
-                List<Member> members = handler.loadMembersFromXml(path + selectedFile);
+                List<Member> members = handler.loadMembersFromXml(MemberDataHandler.path + selectedFile);
                 handler.importMembersToDb(members);
+                if(callBack != null)
+                    callBack.invoke();
                 ad.hide();
             }
         });

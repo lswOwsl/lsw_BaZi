@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -28,11 +29,13 @@ import android.widget.Toast;
 import com.example.swli.myapplication20150519.activity.ICallBackDialog;
 import com.example.swli.myapplication20150519.activity.MemberAdapter;
 import com.example.swli.myapplication20150519.activity.MemberPinYinComparator;
+import com.example.swli.myapplication20150519.activity.bottombar.BottomBarFragment;
 import com.example.swli.myapplication20150519.activity.sidebar.CharacterParser;
 import com.example.swli.myapplication20150519.activity.sidebar.SideBar;
 import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
 import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.DateExt;
+import com.example.swli.myapplication20150519.common.MyApplication;
 import com.example.swli.myapplication20150519.common.SwipeListView;
 import com.example.swli.myapplication20150519.data.handler.MemberDataHandler;
 import com.example.swli.myapplication20150519.model.Member;
@@ -45,7 +48,7 @@ import java.util.List;
 /**
  * Created by swli on 5/27/2015.
  */
-public class MemberHome extends Activity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener  {
+public class MemberHome extends Activity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, BottomBarFragment.OnFragmentInteractionListener {
 
     private ListView listView=null;
     private SearchView searchView;
@@ -215,7 +218,8 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
         if(id == R.id.menuExportMember) {
             MemberDataHandler memberDataHandler = new MemberDataHandler();
             List<Member> members = memberDataHandler.loadMembersFromDb();
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() +"/八字lsw/";
+            String path = Environment.getExternalStorageDirectory() +"/"+
+                    MyApplication.getInstance().getResources().getString(R.string.externalSavingFolder)+"/";
             memberDataHandler.saveMembersToXML(members,path);
 
             AlertDialog.Builder dialog = new AlertDialog.Builder(MemberHome.this);
@@ -374,5 +378,12 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
 //        adapter = initMemeberrAdapter();
 //        listView.setAdapter(adapter);
         return false;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        sourceDateList = getData("");
+        adapter = initMemeberrAdapter();
+        listView.setAdapter(adapter);
     }
 }

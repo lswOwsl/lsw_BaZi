@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="存储位置: /八字lsw/"
+        android:text="已有备份文件:"
         android:textStyle="bold"
         android:id="@+id/tvBackUpFileFolder"
         android:layout_gravity="left"
