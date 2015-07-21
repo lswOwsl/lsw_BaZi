@@ -3,6 +3,9 @@ package com.example.swli.myapplication20150519;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +20,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -68,12 +73,22 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
         return this.searchText;
     }
 
+    private Fragment bottomBarFragement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.member_home);
 
         initActionBar();
+
+        FragmentManager fm = getFragmentManager();
+        bottomBarFragement = fm.findFragmentById(R.id.id_fragment_bottom);
+
+//        fm.beginTransaction()
+//                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+//                .hide(bottomBarFragement)
+//                .commit();
 
         dbManager = new DBManager(this);
         characterParser = CharacterParser.getInstance();
@@ -133,6 +148,8 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
         });
 
         initTimerService();
+
+        hideShowBottomBar();
     }
 
     private static final int INTERVAL = 1000 * 60 * 60 * 24;//一天
@@ -385,5 +402,109 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
         sourceDateList = getData("");
         adapter = initMemeberrAdapter();
         listView.setAdapter(adapter);
+    }
+
+    int touchSlop = 10;
+
+    private void hideShowBottomBar() {
+
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+
+            float lastY = 0f;
+            float currentY = 0f;
+            //下面两个表示滑动的方向，大于0表示向下滑动，小于0表示向上滑动，等于0表示未滑动
+            int lastDirection = 0;
+            int currentDirection = 0;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        lastY = event.getY();
+                        currentY = event.getY();
+                        currentDirection = 0;
+                        lastDirection = 0;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (listView.getFirstVisiblePosition() > 0) {
+                            //只有在listView.getFirstVisiblePosition()>0的时候才判断是否进行显隐动画。因为listView.getFirstVisiblePosition()==0时，
+                            //ToolBar——也就是头部元素必须是可见的，如果这时候隐藏了起来，那么占位置用了headerview就被用户发现了
+                            //但是当用户将列表向下拉露出列表的headerview的时候，应该要让头尾元素再次出现才对——这个判断写在了后面onScrollListener里面……
+                            float tmpCurrentY = event.getY();
+                            if (Math.abs(tmpCurrentY - lastY) > touchSlop) {//滑动距离大于touchslop时才进行判断
+                                currentY = tmpCurrentY;
+                                currentDirection = (int) (currentY - lastY);
+                                if (lastDirection != currentDirection) {
+                                    //如果与上次方向不同，则执行显/隐动画
+                                    if (currentDirection < 0) {
+                                        ft.show(bottomBarFragement).commit();
+                                    } else {
+                                        ft.hide(bottomBarFragement).commit();
+                                    }
+                                }
+                                lastY = currentY;
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        //手指抬起的时候要把currentDirection设置为0，这样下次不管向哪拉，都与当前的不同（其实在ACTION_DOWN里写了之后这里就用不着了……）
+                        currentDirection = 0;
+                        lastDirection = 0;
+                        break;
+                }
+                return false;
+            }
+        };
+
+        listView.setOnTouchListener(onTouchListener);
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            //这个Listener其实是用来对付当用户的手离开列表后列表仍然在滑动的情况，也就是SCROLL_STATE_FLING
+
+            int lastPosition = 0;//上次滚动到的第一个可见元素在listview里的位置——firstVisibleItem
+            int state = SCROLL_STATE_IDLE;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                //记录当前列表状态
+                state = scrollState;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem == 0) {
+                    ft.show(bottomBarFragement).commit();
+                }
+                if (firstVisibleItem > 0) {
+                    if (firstVisibleItem > lastPosition && state == SCROLL_STATE_FLING) {
+                        //如果上次的位置小于当前位置，那么隐藏头尾元素
+                        ft.hide(bottomBarFragement).commit();
+                    }
+
+                    //================================
+                    if (firstVisibleItem < lastPosition && state == SCROLL_STATE_FLING) {
+                        //如果上次的位置大于当前位置，那么显示头尾元素，其实本例中，这个if没用
+                        //如果是滑动ListView触发的，那么，animateBack()肯定已经执行过了，所以没有必要
+                        //如果是点击按钮啥的触发滚动，那么根据设计原则，按钮肯定是头尾元素之一，所以也不需要animateBack()
+                        //所以这个if块是不需要的
+                        ft.show(bottomBarFragement).commit();
+                    }
+                    //这里没有判断(firstVisibleItem == lastPosition && state == SCROLL_STATE_FLING)的情况，
+                    //但是如果列表中的单个item如果很长的话还是要判断的，只不过代码又要多几行
+                    //但是可以取巧一下，在触发滑动的时候拖动执行一下animateHide()或者animateBack()——本例中的话就写在那个点击事件里就可以了）
+                    //BTW，如果列表的滑动纯是靠手滑动列表，而没有类似于点击一个按钮滚到某个位置的话，只要第一个if就够了…
+
+                }
+                lastPosition = firstVisibleItem;
+            }
+        });
+
+
     }
 }
