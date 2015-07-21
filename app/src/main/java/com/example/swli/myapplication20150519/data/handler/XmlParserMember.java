@@ -58,7 +58,7 @@ public class XmlParserMember extends XmlParserData<List<Member>> {
         if(parser.getName().equals("Member")){
             Member member = new Member();
             member.setBirthday(new DateExt(tempBirthday));
-            member.setIsMale(tempGender.equals("ÄÐ"));
+            member.setIsMale(tempGender.equals("ç”·"));
             member.setName(tempName);
             memberList.add(member);
             tempName = tempGender = tempBirthday = "";

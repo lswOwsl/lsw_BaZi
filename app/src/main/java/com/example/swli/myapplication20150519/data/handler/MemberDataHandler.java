@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -133,6 +134,9 @@ public class MemberDataHandler {
                     serializer.flush();
                     // finally we close the file stream
                     fileos.close();
+
+                    //必须刷刚创建的文件新要不不会显示在电脑上
+                    MediaScannerConnection.scanFile(MyApplication.getInstance(), new String[]{newXmlFile.getAbsolutePath()}, null, null);
                 }
             }
         } catch (Exception e) {
