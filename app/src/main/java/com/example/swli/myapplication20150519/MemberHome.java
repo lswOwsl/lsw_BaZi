@@ -245,6 +245,13 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
             }).create().show();
 
         }
+        if(id == R.id.menuNote)
+        {
+            Intent intentContact = new Intent();
+            intentContact.setClass(MemberHome.this, SlideNote.class);
+            startActivityForResult(intentContact, 0);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

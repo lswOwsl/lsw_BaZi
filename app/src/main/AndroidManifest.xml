@@ -8,6 +8,9 @@
         android:label="八字排盘"
         android:theme="@style/AppTheme"
         android:name=".common.MyApplication">
+        <activity android:name=".SlideNote">
+
+        </activity>
         <activity android:name=".MainActivity">
         </activity>
         <activity android:name=".ShenSha">
