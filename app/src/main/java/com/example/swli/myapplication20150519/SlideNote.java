@@ -12,7 +12,9 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.ViewFlipper;
 
 /**
  * Created by swli on 7/22/2015.
@@ -49,17 +51,19 @@ public class SlideNote extends Activity implements View.OnTouchListener {
 
     public void btnChangeText (View v)
     {
-        scrollToContent();
+       // scrollToContent();
         v.setBackgroundColor(Color.WHITE);
     }
 
     public void btnChangeText1 (View v)
     {
-        scrollToContent();
+        //scrollToContent();
         v.setBackgroundColor(Color.BLUE);
     }
 
     GestureDetector gestureDetector;
+
+    private GestureDetector detector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +71,63 @@ public class SlideNote extends Activity implements View.OnTouchListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slide_note);
         initValues();
-        content.setOnTouchListener(this);
+
+        LinearLayout innerContent = (LinearLayout)findViewById(R.id.innerContent);
+        innerContent.setOnTouchListener(this);
+
+        final ViewFlipper viewFlipper = (ViewFlipper)findViewById(R.id.vfYao);
+
+        detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent motionEvent) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent motionEvent) {
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                if (motionEvent.getX() - motionEvent1.getX() > 60) {
+                    viewFlipper.setInAnimation(AnimationUtils.loadAnimation(SlideNote.this, R.anim.slide_in_right));
+                    viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(SlideNote.this, R.anim.slide_out_left));
+                    viewFlipper.showNext();
+                    return true;
+                } else if (motionEvent.getX() - motionEvent1.getX() < -60) {
+//                    viewFlipper.setInAnimation(AnimationUtils.loadAnimation(SlideNote.this, android.R.anim.slide_in_left));
+//                    viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(SlideNote.this, android.R.anim.slide_out_right));
+//                    viewFlipper.showPrevious();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+        viewFlipper.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                detector.onTouchEvent(motionEvent);
+                return true;
+            }
+        });
 
         gestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
             @Override
