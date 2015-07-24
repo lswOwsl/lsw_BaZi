@@ -89,7 +89,7 @@ public class DateExt {
 
     public String getDefaultFormatForSqllite()
     {
-        return this.getFormatDateTime(DefaultFormat+":ss");
+        return this.getFormatDateTime(DefaultFormat + ":ss");
     }
 
     public String getFormatDateTime()
@@ -124,6 +124,13 @@ public class DateExt {
     {
         calendar.add(Calendar.MONTH,months);
         return new DateExt(calendar.getTime());
+    }
+
+    public int getIndexOfWeek()
+    {
+        //?????????? index = 1
+        int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
+        return dayIndex - 1;
     }
 
     public EnumDateCompareResult compareTo(DateExt dateExt)
