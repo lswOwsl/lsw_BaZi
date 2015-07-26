@@ -100,7 +100,7 @@ public class CalendarAdapter extends BaseAdapter {
             controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight);
             controls.tvDay.setTextColor(Color.WHITE);
         }
-        //µÚÒ»¸öÈ«±ß¿ò£¬µÚÒ»ÐÐµÄÃ»ÓÐ×ó±ß¿ò£¬µÚÒ»ÁÐµÄÃ»ÓÐÉÏ±ß¿ò
+        //ï¿½ï¿½Ò»ï¿½ï¿½È«ï¿½ß¿ò£¬µï¿½Ò»ï¿½Ðµï¿½Ã»ï¿½ï¿½ï¿½ï¿½ß¿ò£¬µï¿½Ò»ï¿½Ðµï¿½Ã»ï¿½ï¿½ï¿½Ï±ß¿ï¿½
         if(i == 0) {
             view.setBackgroundResource(R.drawable.gv_border_item);
         }
@@ -151,14 +151,14 @@ public class CalendarAdapter extends BaseAdapter {
 
         List<DayModel> listDays = new ArrayList<DayModel>();
 
-        //µÃµ½Ã¿ÔÂµÄ1ÔÂ1ÈÕ£¬¿´ÊÇÐÇÆÚ¼¸£¬ÒòÎªµÚÒ»ÐÐµÄµÚÒ»¸ö¸ñÒ»¶¨ÊÇÐÇÆÚÒ»£¬ËùÒÔÈç¹û²»ÊÇÐÇÆÚÒ»Òª²¹È«Ç°ÃæµÄÈÕ×Ó
+        //ï¿½Ãµï¿½Ã¿ï¿½Âµï¿½1ï¿½ï¿½1ï¿½Õ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ò»ï¿½ÐµÄµï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Òªï¿½ï¿½È«Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         DateExt beginDate = new DateExt(dateSelected.getYear(),dateSelected.getMonth(),1,dateSelected.getHour(),dateSelected.getMinute(),0);
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(beginDate);
 
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
         int beginIndex = beginDate.getIndexOfWeek();
         int offsetDay = 0;
-        //ÒòÎª1ÊÇÖÜÒ»£¬0ÊÇÐÇÆÚÈÕ
+        //ï¿½ï¿½Îª1ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if(beginIndex != 1 && beginIndex != 0)
         {
             offsetDay = 1 - beginIndex;
@@ -168,7 +168,7 @@ public class CalendarAdapter extends BaseAdapter {
             offsetDay = 6;
         }
 
-        //Ò»¹²ÏÔÊ¾6ÐÐ£¬Ò»ÐÐ7Ìì
+        //Ò»ï¿½ï¿½ï¿½ï¿½Ê¾6ï¿½Ð£ï¿½Ò»ï¿½ï¿½7ï¿½ï¿½
         for(int i=0;i<42;i++)
         {
             DateExt tempDate = new DateExt(beginDate.getFormatDateTime());

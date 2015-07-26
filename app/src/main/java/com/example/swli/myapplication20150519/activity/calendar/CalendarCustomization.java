@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -56,6 +58,8 @@ public class CalendarCustomization extends Activity {
 
     private LunarCalendarWrapper lunarCalendarWrapper;
 
+    ViewGesture viewGesture;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +101,33 @@ public class CalendarCustomization extends Activity {
             }
         });
 
+        viewGesture = new ViewGesture(this, new ViewGesture.ICallBack() {
+            @Override
+            public void moveUp() {
+                initialDate.addMonths(1);
+                loadCalendar(initialDate);
+                loadTitileDate(initialDate);
+                lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
+                loadEraTextDetail(lunarCalendarWrapper);
+            }
+
+            @Override
+            public void moveDown() {
+                initialDate.addMonths(-1);
+                loadCalendar(initialDate);
+                loadTitileDate(initialDate);
+                lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
+                loadEraTextDetail(lunarCalendarWrapper);
+            }
+        });
+        viewGesture.setGestureTo(gridView);
+    }
+
+    //必须重写这个方法要不然会抛异常，因为gridview的filing合onclick冲突了
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        viewGesture.getDetector().onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
     }
 
     private void loadCalendar(DateExt dateExt) {
