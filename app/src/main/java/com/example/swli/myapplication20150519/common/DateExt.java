@@ -75,6 +75,8 @@ public class DateExt {
 
     public  int getMinute(){return  calendar.get(Calendar.MINUTE);}
 
+    public  int getSecond(){return  calendar.get(Calendar.SECOND);}
+
     public Calendar getCalendar()
     {
         return this.calendar;

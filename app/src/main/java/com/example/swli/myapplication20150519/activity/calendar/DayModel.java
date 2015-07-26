@@ -1,5 +1,7 @@
 package com.example.swli.myapplication20150519.activity.calendar;
 
+import com.example.swli.myapplication20150519.common.DateExt;
+
 /**
  * Created by swli on 7/24/2015.
  */
@@ -8,6 +10,15 @@ public class DayModel {
     private String day;
     private String lunar_day;
     private String era_day;
+    private DateExt dateExt;
+
+    public DateExt getDateExt() {
+        return dateExt;
+    }
+
+    public void setDateExt(DateExt dateExt) {
+        this.dateExt = dateExt;
+    }
 
     public String getDay() {
         return day;

@@ -50,7 +50,7 @@ public class DayFragment<T> extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.calendar_day_fragment, container, false);
+        View view = inflater.inflate(R.layout.calendar_day, container, false);
 
         tvEraDay = (TextView) view.findViewById(R.id.tvEraDay);
         tvLunaryDay = (TextView) view.findViewById(R.id.tvLunarDay);
