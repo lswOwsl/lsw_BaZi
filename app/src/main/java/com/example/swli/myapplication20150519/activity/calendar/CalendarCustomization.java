@@ -94,6 +94,8 @@ public class CalendarCustomization extends Activity {
                     public void invoke(DateExt dateExt) {
                         loadCalendar(dateExt);
                         loadTitileDate(dateExt);
+                        lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+                        loadEraTextDetail(lunarCalendarWrapper);
                         initialDate = dateExt;
                     }
                 });
