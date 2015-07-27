@@ -2,17 +2,22 @@ package com.example.swli.myapplication20150519.activity.calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
@@ -39,13 +44,14 @@ import org.w3c.dom.Text;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by swli on 7/24/2015.
  */
-public class CalendarCustomization extends Activity {
+public class CalendarCustomization extends FragmentActivity {
 
-    private GridView gridView;
+    //private GridView gridView;
     private GridView gridViewTitle;
 
     private LayoutInflater linearLayout;
@@ -60,12 +66,16 @@ public class CalendarCustomization extends Activity {
 
     ViewGesture viewGesture;
 
+    //private FrameLayout frameLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //frameLayout = (FrameLayout)findViewById(R.id.fl_calendar);
 
         linearLayout = LayoutInflater.from(this);
         tvDateSelect  = (TextView) findViewById(R.id.tvDateSelect);
@@ -77,7 +87,7 @@ public class CalendarCustomization extends Activity {
         tvEraHour = (TextView) findViewById(R.id.tvEraHour);
 
         gridViewTitle = (GridView) findViewById(R.id.gv_calendarTitle);
-        gridView = (GridView) findViewById(R.id.gv_calendar);
+        //gridView = (GridView) findViewById(R.id.gv_calendar);
 
         gridViewTitle.setAdapter(new CalendarTitleAdapter(linearLayout));
         gridViewTitle.setNumColumns(7);
@@ -107,22 +117,48 @@ public class CalendarCustomization extends Activity {
             @Override
             public void moveUp() {
                 initialDate.addMonths(1);
-                loadCalendar(initialDate);
-                loadTitileDate(initialDate);
-                lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
-                loadEraTextDetail(lunarCalendarWrapper);
+//                loadCalendar(initialDate);
+//                loadTitileDate(initialDate);
+//                lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
+//                loadEraTextDetail(lunarCalendarWrapper);
+
+                CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
+                pushFragment(f2);
             }
 
             @Override
             public void moveDown() {
                 initialDate.addMonths(-1);
-                loadCalendar(initialDate);
-                loadTitileDate(initialDate);
-                lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
-                loadEraTextDetail(lunarCalendarWrapper);
+//                loadCalendar(initialDate);
+//                loadTitileDate(initialDate);
+//                lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
+//                loadEraTextDetail(lunarCalendarWrapper);
+
+                CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
+                pushFragment(f2);
             }
         });
-        viewGesture.setGestureTo(gridView);
+        //viewGesture.setGestureTo(gridView);
+
+//        CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
+//        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//        ft.replace(R.id.fl_calendar, f2, "aaa");
+//        ft.commit();
+    }
+
+    public void pushFragment(CalendarFragment calendarFragment) {
+
+        String tag = new Random().toString();
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.dialog_enter,R.anim.dialog_exit);
+        //ft.setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+        ft .replace(R.id.fl_calendar, calendarFragment, tag);
+              // ft.addToBackStack(null);
+
+               ft .commit();
+
     }
 
     //必须重写这个方法要不然会抛异常，因为gridview的filing合onclick冲突了
@@ -137,8 +173,8 @@ public class CalendarCustomization extends Activity {
        loadTitileDate(dateExt);
 
         CalendarAdapter calendarAdapter = new CalendarAdapter(linearLayout, dateExt);
-        gridView.setAdapter(calendarAdapter);
-        gridView.setNumColumns(7);
+        //gridView.setAdapter(calendarAdapter);
+        //gridView.setNumColumns(7);
 
         calendarAdapter.setICallBack(new CalendarAdapter.ICallBack() {
             @Override
@@ -206,8 +242,15 @@ public class CalendarCustomization extends Activity {
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.menuToday) {
-            initialDate = new DateExt();
-            loadCalendar(initialDate);
+//            initialDate = new DateExt();
+//            loadCalendar(initialDate);
+
+//            CalendarFragment f2 = CalendarFragment.newInstance(new DateExt());
+//            String tag = new Random().toString();
+//            FragmentTransaction ft = getFragmentManager().beginTransaction();
+//
+//            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//            ft.replace(R.id.fl_calendar, f2, tag).addToBackStack(tag).commit();
             return true;
         }
         return super.onOptionsItemSelected(item);
