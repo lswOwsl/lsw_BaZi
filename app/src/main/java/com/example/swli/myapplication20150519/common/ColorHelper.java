@@ -1,6 +1,7 @@
 package com.example.swli.myapplication20150519.common;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -71,6 +72,14 @@ public class ColorHelper {
         }
 
         return "";
+    }
+
+    public static SpannableString getTextByColor(String text, int color)
+    {
+        SpannableString spanString = new SpannableString(text);
+        ForegroundColorSpan span = new ForegroundColorSpan(color);
+        spanString.setSpan(span, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanString;
     }
 
     public static SpannableString getColorStr(String fiveElement,String text)

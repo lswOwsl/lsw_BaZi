@@ -1,49 +1,21 @@
 package com.example.swli.myapplication20150519.activity.calendar;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentTransaction;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.example.swli.myapplication20150519.ContactAuthor;
-import com.example.swli.myapplication20150519.MemberMaintain;
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.SlideNote;
-import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
 import com.example.swli.myapplication20150519.common.ColorHelper;
-import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.DateLunar;
-import com.example.swli.myapplication20150519.common.LunarCalendar;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
-import com.example.swli.myapplication20150519.common.MyApplication;
-import com.example.swli.myapplication20150519.data.handler.MemberDataHandler;
-import com.example.swli.myapplication20150519.model.Member;
-import com.example.swli.myapplication20150519.phone.base.Contact;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -123,7 +95,7 @@ public class CalendarCustomization extends FragmentActivity {
 //                loadEraTextDetail(lunarCalendarWrapper);
 
                 CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-                pushFragment(f2);
+                pushFragment(f2,true);
             }
 
             @Override
@@ -135,7 +107,7 @@ public class CalendarCustomization extends FragmentActivity {
 //                loadEraTextDetail(lunarCalendarWrapper);
 
                 CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-                pushFragment(f2);
+                pushFragment(f2,false);
             }
         });
         //viewGesture.setGestureTo(gridView);
@@ -147,17 +119,18 @@ public class CalendarCustomization extends FragmentActivity {
 //        ft.commit();
     }
 
-    public void pushFragment(CalendarFragment calendarFragment) {
+    public void pushFragment(CalendarFragment calendarFragment,boolean isUp) {
 
         String tag = new Random().toString();
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.dialog_enter,R.anim.dialog_exit);
-        //ft.setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
+        if(isUp) {
+            ft.setCustomAnimations(R.anim.vertical_bottom_enter, R.anim.vertical_top_out);
+        }
+        else {
+            ft.setCustomAnimations(R.anim.vertical_top_enter, R.anim.vertical_bottom_out);
+        }
         ft .replace(R.id.fl_calendar, calendarFragment, tag);
-              // ft.addToBackStack(null);
-
-               ft .commit();
+        ft .commit();
 
     }
 

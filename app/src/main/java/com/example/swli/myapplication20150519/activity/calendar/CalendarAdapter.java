@@ -8,10 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
+import com.example.swli.myapplication20150519.activity.MemberAdapter;
 import com.example.swli.myapplication20150519.common.ColorHelper;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 import com.example.swli.myapplication20150519.common.MyApplication;
+import com.example.swli.myapplication20150519.phone.base.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,9 +81,6 @@ public class CalendarAdapter extends BaseAdapter {
         String c = eraDay.substring(0,1);
         String t = eraDay.substring(1);
 
-        controls.tvEraDay.setText("");
-        controls.tvEraDay.append(ColorHelper.getColorCelestialStem(MyApplication.getInstance(), c));
-        controls.tvEraDay.append(ColorHelper.getColorTerrestrial(MyApplication.getInstance(), t));
         controls.tvDay.setText(dayModel.getDay());
         controls.tvLunaryDay.setText(dayModel.getLunar_day());
 
@@ -100,7 +99,7 @@ public class CalendarAdapter extends BaseAdapter {
             controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight);
             controls.tvDay.setTextColor(Color.WHITE);
         }
-        //��һ��ȫ�߿򣬵�һ�е�û����߿򣬵�һ�е�û���ϱ߿�
+        //????????????е???????????е????????
         if(i == 0) {
             view.setBackgroundResource(R.drawable.gv_border_item);
         }
@@ -114,6 +113,21 @@ public class CalendarAdapter extends BaseAdapter {
         }
         else {
             view.setBackgroundResource(R.drawable.gv_border_item_rb);
+        }
+
+        //isn't current month, set bacagroud to gray
+        if(dayModel.getDateExt().getMonth() != dateSelected.getMonth())
+        {
+            controls.tvDay.setTextColor(Color.LTGRAY);
+            controls.tvEraDay.setText("");
+            controls.tvEraDay.append(ColorHelper.getTextByColor(c, Color.LTGRAY));
+            controls.tvEraDay.append(ColorHelper.getTextByColor(t, Color.LTGRAY));
+        }
+        else
+        {
+            controls.tvEraDay.setText("");
+            controls.tvEraDay.append(ColorHelper.getColorCelestialStem(MyApplication.getInstance(), c));
+            controls.tvEraDay.append(ColorHelper.getColorTerrestrial(MyApplication.getInstance(), t));
         }
 
         view.setOnClickListener(new View.OnClickListener() {
@@ -151,24 +165,24 @@ public class CalendarAdapter extends BaseAdapter {
 
         List<DayModel> listDays = new ArrayList<DayModel>();
 
-        //�õ�ÿ�µ�1��1�գ��������ڼ�����Ϊ��һ�еĵ�һ����һ��������һ���������������һҪ��ȫǰ�������
+        //???????1??1?????????????????????е?????????????????????????????????????????????
         DateExt beginDate = new DateExt(dateSelected.getYear(),dateSelected.getMonth(),1,dateSelected.getHour(),dateSelected.getMinute(),0);
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(beginDate);
 
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
         int beginIndex = beginDate.getIndexOfWeek();
         int offsetDay = 0;
-        //��Ϊ1����һ��0��������
+        //???1???????0????????
         if(beginIndex != 1 && beginIndex != 0)
         {
             offsetDay = 1 - beginIndex;
-        }
+        }//index 0是星期日
         else if(beginIndex == 0)
         {
-            offsetDay = 6;
+            offsetDay = -6;
         }
 
-        //һ����ʾ6�У�һ��7��
+        //??????6?У????7??
         for(int i=0;i<42;i++)
         {
             DateExt tempDate = new DateExt(beginDate.getFormatDateTime());

@@ -21,14 +21,18 @@ public class CalendarFragment extends android.support.v4.app.Fragment {
 
     DateExt dateExt;
     LayoutInflater linearLayout;
+    static String paramDate;
 
     public static CalendarFragment newInstance(DateExt dateExt) {
-        CalendarFragment fragment = new CalendarFragment(dateExt);
+        CalendarFragment fragment = new CalendarFragment();
+        Bundle args = new Bundle();
+        args.putString(paramDate,dateExt.getFormatDateTime());
+        fragment.setArguments(args);
         return fragment;
     }
 
-    public CalendarFragment(DateExt dateExt) {
-        this.dateExt = dateExt;
+    public CalendarFragment() {
+
     }
 
     @Override
@@ -41,6 +45,10 @@ public class CalendarFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            dateExt = new DateExt(getArguments().getString(paramDate));
+        }
+
         View view = inflater.inflate(R.layout.calendar_fragment, container, false);
         linearLayout = LayoutInflater.from(getActivity());
         gridView = (GridView) view.findViewById(R.id.gv_calendar);
