@@ -8,12 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.activity.MemberAdapter;
 import com.example.swli.myapplication20150519.common.ColorHelper;
 import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 import com.example.swli.myapplication20150519.common.MyApplication;
-import com.example.swli.myapplication20150519.phone.base.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +58,9 @@ public class CalendarAdapter extends BaseAdapter {
         return i;
     }
 
-    private TextView previsouSelectedTextView;
+    private TextView previsouselectedtextview;
     private TextView todayTextView;
+    private DateExt previousSelectedDate;
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -84,16 +83,17 @@ public class CalendarAdapter extends BaseAdapter {
         controls.tvDay.setText(dayModel.getDay());
         controls.tvLunaryDay.setText(dayModel.getLunar_day());
 
-        if(dayModel.getDateExt().getMonth() == dateSelected.getMonth() && Integer.valueOf(dayModel.getDateExt().getDay()) == dateSelected.getDay())
+        if(dayModel.getDateExt().getMonth() == dateSelected.getMonth() && dayModel.getDateExt().getDay() == dateSelected.getDay())
         {
-            previsouSelectedTextView = controls.tvDay;
+            previsouselectedtextview = controls.tvDay;
+            previousSelectedDate = dayModel.getDateExt();
             controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
             controls.tvDay.setTextColor(Color.WHITE);
         }
         DateExt today = new DateExt();
         if(today.getYear() == dayModel.getDateExt().getYear()
                && today.getMonth() == dayModel.getDateExt().getMonth()
-                && Integer.valueOf(dayModel.getDateExt().getDay()) == today.getDay())
+                && dayModel.getDateExt().getDay() == today.getDay())
         {
             todayTextView = controls.tvDay;
             controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight);
@@ -133,20 +133,28 @@ public class CalendarAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(previsouSelectedTextView != null) {
-                    if(!previsouSelectedTextView.equals(todayTextView)) {
-                        previsouSelectedTextView.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
-                        previsouSelectedTextView.setTextColor(Color.BLACK);
+                if(previsouselectedtextview != null) {
+                    if(!previsouselectedtextview.equals(todayTextView)) {
+                        previsouselectedtextview.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
+                        if(previousSelectedDate != null && (previousSelectedDate.getMonth() == dateSelected.getMonth()))
+                        {
+                            previsouselectedtextview.setTextColor(Color.BLACK);
+                        }
+                        else
+                        {
+                            previsouselectedtextview.setTextColor(Color.LTGRAY);
+                        }
                     }
                     else
                     {
-                        previsouSelectedTextView.setBackgroundResource(R.drawable.tv_circle_highlight);
-                        previsouSelectedTextView.setTextColor(Color.WHITE);
+                        previsouselectedtextview.setBackgroundResource(R.drawable.tv_circle_highlight);
+                        previsouselectedtextview.setTextColor(Color.WHITE);
                     }
                 }
                 if(callBack != null) {
                     callBack.invoke(dayModel.getDateExt());
-                    previsouSelectedTextView = controls.tvDay;
+                    previsouselectedtextview = controls.tvDay;
+                    previousSelectedDate = dayModel.getDateExt();
                     controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
                     controls.tvDay.setTextColor(Color.WHITE);
                 }
