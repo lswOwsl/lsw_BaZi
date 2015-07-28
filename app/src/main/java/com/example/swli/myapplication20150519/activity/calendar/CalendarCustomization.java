@@ -222,28 +222,39 @@ public class CalendarCustomization extends FragmentActivity implements CalendarF
         //当滑动切换月份时，应该只用当前的月份进行滑动
 
         boolean flag = true;
-        if(initialDate.getYear() > dateExt.getYear())
-        {
-            flag = false;
-        }
-        else if (initialDate.getYear() == dateExt.getYear())
+        boolean willChange = false;
+
+        if (initialDate.getYear() == dateExt.getYear())
         {
             if(initialDate.getMonth() > dateExt.getMonth())
             {
+                willChange = true;
                 flag = false;
             }
             else if(initialDate.getMonth() < dateExt.getMonth())
             {
+                willChange = true;
                 flag = true;
             }
         }
         else
         {
-            flag =true;
+            if(initialDate.getYear() > dateExt.getYear())
+            {
+                willChange = true;
+                flag = false;
+            }
+            else {
+                willChange = true;
+                flag = true;
+            }
         }
-        CalendarFragment f2 = CalendarFragment.newInstance(dateExt);
-        pushFragment(f2,flag);
-        initialDate = dateExt;
+
+        if(willChange) {
+            CalendarFragment f2 = CalendarFragment.newInstance(dateExt);
+            pushFragment(f2, flag);
+            initialDate = dateExt;
+        }
 
     }
 }
