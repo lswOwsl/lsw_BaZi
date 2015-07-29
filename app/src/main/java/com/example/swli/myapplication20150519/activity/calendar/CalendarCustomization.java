@@ -253,8 +253,7 @@ public class CalendarCustomization extends FragmentActivity implements CalendarF
         if(willChange) {
             CalendarFragment f2 = CalendarFragment.newInstance(dateExt);
             pushFragment(f2, flag);
-            initialDate = dateExt;
         }
-
+        initialDate = dateExt;
     }
 }

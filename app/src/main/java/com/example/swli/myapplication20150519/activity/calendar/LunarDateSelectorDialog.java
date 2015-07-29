@@ -37,9 +37,9 @@ public class LunarDateSelectorDialog {
 
     private int initYear, initMonth, initDay;
 
-    private static List<String> yearlist = new ArrayList<>();
-    private static List<String> monthList = new ArrayList<>();
-    private static List<String> dayList = new ArrayList<>();
+    private static List<String> yearlist = new ArrayList<String>();
+    private static List<String> monthList = new ArrayList<String>();
+    private static List<String> dayList = new ArrayList<String>();
 
     LunarCalendar lunarCalendar = new LunarCalendar();
 
