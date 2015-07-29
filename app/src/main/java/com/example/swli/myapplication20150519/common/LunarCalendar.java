@@ -4,10 +4,10 @@ package com.example.swli.myapplication20150519.common;
 
 public class LunarCalendar extends LunarSolarTerm{
 
-    private static int minYear = 1616;
-    private static int minMonth = 2;
-    private static int minDay = 17;
-    private static DateExt minDate = new DateExt(minYear,minMonth,minDay,0,0,0);
+    public static int minYear = 1616;
+    public static int minMonth = 2;
+    public static int minDay = 17;
+    public static DateExt minDate = new DateExt(minYear,minMonth,minDay,0,0,0);
     /**
      0x表示16进制数
      04bd8 = 0000 0100 1011 1101 1000
@@ -26,7 +26,7 @@ public class LunarCalendar extends LunarSolarTerm{
      最后四位8月闰月
     **/
 
-    private static int[] lunarDateArray = new int[]{
+    public static int[] lunarDateArray = new int[]{
 
             0x09b50,0x04b60,0x0aae4,0x0a4f0,0x05260,0x1d262,0x0d550,0x15a9a,0x056a0,0x096d0,
             0x149d6,0x049e0,0x0a4d0,0x0d4d4,0x0d250,0x0d53b,0x0b540,0x0b5a0,0x195a8,0x095b0,
@@ -221,14 +221,14 @@ public class LunarCalendar extends LunarSolarTerm{
     }
 
     //返回农历 y年闰哪个月 1-12 , 没闰传回 0
-    private int getChineseLeapMonth(int year)
+    public int getChineseLeapMonth(int year)
     {
         //最后4位，即8，代表这一年的润月月份，为0则不润。首4位要与末4位搭配使用
         return lunarDateArray[year - minYear] & 0xF;
     }
 
     //返回农历 y年m月的总天数
-    private int getChineseMonthDays(int year, int month)
+    public int getChineseMonthDays(int year, int month)
     {
         //0X0FFFF[0000 {1111 1111 1111} 1111]
         if (bitTest32((lunarDateArray[year - minYear] & 0x0000FFFF), (16 - month)))

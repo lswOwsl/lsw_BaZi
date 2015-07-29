@@ -1,6 +1,7 @@
 package com.example.swli.myapplication20150519.activity.calendar;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -190,6 +191,8 @@ public class CalendarAdapter extends BaseAdapter {
             offsetDay = -6;
         }
 
+        long startTime = System.nanoTime();
+        long startTimeM = System.currentTimeMillis();
         //??????6?У????7??
         for(int i=0;i<42;i++)
         {
@@ -204,6 +207,10 @@ public class CalendarAdapter extends BaseAdapter {
             listDays.add(dayModel);
         }
 
+        long consumingTime = System.nanoTime() - startTime;
+        long consumingTimeM = System.currentTimeMillis() - startTimeM;
+        Log.d("lsw",consumingTime/1000/1000 + " calendar model create date time.");
+        Log.d("lsw",consumingTimeM + "ms calendar model create date time.");
         return listDays;
     }
 

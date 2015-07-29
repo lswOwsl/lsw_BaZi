@@ -3,6 +3,7 @@ package com.example.swli.myapplication20150519.activity.calendar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,9 @@ public class CalendarFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        long startTimeM = System.currentTimeMillis();
+
         if (getArguments() != null) {
             dateExt = new DateExt(getArguments().getString(paramDate));
         }
@@ -64,6 +68,8 @@ public class CalendarFragment extends android.support.v4.app.Fragment {
         gridView.setAdapter(calendarAdapter);
         gridView.setNumColumns(7);
 
+        long consumingTimeM = System.currentTimeMillis() - startTimeM;
+        Log.d("lsw fragment view", consumingTimeM + "ms.");
         return view;
     }
 
