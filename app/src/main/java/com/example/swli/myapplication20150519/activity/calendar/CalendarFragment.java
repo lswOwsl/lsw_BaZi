@@ -22,6 +22,11 @@ public class CalendarFragment extends android.support.v4.app.Fragment {
     static String paramDate;
     private GridView gridView;
 
+    public GridView getGridView()
+    {
+        return this.gridView;
+    }
+
     public static CalendarFragment newInstance(DateExt dateExt) {
         CalendarFragment fragment = new CalendarFragment();
         Bundle args = new Bundle();

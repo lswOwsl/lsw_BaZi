@@ -41,7 +41,7 @@ public class CalendarAdapter extends BaseAdapter {
     {
         this.layoutInflater = layoutInflater;
         this.dateSelected = selectedDate;
-        this.dayModels = getOneMonthDays();
+        this.dayModels = getOneMonthDays(selectedDate.getYear(),selectedDate.getMonth(),selectedDate.getHour(),selectedDate.getMinute());
     }
 
     @Override
@@ -84,22 +84,22 @@ public class CalendarAdapter extends BaseAdapter {
         controls.tvDay.setText(dayModel.getDay());
         controls.tvLunaryDay.setText(dayModel.getLunar_day());
 
-        if(dayModel.getDateExt().getMonth() == dateSelected.getMonth() && dayModel.getDateExt().getDay() == dateSelected.getDay())
-        {
-            previsouselectedtextview = controls.tvDay;
-            previousSelectedDate = dayModel.getDateExt();
-            controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
-            controls.tvDay.setTextColor(Color.WHITE);
-        }
-        DateExt today = new DateExt();
-        if(today.getYear() == dayModel.getDateExt().getYear()
-               && today.getMonth() == dayModel.getDateExt().getMonth()
-                && dayModel.getDateExt().getDay() == today.getDay())
-        {
-            todayTextView = controls.tvDay;
-            controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight);
-            controls.tvDay.setTextColor(Color.WHITE);
-        }
+//        if(dayModel.getDateExt().getMonth() == dateSelected.getMonth() && dayModel.getDateExt().getDay() == dateSelected.getDay())
+//        {
+//            previsouselectedtextview = controls.tvDay;
+//            previousSelectedDate = dayModel.getDateExt();
+//            controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
+//            controls.tvDay.setTextColor(Color.WHITE);
+//        }
+//        DateExt today = new DateExt();
+//        if(today.getYear() == dayModel.getDateExt().getYear()
+//               && today.getMonth() == dayModel.getDateExt().getMonth()
+//                && dayModel.getDateExt().getDay() == today.getDay())
+//        {
+//            todayTextView = controls.tvDay;
+//            controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight);
+//            controls.tvDay.setTextColor(Color.WHITE);
+//        }
         //????????????е???????????е????????
         if(i == 0) {
             view.setBackgroundResource(R.drawable.gv_border_item);
@@ -169,13 +169,13 @@ public class CalendarAdapter extends BaseAdapter {
         public TextView tvEraDay, tvLunaryDay, tvDay;
     }
 
-    public List<DayModel> getOneMonthDays()
+    public static List<DayModel> getOneMonthDays(int year, int month, int hour, int min)
     {
 
         List<DayModel> listDays = new ArrayList<DayModel>();
 
         //???????1??1?????????????????????е?????????????????????????????????????????????
-        DateExt beginDate = new DateExt(dateSelected.getYear(),dateSelected.getMonth(),1,dateSelected.getHour(),dateSelected.getMinute(),0);
+        DateExt beginDate = new DateExt(year,month,1,hour,min,0);
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(beginDate);
 
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
@@ -214,7 +214,7 @@ public class CalendarAdapter extends BaseAdapter {
         return listDays;
     }
 
-    private int getEraDayIndex(int eraIndex, int offset)
+    private static int getEraDayIndex(int eraIndex, int offset)
     {
         if(eraIndex + offset < 0)
         {

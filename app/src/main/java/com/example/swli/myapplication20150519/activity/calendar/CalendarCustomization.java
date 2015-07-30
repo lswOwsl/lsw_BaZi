@@ -114,6 +114,9 @@ public class CalendarCustomization extends FragmentActivity implements CalendarF
 
                 CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
                 pushFragment(f2,false);
+
+                AsyncReloadGridView asyncReloadGridView = new AsyncReloadGridView(f2.getGridView(),CalendarAdapter.getOneMonthDays(initialDate.getYear(),initialDate.getMonth(),initialDate.getHour(),initialDate.getMinute()));
+                asyncReloadGridView.execute(initialDate);
             }
         });
         //viewGesture.setGestureTo(gridView);
