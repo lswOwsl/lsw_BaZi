@@ -1,7 +1,8 @@
 package com.example.swli.myapplication20150519.activity.calendar;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +17,12 @@ import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.DateLunar;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 
-import java.util.Date;
 import java.util.Random;
 
 /**
  * Created by swli on 7/24/2015.
  */
-public class CalendarCustomization extends FragmentActivity implements CalendarFragment.OnFragmentInteractionListener {
+public class CalendarCustomization extends Activity implements CalendarFragment.OnFragmentInteractionListener {
 
     //private GridView gridView;
     private GridView gridViewTitle;
@@ -83,7 +83,7 @@ public class CalendarCustomization extends FragmentActivity implements CalendarF
                         initialDate = dateExt;
 
                         CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-                        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                         ft.replace(R.id.fl_calendar, f2);
                         ft.commit();
@@ -115,22 +115,45 @@ public class CalendarCustomization extends FragmentActivity implements CalendarF
                 CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
                 pushFragment(f2,false);
 
-                AsyncReloadGridView asyncReloadGridView = new AsyncReloadGridView(f2.getGridView(),CalendarAdapter.getOneMonthDays(initialDate.getYear(),initialDate.getMonth(),initialDate.getHour(),initialDate.getMinute()));
+                AsyncReloadGridView asyncReloadGridView = new AsyncReloadGridView(f2.getGridView());
                 asyncReloadGridView.execute(initialDate);
             }
         });
         //viewGesture.setGestureTo(gridView);
 
+        CalendarFragment f1 = CalendarFragment.newInstance(initialDate);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.fl_calendar, f1, "begin_calendar");
+
         CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fl_calendar, f2, "begin_calendar");
+        ft.add(R.id.fl_calendar,f2,"move_calendar");
+        ft.hide(f2);
+
         ft.commit();
+
+
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        CalendarFragment f2 = (CalendarFragment)getFragmentManager().findFragmentByTag("begin_calendar");
+        AsyncReloadGridView reloadGridView = new AsyncReloadGridView(f2.getGridView());
+        reloadGridView.setICallBack(new AsyncReloadGridView.ICallBack() {
+            @Override
+            public void invoke(DateExt dateExt) {
+                onFragmentInteraction(dateExt);
+            }
+        });
+        reloadGridView.execute(initialDate);
+
     }
 
     public void pushFragment(CalendarFragment calendarFragment,boolean isUp) {
 
         String tag = new Random().toString();
-        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         if(isUp) {
             ft.setCustomAnimations(R.anim.vertical_bottom_enter, R.anim.vertical_top_out);
         }
@@ -204,7 +227,7 @@ public class CalendarCustomization extends FragmentActivity implements CalendarF
         if (id == R.id.menuToday) {
             initialDate = new DateExt();
             CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.replace(R.id.fl_calendar, f2);
             ft.commit();
@@ -254,8 +277,38 @@ public class CalendarCustomization extends FragmentActivity implements CalendarF
         }
 
         if(willChange) {
-            CalendarFragment f2 = CalendarFragment.newInstance(dateExt);
-            pushFragment(f2, flag);
+            CalendarFragment f2 = (CalendarFragment) getFragmentManager().findFragmentByTag("move_calendar");
+            CalendarFragment f1 = (CalendarFragment) getFragmentManager().findFragmentByTag("begin_calendar");
+
+            GridView gridView = f1.getGridView();
+
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            if(willChange) {
+                ft.setCustomAnimations(R.anim.vertical_bottom_enter, R.anim.vertical_top_out,0,0);
+            }
+            else {
+                ft.setCustomAnimations(R.anim.vertical_top_enter, R.anim.vertical_bottom_out,0,0);
+            }
+
+            if (f2.isHidden()) {
+                gridView = f2.getGridView();
+                ft.hide(f1).show(f2);
+            }
+            else
+            {
+                ft.hide(f2).show(f1);
+            }
+            ft.commit();
+
+            AsyncReloadGridView reloadGridView = new AsyncReloadGridView(gridView);
+            reloadGridView.setICallBack(new AsyncReloadGridView.ICallBack() {
+                @Override
+                public void invoke(DateExt dateExt) {
+                    onFragmentInteraction(dateExt);
+                }
+            });
+            reloadGridView.execute(dateExt);
+
         }
         initialDate = dateExt;
     }

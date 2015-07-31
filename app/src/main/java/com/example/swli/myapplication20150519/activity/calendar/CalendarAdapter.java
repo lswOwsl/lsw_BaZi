@@ -26,22 +26,11 @@ public class CalendarAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
     List<DayModel> dayModels;
 
-    private ICallBack callBack;
-    interface ICallBack
-    {
-        void invoke(DateExt dateExt);
-    }
-
-    public void setICallBack(ICallBack callBack)
-    {
-        this.callBack = callBack;
-    }
-
     public CalendarAdapter(LayoutInflater layoutInflater, DateExt selectedDate)
     {
         this.layoutInflater = layoutInflater;
         this.dateSelected = selectedDate;
-        this.dayModels = getOneMonthDays(selectedDate.getYear(),selectedDate.getMonth(),selectedDate.getHour(),selectedDate.getMinute());
+        this.dayModels = getOneMonthDays(dateSelected);
     }
 
     @Override
@@ -59,9 +48,6 @@ public class CalendarAdapter extends BaseAdapter {
         return i;
     }
 
-    private TextView previsouselectedtextview;
-    private TextView todayTextView;
-    private DateExt previousSelectedDate;
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -76,31 +62,9 @@ public class CalendarAdapter extends BaseAdapter {
         } else {
             controls = (ItemHolder) view.getTag();
         }
-        final DayModel dayModel = dayModels.get(i);
-        String eraDay = dayModel.getEra_day();
-        String c = eraDay.substring(0,1);
-        String t = eraDay.substring(1);
 
-        controls.tvDay.setText(dayModel.getDay());
-        controls.tvLunaryDay.setText(dayModel.getLunar_day());
+        controls.tvDay.setText(dayModels.get(i).getDay());
 
-//        if(dayModel.getDateExt().getMonth() == dateSelected.getMonth() && dayModel.getDateExt().getDay() == dateSelected.getDay())
-//        {
-//            previsouselectedtextview = controls.tvDay;
-//            previousSelectedDate = dayModel.getDateExt();
-//            controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
-//            controls.tvDay.setTextColor(Color.WHITE);
-//        }
-//        DateExt today = new DateExt();
-//        if(today.getYear() == dayModel.getDateExt().getYear()
-//               && today.getMonth() == dayModel.getDateExt().getMonth()
-//                && dayModel.getDateExt().getDay() == today.getDay())
-//        {
-//            todayTextView = controls.tvDay;
-//            controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight);
-//            controls.tvDay.setTextColor(Color.WHITE);
-//        }
-        //????????????е???????????е????????
         if(i == 0) {
             view.setBackgroundResource(R.drawable.gv_border_item);
         }
@@ -116,52 +80,6 @@ public class CalendarAdapter extends BaseAdapter {
             view.setBackgroundResource(R.drawable.gv_border_item_rb);
         }
 
-        //isn't current month, set bacagroud to gray
-        if(dayModel.getDateExt().getMonth() != dateSelected.getMonth())
-        {
-            controls.tvDay.setTextColor(Color.LTGRAY);
-            controls.tvEraDay.setText("");
-            controls.tvEraDay.append(ColorHelper.getTextByColor(c, Color.LTGRAY));
-            controls.tvEraDay.append(ColorHelper.getTextByColor(t, Color.LTGRAY));
-        }
-        else
-        {
-            controls.tvEraDay.setText("");
-            controls.tvEraDay.append(ColorHelper.getColorCelestialStem(MyApplication.getInstance(), c));
-            controls.tvEraDay.append(ColorHelper.getColorTerrestrial(MyApplication.getInstance(), t));
-        }
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(previsouselectedtextview != null) {
-                    if(!previsouselectedtextview.equals(todayTextView)) {
-                        previsouselectedtextview.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
-                        if(previousSelectedDate != null && (previousSelectedDate.getMonth() == dateSelected.getMonth()))
-                        {
-                            previsouselectedtextview.setTextColor(Color.BLACK);
-                        }
-                        else
-                        {
-                            previsouselectedtextview.setTextColor(Color.LTGRAY);
-                        }
-                    }
-                    else
-                    {
-                        previsouselectedtextview.setBackgroundResource(R.drawable.tv_circle_highlight);
-                        previsouselectedtextview.setTextColor(Color.WHITE);
-                    }
-                }
-                if(callBack != null) {
-                    callBack.invoke(dayModel.getDateExt());
-                    previsouselectedtextview = controls.tvDay;
-                    previousSelectedDate = dayModel.getDateExt();
-                    controls.tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
-                    controls.tvDay.setTextColor(Color.WHITE);
-                }
-            }
-        });
-
         return view;
     }
 
@@ -169,13 +87,12 @@ public class CalendarAdapter extends BaseAdapter {
         public TextView tvEraDay, tvLunaryDay, tvDay;
     }
 
-    public static List<DayModel> getOneMonthDays(int year, int month, int hour, int min)
+    public static List<DayModel> getOneMonthDays(DateExt dateExt)
     {
 
         List<DayModel> listDays = new ArrayList<DayModel>();
 
-        //???????1??1?????????????????????е?????????????????????????????????????????????
-        DateExt beginDate = new DateExt(year,month,1,hour,min,0);
+        DateExt beginDate = new DateExt(dateExt.getYear(),dateExt.getMonth(),1,dateExt.getHour(),dateExt.getMinute(),0);
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(beginDate);
 
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
@@ -192,25 +109,30 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         long startTime = System.nanoTime();
-        long startTimeM = System.currentTimeMillis();
-        //??????6?У????7??
+        //long startTimeM = System.currentTimeMillis();
+        //one line for one week, so it will cost six columns
+
+
         for(int i=0;i<42;i++)
         {
             DateExt tempDate = new DateExt(beginDate.getFormatDateTime());
+            Log.d("temp date", tempDate.getFormatDateTime());
             tempDate.addDays(offsetDay);
             DayModel dayModel = new DayModel();
             dayModel.setDay(Integer.toString(tempDate.getDay()));
             dayModel.setEra_day(lunarCalendarWrapper.toStringWithSexagenary(getEraDayIndex(eraDayIndex, offsetDay)));
-            dayModel.setLunar_day(lunarCalendarWrapper.toStringWithChineseDay(lunarCalendarWrapper.getDateLunar(tempDate).getLunarDay()));
+            dayModel.setLunar_day("");
+            //this will set again in the AsyncReloadGridView class
+            //dayModel.setLunar_day(lunarCalendarWrapper.toStringWithChineseDay(lunarCalendarWrapper.getDateLunar(tempDate).getLunarDay()));
             dayModel.setDateExt(tempDate);
             offsetDay ++;
             listDays.add(dayModel);
         }
 
         long consumingTime = System.nanoTime() - startTime;
-        long consumingTimeM = System.currentTimeMillis() - startTimeM;
+        //long consumingTimeM = System.currentTimeMillis() - startTimeM;
         Log.d("lsw",consumingTime/1000/1000 + " calendar model create date time.");
-        Log.d("lsw",consumingTimeM + "ms calendar model create date time.");
+        //Log.d("lsw",consumingTimeM + "ms calendar model create date time.");
         return listDays;
     }
 
