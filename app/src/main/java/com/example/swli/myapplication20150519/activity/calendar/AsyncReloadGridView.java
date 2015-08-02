@@ -77,7 +77,7 @@ public class AsyncReloadGridView extends AsyncTask<DateExt, Void, List<DayModel>
             DayModel dayModel = dayModelList.get(i);
 
             tvLunaryDay.setText(dayModel.getLunar_day());
-            tvDay.setText(dayModel.getDay());
+            tvDay.setText(dayModel.getDateExt().getDay());
 
             if(dayModel.getDateExt().getMonth() == selectedDate.getMonth()
                     && dayModel.getDateExt().getDay() == selectedDate.getDay())
@@ -116,16 +116,6 @@ public class AsyncReloadGridView extends AsyncTask<DateExt, Void, List<DayModel>
 
         final TextView innerTvDay = tvDay;
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedDate = dayModelList.get(i).getDateExt();
-                if(callBack != null) {
-                    callBack.invoke(selectedDate);
-                    innerTvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
-                    innerTvDay.setTextColor(Color.WHITE);
-                }
-            }
-        });
+
     }
 }

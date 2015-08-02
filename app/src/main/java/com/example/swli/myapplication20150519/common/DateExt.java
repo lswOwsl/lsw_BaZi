@@ -14,6 +14,11 @@ public class DateExt {
     Calendar calendar;
     public static String DefaultFormat = "yyyy-MM-dd HH:mm";
 
+    public DateExt(Calendar calendar)
+    {
+        this.calendar = calendar;
+    }
+
     public DateExt(int year,int month,int day, int hour, int minute, int second)
     {
         this();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:era="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -15,12 +16,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView android:layout_marginLeft="3dp" android:layout_marginTop="3dp"
+            <com.example.swli.myapplication20150519.activity.calendar.DayTextView
+                android:layout_marginLeft="3dp" android:layout_marginTop="3dp"
                 android:id="@+id/tvDay"
                 android:layout_width="28dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                />
 
             <TextView
                 android:id="@+id/tvLunarDay"
@@ -31,12 +34,13 @@
                 android:textSize="10dp" android:textColor="#ccc" />
         </LinearLayout>
 
-        <TextView
+        <com.example.swli.myapplication20150519.activity.calendar.EraDayTextView
             android:id="@+id/tvEraDay"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:ems="1"
             android:gravity="center"
-            android:text="甲子" />
+            era:CelestialText="甲"
+            era:TerrestrialText="子"/>
     </LinearLayout>
 </LinearLayout>

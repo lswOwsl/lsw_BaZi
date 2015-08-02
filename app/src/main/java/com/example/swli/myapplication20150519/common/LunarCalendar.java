@@ -2,6 +2,8 @@
 package com.example.swli.myapplication20150519.common;
 
 
+import java.util.Calendar;
+
 public class LunarCalendar extends LunarSolarTerm{
 
     public static int minYear = 1616;
@@ -96,6 +98,12 @@ public class LunarCalendar extends LunarSolarTerm{
 
     }
 
+    public boolean checkDateLimit(Calendar calendar)
+    {
+        DateExt dateExt = new DateExt(calendar);
+        return checkDateLimit(dateExt);
+    }
+
     public String toStringLunarDate(DateExt dateExt)
     {
         DateLunar dateLunar = this.getDateLunar(dateExt);
@@ -109,6 +117,13 @@ public class LunarCalendar extends LunarSolarTerm{
         }
 
         return "";
+    }
+
+    public DateLunar getDateLunar(Calendar calendar)
+    {
+        DateExt dateExt = new DateExt(calendar);
+
+        return getDateLunar(dateExt);
     }
 
     public DateLunar getDateLunar(DateExt dateExt)
@@ -200,7 +215,7 @@ public class LunarCalendar extends LunarSolarTerm{
     }
 
     //返回回农历 y年闰月的天数
-    private int getChineseLeapMonthDays(int year)
+    public int getChineseLeapMonthDays(int year)
     {
         if (getChineseLeapMonth(year) != 0)
         {

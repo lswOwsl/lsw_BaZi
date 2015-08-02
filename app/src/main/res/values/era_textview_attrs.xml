@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EraDayTextView">
+        <attr name="CelestialText" format="string"/>
+        <attr name="TerrestrialText" format="string"/>
+        <attr name="IsDisable" format="boolean"/>
+    </declare-styleable>
+</resources>

@@ -10,14 +10,33 @@ public class DayModel {
     private String day;
     private String lunar_day;
     private String era_day;
-    private DateExt dateExt;
+    private String formatDate;
+    private boolean isCurrentMonth;
+    private boolean isToday;
+    private boolean isSelected;
 
-    public DateExt getDateExt() {
-        return dateExt;
+    public boolean isToday() {
+        return isToday;
     }
 
-    public void setDateExt(DateExt dateExt) {
-        this.dateExt = dateExt;
+    public void setIsToday(boolean isToday) {
+        this.isToday = isToday;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    public boolean isCurrentMonth() {
+        return isCurrentMonth;
+    }
+
+    public void setIsCurrentMonth(boolean isCurrentMonth) {
+        this.isCurrentMonth = isCurrentMonth;
     }
 
     public String getDay() {
@@ -26,6 +45,14 @@ public class DayModel {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public String getFormatDate() {
+        return formatDate;
+    }
+
+    public void setFormatDate(String formatDate) {
+        this.formatDate = formatDate;
     }
 
     public String getLunar_day() {
@@ -42,5 +69,9 @@ public class DayModel {
 
     public void setEra_day(String era_day) {
         this.era_day = era_day;
+    }
+
+    public DateExt getDateExt() {
+        return new DateExt(formatDate);
     }
 }

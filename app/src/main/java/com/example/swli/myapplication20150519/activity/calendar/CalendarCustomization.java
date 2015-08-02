@@ -80,13 +80,11 @@ public class CalendarCustomization extends Activity implements CalendarFragment.
                         loadTitileDate(dateExt);
                         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
                         loadEraTextDetail(lunarCalendarWrapper);
+
+                        initFragment(dateExt);
+
                         initialDate = dateExt;
 
-                        CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        ft.replace(R.id.fl_calendar, f2);
-                        ft.commit();
                     }
                 });
                 dialog.show();
@@ -100,9 +98,7 @@ public class CalendarCustomization extends Activity implements CalendarFragment.
                 loadTitileDate(initialDate);
                 lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
                 loadEraTextDetail(lunarCalendarWrapper);
-
-                CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-                pushFragment(f2,true);
+                loadFragment(initialDate, true);
             }
 
             @Override
@@ -111,58 +107,18 @@ public class CalendarCustomization extends Activity implements CalendarFragment.
                 loadTitileDate(initialDate);
                 lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
                 loadEraTextDetail(lunarCalendarWrapper);
-
-                CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-                pushFragment(f2,false);
-
-                AsyncReloadGridView asyncReloadGridView = new AsyncReloadGridView(f2.getGridView());
-                asyncReloadGridView.execute(initialDate);
+                loadFragment(initialDate, false);
             }
         });
         //viewGesture.setGestureTo(gridView);
 
-        CalendarFragment f1 = CalendarFragment.newInstance(initialDate);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.fl_calendar, f1, "begin_calendar");
-
-        CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-        ft.add(R.id.fl_calendar,f2,"move_calendar");
-        ft.hide(f2);
-
-        ft.commit();
-
-
+      initFragment(initialDate);
     }
 
     @Override
     protected void onStart()
     {
         super.onStart();
-        CalendarFragment f2 = (CalendarFragment)getFragmentManager().findFragmentByTag("begin_calendar");
-        AsyncReloadGridView reloadGridView = new AsyncReloadGridView(f2.getGridView());
-        reloadGridView.setICallBack(new AsyncReloadGridView.ICallBack() {
-            @Override
-            public void invoke(DateExt dateExt) {
-                onFragmentInteraction(dateExt);
-            }
-        });
-        reloadGridView.execute(initialDate);
-
-    }
-
-    public void pushFragment(CalendarFragment calendarFragment,boolean isUp) {
-
-        String tag = new Random().toString();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        if(isUp) {
-            ft.setCustomAnimations(R.anim.vertical_bottom_enter, R.anim.vertical_top_out);
-        }
-        else {
-            ft.setCustomAnimations(R.anim.vertical_top_enter, R.anim.vertical_bottom_out);
-        }
-        ft .replace(R.id.fl_calendar, calendarFragment, tag);
-        ft .commit();
-
     }
 
     //必须重写这个方法要不然会抛异常，因为gridview的filing合onclick冲突了
@@ -226,11 +182,7 @@ public class CalendarCustomization extends Activity implements CalendarFragment.
         //noinspection SimplifiableIfStatement
         if (id == R.id.menuToday) {
             initialDate = new DateExt();
-            CalendarFragment f2 = CalendarFragment.newInstance(initialDate);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.setTransition(android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.replace(R.id.fl_calendar, f2);
-            ft.commit();
+            initFragment(initialDate);
             loadTitileDate(initialDate);
             lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
             loadEraTextDetail(lunarCalendarWrapper);
@@ -277,39 +229,56 @@ public class CalendarCustomization extends Activity implements CalendarFragment.
         }
 
         if(willChange) {
-            CalendarFragment f2 = (CalendarFragment) getFragmentManager().findFragmentByTag("move_calendar");
-            CalendarFragment f1 = (CalendarFragment) getFragmentManager().findFragmentByTag("begin_calendar");
-
-            GridView gridView = f1.getGridView();
-
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            if(willChange) {
-                ft.setCustomAnimations(R.anim.vertical_bottom_enter, R.anim.vertical_top_out,0,0);
-            }
-            else {
-                ft.setCustomAnimations(R.anim.vertical_top_enter, R.anim.vertical_bottom_out,0,0);
-            }
-
-            if (f2.isHidden()) {
-                gridView = f2.getGridView();
-                ft.hide(f1).show(f2);
-            }
-            else
-            {
-                ft.hide(f2).show(f1);
-            }
-            ft.commit();
-
-            AsyncReloadGridView reloadGridView = new AsyncReloadGridView(gridView);
-            reloadGridView.setICallBack(new AsyncReloadGridView.ICallBack() {
-                @Override
-                public void invoke(DateExt dateExt) {
-                    onFragmentInteraction(dateExt);
-                }
-            });
-            reloadGridView.execute(dateExt);
-
+            loadFragment(dateExt, willChange && flag);
         }
         initialDate = dateExt;
+    }
+
+    public void initFragment(DateExt dateExt)
+    {
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        CalendarFragment f1 = CalendarFragment.newInstance(dateExt);
+        ft.replace(R.id.fl_calendar, f1, "begin_calendar");
+
+        CalendarFragment f2 = CalendarFragment.newInstance(dateExt);
+        if(!f2.isAdded()) {
+            ft.add(R.id.fl_calendar, f2, "move_calendar");
+            ft.hide(f2);
+        }
+
+        ft.commit();
+    }
+
+    public void loadFragment(DateExt dateExt, boolean moveDirection)
+    {
+        CalendarFragment f2 = (CalendarFragment) getFragmentManager().findFragmentByTag("move_calendar");
+        CalendarFragment f1 = (CalendarFragment) getFragmentManager().findFragmentByTag("begin_calendar");
+        f1.setDateExt(dateExt);
+        f2.setDateExt(dateExt);
+        GridView gridView = f1.getGridView();
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if(moveDirection) {
+            ft.setCustomAnimations(R.anim.vertical_bottom_enter, R.anim.vertical_top_out,0,0);
+        }
+        else {
+            ft.setCustomAnimations(R.anim.vertical_top_enter, R.anim.vertical_bottom_out,0,0);
+        }
+
+        if (f2.isHidden()) {
+            gridView = f2.getGridView();
+            ft.hide(f1).show(f2);
+        }
+        else
+        {
+            ft.hide(f2).show(f1);
+        }
+
+        CalendarAdapter calendarAdapter = (CalendarAdapter)gridView.getAdapter();
+        calendarAdapter.dayModels = CalendarAdapter.getOneMonthDays(dateExt);
+        calendarAdapter.notifyDataSetChanged();
+        ft.commit();
     }
 }
