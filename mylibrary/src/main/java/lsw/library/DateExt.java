@@ -1,14 +1,12 @@
-package com.example.swli.myapplication20150519.common;
+package lsw.library;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
- * Created by swli on 5/26/2015.
+ * Created by swli on 8/3/2015.
  */
 public class DateExt {
     Calendar calendar;
@@ -101,7 +99,7 @@ public class DateExt {
 
     public String getFormatDateTime()
     {
-       return this.getFormatDateTime(DefaultFormat);
+        return this.getFormatDateTime(DefaultFormat);
     }
 
     public int getDaysOffset(DateExt dateExt)

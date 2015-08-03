@@ -8,10 +8,11 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.example.swli.myapplication20150519.common.DBManager;
-import com.example.swli.myapplication20150519.common.DateExt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import lsw.library.DateExt;
 
 /**
  * Created by swli on 6/24/2015.

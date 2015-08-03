@@ -9,37 +9,10 @@
     <string name="sliding_button_edit">编辑</string>
     <string name="sliding_button_shensha">神煞</string>
 
-    <string-array name="tianGan">
-        <item>甲</item>
-        <item>乙</item>
-        <item>丙</item>
-        <item>丁</item>
-        <item>戊</item>
-        <item>己</item>
-        <item>庚</item>
-        <item>辛</item>
-        <item>壬</item>
-        <item>癸</item>
-    </string-array>
-
-    <string-array name="diZhi">
-        <item>子</item>
-        <item>丑</item>
-        <item>寅</item>
-        <item>卯</item>
-        <item>辰</item>
-        <item>巳</item>
-        <item>午</item>
-        <item>未</item>
-        <item>申</item>
-        <item>酉</item>
-        <item>戌</item>
-        <item>亥</item>
-    </string-array>
-
     <bool name="isRelease">false</bool>
     <bool name="includeAD">false</bool>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="externalSavingFolder">BaZi_lsw</string>
+    <string name="ApplicationName">八字排盘</string>
 </resources>

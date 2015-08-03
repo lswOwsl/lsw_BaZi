@@ -8,13 +8,14 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import lsw.library.DateExt;
 
 /**
  * Created by lsw_wsl on 7/24/15.
@@ -102,6 +103,7 @@ public class CalendarAdapter extends BaseAdapter {
 
     public static List<DayModel> getOneMonthDays(DateExt dateExt)
     {
+        long startTime = System.nanoTime();
 
         List<DayModel> listDays = new ArrayList<DayModel>();
 
@@ -120,8 +122,6 @@ public class CalendarAdapter extends BaseAdapter {
         {
             offsetDay = -6;
         }
-
-        long startTime = System.nanoTime();
 
         String beginMonthForCompare = beginDate.getFormatDateTime("yyyy-MM");
         String selectedDayForCompare = dateExt.getFormatDateTime("yyyy-MM-dd");

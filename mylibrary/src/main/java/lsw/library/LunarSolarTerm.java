@@ -1,9 +1,9 @@
-package com.example.swli.myapplication20150519.common;
+package lsw.library;
 
 import android.util.Pair;
 
 /**
- * Created by swli on 6/5/2015.
+ * Created by swli on 8/3/2015.
  */
 public class LunarSolarTerm {
 
@@ -33,8 +33,8 @@ public class LunarSolarTerm {
         double gzD =
                 //(solarDateTime.getHour() < 23)
                 //?
-        equivalentStandardDay(solarDateTime.getYear(), solarDateTime.getMonth(), solarDateTime.getDay());
-                //: equivalentStandardDay(solarDateTime.getYear(), solarDateTime.getMonth(), solarDateTime.getDay()) + 1;
+                equivalentStandardDay(solarDateTime.getYear(), solarDateTime.getMonth(), solarDateTime.getDay());
+        //: equivalentStandardDay(solarDateTime.getYear(), solarDateTime.getMonth(), solarDateTime.getDay()) + 1;
         return (int) Math.round((double) rem((int) gzD + 15, 60));
     }
 
@@ -43,7 +43,7 @@ public class LunarSolarTerm {
         double v = 12 * gan(getChineseEraOfDay(solarDateTime)) + Math.floor((double) ((solarDateTime.getHour() + 1) / 2)) - 11;
         //早子夜
         //if (solarDateTime.getHour() == 23)
-          //  v -= 12;
+        //  v -= 12;
         return (int) Math.round(rem(v, 60));
     }
 
@@ -194,3 +194,4 @@ public class LunarSolarTerm {
         return (-1);
     }
 }
+

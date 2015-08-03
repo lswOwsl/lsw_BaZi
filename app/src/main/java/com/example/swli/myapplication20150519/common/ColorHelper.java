@@ -92,7 +92,7 @@ public class ColorHelper {
 
     public static SpannableString getColorCelestialStem(Context context, String text)
     {
-        XmlCelestialStem xmlCelestialStem = XmlCelestialStem.getInstance(context);
+        XmlCelestialStem xmlCelestialStem = XmlCelestialStem.getInstance(MyApplication.getInstance());
         String fe = xmlCelestialStem.getFiveElementBy(text);
         SpannableString spanString = new SpannableString(text);
         ForegroundColorSpan span = new ForegroundColorSpan(getColorByFiveElement(fe));

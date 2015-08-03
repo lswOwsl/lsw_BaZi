@@ -1,6 +1,7 @@
 package com.example.swli.myapplication20150519.activity.calendar;
 
-import com.example.swli.myapplication20150519.common.DateExt;
+
+import lsw.library.DateExt;
 
 /**
  * Created by swli on 7/24/2015.

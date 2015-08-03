@@ -18,10 +18,11 @@ import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.common.ColorHelper;
-import com.example.swli.myapplication20150519.common.LunarSolarTerm;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
+
+import lsw.library.LunarSolarTerm;
 
 /**
  * Created by swli on 6/10/2015.

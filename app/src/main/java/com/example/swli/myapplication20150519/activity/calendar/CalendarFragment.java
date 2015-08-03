@@ -13,9 +13,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.DateExt;
 
-import java.util.Calendar;
+import lsw.library.DateExt;
 
 public class CalendarFragment extends Fragment {
 
@@ -58,7 +57,7 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden)
     {
-        //因为滑动刷新后不清空这两个值，会造成line92两个月份一样的问题
+        //å› ä¸ºæ»‘åŠ¨åˆ·æ–°å?Žä¸?æ¸…ç©ºè¿™ä¸¤ä¸ªå€¼ï¼Œä¼šé€ æˆ?line92ä¸¤ä¸ªæœˆä»½ä¸€æ ·çš„é—®é¢˜
         if(!hidden)
             preTextView = todayTextView = null;
     }
@@ -88,24 +87,24 @@ public class CalendarFragment extends Fragment {
                 DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
                 TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
 
-                //如果不等于当前月，清空上一个选中的控件
+                //å¦‚æžœä¸?ç­‰äºŽå½“å‰?æœˆï¼Œæ¸…ç©ºä¸Šä¸€ä¸ªé€‰ä¸­çš„æŽ§ä»¶
                 if(dateExt.getMonth() != selectedDate.getMonth()) {
                     preTextView = todayTextView = null;
                 }
                 else
                 {
-                    //当前月份，有没有上次一选中的天
+                    //å½“å‰?æœˆä»½ï¼Œæœ‰æ²¡æœ‰ä¸Šæ¬¡ä¸€é€‰ä¸­çš„å¤©
                     if(preTextView != null) {
                         preTextView.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
                         preTextView.setTextColor(Color.BLACK);
                     }
                     else
                     {
-                        //清空跳转后默认选中的日子
+                        //æ¸…ç©ºè·³è½¬å?Žé»˜è®¤é€‰ä¸­çš„æ—¥å­?
                         int seletedTextViewIndex = 0;
                         for (DayModel dayModel: calendarAdapter.getDayModels())
                         {
-                            //得到的永远是第一个当月刷新出来的那一天，不是点了好多次选的日期
+                            //å¾—åˆ°çš„æ°¸è¿œæ˜¯ç¬¬ä¸€ä¸ªå½“æœˆåˆ·æ–°å‡ºæ?¥çš„é‚£ä¸€å¤©ï¼Œä¸?æ˜¯ç‚¹äº†å¥½å¤šæ¬¡é€‰çš„æ—¥æœŸ
                             if(dayModel.isSelected())
                             {
                                 View view1 = adapterView.getChildAt(seletedTextViewIndex);
@@ -119,7 +118,7 @@ public class CalendarFragment extends Fragment {
 
                     }
 
-                    //高亮当天
+                    //é«˜äº®å½“å¤©
                     if(selectedDate.getFormatDateTime("yyyyMMdd").equals(new DateExt().getFormatDateTime("yyyyMMdd")))
                     {
                         todayTextView = tvDay;
@@ -133,11 +132,11 @@ public class CalendarFragment extends Fragment {
                         }
                         else
                         {
-                            //清空跳转后默认选中的日子
+                            //æ¸…ç©ºè·³è½¬å?Žé»˜è®¤é€‰ä¸­çš„æ—¥å­?
                             int seletedTextViewIndex = 0;
                             for (DayModel dayModel: calendarAdapter.getDayModels())
                             {
-                                //得到的永远是第一个当月刷新出来的那一天，不是点了好多次选的日期
+                                //å¾—åˆ°çš„æ°¸è¿œæ˜¯ç¬¬ä¸€ä¸ªå½“æœˆåˆ·æ–°å‡ºæ?¥çš„é‚£ä¸€å¤©ï¼Œä¸?æ˜¯ç‚¹äº†å¥½å¤šæ¬¡é€‰çš„æ—¥æœŸ
                                 if(dayModel.isToday())
                                 {
                                     View view1 = adapterView.getChildAt(seletedTextViewIndex);

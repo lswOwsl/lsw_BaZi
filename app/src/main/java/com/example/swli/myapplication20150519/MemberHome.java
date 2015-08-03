@@ -1,31 +1,24 @@
 package com.example.swli.myapplication20150519;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -40,7 +33,6 @@ import com.example.swli.myapplication20150519.activity.sidebar.CharacterParser;
 import com.example.swli.myapplication20150519.activity.sidebar.SideBar;
 import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
 import com.example.swli.myapplication20150519.common.DBManager;
-import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.MyApplication;
 import com.example.swli.myapplication20150519.common.SwipeListView;
 import com.example.swli.myapplication20150519.data.handler.MemberDataHandler;
@@ -50,6 +42,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import lsw.library.DateExt;
 
 /**
  * Created by swli on 5/27/2015.

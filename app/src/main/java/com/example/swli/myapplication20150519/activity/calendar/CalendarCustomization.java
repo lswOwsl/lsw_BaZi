@@ -13,11 +13,10 @@ import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.common.ColorHelper;
-import com.example.swli.myapplication20150519.common.DateExt;
-import com.example.swli.myapplication20150519.common.DateLunar;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 
-import java.util.Random;
+import lsw.library.DateExt;
+import lsw.library.DateLunar;
 
 /**
  * Created by swli on 7/24/2015.

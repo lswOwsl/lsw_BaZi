@@ -9,9 +9,8 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.DateExt;
-import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
-import com.example.swli.myapplication20150519.common.MyApplication;
+
+import lsw.library.DateExt;
 
 /**
  * Created by lsw_wsl on 7/25/15.

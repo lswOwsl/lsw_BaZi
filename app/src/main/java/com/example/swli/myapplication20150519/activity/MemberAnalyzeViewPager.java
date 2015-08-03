@@ -16,10 +16,11 @@ import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
 import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.EnumPart;
-import com.example.swli.myapplication20150519.common.StringHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lsw.library.StringHelper;
 
 public class MemberAnalyzeViewPager {
 
@@ -457,9 +458,9 @@ public class MemberAnalyzeViewPager {
             String jiShen = cur.getString(jiShenIndex);
             String shiYongZhouqi = cur.getString(shiYongZhouQiIndex);
 
-            result += "用神:" + StringHelper.getText(yongShen1) + " " + StringHelper.getText(yongShen2) + "\n";
-            result += "忌神:" + StringHelper.getText(jiShen) + "\n\n";
-            result += "适用周期:" + StringHelper.getText(shiYongZhouqi) + "\n";
+            result += "用神:" + StringHelper.getString(yongShen1) + " " + StringHelper.getString(yongShen2) + "\n";
+            result += "忌神:" + StringHelper.getString(jiShen) + "\n\n";
+            result += "适用周期:" + StringHelper.getString(shiYongZhouqi) + "\n";
             result += comment + "\n";
         }
 

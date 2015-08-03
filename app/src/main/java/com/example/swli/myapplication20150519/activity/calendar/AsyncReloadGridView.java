@@ -1,25 +1,20 @@
 package com.example.swli.myapplication20150519.activity.calendar;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.text.SpannableString;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.common.ColorHelper;
-import com.example.swli.myapplication20150519.common.DateExt;
-import com.example.swli.myapplication20150519.common.LunarCalendar;
-import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 import com.example.swli.myapplication20150519.common.MyApplication;
 
-import java.util.HashMap;
 import java.util.List;
+
+import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
 
 /**
  * Created by swli on 7/30/2015.

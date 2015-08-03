@@ -1,15 +1,15 @@
-package com.example.swli.myapplication20150519.common;
+package lsw.library;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Pair;
 
-import com.example.swli.myapplication20150519.R;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Created by swli on 8/3/2015.
+ */
 public class BaZiHelper {
 
     static LunarSolarTerm lunarSolarTerm = new LunarSolarTerm();
@@ -153,10 +153,9 @@ public class BaZiHelper {
         return false;
     }
 
-    public static Pair<String,String> getXunKong(Context context, String celestrialStem,String terrestrial)
+    public static Pair<String,String> getXunKong(Context context, String celestialStem,String terrestrial)
     {
-
-        int eraIndexC = Arrays.asList(context.getResources().getStringArray(R.array.tianGan)).indexOf(celestrialStem);
+        int eraIndexC = Arrays.asList(context.getResources().getStringArray(R.array.tianGan)).indexOf(celestialStem);
         int eraIndexT = Arrays.asList(context.getResources().getStringArray(R.array.diZhi)).indexOf(terrestrial);
 
         if(eraIndexC >= eraIndexT)
@@ -167,31 +166,6 @@ public class BaZiHelper {
         int result = eraIndexT - eraIndexC;
         String[] array = context.getResources().getStringArray(R.array.diZhi);
         return Pair.create(array[result-2],array[result-1]);
-    }
-
-    public static String getGrowTrick(Context context, String celestrialStem, String terrestrial)
-    {
-        String[] strings = new String[]{"id","日主","长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"};
-
-        DBManager dbManager = new DBManager(context);
-        dbManager.openDatabase();
-
-        String sql = "SELECT * FROM GrowLiveTrick where CelestialStem = ?";
-        Cursor cur = dbManager.execute(sql, new String[]
-                {celestrialStem});
-        String result = "";
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            for(int i=2; i<strings.length; i++) {
-                String temp = cur.getString(i);
-                if(terrestrial.equals(temp)) {
-                    return strings[i];
-                }
-            }
-        }
-        cur.close();
-        dbManager.closeDatabase();
-
-        return result;
     }
 
 }

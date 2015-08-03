@@ -2,15 +2,15 @@ package com.example.swli.myapplication20150519.activity.calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.widget.DatePicker;
 import android.widget.NumberPicker;
-import android.widget.TimePicker;
 
-import com.example.swli.myapplication20150519.common.DateExt;
-import com.example.swli.myapplication20150519.common.LunarCalendar;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
 
 /**
  * Created by swli on 7/29/2015.

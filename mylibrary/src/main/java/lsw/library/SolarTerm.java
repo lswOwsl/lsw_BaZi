@@ -1,13 +1,12 @@
-package com.example.swli.myapplication20150519.common;
+package lsw.library;
 
 /**
- * Created by swli on 5/26/2015.
+ * Created by swli on 8/3/2015.
  */
 public class SolarTerm
 {
     private DateExt solarTermDate;
     private String name;
-
 
     public void setSolarTermDateTime(DateExt date)
     {
@@ -18,7 +17,6 @@ public class SolarTerm
     {
         return  this.solarTermDate;
     }
-
 
     public String getName()
     {

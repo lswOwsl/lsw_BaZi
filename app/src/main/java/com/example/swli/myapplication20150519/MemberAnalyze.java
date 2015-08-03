@@ -11,14 +11,15 @@ import com.example.swli.myapplication20150519.activity.ICallBackDialog;
 import com.example.swli.myapplication20150519.activity.MemberAnalyzeViewPager;
 import com.example.swli.myapplication20150519.advertising.BaiDuBanner;
 import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
-import com.example.swli.myapplication20150519.common.BaZiHelper;
-import com.example.swli.myapplication20150519.common.DateExt;
+import com.example.swli.myapplication20150519.common.BaZiHelperExtender;
 import com.example.swli.myapplication20150519.common.EnumPart;
-import com.example.swli.myapplication20150519.common.LunarSolarTerm;
-import com.example.swli.myapplication20150519.common.SolarTerm;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
+
+import lsw.library.DateExt;
+import lsw.library.LunarSolarTerm;
+import lsw.library.SolarTerm;
 
 public class MemberAnalyze extends MemberBase {
 
@@ -346,7 +347,7 @@ public class MemberAnalyze extends MemberBase {
 
     private void setStemBottom(String celestrialStem, String terrestrial, TextView tv)
     {
-        String result = BaZiHelper.getGrowTrick(this, celestrialStem, terrestrial);
+        String result = BaZiHelperExtender.getGrowTrick(this, celestrialStem, terrestrial);
         boolean isXunKong = isXunKongText(terrestrial);
         if(isXunKong)
         {
@@ -357,7 +358,7 @@ public class MemberAnalyze extends MemberBase {
 
     private boolean isXunKongText(String terrestrialText)
     {
-        Pair<String,String> kong = BaZiHelper.getXunKong(this,
+        Pair<String,String> kong = BaZiHelperExtender.getXunKong(this,
                 baZiActivityWrapper.getC(baZiActivityWrapper.getDayEraIndex()),
                 baZiActivityWrapper.getT(baZiActivityWrapper.getDayEraIndex()));
 

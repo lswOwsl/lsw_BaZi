@@ -1,9 +1,10 @@
-
-package com.example.swli.myapplication20150519.common;
-
+package lsw.library;
 
 import java.util.Calendar;
 
+/**
+ * Created by swli on 8/3/2015.
+ */
 public class LunarCalendar extends LunarSolarTerm{
 
     public static int minYear = 1616;
@@ -26,7 +27,7 @@ public class LunarCalendar extends LunarSolarTerm{
      12，小
      ----1000----
      最后四位8月闰月
-    **/
+     **/
 
     public static int[] lunarDateArray = new int[]{
 
@@ -91,7 +92,7 @@ public class LunarCalendar extends LunarSolarTerm{
         DateExt maxDate = new DateExt(minYear+lunarDateArray.length,minMonth,minDay,0,0,0);
 
         if(dateExt.compareTo(minDate) == DateExt.EnumDateCompareResult.Earlier ||
-           dateExt.compareTo(maxDate) == DateExt.EnumDateCompareResult.Later)
+                dateExt.compareTo(maxDate) == DateExt.EnumDateCompareResult.Later)
             return false;
         else
             return true;
@@ -266,7 +267,7 @@ public class LunarCalendar extends LunarSolarTerm{
     {
 
         if ((bitpostion > 31) || (bitpostion < 0))
-             new Exception("Error Param: bitpostion[0-31]:" + bitpostion);
+            new Exception("Error Param: bitpostion[0-31]:" + bitpostion);
 
         int bit = 1 << bitpostion;
 
@@ -417,7 +418,7 @@ public class LunarCalendar extends LunarSolarTerm{
 
     public String toStringWithChineseMonth(int x) {
         String[] array = new String[]{
-                 "正", "二", "三", "四", "五", "六", "七", "八", "九","十", "十一", "腊"
+                "正", "二", "三", "四", "五", "六", "七", "八", "九","十", "十一", "腊"
         };
 
         return array[x-1];
@@ -427,20 +428,20 @@ public class LunarCalendar extends LunarSolarTerm{
     {
         String nStr1[] = new String[]{"一","二","三","四","五","六","七","八","九"};
         String nStr2[] = new String[]{"初","十","廿","卅"};
-            switch (x)
-            {
-                case 0:
-                    return "";
-                case 10:
-                    return "初十";
-                case 20:
-                    return "二十";
-                case 30:
-                    return "三十";
-                default:
-                    return nStr2[(x / 10)] + nStr1[x % 10-1];
+        switch (x)
+        {
+            case 0:
+                return "";
+            case 10:
+                return "初十";
+            case 20:
+                return "二十";
+            case 30:
+                return "三十";
+            default:
+                return nStr2[(x / 10)] + nStr1[x % 10-1];
 
-            }
+        }
     }
 
     public String toStringWithChineseYear(int x)
@@ -532,4 +533,3 @@ public class LunarCalendar extends LunarSolarTerm{
     }
 
 }
-

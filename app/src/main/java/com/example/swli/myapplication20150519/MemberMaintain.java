@@ -19,12 +19,13 @@ import android.widget.Toast;
 
 import com.example.swli.myapplication20150519.activity.DateTimePickDialog;
 import com.example.swli.myapplication20150519.common.DBManager;
-import com.example.swli.myapplication20150519.common.DateExt;
-import com.example.swli.myapplication20150519.common.DateLunar;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 import com.example.swli.myapplication20150519.phone.base.Contact;
 
 import java.util.HashMap;
+
+import lsw.library.DateExt;
+import lsw.library.DateLunar;
 
 /**
  * Created by swli on 5/26/2015.

@@ -19,14 +19,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.BaZiHelper;
+import com.example.swli.myapplication20150519.common.BaZiHelperExtender;
 import com.example.swli.myapplication20150519.common.ColorHelper;
-import com.example.swli.myapplication20150519.common.LunarSolarTerm;
-import com.example.swli.myapplication20150519.common.SolarTerm;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import lsw.library.LunarSolarTerm;
+import lsw.library.SolarTerm;
 
 public class FlowYearPickDialog {
     private GridView gridView;
@@ -144,7 +145,7 @@ public class FlowYearPickDialog {
 
         Integer selectedDaYunEraIndex;
         if (currentAge != null) {
-            selectedDaYunEraIndex = BaZiHelper.getDaYunByFlowYear(currentAge.intValue(), beginYunAge, sourceDaYunsIndex);
+            selectedDaYunEraIndex = BaZiHelperExtender.getDaYunByFlowYear(currentAge.intValue(), beginYunAge, sourceDaYunsIndex);
             int index = sourceDaYunsIndex.indexOf(selectedDaYunEraIndex);
             if (index != -1)
                 spinner.setSelection(index);
@@ -236,7 +237,7 @@ public class FlowYearPickDialog {
         final int tempAtWhichYun = atWhichYun + beginYunAge;
 
         //选中当年年的时候查询对应年的月
-        sourceFlowMonthSolarTerms = BaZiHelper.getSolarTermsInLunarYear(birthdayYear + tempAtWhichYun + flowYearIndex);
+        sourceFlowMonthSolarTerms = BaZiHelperExtender.getSolarTermsInLunarYear(birthdayYear + tempAtWhichYun + flowYearIndex);
         sourceFlowMonthSolarTerms.add(0,null);
         BaseAdapter baseAdapter = getFlowMonthSpinnerAdapter(callBackArgs);
         spMonthesRange.setAdapter(baseAdapter);

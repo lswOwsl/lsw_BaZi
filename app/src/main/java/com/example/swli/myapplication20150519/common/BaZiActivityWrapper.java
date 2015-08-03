@@ -13,6 +13,9 @@ import com.example.swli.myapplication20150519.model.XmlTerrestrial;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
+
 public class BaZiActivityWrapper {
     DateExt birthday;
     LunarCalendarWrapper calendarWrapper;
@@ -284,12 +287,12 @@ public class BaZiActivityWrapper {
 
     public ArrayList<Integer> getDaYuns(int count)
     {
-        return BaZiHelper.getDaYunsByNum(getYearEraIndex(), getMonthEraIndex(), count, isMale);
+        return BaZiHelperExtender.getDaYunsByNum(getYearEraIndex(), getMonthEraIndex(), count, isMale);
     }
 
     private Pair<Integer,Integer> getBeginYunAgeMonth() {
         //起运年龄
-        int hoursQiYun = Math.abs(BaZiHelper.getBeginYunHours(birthday, isMale, getYearEraIndex()));
+        int hoursQiYun = Math.abs(BaZiHelperExtender.getBeginYunHours(birthday, isMale, getYearEraIndex()));
         //三天一岁，1天4个月，1个时辰10天
         int ageQiYun = (int) ((double) hoursQiYun / 24) / 3;
         int tempAge = ageQiYun;
@@ -310,7 +313,7 @@ public class BaZiActivityWrapper {
         int currentAge = flowYear - birthday.getYear();
         ArrayList<Integer> daYuns = getDaYuns(currentAge/10+1);
         //因为有的人是0岁几个月起运，所以不能按0岁起运看，应该按1岁起运看
-        return BaZiHelper.getDaYunByFlowYear(currentAge, beginYunAge, daYuns);
+        return BaZiHelperExtender.getDaYunByFlowYear(currentAge, beginYunAge, daYuns);
     }
 }
 

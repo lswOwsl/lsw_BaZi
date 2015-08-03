@@ -1,22 +1,16 @@
 package com.example.swli.myapplication20150519.data.handler;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.ListView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
 import com.example.swli.myapplication20150519.common.DBManager;
-import com.example.swli.myapplication20150519.common.DateExt;
 import com.example.swli.myapplication20150519.common.MyApplication;
-import com.example.swli.myapplication20150519.common.XmlParser;
 import com.example.swli.myapplication20150519.model.Member;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -28,6 +22,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import lsw.library.DateExt;
 
 /**
  * Created by lsw_wsl on 7/18/15.

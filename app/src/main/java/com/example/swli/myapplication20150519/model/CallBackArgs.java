@@ -1,6 +1,7 @@
 package com.example.swli.myapplication20150519.model;
 
-import com.example.swli.myapplication20150519.common.SolarTerm;
+
+import lsw.library.SolarTerm;
 
 public class CallBackArgs {
     private Integer daYunEraIndex;
