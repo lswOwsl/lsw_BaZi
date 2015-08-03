@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <Enhance from="wood" to="fire" ></Enhance>
+  <Enhance from="fire" to="earth" ></Enhance>
+  <Enhance from="earth" to="metal" ></Enhance>
+  <Enhance from="metal" to="water" ></Enhance>
+  <Enhance from="water" to="wood" ></Enhance>
+
+  <Control from="wood" to="earth"></Control>
+  <Control from="earth" to="water"></Control>
+  <Control from="water" to="fire"></Control>
+  <Control from="fire" to="metal"></Control>
+  <Control from="metal" to="wood"></Control>
+</Root>
