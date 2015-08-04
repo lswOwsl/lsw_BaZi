@@ -1,10 +1,10 @@
 package com.example.swli.myapplication20150519.model;
 
 import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
-import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
+import lsw.library.LunarCalendarWrapper;
 
 /**
  * Created by swli on 5/27/2015.

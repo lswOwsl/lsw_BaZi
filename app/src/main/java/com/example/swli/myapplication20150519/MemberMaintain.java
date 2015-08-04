@@ -19,13 +19,14 @@ import android.widget.Toast;
 
 import com.example.swli.myapplication20150519.activity.DateTimePickDialog;
 import com.example.swli.myapplication20150519.common.DBManager;
-import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 import com.example.swli.myapplication20150519.phone.base.Contact;
 
 import java.util.HashMap;
 
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
+import lsw.library.LunarCalendarWrapper;
+import lsw.library.StringHelper;
 
 /**
  * Created by swli on 5/26/2015.
@@ -118,33 +119,42 @@ public class MemberMaintain extends Activity {
     private void initContent()
     {
         DateExt now = DateExt.getCurrentTime();
-        if(this.getIntent().getExtras() != null)
+
+        Intent intent= getIntent();
+        String value=intent.getStringExtra("lunar_calendar_dateTime");
+        if(!StringHelper.isNullOrEmpty(value))
         {
-            Bundle bundle = this.getIntent().getExtras();
+            now = new DateExt(StringHelper.getString(value));
+
+            getActionBar().setTitle("新增");
+        }
+        else {
+
+            if (this.getIntent().getExtras() != null) {
+                Bundle bundle = this.getIntent().getExtras();
 
             /*获取Bundle中的数据，注意类型和key*/
-            int id = bundle.getInt("Id");
-            String name = bundle.getString("Name");
-            boolean ismale = bundle.getBoolean("Ismale");
-            final String birthday = bundle.getString("Birthday");
-            String isMaleText = ismale?"男":"女";
-            getActionBar().setTitle("编辑");
-            //getActionBar().setSubtitle(isMaleText);
-            now = new DateExt(birthday);
+                int id = bundle.getInt("Id");
+                String name = bundle.getString("Name");
+                boolean ismale = bundle.getBoolean("Ismale");
+                final String birthday = bundle.getString("Birthday");
+                String isMaleText = ismale ? "男" : "女";
+                getActionBar().setTitle("编辑");
+                //getActionBar().setSubtitle(isMaleText);
+                now = new DateExt(birthday);
 
-            preActivitySearchText = bundle.getString("SearchText");
+                preActivitySearchText = bundle.getString("SearchText");
 
-            if(ismale)
-                rbIsMale.setChecked(true);
-            else
-                rbIsFemale.setChecked(true);
+                if (ismale)
+                    rbIsMale.setChecked(true);
+                else
+                    rbIsFemale.setChecked(true);
 
-            memeberId = id;
-            etMemberName.setText(name);
-        }
-        else
-        {
-            getActionBar().setTitle("新增");
+                memeberId = id;
+                etMemberName.setText(name);
+            } else {
+                getActionBar().setTitle("新增");
+            }
         }
 
         //final DateExt tempDateExt = now;

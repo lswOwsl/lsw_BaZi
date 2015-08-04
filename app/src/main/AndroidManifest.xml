@@ -16,6 +16,9 @@
         <activity android:name=".ShenSha">
         </activity>
         <activity android:name=".MemberMaintain">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
         <activity android:name=".MemberAnalyze">
         </activity>

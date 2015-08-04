@@ -10,6 +10,7 @@ import java.util.HashMap;
 import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendar;
+import lsw.library.LunarCalendarWrapper;
 import lsw.xml.XmlModelCache;
 import lsw.xml.model.XmlModelCelestialStem;
 import lsw.xml.model.XmlModelExtProperty;

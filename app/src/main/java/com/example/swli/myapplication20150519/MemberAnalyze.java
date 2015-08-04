@@ -1,5 +1,6 @@
 package com.example.swli.myapplication20150519;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import lsw.library.DateExt;
 import lsw.library.LunarSolarTerm;
 import lsw.library.SolarTerm;
+import lsw.library.StringHelper;
 
 public class MemberAnalyze extends MemberBase {
 

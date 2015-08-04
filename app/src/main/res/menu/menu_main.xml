@@ -28,8 +28,6 @@
         android:orderInCategory="100" android:showAsAction="never" />
     <item android:id="@+id/menuContact" android:title="联系作者"
         android:orderInCategory="100" android:showAsAction="never" />
-    <item android:id="@+id/menuCalendar" android:title="日历"
-        android:orderInCategory="100" android:showAsAction="never" />
     <item android:id="@+id/menuNote" android:title="提示指导"
         android:orderInCategory="100" android:showAsAction="never" />
 </menu>

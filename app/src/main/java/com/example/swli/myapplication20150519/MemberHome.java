@@ -246,13 +246,6 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
             startActivityForResult(intentContact, 0);
             return true;
         }
-        if(id == R.id.menuCalendar)
-        {
-//            Intent intentContact = new Intent();
-//            intentContact.setClass(MemberHome.this, CalendarCustomization.class);
-//            startActivityForResult(intentContact, 0);
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 

@@ -2,6 +2,8 @@ package lsw.lunar_calendar;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -83,6 +85,27 @@ public class MonthFragment extends Fragment {
         gridView.setAdapter(calendarAdapter);
         gridView.setNumColumns(7);
 
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                try {
+                    DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
+                    ComponentName componetName = new ComponentName(
+                            "com.example.swli.myapplication20150519",
+                            "com.example.swli.myapplication20150519.MemberMaintain");
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("lunar_calendar_dateTime", selectedDate.getFormatDateTime());
+                    intent.putExtras(bundle);
+                    intent.setComponent(componetName);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.d("RD",e.getMessage());
+                }
+                return true;
+            }
+        });
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -91,64 +114,50 @@ public class MonthFragment extends Fragment {
                 TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
 
                 //???????????бы?????б░?бы?????????бн????????????иж?бы????????бь???
-                if(dateExt.getMonth() != selectedDate.getMonth()) {
+                if (dateExt.getMonth() != selectedDate.getMonth()) {
                     preTextView = todayTextView = null;
-                }
-                else
-                {
+                } else {
                     //??б░?бы????????????бы?????бы?????????иж?бы???????бш?
-                    if(preTextView != null) {
+                    if (preTextView != null) {
                         preTextView.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
                         preTextView.setTextColor(Color.BLACK);
-                    }
-                    else
-                    {
+                    } else {
                         //??бн???иибд?ии?????иж??ии?бшиж?бы???????бк????
                         int seletedTextViewIndex = 0;
-                        for (DayModel dayModel: calendarAdapter.getDayModels())
-                        {
+                        for (DayModel dayModel : calendarAdapter.getDayModels()) {
                             //??бк??бу????бу?ии????????????????б░?????бд?иCбу?????????иж??????бш????????????????????бш????иж?бы????бк????
-                            if(dayModel.isSelected())
-                            {
+                            if (dayModel.isSelected()) {
                                 View view1 = adapterView.getChildAt(seletedTextViewIndex);
                                 TextView tvDay1 = (TextView) view1.findViewById(R.id.tvDay);
                                 tvDay1.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
                                 tvDay1.setTextColor(Color.BLACK);
                                 break;
                             }
-                            seletedTextViewIndex ++;
+                            seletedTextViewIndex++;
                         }
 
                     }
 
                     //иж???????б░?бш?
-                    if(selectedDate.getFormatDateTime("yyyyMMdd").equals(new DateExt().getFormatDateTime("yyyyMMdd")))
-                    {
+                    if (selectedDate.getFormatDateTime("yyyyMMdd").equals(new DateExt().getFormatDateTime("yyyyMMdd"))) {
                         todayTextView = tvDay;
-                    }
-                    else
-                    {
-                        if(todayTextView != null)
-                        {
+                    } else {
+                        if (todayTextView != null) {
                             todayTextView.setBackgroundResource(R.drawable.tv_circle_highlight);
                             todayTextView.setTextColor(Color.WHITE);
-                        }
-                        else
-                        {
+                        } else {
                             //??бн???иибд?ии?????иж??ии?бшиж?бы???????бк????
                             int seletedTextViewIndex = 0;
-                            for (DayModel dayModel: calendarAdapter.getDayModels())
-                            {
+                            for (DayModel dayModel : calendarAdapter.getDayModels()) {
                                 //??бк??бу????бу?ии????????????????б░?????бд?иCбу?????????иж??????бш????????????????????бш????иж?бы????бк????
-                                if(dayModel.isToday())
-                                {
+                                if (dayModel.isToday()) {
                                     View view1 = adapterView.getChildAt(seletedTextViewIndex);
                                     TextView tvDay1 = (TextView) view1.findViewById(R.id.tvDay);
                                     tvDay1.setBackgroundResource(R.drawable.tv_circle_highlight);
                                     tvDay1.setTextColor(Color.WHITE);
                                     break;
                                 }
-                                seletedTextViewIndex ++;
+                                seletedTextViewIndex++;
                             }
 
                         }
