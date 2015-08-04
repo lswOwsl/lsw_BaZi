@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.activity.calendar;
+package lsw.lunar_calendar;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.swli.myapplication20150519.R;
-
 /**
- * Created by swli on 7/24/2015.
+ * Created by lsw_wsl on 8/4/15.
  */
 public class DayFragment<T> extends Fragment {
 
@@ -50,7 +48,7 @@ public class DayFragment<T> extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.calendar_day, container, false);
+        View view = inflater.inflate(R.layout.activity_day, container, false);
 
         tvEraDay = (TextView) view.findViewById(R.id.tvEraDay);
         tvLunaryDay = (TextView) view.findViewById(R.id.tvLunarDay);

@@ -1,10 +1,8 @@
-package com.example.swli.myapplication20150519.activity.calendar;
+package lsw.lunar_calendar.common;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.widget.NumberPicker;
-
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +11,7 @@ import lsw.library.DateExt;
 import lsw.library.LunarCalendar;
 
 /**
- * Created by swli on 7/29/2015.
+ * Created by lsw_wsl on 8/4/15.
  */
 public class LunarDateSelectorDialog {
 
@@ -82,3 +80,4 @@ public class LunarDateSelectorDialog {
         return dayList;
     }
 }
+

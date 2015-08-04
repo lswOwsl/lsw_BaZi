@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.activity.calendar;
+package lsw.lunar_calendar.data_source;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,18 +7,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import lsw.library.DateExt;
+import lsw.library.LunarCalendarWrapper;
+import lsw.lunar_calendar.R;
+import lsw.lunar_calendar.model.DayModel;
+import lsw.lunar_calendar.view.DayTextView;
+import lsw.lunar_calendar.view.EraDayTextView;
 
 /**
- * Created by lsw_wsl on 7/24/15.
+ * Created by lsw_wsl on 8/4/15.
  */
 public class CalendarAdapter extends BaseAdapter {
 
@@ -32,6 +34,8 @@ public class CalendarAdapter extends BaseAdapter {
         this.dateSelected = selectedDate;
         this.dayModels = getOneMonthDays(dateSelected);
     }
+
+    public void setDayModels(List<DayModel> list){this.dayModels = list;}
 
     public List<DayModel> getDayModels()
     {
@@ -59,7 +63,7 @@ public class CalendarAdapter extends BaseAdapter {
         final ItemHolder controls;
         if (view == null) {
             controls = new ItemHolder();
-            view = layoutInflater.inflate(R.layout.calendar_day, null);
+            view = layoutInflater.inflate(R.layout.activity_day, null);
             controls.tvDay = (DayTextView) view.findViewById(R.id.tvDay);
             controls.tvLunaryDay = (TextView) view.findViewById(R.id.tvLunarDay);
             controls.tvEraDay = (EraDayTextView)view.findViewById(R.id.tvEraDay);
@@ -157,7 +161,7 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         long consumingTime = System.nanoTime() - startTime;
-        Log.d("lsw",consumingTime/1000/1000 + " create 42 models of calendar cost time.");
+        Log.d("lsw", consumingTime / 1000 / 1000 + " create 42 models of calendar cost time.");
         return listDays;
     }
 

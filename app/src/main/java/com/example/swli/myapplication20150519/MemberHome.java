@@ -28,7 +28,6 @@ import com.example.swli.myapplication20150519.activity.ICallBackDialog;
 import com.example.swli.myapplication20150519.activity.MemberAdapter;
 import com.example.swli.myapplication20150519.activity.MemberPinYinComparator;
 import com.example.swli.myapplication20150519.activity.bottombar.BottomBarFragment;
-import com.example.swli.myapplication20150519.activity.calendar.CalendarCustomization;
 import com.example.swli.myapplication20150519.activity.sidebar.CharacterParser;
 import com.example.swli.myapplication20150519.activity.sidebar.SideBar;
 import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
@@ -249,9 +248,9 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
         }
         if(id == R.id.menuCalendar)
         {
-            Intent intentContact = new Intent();
-            intentContact.setClass(MemberHome.this, CalendarCustomization.class);
-            startActivityForResult(intentContact, 0);
+//            Intent intentContact = new Intent();
+//            intentContact.setClass(MemberHome.this, CalendarCustomization.class);
+//            startActivityForResult(intentContact, 0);
             return true;
         }
         return super.onOptionsItemSelected(item);

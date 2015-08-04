@@ -28,7 +28,7 @@ public class XmlModelCache {
 
     public static XmlModelCache getInstance(Context context)
     {
-        if(xmlModelCache != null)
+        if(xmlModelCache == null)
         {
             xmlModelCache = new XmlModelCache(context);
         }

@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.activity.calendar;
+package lsw.lunar_calendar.common;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,16 +8,15 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import com.example.swli.myapplication20150519.R;
-
 import lsw.library.DateExt;
+import lsw.lunar_calendar.R;
 
 /**
- * Created by lsw_wsl on 7/25/15.
+ * Created by lsw_wsl on 8/4/15.
  */
 public class DateSelectorDialog implements DatePicker.OnDateChangedListener, TimePicker.OnTimeChangedListener {
 
-    interface ICallBack
+    public interface ICallBack
     {
         void invoke(DateExt dateExt);
     }
@@ -93,3 +92,4 @@ public class DateSelectorDialog implements DatePicker.OnDateChangedListener, Tim
         onDateChanged(null, 0, 0, 0);
     }
 }
+

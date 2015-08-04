@@ -1,11 +1,7 @@
-package com.example.swli.myapplication20150519.common;
-
-import lsw.library.DateExt;
-import lsw.library.LunarCalendar;
-import lsw.library.SolarTerm;
+package lsw.library;
 
 /**
- * Created by swli on 5/27/2015.
+ * Created by lsw_wsl on 8/4/15.
  */
 public class LunarCalendarWrapper extends LunarCalendar {
 
@@ -54,8 +50,8 @@ public class LunarCalendarWrapper extends LunarCalendar {
         double gzD =
                 //(hour < 23)
                 //?
-        equivalentStandardDay(year, month, day);
-                //: equivalentStandardDay(year, month, day) + 1;
+                equivalentStandardDay(year, month, day);
+        //: equivalentStandardDay(year, month, day) + 1;
         return (int)Math.round(rem((int) gzD + 15, 60));
     }
 
@@ -64,7 +60,7 @@ public class LunarCalendarWrapper extends LunarCalendar {
     {
         double v = 12 * gan(getChineseEraOfDay()) + Math.floor((double) ((hour + 1) / 2)) - 11;
         //if (hour == 23)
-          //  v -= 12;
+        //  v -= 12;
         return (int)Math.round(rem(v, 60));
     }
 }

@@ -18,10 +18,11 @@ public class XmlParserFiveElement  extends XmlParser<XmlModelFiveElement> {
         super(inputStream);
     }
 
-    private XmlModelFiveElement xmlModelFiveElement = new XmlModelFiveElement();
+    private XmlModelFiveElement xmlModelFiveElement;
 
     @Override
     public void startDocument(XmlPullParser parser) {
+        xmlModelFiveElement = new XmlModelFiveElement();
         xmlModelFiveElement.setEnhance(new HashMap<String,String>());
         xmlModelFiveElement.setControl(new HashMap<String,String>());
     }

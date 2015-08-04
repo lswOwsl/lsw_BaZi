@@ -8,10 +8,6 @@
         android:label="@string/ApplicationName"
         android:theme="@style/AppTheme"
         android:name=".common.MyApplication">
-        <activity android:name=".activity.calendar.CalendarCustomization">
-
-
-        </activity>
         <activity android:name=".SlideNote">
 
         </activity>

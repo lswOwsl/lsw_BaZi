@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import lsw.xml.XmlParser;
-import lsw.xml.model.XmlModelCelestialStem;
 import lsw.xml.model.XmlModelExtProperty;
 import lsw.xml.model.XmlModelTerrestrial;
 
@@ -22,17 +21,18 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
         super(inputStream);
     }
 
-    private XmlModelTerrestrial xmlModelTerrestrial = new XmlModelTerrestrial();
+    private XmlModelTerrestrial xmlModelTerrestrial;
 
     String terrestrialName = null;
     String wuXing = null;
     String name1 = null;
     String name2 = null;
     String name3 = null;
-    ArrayList<Pair<String,String>> hiddens= null;
+    ArrayList<Pair<String,String>> hiddenList = null;
 
     @Override
     public void startDocument(XmlPullParser parser) {
+        xmlModelTerrestrial = new XmlModelTerrestrial();
         xmlModelTerrestrial.setTerrestrials(new HashMap<String, XmlModelExtProperty>());
         xmlModelTerrestrial.setTerrestrialHiddens(new HashMap<String, ArrayList<Pair<String,String>>>());
         xmlModelTerrestrial.setSixSuits(new HashMap<Pair<String, String>, String>());
@@ -58,13 +58,13 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
             xet.setId(Integer.parseInt(parser.getAttributeValue("", "id")));
             xmlModelTerrestrial.getTerrestrials().put(terrestrialName, xet);
 
-            hiddens = new ArrayList<Pair<String, String>>();
+            hiddenList = new ArrayList<Pair<String, String>>();
 
         }else if(nodeName.equals("CelestrialStem"))
         {
-            String celestrialStemName = parser.getAttributeValue("", "name");
+            String celestialStemName = parser.getAttributeValue("", "name");
             String priority = parser.getAttributeValue("", "priority");
-            hiddens.add(Pair.create(celestrialStemName, priority));
+            hiddenList.add(Pair.create(celestialStemName, priority));
         }
         else if (nodeName.equals("SixSuit") ||
                 nodeName.equals("ThreeSuit")||
@@ -116,8 +116,8 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
             name1 = name2 = name3 = wuXing = null;
         }
         else if (nodeName.equals("Terrestrial")) {
-            xmlModelTerrestrial.getTerrestrialHiddens().put(terrestrialName,hiddens);
-            hiddens = null;
+            xmlModelTerrestrial.getTerrestrialHiddens().put(terrestrialName, hiddenList);
+            hiddenList = null;
             terrestrialName = null;
         }
         else if(nodeName.equals("Punishment"))

@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import lsw.lunar_calendar.R;
+
 /**
  * Created by swli on 8/3/2015.
  */

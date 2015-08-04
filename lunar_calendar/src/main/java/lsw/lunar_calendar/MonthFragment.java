@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.activity.calendar;
+package lsw.lunar_calendar;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,11 +12,14 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.example.swli.myapplication20150519.R;
-
 import lsw.library.DateExt;
+import lsw.lunar_calendar.data_source.CalendarAdapter;
+import lsw.lunar_calendar.model.DayModel;
 
-public class CalendarFragment extends Fragment {
+/**
+ * Created by lsw_wsl on 8/4/15.
+ */
+public class MonthFragment extends Fragment {
 
     DateExt dateExt;
     LayoutInflater linearLayout;
@@ -31,15 +34,15 @@ public class CalendarFragment extends Fragment {
         this.dateExt = dateExt;
     }
 
-    public static CalendarFragment newInstance(DateExt dateExt) {
-        CalendarFragment fragment = new CalendarFragment();
+    public static MonthFragment newInstance(DateExt dateExt) {
+        MonthFragment fragment = new MonthFragment();
         Bundle args = new Bundle();
         args.putString(paramDate,dateExt.getFormatDateTime());
         fragment.setArguments(args);
         return fragment;
     }
 
-    public CalendarFragment() {}
+    public MonthFragment() {}
 
     private OnFragmentInteractionListener mListener;
 
@@ -57,7 +60,7 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden)
     {
-        //å› ä¸ºæ»‘åŠ¨åˆ·æ–°å?Žä¸?æ¸…ç©ºè¿™ä¸¤ä¸ªå€¼ï¼Œä¼šé€ æˆ?line92ä¸¤ä¸ªæœˆä»½ä¸€æ ·çš„é—®é¢˜
+        //????????��??��??��?�C��????????��???��????��????????????��?????line92??��??????????????��???����?��??
         if(!hidden)
             preTextView = todayTextView = null;
     }
@@ -72,7 +75,7 @@ public class CalendarFragment extends Fragment {
             dateExt = new DateExt(getArguments().getString(paramDate));
         }
 
-        View view = inflater.inflate(R.layout.calendar_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_month, container, false);
         linearLayout = LayoutInflater.from(getActivity());
         gridView = (GridView) view.findViewById(R.id.gv_calendar);
 
@@ -87,24 +90,24 @@ public class CalendarFragment extends Fragment {
                 DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
                 TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
 
-                //å¦‚æžœä¸?ç­‰äºŽå½“å‰?æœˆï¼Œæ¸…ç©ºä¸Šä¸€ä¸ªé€‰ä¸­çš„æŽ§ä»¶
+                //???????????��?????��?��?????????��????????????��?��????????��???
                 if(dateExt.getMonth() != selectedDate.getMonth()) {
                     preTextView = todayTextView = null;
                 }
                 else
                 {
-                    //å½“å‰?æœˆä»½ï¼Œæœ‰æ²¡æœ‰ä¸Šæ¬¡ä¸€é€‰ä¸­çš„å¤©
+                    //??��?��????????????��?????��?????????��?��???????��?
                     if(preTextView != null) {
                         preTextView.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
                         preTextView.setTextColor(Color.BLACK);
                     }
                     else
                     {
-                        //æ¸…ç©ºè·³è½¬å?Žé»˜è®¤é€‰ä¸­çš„æ—¥å­?
+                        //??��???����?��?????��??��?�訦?��???????��????
                         int seletedTextViewIndex = 0;
                         for (DayModel dayModel: calendarAdapter.getDayModels())
                         {
-                            //å¾—åˆ°çš„æ°¸è¿œæ˜¯ç¬¬ä¸€ä¸ªå½“æœˆåˆ·æ–°å‡ºæ?¥çš„é‚£ä¸€å¤©ï¼Œä¸?æ˜¯ç‚¹äº†å¥½å¤šæ¬¡é€‰çš„æ—¥æœŸ
+                            //??��??��????��?��????????????????��?????��?�C��?????????��??????��????????????????????��????��?��????��????
                             if(dayModel.isSelected())
                             {
                                 View view1 = adapterView.getChildAt(seletedTextViewIndex);
@@ -118,7 +121,7 @@ public class CalendarFragment extends Fragment {
 
                     }
 
-                    //é«˜äº®å½“å¤©
+                    //��???????��?��?
                     if(selectedDate.getFormatDateTime("yyyyMMdd").equals(new DateExt().getFormatDateTime("yyyyMMdd")))
                     {
                         todayTextView = tvDay;
@@ -132,11 +135,11 @@ public class CalendarFragment extends Fragment {
                         }
                         else
                         {
-                            //æ¸…ç©ºè·³è½¬å?Žé»˜è®¤é€‰ä¸­çš„æ—¥å­?
+                            //??��???����?��?????��??��?�訦?��???????��????
                             int seletedTextViewIndex = 0;
                             for (DayModel dayModel: calendarAdapter.getDayModels())
                             {
-                                //å¾—åˆ°çš„æ°¸è¿œæ˜¯ç¬¬ä¸€ä¸ªå½“æœˆåˆ·æ–°å‡ºæ?¥çš„é‚£ä¸€å¤©ï¼Œä¸?æ˜¯ç‚¹äº†å¥½å¤šæ¬¡é€‰çš„æ—¥æœŸ
+                                //??��??��????��?��????????????????��?????��?�C��?????????��??????��????????????????????��????��?��????��????
                                 if(dayModel.isToday())
                                 {
                                     View view1 = adapterView.getChildAt(seletedTextViewIndex);
@@ -185,3 +188,4 @@ public class CalendarFragment extends Fragment {
     }
 
 }
+

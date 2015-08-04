@@ -19,7 +19,7 @@ public class XmlParserSixRelation  extends XmlParser<XmlModelSixRelation> {
         super(inputStream);
     }
 
-    private XmlModelSixRelation xmlModelSixRelation = new XmlModelSixRelation();
+    private XmlModelSixRelation xmlModelSixRelation;
 
     String from = null;
     String sameTo = null;
@@ -29,6 +29,7 @@ public class XmlParserSixRelation  extends XmlParser<XmlModelSixRelation> {
 
     @Override
     public void startDocument(XmlPullParser parser) {
+        xmlModelSixRelation = new XmlModelSixRelation();
         xmlModelSixRelation.setEnhance(new HashMap<String,XmlModelExtTwoSide>());
         xmlModelSixRelation.setControl(new HashMap<String,XmlModelExtTwoSide>());
         xmlModelSixRelation.setRelation(new HashMap<String, HashMap<Boolean, String>>());

@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.example.swli.myapplication20150519.activity.calendar.DayTextView
+            <lsw.lunar_calendar.view.DayTextView
                 android:layout_marginLeft="3dp" android:layout_marginTop="3dp"
                 android:id="@+id/tvDay"
                 android:layout_width="28dp"
@@ -34,7 +34,7 @@
                 android:textSize="10dp" android:textColor="#ccc" />
         </LinearLayout>
 
-        <com.example.swli.myapplication20150519.activity.calendar.EraDayTextView
+        <lsw.lunar_calendar.view.EraDayTextView
             android:id="@+id/tvEraDay"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

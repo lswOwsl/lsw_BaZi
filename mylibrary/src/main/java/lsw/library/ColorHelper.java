@@ -77,7 +77,7 @@ public class ColorHelper {
 
     public static ColorHelper getInstance(Context context)
     {
-        if(colorHelper != null)
+        if(colorHelper == null)
             colorHelper = new ColorHelper(context);
         return colorHelper;
     }

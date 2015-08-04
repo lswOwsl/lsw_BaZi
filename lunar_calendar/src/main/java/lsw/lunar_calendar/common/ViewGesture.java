@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.activity.calendar;
+package lsw.lunar_calendar.common;
 
 import android.app.Activity;
 import android.view.GestureDetector;
@@ -7,20 +7,21 @@ import android.view.View;
 import android.widget.Toast;
 
 /**
- * Created by lsw_wsl on 7/26/15.
+ * Created by lsw_wsl on 8/4/15.
  */
 public class ViewGesture {
 
-    interface ICallBack{
+    public interface OnViewGestureCallBack
+    {
         void moveUp();
         void moveDown();
     }
 
     Activity activity;
-    ICallBack callBack;
+    OnViewGestureCallBack callBack;
     GestureDetector detector;
 
-    public ViewGesture(Activity activity, ICallBack callBack)
+    public ViewGesture(Activity activity, OnViewGestureCallBack callBack)
     {
         this.activity = activity;
         this.callBack = callBack;

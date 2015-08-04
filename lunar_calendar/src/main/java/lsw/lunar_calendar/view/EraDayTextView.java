@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 import lsw.library.ColorHelper;
+import lsw.lunar_calendar.R;
 
 /**
  * Created by swli on 8/3/2015.
@@ -19,18 +20,18 @@ public class EraDayTextView extends TextView {
     static HashMap<String,SpannableString> hashMap = new HashMap<String, SpannableString>();
 
     private boolean isDisable;
-
+    private ColorHelper colorHelper;
     public EraDayTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        colorHelper = ColorHelper.getInstance(context);
         TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.EraDayTextView);
 
         String c = typedArray.getString(R.styleable.EraDayTextView_CelestialText);
         String t = typedArray.getString(R.styleable.EraDayTextView_TerrestrialText);
-        isDisable = typedArray.getBoolean(R.styleable.EraDayTextView_IsDisable,false);
+        isDisable = typedArray.getBoolean(R.styleable.EraDayTextView_IsDisable, false);
 
-        setColorText(c,t, isDisable);
+        setColorText(c, t, isDisable);
 
         typedArray.recycle();
     }
@@ -38,7 +39,7 @@ public class EraDayTextView extends TextView {
     private SpannableString getCSapnnable(String c)
     {
         if(!hashMap.containsKey(c)) {
-            SpannableString cString = ColorHelper.getColorCelestialStem(getContext(), c);
+            SpannableString cString = colorHelper.getColorCelestialStem( c);
             hashMap.put(c,cString);
         }
         return hashMap.get(c);
@@ -47,7 +48,7 @@ public class EraDayTextView extends TextView {
     private SpannableString getTSapnnable(String t)
     {
         if(!hashMap.containsKey(t)) {
-            SpannableString tString = ColorHelper.getColorTerrestrial(getContext(), t);
+            SpannableString tString = colorHelper.getColorTerrestrial( t);
             hashMap.put(t,tString);
         }
 

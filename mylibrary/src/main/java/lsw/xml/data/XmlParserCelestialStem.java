@@ -22,7 +22,7 @@ public class XmlParserCelestialStem extends XmlParser<XmlModelCelestialStem> {
         super(inputStream);
     }
 
-    private XmlModelCelestialStem xmlModelCelestialStem = new XmlModelCelestialStem();
+    private XmlModelCelestialStem xmlModelCelestialStem;
 
     String pairWuXing = null;
     String name1 = null;
@@ -30,6 +30,7 @@ public class XmlParserCelestialStem extends XmlParser<XmlModelCelestialStem> {
 
     @Override
     public void startDocument(XmlPullParser parser) {
+        xmlModelCelestialStem = new XmlModelCelestialStem();
         xmlModelCelestialStem.setCelestialStems(new HashMap<String,XmlModelExtProperty>());
         xmlModelCelestialStem.setPairSuits(new HashMap<Pair<String,String>,String>());
         xmlModelCelestialStem.setPairInverses(new ArrayList<Pair<String, String>>());

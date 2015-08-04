@@ -1,10 +1,9 @@
-package com.example.swli.myapplication20150519.activity.calendar;
-
+package lsw.lunar_calendar.model;
 
 import lsw.library.DateExt;
 
 /**
- * Created by swli on 7/24/2015.
+ * Created by lsw_wsl on 8/4/15.
  */
 public class DayModel {
 
