@@ -17,7 +17,7 @@ public abstract class XmlParser<T> {
     }
 
     public abstract void startDocument(XmlPullParser parser);
-    public abstract void startTag(XmlPullParser parser);
+    public abstract void startTag(XmlPullParser parser) throws Exception;
     public abstract void endTag(XmlPullParser parser);
 
     public void parser(InputStream inputStream) {

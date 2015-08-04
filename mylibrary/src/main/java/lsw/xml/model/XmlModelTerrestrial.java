@@ -9,9 +9,7 @@ import java.util.HashMap;
  */
 public class XmlModelTerrestrial {
 
-    private static XmlModelTerrestrial xmlTerrestrial;
-
-    private XmlModelTerrestrial() {}
+    public XmlModelTerrestrial() {}
 
     public HashMap<String, XmlModelExtProperty> getTerrestrials() {
         return terrestrials;
@@ -54,35 +52,35 @@ public class XmlModelTerrestrial {
     private ArrayList<Pair<String,String>> punishment;
     private ArrayList<ArrayList<String>> threePunishment;
 
-    private void setPunishment(ArrayList<Pair<String, String>> punishment) {
+    public void setPunishment(ArrayList<Pair<String, String>> punishment) {
         this.punishment = punishment;
     }
 
-    private void setThreePunishment(ArrayList<ArrayList<String>> threePunishment) {
+    public void setThreePunishment(ArrayList<ArrayList<String>> threePunishment) {
         this.threePunishment = threePunishment;
     }
 
-    private void setTerrestrials(HashMap<String, XmlModelExtProperty> terrestrials) {
+    public void setTerrestrials(HashMap<String, XmlModelExtProperty> terrestrials) {
         this.terrestrials = terrestrials;
     }
 
-    private void setTerrestrialHiddens(HashMap<String, ArrayList<Pair<String,String>>> terrestrialHiddens) {
+    public void setTerrestrialHiddens(HashMap<String, ArrayList<Pair<String,String>>> terrestrialHiddens) {
         this.terrestrialHiddens = terrestrialHiddens;
     }
 
-    private void setSixSuits(HashMap<Pair<String, String>, String> sixSuits) {
+    public void setSixSuits(HashMap<Pair<String, String>, String> sixSuits) {
         this.sixSuits = sixSuits;
     }
 
-    private void setSixInverses(ArrayList<Pair<String, String>> sixInverses) {
+    public void setSixInverses(ArrayList<Pair<String, String>> sixInverses) {
         this.sixInverses = sixInverses;
     }
 
-    private void setThreeSuits(HashMap<String, ArrayList<String>> threeSuits) {
+    public void setThreeSuits(HashMap<String, ArrayList<String>> threeSuits) {
         this.threeSuits = threeSuits;
     }
 
-    private void setThreeConverge(HashMap<String, ArrayList<String>> threeConverge) {
+    public void setThreeConverge(HashMap<String, ArrayList<String>> threeConverge) {
         this.threeConverge = threeConverge;
     }
 

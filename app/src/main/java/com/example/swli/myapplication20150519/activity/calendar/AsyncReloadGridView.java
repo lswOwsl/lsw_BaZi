@@ -8,7 +8,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.ColorHelper;
 import com.example.swli.myapplication20150519.common.MyApplication;
 
 import java.util.List;
@@ -94,19 +93,19 @@ public class AsyncReloadGridView extends AsyncTask<DateExt, Void, List<DayModel>
             String c = eraDay.substring(0, 1);
             String t = eraDay.substring(1);
 //
-            if(dayModel.getDateExt().getMonth() != selectedDate.getMonth())
-            {
-                tvDay.setTextColor(Color.LTGRAY);
-                tvEraDay.setText("");
-                tvEraDay.append(ColorHelper.getTextByColor(c, Color.LTGRAY));
-                tvEraDay.append(ColorHelper.getTextByColor(t, Color.LTGRAY));
-            }
-            else
-            {
-                tvEraDay.setText("");
-                tvEraDay.append(ColorHelper.getColorCelestialStem(MyApplication.getInstance(), c));
-                tvEraDay.append(ColorHelper.getColorTerrestrial(MyApplication.getInstance(), t));
-            }
+//            if(dayModel.getDateExt().getMonth() != selectedDate.getMonth())
+//            {
+//                tvDay.setTextColor(Color.LTGRAY);
+//                tvEraDay.setText("");
+//                tvEraDay.append(ColorHelper.getTextByColor(c, Color.LTGRAY));
+//                tvEraDay.append(ColorHelper.getTextByColor(t, Color.LTGRAY));
+//            }
+//            else
+//            {
+//                tvEraDay.setText("");
+//                tvEraDay.append(ColorHelper.getColorCelestialStem(MyApplication.getInstance(), c));
+//                tvEraDay.append(ColorHelper.getColorTerrestrial(MyApplication.getInstance(), t));
+//            }
         }
 
         final TextView innerTvDay = tvDay;

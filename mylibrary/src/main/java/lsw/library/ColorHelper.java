@@ -1,6 +1,16 @@
 package lsw.library;
 
+import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+
 import java.util.HashMap;
+
+import lsw.xml.XmlModelCache;
+import lsw.xml.model.XmlModelCelestialStem;
+import lsw.xml.model.XmlModelTerrestrial;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.BLUE;
@@ -61,5 +71,64 @@ public class ColorHelper {
         }
 
         return "";
+    }
+
+    private static ColorHelper colorHelper;
+
+    public static ColorHelper getInstance(Context context)
+    {
+        if(colorHelper != null)
+            colorHelper = new ColorHelper(context);
+        return colorHelper;
+    }
+
+    private ColorHelper(Context context)
+    {
+        xmlModelCache = XmlModelCache.getInstance(context);
+    }
+
+    private static XmlModelCache xmlModelCache;
+
+    public SpannableString getColorCelestialStem(String text)
+    {
+        XmlModelCelestialStem xmlCelestialStem = xmlModelCache.getCelestialStem();
+        String fe = xmlCelestialStem.getFiveElementBy(text);
+        SpannableString spanString = new SpannableString(text);
+        ForegroundColorSpan span = new ForegroundColorSpan(getColorByFiveElement(fe));
+        spanString.setSpan(span, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanString;
+    }
+
+    public SpannableString getColorTerrestrial(String text)
+    {
+        XmlModelTerrestrial xmlTerrestrial = xmlModelCache.getTerrestrial();
+        String fe = xmlTerrestrial.getFiveElementBy(text);
+        SpannableString spanString = new SpannableString(text);
+        ForegroundColorSpan span = new ForegroundColorSpan(getColorByFiveElement(fe));
+        spanString.setSpan(span, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanString;
+    }
+
+    public static SpannableString getTextByColor(String text, int color)
+    {
+        SpannableString spanString = new SpannableString(text);
+        ForegroundColorSpan span = new ForegroundColorSpan(color);
+        spanString.setSpan(span, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanString;
+    }
+
+    public static SpannableString getColorStr(String fiveElement,String text)
+    {
+        SpannableString spanString = new SpannableString(text);
+        ForegroundColorSpan span = new ForegroundColorSpan(getColorByFiveElement(fiveElement));
+        spanString.setSpan(span, 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanString;
+    }
+
+    public static SpannableString getSmalllerText(String text, float scale)
+    {
+        SpannableString spanString = new SpannableString(text);
+        spanString.setSpan(new RelativeSizeSpan(scale), 0, text.length(),Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        return spanString;
     }
 }

@@ -7,9 +7,7 @@ import java.util.HashMap;
  */
 public class XmlModelSixRelation {
 
-    private static XmlModelSixRelation xmlSixRelation;
-
-    private XmlModelSixRelation() {}
+    public XmlModelSixRelation() {}
 
     private HashMap<String,XmlModelExtTwoSide> enhance;
     private HashMap<String,XmlModelExtTwoSide> control;
@@ -19,7 +17,7 @@ public class XmlModelSixRelation {
         return relation;
     }
 
-    private void setRelation(HashMap<String, HashMap<Boolean, String>> relation) {
+    public void setRelation(HashMap<String, HashMap<Boolean, String>> relation) {
         this.relation = relation;
     }
 
@@ -27,7 +25,7 @@ public class XmlModelSixRelation {
         return enhance;
     }
 
-    private void setEnhance(HashMap<String, XmlModelExtTwoSide> enhance) {
+    public void setEnhance(HashMap<String, XmlModelExtTwoSide> enhance) {
         this.enhance = enhance;
     }
 
@@ -35,7 +33,7 @@ public class XmlModelSixRelation {
         return control;
     }
 
-    private void setControl(HashMap<String, XmlModelExtTwoSide> control) {
+    public void setControl(HashMap<String, XmlModelExtTwoSide> control) {
         this.control = control;
     }
 

@@ -7,11 +7,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.ColorHelper;
-import com.example.swli.myapplication20150519.common.MyApplication;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lsw_wsl on 7/25/15.

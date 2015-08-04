@@ -12,9 +12,9 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.ColorHelper;
 import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 
+import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
 
@@ -154,8 +154,8 @@ public class CalendarCustomization extends Activity implements CalendarFragment.
     private void setEraTextDetail(TextView tv, int eraIndex)
     {
         tv.setText("");
-        tv.append(ColorHelper.getColorCelestialStem(this, lunarCalendarWrapper.toStringWithCelestialStem(eraIndex)));
-        tv.append(ColorHelper.getColorTerrestrial(this, lunarCalendarWrapper.toStringWithTerrestrialBranch(eraIndex)));
+        tv.append(ColorHelper.getInstance(this).getColorCelestialStem(lunarCalendarWrapper.toStringWithCelestialStem(eraIndex)));
+        tv.append(ColorHelper.getInstance(this).getColorTerrestrial(lunarCalendarWrapper.toStringWithTerrestrialBranch(eraIndex)));
     }
 
     @Override

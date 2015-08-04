@@ -8,9 +8,10 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.ColorHelper;
 
 import java.util.HashMap;
+
+import lsw.library.ColorHelper;
 
 /**
  * Created by lsw_wsl on 7/31/15.
@@ -20,9 +21,12 @@ public class EraDayTextView extends TextView {
     static HashMap<String,SpannableString> hashMap = new HashMap<String, SpannableString>();
 
     private boolean isDisable;
+    private ColorHelper colorHelper;
 
     public EraDayTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        colorHelper = ColorHelper.getInstance(context);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.EraDayTextView);
@@ -39,7 +43,7 @@ public class EraDayTextView extends TextView {
     private SpannableString getCSapnnable(String c)
     {
         if(!hashMap.containsKey(c)) {
-            SpannableString cString = ColorHelper.getColorCelestialStem(getContext(), c);
+            SpannableString cString = colorHelper.getColorCelestialStem( c);
             hashMap.put(c,cString);
         }
         return hashMap.get(c);
@@ -48,7 +52,7 @@ public class EraDayTextView extends TextView {
     private SpannableString getTSapnnable(String t)
     {
         if(!hashMap.containsKey(t)) {
-            SpannableString tString = ColorHelper.getColorTerrestrial(getContext(), t);
+            SpannableString tString = colorHelper.getColorTerrestrial( t);
             hashMap.put(t,tString);
         }
 

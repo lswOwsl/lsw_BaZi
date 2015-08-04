@@ -7,18 +7,16 @@ import java.util.HashMap;
  */
 public class XmlModelFiveElement {
 
-    private static XmlModelFiveElement xmlFiveElement;
+    public XmlModelFiveElement() {}
 
-    private XmlModelFiveElement() {}
-
-    private HashMap<String,String> enhance;
-    private HashMap<String,String> control;
+    public HashMap<String,String> enhance;
+    public HashMap<String,String> control;
 
     public HashMap<String, String> getEnhance() {
         return enhance;
     }
 
-    private void setEnhance(HashMap<String, String> enhance) {
+    public void setEnhance(HashMap<String, String> enhance) {
         this.enhance = enhance;
     }
 
@@ -26,7 +24,7 @@ public class XmlModelFiveElement {
         return control;
     }
 
-    private void setControl(HashMap<String, String> control) {
+    public void setControl(HashMap<String, String> control) {
         this.control = control;
     }
 

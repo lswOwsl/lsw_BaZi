@@ -12,35 +12,40 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.ColorHelper;
 import com.example.swli.myapplication20150519.common.EnumPart;
-import com.example.swli.myapplication20150519.model.XmlCelestialStem;
-import com.example.swli.myapplication20150519.model.XmlTerrestrial;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import lsw.library.ColorHelper;
+import lsw.xml.XmlModelCache;
+import lsw.xml.model.XmlModelCelestialStem;
+import lsw.xml.model.XmlModelTerrestrial;
+
 public class MemberAnalyzeViewPager_XCHH {
 
     private MemberAnalyzeViewPager viewPager;
     private LinearLayout linearLayout;
     private Activity activity;
-    private XmlTerrestrial xmlTerrestrial;
-    private XmlCelestialStem xmlCelestialStem;
+    private XmlModelTerrestrial xmlTerrestrial;
+    private XmlModelCelestialStem xmlCelestialStem;
     private LinearLayout linearLayoutC;
     private View cChongHe;
     private boolean haveFlowMonth;
+    private XmlModelCache xmlModelCache;
+    private ColorHelper colorHelper;
 
     public MemberAnalyzeViewPager_XCHH(MemberAnalyzeViewPager viewPager)
     {
         this.viewPager = viewPager;
         this.activity = viewPager.getActivity();
         this.linearLayout = (LinearLayout)viewPager.getActivity().findViewById(R.id.ll_container);
-
-        xmlTerrestrial = XmlTerrestrial.getInstance(activity);
-        xmlCelestialStem = XmlCelestialStem.getInstance(activity);
+        xmlModelCache = XmlModelCache.getInstance(activity);
+        colorHelper = ColorHelper.getInstance(activity);
+        xmlTerrestrial = xmlModelCache.getTerrestrial();
+        xmlCelestialStem = xmlModelCache.getCelestialStem();
 
         cChongHe = activity.findViewById(R.id.cChongHe);
         this.linearLayoutC = (LinearLayout)cChongHe.findViewById(R.id.ll_containerC);
@@ -407,10 +412,10 @@ public class MemberAnalyzeViewPager_XCHH {
 
         SpannableString str;
         if(isTerrestrial) {
-           str =ColorHelper.getColorTerrestrial(activity, text);
+           str =colorHelper.getColorTerrestrial(text);
         }
         else {
-            str = ColorHelper.getColorCelestialStem(activity,text);
+            str = colorHelper.getColorCelestialStem(text);
         }
         textView.setText(str);
         textView.setTextAppearance(activity, R.style.Style_CXHH_Text);

@@ -18,32 +18,11 @@ import lsw.xml.model.XmlModelExtProperty;
  */
 public class XmlParserCelestialStem extends XmlParser<XmlModelCelestialStem> {
 
-    private XmlParserCelestialStem() {
-
-        this(null);
-    }
-
     public XmlParserCelestialStem(InputStream inputStream) {
         super(inputStream);
     }
 
-    public static XmlParserCelestialStem getInstance()
-    {
-        if(xmlModelCelestialStem == null)
-        {
-            xmlModelCelestialStem = new XmlModelCelestialStem();
-            xmlModelCelestialStem.setCelestialStems(new HashMap<String, XmlModelExtProperty>());
-            xmlModelCelestialStem.setPairSuits(new HashMap<Pair<String, String>, String>());
-            xmlModelCelestialStem.setPairInverses(new ArrayList<Pair<String, String>>());
-
-            xmlParserCelestialStem = new XmlParserCelestialStem();
-        }
-        return xmlParserCelestialStem;
-    }
-
-    private static XmlParserCelestialStem xmlParserCelestialStem;
-
-    private static XmlModelCelestialStem xmlModelCelestialStem;
+    private XmlModelCelestialStem xmlModelCelestialStem = new XmlModelCelestialStem();
 
     String pairWuXing = null;
     String name1 = null;
@@ -51,27 +30,26 @@ public class XmlParserCelestialStem extends XmlParser<XmlModelCelestialStem> {
 
     @Override
     public void startDocument(XmlPullParser parser) {
-
+        xmlModelCelestialStem.setCelestialStems(new HashMap<String,XmlModelExtProperty>());
+        xmlModelCelestialStem.setPairSuits(new HashMap<Pair<String,String>,String>());
+        xmlModelCelestialStem.setPairInverses(new ArrayList<Pair<String, String>>());
     }
 
     @Override
-    public void startTag(XmlPullParser parser) {
-        try {
-            if (parser.getName().equals("CelestrialStem")) {
-                XmlModelExtProperty xet = new XmlModelExtProperty();
-                xet.setYinYang(parser.getAttributeValue("", "yinYang"));
-                xet.setWuXing(parser.getAttributeValue("", "wuXing"));
-                xmlModelCelestialStem.getCelestialStems().put(parser.getAttributeValue("", "name"), xet);
-            } else if (parser.getName().equals("PairSuit")) {
-                pairWuXing = parser.getAttributeValue("", "wuXing");
-            } else if (parser.getName().equals("Name")) {
-                if (name1 == null)
-                    name1 = parser.nextText();
-                else
-                    name2 = parser.nextText();
-            }
-        } catch (Exception ex) {
-            Log.e("xml starTag", "Class: XmlParserCelestialStem -" + ex.getMessage());
+    public void startTag(XmlPullParser parser) throws Exception {
+
+        if (parser.getName().equals("CelestrialStem")) {
+            XmlModelExtProperty xet = new XmlModelExtProperty();
+            xet.setYinYang(parser.getAttributeValue("", "yinYang"));
+            xet.setWuXing(parser.getAttributeValue("", "wuXing"));
+            xmlModelCelestialStem.getCelestialStems().put(parser.getAttributeValue("", "name"), xet);
+        } else if (parser.getName().equals("PairSuit")) {
+            pairWuXing = parser.getAttributeValue("", "wuXing");
+        } else if (parser.getName().equals("Name")) {
+            if (name1 == null)
+                name1 = parser.nextText();
+            else
+                name2 = parser.nextText();
         }
     }
 

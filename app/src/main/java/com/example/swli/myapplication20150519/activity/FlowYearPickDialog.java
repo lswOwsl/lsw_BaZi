@@ -20,12 +20,12 @@ import android.widget.Toast;
 
 import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.common.BaZiHelperExtender;
-import com.example.swli.myapplication20150519.common.ColorHelper;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lsw.library.ColorHelper;
 import lsw.library.LunarSolarTerm;
 import lsw.library.SolarTerm;
 
@@ -49,6 +49,8 @@ public class FlowYearPickDialog {
 
     private SolarTerm currentMonth;
 
+    private ColorHelper colorHelper;
+
     private LunarSolarTerm lunarSolarTerm = new LunarSolarTerm();
 
     public void setCurrentMonth(SolarTerm solarTerm)
@@ -68,6 +70,7 @@ public class FlowYearPickDialog {
         this.currentAge = currentAge;
         this.beginYunFirstEraIndex = beginYunFirstEraIndex;
         this.birthdayYear = birthdayYear;
+        this.colorHelper = ColorHelper.getInstance(activity);
     }
 
 
@@ -320,9 +323,9 @@ public class FlowYearPickDialog {
 
                 controls.tvText.setText("");
                 controls.tvAge.setText("");
-                controls.tvText.append(ColorHelper.getColorCelestialStem(activity, c));
+                controls.tvText.append(colorHelper.getColorCelestialStem(c));
                 controls.tvText.append("\n");
-                controls.tvText.append(ColorHelper.getColorTerrestrial(activity, t));
+                controls.tvText.append(colorHelper.getColorTerrestrial(t));
                 controls.tvAge.setText(age);
                 controls.tvAge.append("\n");
                 int year = birthdayYear+ageBegin+i;
@@ -383,8 +386,8 @@ public class FlowYearPickDialog {
                     String t = LunarSolarTerm.getTerrestrialBranch(getSolarTermIndexs(sourceFlowMonthSolarTerms.get(i)));
 
                     controls.tvTextItem.setText("");
-                    controls.tvTextItem.append(ColorHelper.getColorCelestialStem(activity, c));
-                    controls.tvTextItem.append(ColorHelper.getColorTerrestrial(activity, t));
+                    controls.tvTextItem.append(colorHelper.getColorCelestialStem( c));
+                    controls.tvTextItem.append(colorHelper.getColorTerrestrial( t));
                     controls.tvTextItem.append(": ");
 
                     SolarTerm tempSt1 = sourceFlowMonthSolarTerms.get(i);
@@ -394,12 +397,12 @@ public class FlowYearPickDialog {
 
                     String tempStr = sourceFlowMonthSolarTerms.get(i).getSolarTermDate().getFormatDateTime("MM月 (") + tempStr1 + "---" + tempStr2 + ")";
 
-                    controls.tvTextMonthTip.setText(ColorHelper.getSmalllerText(activity, tempStr, 0.6f));
+                    controls.tvTextMonthTip.setText(colorHelper.getSmalllerText( tempStr, 0.6f));
                 }
                 else
                 {
                     controls.tvTextItem.setText("干支: ");
-                    controls.tvTextMonthTip.setText(ColorHelper.getSmalllerText(activity, "月份 (周期)", 0.6f));
+                    controls.tvTextMonthTip.setText(colorHelper.getSmalllerText( "月份 (周期)", 0.6f));
                 }
                 return view;
             }
@@ -451,12 +454,12 @@ public class FlowYearPickDialog {
                 String t = LunarSolarTerm.getTerrestrialBranch(sourceDaYunsIndex.get(i));
 
                 controls.tvText.setText("");
-                controls.tvText.append(ColorHelper.getColorCelestialStem(activity, c));
-                controls.tvText.append(ColorHelper.getColorTerrestrial(activity, t));
+                controls.tvText.append(colorHelper.getColorCelestialStem( c));
+                controls.tvText.append(colorHelper.getColorTerrestrial( t));
                 controls.tvText.append(":");
 
-                controls.tvTextTCRange.setText(ColorHelper.getSmalllerText(activity, tempStr, 1));
-                controls.tvTextYearRange.setText(ColorHelper.getSmalllerText(activity, "" + (birthdayYear + tempAge) + "年-----" + (birthdayYear + tempAge + 9) + "年", 0.6f));
+                controls.tvTextTCRange.setText(colorHelper.getSmalllerText( tempStr, 1));
+                controls.tvTextYearRange.setText(colorHelper.getSmalllerText( "" + (birthdayYear + tempAge) + "年-----" + (birthdayYear + tempAge + 9) + "年", 0.6f));
 
                 return view;
             }
