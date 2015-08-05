@@ -55,18 +55,10 @@ public class EraDayTextView extends TextView {
         return hashMap.get(t);
     }
 
-    public boolean isDisable() {
-        return isDisable;
-    }
-
-    public void setIsThisMonth(boolean isDisable) {
-        this.isDisable = isDisable;
-    }
-
-    public void setColorText(String c, String t, boolean isDisable)
+    public void setColorText(String c, String t, boolean isNotDisable)
     {
         setText("");
-        if(isDisable) {
+        if(isNotDisable) {
             this.append(getCSapnnable(c));
             this.append(getTSapnnable(t));
         }

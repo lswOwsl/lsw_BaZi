@@ -1,11 +1,11 @@
 package lsw.lunar_calendar.data_source;
 
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,10 +14,14 @@ import java.util.List;
 
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
+import lsw.library.LunarSolarTerm;
+import lsw.library.SolarTerm;
 import lsw.lunar_calendar.R;
 import lsw.lunar_calendar.model.DayModel;
+import lsw.lunar_calendar.view.DayNotifyPointView;
 import lsw.lunar_calendar.view.DayTextView;
 import lsw.lunar_calendar.view.EraDayTextView;
+import lsw.lunar_calendar.view.LunarDayTextView;
 
 /**
  * Created by lsw_wsl on 8/4/15.
@@ -65,8 +69,9 @@ public class CalendarAdapter extends BaseAdapter {
             controls = new ItemHolder();
             view = layoutInflater.inflate(R.layout.activity_day, null);
             controls.tvDay = (DayTextView) view.findViewById(R.id.tvDay);
-            controls.tvLunaryDay = (TextView) view.findViewById(R.id.tvLunarDay);
+            controls.tvLunaryDay = (LunarDayTextView) view.findViewById(R.id.tvLunarDay);
             controls.tvEraDay = (EraDayTextView)view.findViewById(R.id.tvEraDay);
+            controls.vDayNotifyPoint = (DayNotifyPointView)view.findViewById(R.id.viewDayNotifyPoint);
             view.setTag(controls);
         } else {
             controls = (ItemHolder) view.getTag();
@@ -77,8 +82,10 @@ public class CalendarAdapter extends BaseAdapter {
         String eraDay = dayModel.getEra_day();
         String c = eraDay.substring(0, 1);
         String t = eraDay.substring(1);
-        controls.tvEraDay.setColorText(c,t,dayModel.isCurrentMonth());
+        controls.tvEraDay.setColorText(c, t, dayModel.isCurrentMonth() && !dayModel.isSolarTerm());
         controls.tvLunaryDay.setText(dayModel.getLunar_day());
+        controls.tvLunaryDay.setBackground(dayModel.isSolarTerm());
+        controls.vDayNotifyPoint.setVisibility(dayModel.isShowNotifyPoint());
 
 
         if(i == 0) {
@@ -100,9 +107,10 @@ public class CalendarAdapter extends BaseAdapter {
     }
 
     class ItemHolder {
-        public TextView tvLunaryDay;
+        public LunarDayTextView tvLunaryDay;
         public EraDayTextView tvEraDay;
         public DayTextView tvDay;
+        public DayNotifyPointView vDayNotifyPoint;
     }
 
     public static List<DayModel> getOneMonthDays(DateExt dateExt)
@@ -127,6 +135,10 @@ public class CalendarAdapter extends BaseAdapter {
             offsetDay = -6;
         }
 
+        Pair<SolarTerm,SolarTerm> currentMonthSolarTerm = lunarCalendarWrapper.getPairSolarTerm(dateExt);
+        Pair<String,String> st1ForCompare = Pair.create(currentMonthSolarTerm.first.getSolarTermDate().getFormatDateTime("yyyy-MM-dd"), currentMonthSolarTerm.first.getName());
+        Pair<String,String> st2ForCompare = Pair.create(currentMonthSolarTerm.second.getSolarTermDate().getFormatDateTime("yyyy-MM-dd"),currentMonthSolarTerm.second.getName());
+
         String beginMonthForCompare = beginDate.getFormatDateTime("yyyy-MM");
         String selectedDayForCompare = dateExt.getFormatDateTime("yyyy-MM-dd");
         String todayForCompare = new DateExt().getFormatDateTime("yyyy-MM-dd");
@@ -143,12 +155,19 @@ public class CalendarAdapter extends BaseAdapter {
                 dayModel.setIsCurrentMonth(true);
             }
             String dayShortFormat = formatDate.substring(0,10);
+            //是不是默认选中的天
             if(selectedDayForCompare.equals(dayShortFormat)){
                 dayModel.setIsSelected(true);
             }
+            //是不是当天
             if(todayForCompare.equals(dayShortFormat))
             {
                 dayModel.setIsToday(true);
+            }
+            //当天是不是节气
+            if(st1ForCompare.first.equals(dayShortFormat) || st2ForCompare.first.equals(dayShortFormat))
+            {
+                dayModel.setIsSolarTerm(true);
             }
             dayModel.setDay(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)));
             dayModel.setFormatDate(formatDate);

@@ -56,29 +56,4 @@ public class DayTextView extends TextView {
         }
         this.setText(text);
     }
-
-    public boolean isThisMonth() {
-        return isThisMonth;
-    }
-
-    public void setIsThisMonth(boolean isThisMonth) {
-        this.isThisMonth = isThisMonth;
-    }
-
-    @Override
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
-    public boolean isToday() {
-        return isToday;
-    }
-
-    public void setIsToday(boolean isToday) {
-        this.isToday = isToday;
-    }
 }

@@ -14,6 +14,24 @@ public class DayModel {
     private boolean isCurrentMonth;
     private boolean isToday;
     private boolean isSelected;
+    private boolean isSolarTerm;
+    private boolean showNotifyPoint;
+
+    public boolean isShowNotifyPoint() {
+        return showNotifyPoint;
+    }
+
+    public void setShowNotifyPoint(boolean showNotifyPoint) {
+        this.showNotifyPoint = showNotifyPoint;
+    }
+
+    public boolean isSolarTerm() {
+        return isSolarTerm;
+    }
+
+    public void setIsSolarTerm(boolean isSolarTerm) {
+        this.isSolarTerm = isSolarTerm;
+    }
 
     public boolean isToday() {
         return isToday;
