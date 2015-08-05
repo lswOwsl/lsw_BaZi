@@ -46,77 +46,68 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <LinearLayout
+    <LinearLayout android:gravity="center" android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <LinearLayout android:layout_weight="1" android:gravity="center"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <TextView
+            <TextView android:layout_gravity="center"
                 android:id="@+id/tvEraYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="1"
-                android:gravity="center"
                 android:text="乙未"
                 android:textSize="30dp" />
 
-            <TextView
+            <TextView android:layout_gravity="center"
                 android:id="@+id/tvEraMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="1"
-                android:gravity="center"
                 android:text="癸未"
                 android:textSize="30dp" />
 
-            <TextView
+            <TextView android:layout_gravity="center"
                 android:id="@+id/tvEraDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="1"
-                android:gravity="center"
                 android:text="壬寅"
                 android:textSize="30dp" />
 
-            <TextView
+            <TextView android:layout_gravity="center"
                 android:id="@+id/tvEraHour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="1"
-                android:gravity="center"
                 android:text="庚戌"
                 android:textSize="30dp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <LinearLayout android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
-            <TextView
+            <TextView android:layout_gravity="center"
                 android:id="@+id/tvSolarTerm1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:text="小暑: 7日18:12"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
-            <TextView
+            <TextView android:layout_gravity="center"
                 android:id="@+id/tvSolarTerm2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:text="小暑: 7日18:12"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
         </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

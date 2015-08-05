@@ -1,5 +1,7 @@
 package lsw.library;
 
+import android.util.Pair;
+
 /**
  * Created by lsw_wsl on 8/4/15.
  */
@@ -19,9 +21,14 @@ public class LunarCalendarWrapper extends LunarCalendar {
         this.month = dateExt.getMonth();
         this.day = dateExt.getDay();
         this.hour = dateExt.getHour();
-        this.solarTerms = getSolarTerm(this.year,this.month);
+        this.solarTerms = getSolarTerm(this.year, this.month);
+        this.dateExt = dateExt;
     }
 
+    public DateExt getDateExt()
+    {
+        return this.dateExt;
+    }
 
     public int getChineseEraOfYear()
     {
@@ -62,5 +69,10 @@ public class LunarCalendarWrapper extends LunarCalendar {
         //if (hour == 23)
         //  v -= 12;
         return (int)Math.round(rem(v, 60));
+    }
+
+    public Pair<SolarTerm,SolarTerm> getPairSolarTerm()
+    {
+        return super.getPairSolarTerm(dateExt);
     }
 }

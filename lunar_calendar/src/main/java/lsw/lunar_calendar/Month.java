@@ -3,6 +3,7 @@ package lsw.lunar_calendar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
+import lsw.library.SolarTerm;
 import lsw.lunar_calendar.common.DateSelectorDialog;
 import lsw.lunar_calendar.common.ViewGesture;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
@@ -38,6 +40,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
     ViewGesture viewGesture;
 
+    private TextView tvSolarTerm1,tvSolarTerm2;
+
     //private FrameLayout frameLayout;
 
     @Override
@@ -58,9 +62,10 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         tvEraDay = (TextView) findViewById(R.id.tvEraDay);
         tvEraHour = (TextView) findViewById(R.id.tvEraHour);
 
-        gridViewTitle = (GridView) findViewById(R.id.gv_calendarTitle);
-        //gridView = (GridView) findViewById(R.id.gv_calendar);
+        tvSolarTerm1 = (TextView)findViewById(R.id.tvSolarTerm1);
+        tvSolarTerm2 = (TextView)findViewById(R.id.tvSolarTerm2);
 
+        gridViewTitle = (GridView) findViewById(R.id.gv_calendarTitle);
         gridViewTitle.setAdapter(new CalendarTitleAdapter(linearLayout));
         gridViewTitle.setNumColumns(7);
         initialDate = new DateExt();
@@ -120,7 +125,7 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         super.onStart();
     }
 
-    //必须重写这个方法要不然会抛异常，因为gridview的filing合onclick冲突了
+    //å¿…é¡»é‡�å†™è¿™ä¸ªæ–¹æ³•è¦�ä¸�ç„¶ä¼šæŠ›å¼‚å¸¸ï¼Œå› ä¸ºgridviewçš„filingå�ˆonclickå†²çª�äº†
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         viewGesture.getDetector().onTouchEvent(ev);
@@ -149,6 +154,15 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         setEraTextDetail(tvEraMonth,eraMonthIndex);
         setEraTextDetail(tvEraDay, eraDayIndex);
         setEraTextDetail(tvEraHour, eraHourIndex);
+
+        loadSolarTerms(lunarCalendarWrapper);
+    }
+
+    private void loadSolarTerms(LunarCalendarWrapper lunarCalendarWrapper)
+    {
+        Pair<SolarTerm,SolarTerm> solarTermPair = lunarCalendarWrapper.getPairSolarTerm();
+        tvSolarTerm1.setText(solarTermPair.first.getName() + ": "+ solarTermPair.first.getSolarTermDate().getFormatDateTime("MM月dd日 hh:mm"));
+        tvSolarTerm2.setText(solarTermPair.second.getName() + ": "+ solarTermPair.second.getSolarTermDate().getFormatDateTime("MM月dd日 hh:mm"));
     }
 
     private void setEraTextDetail(TextView tv, int eraIndex)
@@ -195,8 +209,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
         loadTitileDate(dateExt);
         loadEraTextDetail(lunarCalendarWrapper);
-        //因为在一个月份上，可能会选则上个月的某一天，也可能选择下个月的某一天
-        //当滑动切换月份时，应该只用当前的月份进行滑动
+        //å› ä¸ºåœ¨ä¸€ä¸ªæœˆä»½ä¸Šï¼Œå�¯èƒ½ä¼šé€‰åˆ™ä¸Šä¸ªæœˆçš„æŸ�ä¸€å¤©ï¼Œä¹Ÿå�¯èƒ½é€‰æ‹©ä¸‹ä¸ªæœˆçš„æŸ�ä¸€å¤©
+        //å½“æ»‘åŠ¨åˆ‡æ�¢æœˆä»½æ—¶ï¼Œåº”è¯¥å�ªç”¨å½“å‰�çš„æœˆä»½è¿›è¡Œæ»‘åŠ¨
 
         boolean flag = true;
         boolean willChange = false;
