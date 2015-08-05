@@ -161,8 +161,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     private void loadSolarTerms(LunarCalendarWrapper lunarCalendarWrapper)
     {
         Pair<SolarTerm,SolarTerm> solarTermPair = lunarCalendarWrapper.getPairSolarTerm();
-        tvSolarTerm1.setText(solarTermPair.first.getName() + ": "+ solarTermPair.first.getSolarTermDate().getFormatDateTime("MM月dd日 hh:mm"));
-        tvSolarTerm2.setText(solarTermPair.second.getName() + ": "+ solarTermPair.second.getSolarTermDate().getFormatDateTime("MM月dd日 hh:mm"));
+        tvSolarTerm1.setText(solarTermPair.first.getName() + ": "+ solarTermPair.first.getSolarTermDate().getFormatDateTime("MM月dd日 HH:mm"));
+        tvSolarTerm2.setText(solarTermPair.second.getName() + ": "+ solarTermPair.second.getSolarTermDate().getFormatDateTime("MM月dd日 HH:mm"));
     }
 
     private void setEraTextDetail(TextView tv, int eraIndex)
