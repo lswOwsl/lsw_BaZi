@@ -129,6 +129,12 @@ public class LunarCalendar extends LunarSolarTerm{
 
     public DateLunar getDateLunar(DateExt dateExt)
     {
+        //修正时间如果是0点0分会计算少一天问题
+        if(dateExt.getHour() ==0 && dateExt.getMinute() == 0)
+        {
+            dateExt.addSeconds(1);
+        }
+
         DateLunar dl = new DateLunar();
         int i;
         int leap;

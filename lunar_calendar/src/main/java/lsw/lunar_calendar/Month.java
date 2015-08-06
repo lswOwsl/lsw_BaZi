@@ -18,6 +18,7 @@ import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.SolarTerm;
 import lsw.lunar_calendar.common.DateSelectorDialog;
+import lsw.lunar_calendar.common.LunarDateSelectorDialog;
 import lsw.lunar_calendar.common.ViewGesture;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
 import lsw.lunar_calendar.data_source.CalendarTitleAdapter;
@@ -89,6 +90,24 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
                         initialDate = dateExt;
 
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        tvDateLunarSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LunarDateSelectorDialog dialog = new LunarDateSelectorDialog(initialDate,Month.this);
+                dialog.setCallBack(new LunarDateSelectorDialog.ICallBack() {
+                    @Override
+                    public void invoke(DateExt dateExt) {
+                        loadTitileDate(dateExt);
+                        lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+                        loadEraTextDetail(lunarCalendarWrapper);
+                        initFragment(dateExt);
+                        initialDate = dateExt;
                     }
                 });
                 dialog.show();

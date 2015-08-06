@@ -20,7 +20,7 @@ public class DateExt {
     public DateExt(int year,int month,int day, int hour, int minute, int second)
     {
         this();
-        calendar.set(year, month - 1,day,hour,minute,second);
+        calendar.set(year, month - 1, day, hour, minute, second);
     }
 
     public DateExt(Date date)
@@ -125,9 +125,37 @@ public class DateExt {
         return new DateExt(calendar.getTime());
     }
 
+    public DateExt addHours(int hours)
+    {
+        calendar.add(Calendar.HOUR_OF_DAY,hours);
+        return new DateExt(calendar.getTime());
+    }
+
+    public DateExt addMins(int min)
+    {
+        calendar.add(Calendar.MINUTE,min);
+        return new DateExt(calendar.getTime());
+    }
+
     public DateExt addMonths(int months)
     {
         calendar.add(Calendar.MONTH,months);
+        return new DateExt(calendar.getTime());
+    }
+
+    public DateExt addSeconds(int seconds)
+    {
+        calendar.add(Calendar.SECOND,seconds);
+        return new DateExt(calendar.getTime());
+    }
+
+    public DateExt addTime(int months, int days, int hours, int min, int seconds)
+    {
+        calendar.add(Calendar.MONTH,months);
+        calendar.add(Calendar.DAY_OF_YEAR,days);
+        calendar.add(Calendar.HOUR_OF_DAY,hours);
+        calendar.add(Calendar.MINUTE,min);
+        calendar.add(Calendar.SECOND,seconds);
         return new DateExt(calendar.getTime());
     }
 

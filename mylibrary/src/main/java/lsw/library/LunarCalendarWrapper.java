@@ -2,6 +2,8 @@ package lsw.library;
 
 import android.util.Pair;
 
+import java.util.Calendar;
+
 /**
  * Created by lsw_wsl on 8/4/15.
  */
@@ -74,5 +76,10 @@ public class LunarCalendarWrapper extends LunarCalendar {
     public Pair<SolarTerm,SolarTerm> getPairSolarTerm()
     {
         return super.getPairSolarTerm(dateExt);
+    }
+
+    public DateLunar getDateLunar()
+    {
+        return super.getDateLunar(dateExt);
     }
 }
