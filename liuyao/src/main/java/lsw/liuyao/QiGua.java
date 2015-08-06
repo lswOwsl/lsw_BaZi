@@ -14,14 +14,21 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 
-public class QiGua extends Activity {
+import common.YaoDragListener;
+
+
+public class QiGua extends Activity implements YaoDragListener.OnDropInteraction {
 
     private LinearLayout linearLayout1,linearLayout2,linearLayout3,linearLayout4,linearLayout5,linearLayout6;
-    private TextView tvYin,tvYang,tvLaoYin,tvLaoYang;
+    private ImageView ivYin,ivYang,ivLaoYin,ivLaoYang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,30 +41,91 @@ public class QiGua extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        tvLaoYang = (TextView)findViewById(R.id.tvLaoYang);
-        tvLaoYang.setOnTouchListener(new MyTouchListener());
-        findViewById(R.id.tvLaoYin).setOnTouchListener(new MyTouchListener());
-        findViewById(R.id.tvYin).setOnTouchListener(new MyTouchListener());
-        findViewById(R.id.tvLaoYang).setOnTouchListener(new MyTouchListener());
+        ivYin = (ImageView)findViewById(R.id.ivYin);
+        ivLaoYin = (ImageView)findViewById(R.id.ivLaoYin);
+        ivYang = (ImageView)findViewById(R.id.ivYang);
+        ivLaoYang = (ImageView)findViewById(R.id.ivLaoYang);
 
-        findViewById(R.id.llLine1).setOnDragListener(new MyDragListener());
-        findViewById(R.id.llLine2).setOnDragListener(new MyDragListener());
-        findViewById(R.id.llLine3).setOnDragListener(new MyDragListener());
-        findViewById(R.id.llLine4).setOnDragListener(new MyDragListener());
-        findViewById(R.id.llLine5).setOnDragListener(new MyDragListener());
-        findViewById(R.id.llLine6).setOnDragListener(new MyDragListener());
+        ivYang.setOnTouchListener(new MyTouchListener(EnumYaoType.Yang));
+        ivYin.setOnTouchListener(new MyTouchListener(EnumYaoType.Yin));
+        ivLaoYang.setOnTouchListener(new MyTouchListener(EnumYaoType.LaoYang));
+        ivLaoYin.setOnTouchListener(new MyTouchListener(EnumYaoType.LaoYin));
+
+        linearLayout1 = (LinearLayout)findViewById(R.id.llLine1);
+        linearLayout2 = (LinearLayout)findViewById(R.id.llLine2);
+        linearLayout3 = (LinearLayout)findViewById(R.id.llLine3);
+        linearLayout4 = (LinearLayout)findViewById(R.id.llLine4);
+        linearLayout5 = (LinearLayout)findViewById(R.id.llLine5);
+        linearLayout6 = (LinearLayout)findViewById(R.id.llLine6);
+
+        YaoDragListener listener1 = new YaoDragListener(1);
+        listener1.setOnDropInteraction(this);
+        YaoDragListener listener2 = new YaoDragListener(2);
+        listener1.setOnDropInteraction(this);
+        YaoDragListener listener3 = new YaoDragListener(3);
+        listener1.setOnDropInteraction(this);
+        YaoDragListener listener4 = new YaoDragListener(4);
+        listener1.setOnDropInteraction(this);
+        YaoDragListener listener5 = new YaoDragListener(5);
+        listener1.setOnDropInteraction(this);
+        YaoDragListener listener6 = new YaoDragListener(6);
+        listener1.setOnDropInteraction(this);
+
+        linearLayout1.setOnDragListener(listener1);
+        linearLayout2.setOnDragListener(listener2);
+        linearLayout3.setOnDragListener(listener3);
+        linearLayout4.setOnDragListener(listener4);
+        linearLayout5.setOnDragListener(listener5);
+        linearLayout6.setOnDragListener(listener6);
 
         return true;
     }
 
+    private Point lastTouch;
+    private ImageView moveImageView;
+    private EnumYaoType tempEnumYaoType;
+    private HashMap<Integer,EnumYaoType> dicYaos = new HashMap<Integer, EnumYaoType>();
+
+    @Override
+    public void OnDrop(View containerView, int position) {
+        LinearLayout container = (LinearLayout) containerView;
+        container.removeAllViews();
+        container.addView(moveImageView);
+        dicYaos.put(position,tempEnumYaoType);
+    }
+
+    enum EnumYaoType
+    {
+        Yin,
+        Yang,
+        LaoYin,
+        LaoYang
+    }
+
     private final class MyTouchListener implements View.OnTouchListener {
+
+        EnumYaoType enumYaoType;
+
+        public MyTouchListener(EnumYaoType type)
+        {
+            this.enumYaoType = type;
+        }
+
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+
+                tempEnumYaoType = enumYaoType;
+                ImageView iv = (ImageView)view;
+                Drawable drawable = iv.getDrawable();
+
+                moveImageView = new ImageView(QiGua.this);
+                moveImageView.setImageDrawable(drawable);
+
+                lastTouch = new Point((int) motionEvent.getX(), (int) motionEvent.getY()) ;
+
                 ClipData data = ClipData.newPlainText("", "");
-                //View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                 View.DragShadowBuilder shadowBuilder = new MyDragShadowBuilder(view);
                 view.startDrag(data, shadowBuilder, view, 0);
-                view.setVisibility(View.VISIBLE);
                 return true;
             } else {
                 return false;
@@ -66,93 +134,28 @@ public class QiGua extends Activity {
     }
 
     private class MyDragShadowBuilder extends View.DragShadowBuilder {
-
-        // The drag shadow image, defined as a drawable thing
-        private Drawable shadow;
-
-        TextView textView;
-        // Defines the constructor for myDragShadowBuilder
+        private View dragView;
         public MyDragShadowBuilder(View v) {
-
-            // Stores the View parameter passed to myDragShadowBuilder.
             super(v);
-            // Creates a draggable image that will fill the Canvas provided by the system.
-            shadow = new ColorDrawable(Color.LTGRAY);
+            this.dragView = v;
         }
-
-        // Defines a callback that sends the drag shadow dimensions and touch point back to the
-        // system.
         @Override
-        public void onProvideShadowMetrics (Point size, Point touch){
-        // Defines local variables
-        int width, height;
+        public void onProvideShadowMetrics (Point size, Point touch) {
+            int width, height;
+            width = getView().getWidth();
+            height = getView().getHeight();
+            size.set(width, height);
 
-        // Sets the width of the shadow to half the width of the original View
-        width = getView().getWidth() / 2;
-
-        // Sets the height of the shadow to half the height of the original View
-        height = getView().getHeight() / 2;
-
-        // The drag shadow is a ColorDrawable. This sets its dimensions to be the same as the
-        // Canvas that the system will provide. As a result, the drag shadow will fill the
-        // Canvas.
-        shadow.setBounds(0, 0, width, height);
-
-        // Sets the size parameter's width and height values. These get back to the system
-        // through the size parameter.
-        size.set(width, height);
-
-            // Sets the touch point's position to be in the middle of the drag shadow
-        touch.set(width / 2, height / 2);
-    }
-
-    // Defines a callback that draws the drag shadow in a Canvas that the system constructs
-    // from the dimensions passed in onProvideShadowMetrics().
+            if (lastTouch != null) {
+                touch.set(lastTouch.x, lastTouch.y);
+            }
+        }
     @Override
     public void onDrawShadow(Canvas canvas) {
-
-        // Draws the ColorDrawable in the Canvas passed in from the system.
-        shadow.draw(canvas);
-
+        dragView.draw(canvas);
     }
 
 }
-
-    class MyDragListener implements View.OnDragListener {
-        Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
-        Drawable normalShape = getResources().getDrawable(R.drawable.shape);
-
-        @Override
-        public boolean onDrag(View v, DragEvent event) {
-            int action = event.getAction();
-            switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    // do nothing
-                    break;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    v.setBackground(enterShape);
-                    break;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    v.setBackgroundColor(Color.WHITE);
-                    //v.setBackgroundDrawable(normalShape);
-                    break;
-                case DragEvent.ACTION_DROP:
-                    // Dropped, reassign View to ViewGroup
-                    View view = (View) event.getLocalState();
-                    ViewGroup owner = (ViewGroup) view.getParent();
-                    owner.removeView(view);
-                    LinearLayout container = (LinearLayout) v;
-                    container.addView(view);
-                    //view.setVisibility(View.VISIBLE);
-                    break;
-                case DragEvent.ACTION_DRAG_ENDED:
-                    //v.setBackgroundDrawable(normalShape);
-                default:
-                    break;
-            }
-            return true;
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
