@@ -2,27 +2,26 @@ package lsw.liuyao;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.Intent;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.Dictionary;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
-import common.YaoDragListener;
+import lsw.liuyao.common.EnumYaoType;
+import lsw.liuyao.common.IntentKeys;
+import lsw.liuyao.common.YaoDragListener;
+import lsw.liuyao.model.YaoModel;
 
 
 public class QiGua extends Activity implements YaoDragListener.OnDropInteraction {
@@ -30,17 +29,7 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
     private LinearLayout linearLayout1,linearLayout2,linearLayout3,linearLayout4,linearLayout5,linearLayout6;
     private ImageView ivYin,ivYang,ivLaoYin,ivLaoYang;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qi_gua);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
+    private void initControls(){
         ivYin = (ImageView)findViewById(R.id.ivYin);
         ivLaoYin = (ImageView)findViewById(R.id.ivLaoYin);
         ivYang = (ImageView)findViewById(R.id.ivYang);
@@ -61,15 +50,15 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         YaoDragListener listener1 = new YaoDragListener(1);
         listener1.setOnDropInteraction(this);
         YaoDragListener listener2 = new YaoDragListener(2);
-        listener1.setOnDropInteraction(this);
+        listener2.setOnDropInteraction(this);
         YaoDragListener listener3 = new YaoDragListener(3);
-        listener1.setOnDropInteraction(this);
+        listener3.setOnDropInteraction(this);
         YaoDragListener listener4 = new YaoDragListener(4);
-        listener1.setOnDropInteraction(this);
+        listener4.setOnDropInteraction(this);
         YaoDragListener listener5 = new YaoDragListener(5);
-        listener1.setOnDropInteraction(this);
+        listener5.setOnDropInteraction(this);
         YaoDragListener listener6 = new YaoDragListener(6);
-        listener1.setOnDropInteraction(this);
+        listener6.setOnDropInteraction(this);
 
         linearLayout1.setOnDragListener(listener1);
         linearLayout2.setOnDragListener(listener2);
@@ -77,6 +66,20 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         linearLayout4.setOnDragListener(listener4);
         linearLayout5.setOnDragListener(listener5);
         linearLayout6.setOnDragListener(listener6);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_qi_gua);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        initControls();
 
         return true;
     }
@@ -94,12 +97,10 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         dicYaos.put(position,tempEnumYaoType);
     }
 
-    enum EnumYaoType
+    @Override
+    public void OnEntered(View containerView, int position)
     {
-        Yin,
-        Yang,
-        LaoYin,
-        LaoYang
+        LinearLayout container = (LinearLayout) containerView;
     }
 
     private final class MyTouchListener implements View.OnTouchListener {
@@ -135,12 +136,14 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
 
     private class MyDragShadowBuilder extends View.DragShadowBuilder {
         private View dragView;
+
         public MyDragShadowBuilder(View v) {
             super(v);
             this.dragView = v;
         }
+
         @Override
-        public void onProvideShadowMetrics (Point size, Point touch) {
+        public void onProvideShadowMetrics(Point size, Point touch) {
             int width, height;
             width = getView().getWidth();
             height = getView().getHeight();
@@ -150,12 +153,13 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
                 touch.set(lastTouch.x, lastTouch.y);
             }
         }
-    @Override
-    public void onDrawShadow(Canvas canvas) {
-        dragView.draw(canvas);
-    }
 
-}
+        @Override
+        public void onDrawShadow(Canvas canvas) {
+            dragView.draw(canvas);
+        }
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -170,5 +174,38 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void reload(View view)
+    {
+        Intent intent = new Intent(QiGua.this, QiGua.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void zhuangGua(View view)
+    {
+        if(dicYaos.size() != 6)
+        {
+            Toast.makeText(this,"爻位填充不全!",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ArrayList<YaoModel> models = new ArrayList<YaoModel>();
+
+        for(Integer key: dicYaos.keySet())
+        {
+            YaoModel yaoModel = new YaoModel();
+            yaoModel.setPosition(key);
+            yaoModel.setEnumYaoType(dicYaos.get(key));
+            models.add(yaoModel);
+        }
+
+        Intent mIntent = new Intent(this,AnalyzeGua.class);
+        Bundle mBundle = new Bundle();
+        mBundle.putSerializable(IntentKeys.YaoModelList,models);
+        mIntent.putExtras(mBundle);
+
+        startActivity(mIntent);
     }
 }

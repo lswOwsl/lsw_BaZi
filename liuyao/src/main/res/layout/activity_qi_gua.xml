@@ -6,91 +6,151 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvDateSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="2015年7月25日 19:50"
+            android:textSize="15dp" />
+
+    </LinearLayout>
+
+    <View style="@style/PartLine"></View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <LinearLayout
+            style="@style/GuaContainer"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
-            <LinearLayout android:id="@+id/llLine6"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"></LinearLayout>
+            <TextView style="@style/TitleTextView"
+                android:text="主卦:" />
 
-            <LinearLayout android:id="@+id/llLine5"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"></LinearLayout>
-            <LinearLayout android:id="@+id/llLine4"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"></LinearLayout>
+            <include
+                android:id="@+id/cGuaMain"
+                layout="@layout/container_gua" />
 
-            <LinearLayout android:id="@+id/llLine3"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"></LinearLayout>
-            <LinearLayout android:id="@+id/llLine2"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"></LinearLayout>
-
-            <LinearLayout android:id="@+id/llLine1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"></LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            style="@style/GuaContainer"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
-            <ImageView android:id="@+id/ivYang"
-                android:src="@drawable/yang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"  />
+            <TextView style="@style/TitleTextView"
+                android:text="变卦:" />
 
-            <ImageView android:id="@+id/ivLaoYang"
-                android:src="@drawable/laoyang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"  />
-
-            <ImageView android:id="@+id/ivYin"
-                android:src="@drawable/yin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"  />
-
-            <ImageView android:id="@+id/ivLaoYin"
-                android:src="@drawable/laoyin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"  />
+            <include
+                android:id="@+id/cGuaChanged"
+                layout="@layout/container_gua" />
 
         </LinearLayout>
-
     </LinearLayout>
+
+    <View style="@style/PartLine"></View>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView style="@style/TitleTextView"
+            android:text="选择卦爻:" />
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivYang"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/yang" />
+
+            <ImageView
+                android:id="@+id/ivLaoYang"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:src="@drawable/laoyang" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivYin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/yin" />
+
+            <ImageView
+                android:id="@+id/ivLaoYin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/laoyin" />
+        </LinearLayout>
     </LinearLayout>
+
+    <View style="@style/PartLine"></View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button style="@style/Button" android:onClick="zhuangGua" android:text="装 卦" />
+        <Button style="@style/Button" android:text="保 存" />
+        <Button style="@style/Button" android:onClick="reload" android:text="复 位"/>
+    </LinearLayout>
+
+    <View style="@style/PartLine"></View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView style="@style/TitleTextView"
+            android:text="记录:" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="5dp">
+
+            <EditText
+                android:id="@+id/etNote"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="占螺纹钢一周走势"
+                android:textSize="12dp" />
+
+        </ScrollView>
+
+    </LinearLayout>
+
 
 </LinearLayout>
 
