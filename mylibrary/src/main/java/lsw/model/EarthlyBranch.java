@@ -1,9 +1,11 @@
 package lsw.model;
 
+import java.io.Serializable;
+
 /**
  * Created by swli on 8/10/2015.
  */
-public class EarthlyBranch {
+public class EarthlyBranch implements Serializable{
 
     public int id;
     public String name;

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Property;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -199,7 +200,7 @@ public class Builder
         {
             Line temp = new Line();
             temp.setPosition(line.getPosition());
-            temp.setSymble(line.getSymble());
+            temp.setSymble(lineToInvariant(line.getSymble()));
             noDynamicYaos.add(temp);
         }
         Hexagram result = null;
@@ -216,9 +217,10 @@ public class Builder
                     }
                 }
             }
-            if(count == 5)
+            if(count == 6) {
                 result = sixtyFourDicForLines.get(key);
-            break;
+                break;
+            }
         }
 
         for(Line l : lines)
@@ -372,7 +374,7 @@ public class Builder
         return null;
     }
 
-    public void setFuShenOnHexagram(Hexagram gua) {
+    public void setFuShenOnHexagram(Hexagram gua) throws Exception {
         try
         {
 
@@ -428,7 +430,8 @@ public class Builder
                     //        earthlyBranch = prop.C6;
                     //        break;
                     //}
-                    earthlyBranch = trigramDefault.getClass().getMethod("getC" + line.getPosition(), null).toString();
+                    Method method = TrigramDefault.class.getMethod("getC"+line.getPosition());
+                    earthlyBranch = method.invoke(trigramDefault,null).toString();
 
                     createLineFuShen(gua.getPlace(), line, earthlyBranch, sixRelationNotExisted);
                 }

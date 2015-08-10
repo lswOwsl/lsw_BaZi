@@ -113,6 +113,7 @@ public class Default {
     private static TrigramDefault createTrigram(int id, String place, String name, EnumFiveElement fiveElement, String c1, String c2, String c3, String c4, String c5, String c6) {
         TrigramDefault trigram = new TrigramDefault();
         trigram.setId(id);
+        trigram.setName(name);
         trigram.setPlace(place);
         trigram.setFiveElement(fiveElement);
         trigram.setC1(c1);
@@ -128,14 +129,14 @@ public class Default {
     public static ArrayList<TrigramDefault> getTrigrams() {
         if (trigrams == null) {
             trigrams = new ArrayList<TrigramDefault>();
-            createTrigram(1, "乾", "天", EnumFiveElement.Metal, "子", "寅", "辰", "午", "申", "戌");
-            createTrigram(2, "坎", "水", EnumFiveElement.Water, "寅", "辰", "午", "申", "戌", "子");
-            createTrigram(3, "艮", "山", EnumFiveElement.Earth, "辰", "午", "申", "戌", "子", "寅");
-            createTrigram(4, "震", "雷", EnumFiveElement.Wood, "子", "寅", "辰", "午", "申", "戌");
-            createTrigram(5, "巽", "风", EnumFiveElement.Wood, "丑", "亥", "酉", "未", "巳", "卯");
-            createTrigram(6, "离", "火", EnumFiveElement.Fire, "卯", "丑", "亥", "酉", "未", "巳");
-            createTrigram(7, "坤", "地", EnumFiveElement.Earth, "未", "巳", "卯", "丑", "亥", "酉");
-            createTrigram(8, "兑", "泽", EnumFiveElement.Metal, "巳", "卯", "丑", "亥", "酉", "未");
+            trigrams.add(createTrigram(1, "乾", "天", EnumFiveElement.Metal, "子", "寅", "辰", "午", "申", "戌"));
+            trigrams.add(createTrigram(2, "坎", "水", EnumFiveElement.Water, "寅", "辰", "午", "申", "戌", "子"));
+            trigrams.add(createTrigram(3, "艮", "山", EnumFiveElement.Earth, "辰", "午", "申", "戌", "子", "寅"));
+            trigrams.add(createTrigram(4, "震", "雷", EnumFiveElement.Wood, "子", "寅", "辰", "午", "申", "戌"));
+            trigrams.add(createTrigram(5, "巽", "风", EnumFiveElement.Wood, "丑", "亥", "酉", "未", "巳", "卯"));
+            trigrams.add(createTrigram(6, "离", "火", EnumFiveElement.Fire, "卯", "丑", "亥", "酉", "未", "巳"));
+            trigrams.add(createTrigram(7, "坤", "地", EnumFiveElement.Earth, "未", "巳", "卯", "丑", "亥", "酉"));
+            trigrams.add(createTrigram(8, "兑", "泽", EnumFiveElement.Metal, "巳", "卯", "丑", "亥", "酉", "未"));
         }
         return trigrams;
     }

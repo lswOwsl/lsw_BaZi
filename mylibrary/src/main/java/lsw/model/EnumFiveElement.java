@@ -11,19 +11,18 @@ public enum EnumFiveElement {
     Earth;
 
     public static EnumFiveElement toEnum(String value) {
-        switch (value) {
-            case "fire":
-                return Fire;
-            case "water":
-                return Water;
-            case "wood":
-                return Wood;
-            case "earth":
-                return Earth;
-            case "metal":
-                return Metal;
-            default:
-                return null;
+        if (value.equals("fire")) {
+            return Fire;
+        } else if (value.equals("water")) {
+            return Water;
+        } else if (value.equals("wood")) {
+            return Wood;
+        } else if (value.equals("earth")) {
+            return Earth;
+        } else if (value.equals("metal")) {
+            return Metal;
+        } else {
+            return null;
         }
     }
 }
