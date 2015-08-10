@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -18,10 +19,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lsw.hexagram.Builder;
 import lsw.liuyao.common.EnumYaoType;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.YaoDragListener;
 import lsw.liuyao.model.YaoModel;
+import lsw.model.EnumLineSymble;
+import lsw.model.Line;
 
 
 public class QiGua extends Activity implements YaoDragListener.OnDropInteraction {
@@ -185,25 +189,44 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
 
     public void zhuangGua(View view)
     {
-        if(dicYaos.size() != 6)
+//        if(dicYaos.size() != 6)
+//        {
+//            Toast.makeText(this,"爻位填充不全!",Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        ArrayList<YaoModel> models = new ArrayList<YaoModel>();
+//
+        ArrayList<Line> lines = new ArrayList<Line>();
+//
+//        for(Integer key: dicYaos.keySet())
+//        {
+//            YaoModel yaoModel = new YaoModel();
+//            yaoModel.setPosition(key);
+//            yaoModel.setEnumYaoType(dicYaos.get(key));
+//            models.add(yaoModel);
+//        }
+
+        for(int i=0; i<6; i++)
         {
-            Toast.makeText(this,"爻位填充不全!",Toast.LENGTH_SHORT).show();
-            return;
+            Line line = new Line();
+            line.setPosition(i+1);
+            line.setSymble(EnumLineSymble.Yang);
+            lines.add(line);
         }
 
-        ArrayList<YaoModel> models = new ArrayList<YaoModel>();
-
-        for(Integer key: dicYaos.keySet())
+        Builder builder = new Builder(QiGua.this);
+        try {
+            builder.getHexagramByLines(lines, true);
+        }
+        catch (Exception ex)
         {
-            YaoModel yaoModel = new YaoModel();
-            yaoModel.setPosition(key);
-            yaoModel.setEnumYaoType(dicYaos.get(key));
-            models.add(yaoModel);
+            Log.e("Hexagram Builder",ex.getMessage());
         }
 
         Intent mIntent = new Intent(this,AnalyzeGua.class);
         Bundle mBundle = new Bundle();
-        mBundle.putSerializable(IntentKeys.YaoModelList,models);
+       // mBundle.putSerializable(IntentKeys.YaoModelList,models);
         mIntent.putExtras(mBundle);
 
         startActivity(mIntent);
