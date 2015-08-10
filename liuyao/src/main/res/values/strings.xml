@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Liu Yao</string>
+    <string name="app_name">六爻排盘</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 </resources>

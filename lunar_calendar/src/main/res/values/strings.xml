@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Lunar Calendar</string>
+    <string name="app_name">万年历</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 </resources>
