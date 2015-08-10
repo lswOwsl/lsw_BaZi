@@ -1,6 +1,7 @@
 package lsw.value;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import lsw.model.EnumFiveElement;
 import lsw.model.Hexagram;
@@ -137,5 +138,23 @@ public class Default {
             createTrigram(8, "兑", "泽", EnumFiveElement.Metal, "巳", "卯", "丑", "亥", "酉", "未");
         }
         return trigrams;
+    }
+
+    private static HashMap<String,String> trigramReverse;
+
+    public static String getTrigramReverseByName(String name)
+    {
+        if(trigramReverse == null) {
+            trigramReverse = new HashMap<String, String>();
+            trigramReverse.put("天", "地");
+            trigramReverse.put("水", "火");
+            trigramReverse.put("雷", "风");
+            trigramReverse.put("山", "泽");
+            trigramReverse.put("泽", "山");
+            trigramReverse.put("风", "雷");
+            trigramReverse.put("火", "水");
+            trigramReverse.put("地", "天");
+        }
+        return trigramReverse.get(name);
     }
 }

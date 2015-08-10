@@ -1,6 +1,7 @@
 package lsw.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,8 +9,8 @@ import java.util.List;
  */
 public class Trigram implements Serializable {
 
-    public String name;
-    public EnumFiveElement fiveElement;
+    private String name;
+    private EnumFiveElement fiveElement;
 
     public String getName() {
         return name;
@@ -27,13 +28,13 @@ public class Trigram implements Serializable {
         this.fiveElement = fiveElement;
     }
 
-    public List<Line> getLines() {
+    public ArrayList<Line> getLines() {
         return lines;
     }
 
-    public void setLines(List<Line> lines) {
+    public void setLines(ArrayList<Line> lines) {
         this.lines = lines;
     }
 
-    public List<Line> lines;
+    private ArrayList<Line> lines;
 }

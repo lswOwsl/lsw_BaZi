@@ -88,7 +88,7 @@ public class Hexagram implements Serializable, Cloneable {
     private int self;
     private int target;
 
-    public List<Line> getLines()
+    public ArrayList<Line> getLines()
     {
         ArrayList<Line> lines = new ArrayList<Line>();
         for(Line line : getUpper().getLines())

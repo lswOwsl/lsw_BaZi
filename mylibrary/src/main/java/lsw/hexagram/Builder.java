@@ -12,6 +12,7 @@ import java.util.List;
 
 import lsw.library.StringHelper;
 import lsw.model.EarthlyBranch;
+import lsw.model.EnumAttachedType;
 import lsw.model.EnumFiveElement;
 import lsw.model.EnumLineSymble;
 import lsw.model.EnumSixRelation;
@@ -121,7 +122,7 @@ public class Builder
             return null;
             //throw new Exception(originalName);
 
-        SetFuShenOnHexagram(originalHexagram);
+        setFuShenOnHexagram(originalHexagram,null);
 
         if (!StringHelper.isNullOrEmpty(resultName))
         {
@@ -157,7 +158,7 @@ public class Builder
         return Pair.create(originalHexagram, null);
     }
 
-    public Hexagram getHexagramByLines(EnumLineSymble[] lines)
+    public Hexagram getHexagramByLines(EnumLineSymble[] lines) throws Exception
     {
         if (lines != null && lines.length == 6)
         {
@@ -172,83 +173,108 @@ public class Builder
                 listYao.add(line);
             }
 
-            return getHexagramByLines(listYao,true);
+            return getHexagramByLines(listYao, true);
         }
         else
         {
-            Log.d("getHexagramByLines", "get hexagram failed.")
+            Log.d("getHexagramByLines", "get hexagram failed.");
             //throw new NotSupportedException("method:GetGuaByYao");
         }
 
         return null;
     }
 
-    public Hexagram getHexagramByLines(ArrayList<Line> lines, boolean includeFuShen)
+    public Hexagram getHexagramByLines(ArrayList<Line> lines, boolean includeFuShen) throws Exception
     {
-        var sixtyFourDicForLines = hexagramDefaultSixtyFour.ToDictionary
-                (k => Tools.CreateDeepCopy(k.Lower.Lines.Union(k.Upper.Lines).ToArray()),
-        v => Tools.CreateDeepCopy(v));
+        HashMap<ArrayList<Line>,Hexagram> sixtyFourDicForLines = new HashMap<ArrayList<Line>, Hexagram>();
+
+        for(Hexagram hexagram : hexagramDefaultSixtyFour)
+        {
+            sixtyFourDicForLines.put(hexagram.getLines(),hexagram.deepClone());
+        }
 
         //to avoid original yao's value be modified
-        var noDynamicYaos = lines.Select(p => new Line()
+        ArrayList<Line> noDynamicYaos = new ArrayList<Line>();
+        for(Line line : lines)
         {
-            Symble = lineToInvariant(p.Symble),
-            Position = p.Position
-        });
-
-        var r = from sf in sixtyFourDicForLines
-        where 6 == (from y in sf.Key
-        from fs in noDynamicYaos
-        where y.Position == fs.Position && y.Symble == fs.Symble
-        select y).Count()
-        select sf.Value;
-
-        var result = r.Single();
-
-        foreach (var l in lines)
+            Line temp = new Line();
+            temp.setPosition(line.getPosition());
+            temp.setSymble(line.getSymble());
+            noDynamicYaos.add(temp);
+        }
+        Hexagram result = null;
+        for(ArrayList<Line> key: sixtyFourDicForLines.keySet())
         {
-            if (l.Symble == EnumLineSymble.LaoYin || l.Symble == EnumLineSymble.LaoYang)
+            int count = 0;
+            for(Line noDynamicLine: noDynamicYaos)
             {
-                if (l.Position <= 3)
+                for(Line line: key)
                 {
-                    var ly = result.Lower.Lines.Single(p => p.Position == l.Position);
-                    ly.Symble = l.Symble;
+                    if(line.getPosition() == noDynamicLine.getPosition() && noDynamicLine.getSymble().equals(line.getSymble()))
+                    {
+                        count ++;
+                    }
+                }
+            }
+            if(count == 5)
+                result = sixtyFourDicForLines.get(key);
+            break;
+        }
+
+        for(Line l : lines)
+        {
+            if (l.getSymble() == EnumLineSymble.LaoYin || l.getSymble() == EnumLineSymble.LaoYang)
+            {
+                if (l.getPosition() <= 3)
+                {
+                    Line ly = getLineByPosition(result.getLower().getLines(), l.getPosition());
+                    ly.setSymble(l.getSymble());
                 }
                 else
                 {
-                    var ly = result.Upper.Lines.Single(p => p.Position == l.Position);
-                    ly.Symble = l.Symble;
+                    Line ly = getLineByPosition(result.getUpper().getLines(), l.getPosition());
+                    ly.setSymble(l.getSymble());
                 }
             }
         }
 
         if (includeFuShen)
-            SetFuShenOnHexagram(result);
+            setFuShenOnHexagram(result);
 
         return result;
+    }
+
+    public Line getLineByPosition(ArrayList<Line> lines, int position)
+    {
+        for(Line line:lines)
+        {
+            if(line.getPosition() == position)
+                return line;
+        }
+        return null;
     }
 
     //易林补遗
     public void SetFuShenByYiLinBuYi(Hexagram hexagram)
     {
-        var upperTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == hexagram.Upper.Name);
-        var lowerTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == hexagram.Lower.Name);
+        TrigramDefault upperTrigram = getTrigramDefaultByName(hexagram.getUpper().getName());
+        TrigramDefault lowerTrigram = getTrigramDefaultByName(hexagram.getLower().getName());
 
-        CreateLineFuShen(hexagram.Place, hexagram.Upper.Lines, upperTrigram, 4);
-        CreateLineFuShen(hexagram.Place, hexagram.Lower.Lines, lowerTrigram, 1);
+        createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
+        createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
     }
 
     //易冒
     public void SetFuShenByYiMao(Hexagram hexagram)
     {
-        if (hexagram.ID % 8 == 7)
+        if (hexagram.getId() % 8 == 7)
         {
-            var preHexagram = DefaultValue.HexagramDefaultList.Single(p => p.ID == hexagram.ID - 1);
-            var upperTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == preHexagram.UpperPart);
-            var lowerTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == DefaultValue.TrigramReverse[hexagram.Lower.Name]);
+            HexagramDefault preHexagram = getHexagramDefaultById(hexagram.getId() - 1);
+            TrigramDefault upperTrigram = getTrigramDefaultByName(preHexagram.getUpperPart());
+            TrigramDefault lowerTrigram = getTrigramDefaultByName(Default.getTrigramReverseByName(hexagram.getLower().getName()));
 
-            CreateLineFuShen(hexagram.Place, hexagram.Upper.Lines, upperTrigram, 4);
-            CreateLineFuShen(hexagram.Place, hexagram.Lower.Lines, lowerTrigram, 1);
+            createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
+            createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
         }
         else
         {
@@ -259,16 +285,16 @@ public class Builder
     //易隐
     public void SetFuShenByYiYin(Hexagram hexagram)
     {
-        var remainder = hexagram.ID % 8;
-        var array = new int[]{2,3,4};
-        if (array.Contains(remainder))
+        int remainder = hexagram.getId() % 8;
+        int[] array = new int[]{2,3,4};
+        if (Arrays.asList(array).contains(remainder))
         {
-            var lowerPart = DefaultValue.HexagramDefaultList.Single(p => p.Name == hexagram.Place).LowerPart;
-            var upperTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == DefaultValue.TrigramReverse[hexagram.Upper.Name]);
-            var lowerTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == lowerPart);
+            String lowerPart = getHexagramDefaultByName(hexagram.getPlace()).getLowerPart();
+            TrigramDefault upperTrigram = getTrigramDefaultByName(Default.getTrigramReverseByName(hexagram.getUpper().getName()));
+            TrigramDefault lowerTrigram = getTrigramDefaultByName(lowerPart);
 
-            CreateLineFuShen(hexagram.Place, hexagram.Upper.Lines, upperTrigram, 4);
-            CreateLineFuShen(hexagram.Place, hexagram.Lower.Lines, lowerTrigram, 1);
+            createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
+            createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
 
         }
         else
@@ -277,26 +303,26 @@ public class Builder
         }
     }
 
-    public void SetFuShenOnHexagram(Hexagram hexagram, EnumAttachedType type)
+    public void setFuShenOnHexagram(Hexagram hexagram, EnumAttachedType type)
     {
         //归魂卦
-        if (hexagram.ID % 8 == 0)
+        if (hexagram.getId() % 8 == 0)
         {
-            var attachedGua = DefaultValue.HexagramDefaultList.Single(p => p.ID == (hexagram.ID - 4));
-            var upperTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == attachedGua.UpperPart);
-            var lowerTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == attachedGua.LowerPart);
+            HexagramDefault attachedGua =getHexagramDefaultById(hexagram.getId() - 4);
+            TrigramDefault upperTrigram = getTrigramDefaultByName(attachedGua.getUpperPart());
+            TrigramDefault lowerTrigram = getTrigramDefaultByName(attachedGua.getLowerPart());
 
-            CreateLineFuShen(hexagram.Place, hexagram.Upper.Lines, upperTrigram, 4);
-            CreateLineFuShen(hexagram.Place, hexagram.Lower.Lines, lowerTrigram, 1);
+            createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
+            createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
         }
         //纯卦
-        else if (hexagram.ID % 8 == 1)
+        else if (hexagram.getId() % 8 == 1)
         {
-            var upperTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == DefaultValue.TrigramReverse[hexagram.Upper.Name]);
-            var lowerTrigram = DefaultValue.TrigramDefaultList.Single(p => p.Name == DefaultValue.TrigramReverse[hexagram.Lower.Name]);
+            TrigramDefault upperTrigram = getTrigramDefaultByName(hexagram.getUpper().getName());
+            TrigramDefault lowerTrigram = getTrigramDefaultByName(hexagram.getLower().getName());
 
-            CreateLineFuShen(hexagram.Place, hexagram.Upper.Lines, upperTrigram, 4);
-            CreateLineFuShen(hexagram.Place, hexagram.Lower.Lines, lowerTrigram, 1);
+            createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
+            createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
         }
         else
         {
@@ -315,55 +341,104 @@ public class Builder
         }
     }
 
-    public void SetFuShenOnHexagram(Hexagram gua, EnumAttachedType? type = null)
+    public HexagramDefault getHexagramDefaultByName(String name)
     {
-        if (!type.HasValue)
+        for(HexagramDefault hexagramDefault: Default.getHexagrams())
         {
-            var sixRelation = gua.Upper.Lines.Union(gua.Lower.Lines).Select(p => p.SixRelation).Distinct();
-            var sixeRelationAll = new List<EnumSixRelation>(){EnumSixRelation.FuMu,
-                EnumSixRelation.GuanGui,
-                EnumSixRelation.QiCai,
-                EnumSixRelation.XiongDi,
-                EnumSixRelation.ZiSun };
-
-            var liuQinNotExisted = sixeRelationAll.Where(p => !sixRelation.Contains(p));
-
-            var prop = DefaultValue.TrigramDefaultList.Single(p => p.Place == gua.Place);
-
-            foreach (var line in gua.Upper.Lines.Union(gua.Lower.Lines))
-            {
-                var earthlyBranch = string.Empty;
-                //switch (line.Position)
-                //{
-                //    case 1:
-                //        earthlyBranch = prop.C1;
-                //        break;
-                //    case 2:
-                //        earthlyBranch = prop.C2;
-                //        break;
-                //    case 3:
-                //        earthlyBranch = prop.C3;
-                //        break;
-                //    case 4:
-                //        earthlyBranch = prop.C4;
-                //        break;
-                //    case 5:
-                //        earthlyBranch = prop.C5;
-                //        break;
-                //    case 6:
-                //        earthlyBranch = prop.C6;
-                //        break;
-                //}
-                earthlyBranch = prop.GetType().GetProperty("C" + line.Position).GetValue(prop).ToString();
-
-                CreateLineFuShen(gua.Place, line, earthlyBranch, liuQinNotExisted.ToArray());
-            }
+            if(hexagramDefault.getName().equals(name))
+                return hexagramDefault;
         }
-        else
-            SetFuShenOnHexagram(gua, type.Value);
+        return null;
     }
 
-    public Hexagram changeToHexagram(Hexagram original, boolean includeFuShen)
+
+    public HexagramDefault getHexagramDefaultById(int id)
+    {
+        for(HexagramDefault hexagramDefault: Default.getHexagrams())
+        {
+            if(hexagramDefault.getId() == id)
+                return hexagramDefault;
+        }
+        return null;
+    }
+
+    public TrigramDefault getTrigramDefaultByName(String name)
+    {
+        for(TrigramDefault trigramDefault: Default.getTrigrams())
+        {
+            if(trigramDefault.getName().equals(name))
+                return trigramDefault;
+        }
+        return null;
+    }
+
+    public void setFuShenOnHexagram(Hexagram gua) {
+        try
+        {
+
+                ArrayList<EnumSixRelation> sixRelations = new ArrayList<EnumSixRelation>();
+                for (Line line : gua.getLines()) {
+                    if (!sixRelations.contains(line.getSixRelation())) {
+                        sixRelations.add(line.getSixRelation());
+                    }
+                }
+
+                ArrayList<EnumSixRelation> sixeRelationAll = new ArrayList<EnumSixRelation>();
+                sixeRelationAll.add(EnumSixRelation.FuMu);
+                sixeRelationAll.add(EnumSixRelation.GuanGui);
+                sixeRelationAll.add(EnumSixRelation.QiCai);
+                sixeRelationAll.add(EnumSixRelation.XiongDi);
+                sixeRelationAll.add(EnumSixRelation.ZiSun);
+
+                ArrayList<EnumSixRelation> sixRelationNotExisted = new ArrayList<EnumSixRelation>();
+
+                for (EnumSixRelation esrAll : sixeRelationAll) {
+                    if (!sixRelations.contains(esrAll))
+                        sixRelationNotExisted.add(esrAll);
+                }
+
+                TrigramDefault trigramDefault = null;
+                for (TrigramDefault td : Default.getTrigrams()) {
+                    if (td.getPlace().equals(gua.getPlace())) {
+                        trigramDefault = td;
+                        break;
+                    }
+                }
+
+                for (Line line : gua.getLines()) {
+                    String earthlyBranch = "";
+                    //switch (line.Position)
+                    //{
+                    //    case 1:
+                    //        earthlyBranch = prop.C1;
+                    //        break;
+                    //    case 2:
+                    //        earthlyBranch = prop.C2;
+                    //        break;
+                    //    case 3:
+                    //        earthlyBranch = prop.C3;
+                    //        break;
+                    //    case 4:
+                    //        earthlyBranch = prop.C4;
+                    //        break;
+                    //    case 5:
+                    //        earthlyBranch = prop.C5;
+                    //        break;
+                    //    case 6:
+                    //        earthlyBranch = prop.C6;
+                    //        break;
+                    //}
+                    earthlyBranch = trigramDefault.getClass().getMethod("getC" + line.getPosition(), null).toString();
+
+                    createLineFuShen(gua.getPlace(), line, earthlyBranch, sixRelationNotExisted);
+                }
+
+        } catch (NoSuchMethodException e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    public Hexagram changeToHexagram(Hexagram original, boolean includeFuShen) throws Exception
     {
         List<Line> symbles = original.getLines();
 
@@ -502,6 +577,17 @@ public class Builder
         return gh;
     }
 
+    public EnumLineSymble getSybmleByString(String sybmle) {
+        if (sybmle.equals("|"))
+            return EnumLineSymble.Yang;
+        else if (sybmle.equals("||"))
+            return EnumLineSymble.Yin;
+        else if (sybmle.equals("x"))
+            return EnumLineSymble.LaoYin;
+        else
+            return EnumLineSymble.LaoYang;
+    }
+
     public Line createLine(String place, int position, String earthlyBranch, String symble)
     {
         Line line = new Line();
@@ -514,13 +600,13 @@ public class Builder
 
         line.setEarthlyBranch(tempEarthlyBranch);
         line.setPosition(position);
-        line.Symble = symble.ToLineSymble2();
+        line.setSymble(getSybmleByString(symble));
         line.setFiveElement(parseFiveElementByEarthlyBranch(earthlyBranch));
         line.setSixRelation(parseSixRelationByFiveElement(parseFiveElementByPalace(place), line.getFiveElement()));
         return line;
     }
 
-    public void createLineFuShen(String place, List<Line> lines, TrigramDefault trigram, int beginLineIndex)
+    public void createLineFuShen(String place, ArrayList<Line> lines, TrigramDefault trigram, int beginLineIndex)
     {
         try {
             for (int i = 0; i < lines.size(); i++) {
@@ -546,12 +632,12 @@ public class Builder
         }
     }
 
-    public void createLineFuShen(String place, Line line,String earthlyBranch, EnumSixRelation[] existedSixRelation)
+    public void createLineFuShen(String place, Line line,String earthlyBranch, ArrayList<EnumSixRelation> existedSixRelation)
     {
         EnumFiveElement fiveElement = parseFiveElementByEarthlyBranch(earthlyBranch);
         EnumSixRelation sixRelation = parseSixRelationByFiveElement(parseFiveElementByPalace(place), fiveElement);
 
-        if (Arrays.asList(existedSixRelation).contains(sixRelation))
+        if (existedSixRelation.contains(sixRelation))
         {
             EarthlyBranch earthlyBranchAttached = new EarthlyBranch();
 
