@@ -11,7 +11,7 @@ import lsw.liuyao.R;
 /**
  * Created by swli on 8/6/2015.
  */
-public class YaoDragListener implements View.OnDragListener {
+public class LineDragListener implements View.OnDragListener {
 
     public interface OnDropInteraction
     {
@@ -29,7 +29,7 @@ public class YaoDragListener implements View.OnDragListener {
     private int position;
     private int childCount;
     private boolean hasYao;
-    public YaoDragListener(int position)
+    public LineDragListener(int position)
     {
         this.position = position;
     }

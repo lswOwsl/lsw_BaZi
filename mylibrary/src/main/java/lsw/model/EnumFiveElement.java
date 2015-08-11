@@ -4,11 +4,21 @@ package lsw.model;
  * Created by swli on 8/10/2015.
  */
 public enum EnumFiveElement {
-    Metal,
-    Wood,
-    Water,
-    Fire,
-    Earth;
+    Metal("金"),
+    Wood("木"),
+    Water("水"),
+    Fire("火"),
+    Earth("土");
+
+    String text;
+    EnumFiveElement(String text)
+    {
+        this.text = text;
+    }
+
+    public String toString() {
+        return String.format(text);
+    }
 
     public static EnumFiveElement toEnum(String value) {
         if (value.equals("fire")) {

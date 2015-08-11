@@ -1,9 +1,7 @@
 package lsw.hexagram;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.Pair;
-import android.util.Property;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -13,9 +11,9 @@ import java.util.List;
 
 import lsw.library.StringHelper;
 import lsw.model.EarthlyBranch;
-import lsw.model.EnumAttachedType;
+import lsw.model.EnumFuShenType;
 import lsw.model.EnumFiveElement;
-import lsw.model.EnumLineSymble;
+import lsw.model.EnumLineSymbol;
 import lsw.model.EnumSixRelation;
 import lsw.model.Hexagram;
 import lsw.model.HexagramDefault;
@@ -37,7 +35,7 @@ public class Builder
 
     static ArrayList<Hexagram> hexagramDefaultSixtyFour;
 
-    public Builder(Context context)
+    private Builder(Context context)
     {
         if (hexagramDefaultSixtyFour == null)
         {
@@ -47,28 +45,16 @@ public class Builder
         }
     }
 
-    private static HashMap<Integer,EarthlyBranch> earthlyBranch_Dic;
+    private static Builder builder;
 
-    public HashMap<Integer, EarthlyBranch> getEarthlyBranch_Dic() {
-
-        if (earthlyBranch_Dic == null) {
-
-            earthlyBranch_Dic = new HashMap<Integer, EarthlyBranch>();
-
-            for(String key: xmlModelCache.getTerrestrial().getTerrestrials().keySet()) {
-                XmlModelExtProperty xmlModelExtProperty = xmlModelCache.getTerrestrial().getTerrestrials().get(key);
-                EarthlyBranch earthlyBranch = new EarthlyBranch();
-                earthlyBranch.setId(xmlModelExtProperty.getId());
-                earthlyBranch.setName(key);
-                earthlyBranch.setFiveElement(EnumFiveElement.toEnum(xmlModelExtProperty.getWuXing()));
-                earthlyBranch_Dic.put(xmlModelExtProperty.getId(),earthlyBranch);
-            }
-
-        }
-        return earthlyBranch_Dic;
+    public static Builder getInstance(Context context)
+    {
+        if(builder == null)
+            builder = new Builder(context);
+        return builder;
     }
 
-    public ArrayList<Pair<Hexagram,Hexagram>> getAllHexagrams()
+    public ArrayList<Pair<Hexagram,Hexagram>> getAllHexagrams() throws Exception
     {
         ArrayList<Pair<Hexagram,Hexagram>> list = new ArrayList<Pair<Hexagram,Hexagram>>();
 
@@ -96,34 +82,30 @@ public class Builder
         return "";
     }
 
-    public Hexagram getCloneHexagram(String name) {
+    public Hexagram getCloneHexagram(String name) throws Exception{
 
-        try {
-            for (Hexagram hexagram : hexagramDefaultSixtyFour) {
-                if (hexagram.getName().equals(name))
-                    return hexagram.deepClone();
-            }
-        }
-        catch (Exception ex) {
-            Log.d("clone faild",ex.getMessage());
+        for (Hexagram hexagram : hexagramDefaultSixtyFour) {
+            if (hexagram.getName().equals(name))
+                return hexagram.deepClone();
         }
         return null;
     }
 
-    public Hexagram getHexagramByName(String originalName)
+    public Hexagram getHexagramByName(String originalName) throws Exception
     {
         return getHexagramByNames(originalName, "").first;
     }
 
-    public Pair<Hexagram, Hexagram> getHexagramByNames(String originalName, String resultName)
+    public Pair<Hexagram, Hexagram> getHexagramByNames(String originalName, String resultName) throws Exception
     {
         Hexagram originalHexagram = getCloneHexagram(originalName);
 
         if (originalHexagram == null)
-            return null;
-            //throw new Exception(originalName);
+            throw new Exception("Hexagram not found!");
 
-        setFuShenOnHexagram(originalHexagram,null);
+        if(!StringHelper.isNullOrEmpty(resultName)) {
+            setFuShenOnHexagram(originalHexagram, null);
+        }
 
         if (!StringHelper.isNullOrEmpty(resultName))
         {
@@ -132,16 +114,16 @@ public class Builder
                 Hexagram resultHexagram = getCloneHexagram(resultName);
 
                 List<Line> originalLines = originalHexagram.getLines();
-                HashMap<Integer,EnumLineSymble> resultYaosDic = new HashMap<Integer,EnumLineSymble>();
+                HashMap<Integer,EnumLineSymbol> resultYaosDic = new HashMap<Integer,EnumLineSymbol>();
                 for (Line line : resultHexagram.getLines()) {
-                    resultYaosDic.put(line.getPosition(),line.getSymble());
+                    resultYaosDic.put(line.getPosition(),line.getLineSymbol());
                 }
 
                 for(Line line : originalLines)
                 {
-                    if (!line.getSymble().equals(resultYaosDic.get(line.getPosition())))
+                    if (!line.getLineSymbol().equals(resultYaosDic.get(line.getPosition())))
                     {
-                        line.setSymble(lineToVariant(line.getSymble()));
+                        line.setLineSymbol(lineToVariant(line.getLineSymbol()));
                     }
                 }
 
@@ -159,7 +141,7 @@ public class Builder
         return Pair.create(originalHexagram, null);
     }
 
-    public Hexagram getHexagramByLines(EnumLineSymble[] lines) throws Exception
+    public Hexagram getHexagramByLines(EnumLineSymbol... lines) throws Exception
     {
         if (lines != null && lines.length == 6)
         {
@@ -169,7 +151,7 @@ public class Builder
             {
                 Line line = new Line();
                 line.setPosition(i+1);
-                line.setSymble(lines[i]);
+                line.setLineSymbol(lines[i]);
 
                 listYao.add(line);
             }
@@ -178,20 +160,17 @@ public class Builder
         }
         else
         {
-            Log.d("getHexagramByLines", "get hexagram failed.");
-            //throw new NotSupportedException("method:GetGuaByYao");
+            throw new Exception("Need six lines to search the Hexagram.");
         }
-
-        return null;
     }
 
     public Hexagram getHexagramByLines(ArrayList<Line> lines, boolean includeFuShen) throws Exception
     {
-        HashMap<ArrayList<Line>,Hexagram> sixtyFourDicForLines = new HashMap<ArrayList<Line>, Hexagram>();
+        HashMap<ArrayList<Line>,String> sixtyFourDicForLines = new HashMap<ArrayList<Line>, String>();
 
         for(Hexagram hexagram : hexagramDefaultSixtyFour)
         {
-            sixtyFourDicForLines.put(hexagram.getLines(),hexagram.deepClone());
+            sixtyFourDicForLines.put(hexagram.getLines(),hexagram.getName());
         }
 
         //to avoid original yao's value be modified
@@ -200,7 +179,7 @@ public class Builder
         {
             Line temp = new Line();
             temp.setPosition(line.getPosition());
-            temp.setSymble(lineToInvariant(line.getSymble()));
+            temp.setLineSymbol(lineToInvariant(line.getLineSymbol()));
             noDynamicYaos.add(temp);
         }
         Hexagram result = null;
@@ -211,31 +190,31 @@ public class Builder
             {
                 for(Line line: key)
                 {
-                    if(line.getPosition() == noDynamicLine.getPosition() && noDynamicLine.getSymble().equals(line.getSymble()))
+                    if(line.getPosition() == noDynamicLine.getPosition() && noDynamicLine.getLineSymbol().equals(line.getLineSymbol()))
                     {
                         count ++;
                     }
                 }
             }
             if(count == 6) {
-                result = sixtyFourDicForLines.get(key);
+                result = getHexagramByName(sixtyFourDicForLines.get(key));
                 break;
             }
         }
 
         for(Line l : lines)
         {
-            if (l.getSymble() == EnumLineSymble.LaoYin || l.getSymble() == EnumLineSymble.LaoYang)
+            if (l.getLineSymbol() == EnumLineSymbol.LaoYin || l.getLineSymbol() == EnumLineSymbol.LaoYang)
             {
                 if (l.getPosition() <= 3)
                 {
                     Line ly = getLineByPosition(result.getLower().getLines(), l.getPosition());
-                    ly.setSymble(l.getSymble());
+                    ly.setLineSymbol(l.getLineSymbol());
                 }
                 else
                 {
                     Line ly = getLineByPosition(result.getUpper().getLines(), l.getPosition());
-                    ly.setSymble(l.getSymble());
+                    ly.setLineSymbol(l.getLineSymbol());
                 }
             }
         }
@@ -305,7 +284,7 @@ public class Builder
         }
     }
 
-    public void setFuShenOnHexagram(Hexagram hexagram, EnumAttachedType type)
+    public void setFuShenOnHexagram(Hexagram hexagram, EnumFuShenType type)
     {
         //归魂卦
         if (hexagram.getId() % 8 == 0)
@@ -328,15 +307,15 @@ public class Builder
         }
         else
         {
-            if (type == EnumAttachedType.YiLinBuYi)
+            if (type == EnumFuShenType.YiLinBuYi)
             {
                 SetFuShenByYiLinBuYi(hexagram);
             }
-            else if (type == EnumAttachedType.YiMao)
+            else if (type == EnumFuShenType.YiMao)
             {
                 SetFuShenByYiMao(hexagram);
             }
-            else if (type == EnumAttachedType.YiYin)
+            else if (type == EnumFuShenType.YiYin)
             {
                 SetFuShenByYiYin(hexagram);
             }
@@ -375,134 +354,107 @@ public class Builder
     }
 
     public void setFuShenOnHexagram(Hexagram gua) throws Exception {
-        try
-        {
+        try {
 
-                ArrayList<EnumSixRelation> sixRelations = new ArrayList<EnumSixRelation>();
-                for (Line line : gua.getLines()) {
-                    if (!sixRelations.contains(line.getSixRelation())) {
-                        sixRelations.add(line.getSixRelation());
-                    }
+            ArrayList<EnumSixRelation> sixRelations = new ArrayList<EnumSixRelation>();
+            for (Line line : gua.getLines()) {
+                if (!sixRelations.contains(line.getSixRelation())) {
+                    sixRelations.add(line.getSixRelation());
                 }
+            }
 
-                ArrayList<EnumSixRelation> sixeRelationAll = new ArrayList<EnumSixRelation>();
-                sixeRelationAll.add(EnumSixRelation.FuMu);
-                sixeRelationAll.add(EnumSixRelation.GuanGui);
-                sixeRelationAll.add(EnumSixRelation.QiCai);
-                sixeRelationAll.add(EnumSixRelation.XiongDi);
-                sixeRelationAll.add(EnumSixRelation.ZiSun);
+            ArrayList<EnumSixRelation> sixRelationAll = EnumSixRelation.getAll();
 
-                ArrayList<EnumSixRelation> sixRelationNotExisted = new ArrayList<EnumSixRelation>();
+            ArrayList<EnumSixRelation> sixRelationNotExisted = new ArrayList<EnumSixRelation>();
 
-                for (EnumSixRelation esrAll : sixeRelationAll) {
-                    if (!sixRelations.contains(esrAll))
-                        sixRelationNotExisted.add(esrAll);
+            for (EnumSixRelation esrAll : sixRelationAll) {
+                if (!sixRelations.contains(esrAll))
+                    sixRelationNotExisted.add(esrAll);
+            }
+
+            TrigramDefault trigramDefault = null;
+            for (TrigramDefault td : Default.getTrigrams()) {
+                if (td.getPlace().equals(gua.getPlace())) {
+                    trigramDefault = td;
+                    break;
                 }
+            }
 
-                TrigramDefault trigramDefault = null;
-                for (TrigramDefault td : Default.getTrigrams()) {
-                    if (td.getPlace().equals(gua.getPlace())) {
-                        trigramDefault = td;
-                        break;
-                    }
-                }
+            for (Line line : gua.getLines()) {
+                String earthlyBranch = "";
+                Method method = TrigramDefault.class.getMethod("getC" + line.getPosition());
+                earthlyBranch = method.invoke(trigramDefault, null).toString();
 
-                for (Line line : gua.getLines()) {
-                    String earthlyBranch = "";
-                    //switch (line.Position)
-                    //{
-                    //    case 1:
-                    //        earthlyBranch = prop.C1;
-                    //        break;
-                    //    case 2:
-                    //        earthlyBranch = prop.C2;
-                    //        break;
-                    //    case 3:
-                    //        earthlyBranch = prop.C3;
-                    //        break;
-                    //    case 4:
-                    //        earthlyBranch = prop.C4;
-                    //        break;
-                    //    case 5:
-                    //        earthlyBranch = prop.C5;
-                    //        break;
-                    //    case 6:
-                    //        earthlyBranch = prop.C6;
-                    //        break;
-                    //}
-                    Method method = TrigramDefault.class.getMethod("getC"+line.getPosition());
-                    earthlyBranch = method.invoke(trigramDefault,null).toString();
-
-                    createLineFuShen(gua.getPlace(), line, earthlyBranch, sixRelationNotExisted);
-                }
+                createLineFuShen(gua.getPlace(), line, earthlyBranch, sixRelationNotExisted);
+            }
 
         } catch (NoSuchMethodException e) {
             System.out.println(e.toString());
         }
     }
 
-    public Hexagram changeToHexagram(Hexagram original, boolean includeFuShen) throws Exception
-    {
-        List<Line> symbles = original.getLines();
+    public Hexagram getChangedHexagramByOriginal(Hexagram original, boolean includeFuShen) throws Exception {
+        List<Line> lines = original.getLines();
 
-        for(Line line: symbles) {
+        boolean noChangedHexagram = true;
 
-            if (line.getSymble() == EnumLineSymble.LaoYang || line.getSymble() == EnumLineSymble.LaoYin)
-            {
-                ArrayList<Line> targetSymbles = new ArrayList<Line>();
-                for(Line s : symbles)
-                {
-                    EnumLineSymble symble = lineChange(s.getSymble());
-
-                    Line tempLine = new Line();
-                    line.setSymble(symble);
-                    line.setPosition(s.getPosition());
-
-                    targetSymbles.add(tempLine);
-                }
-
-                Hexagram result = getHexagramByLines(targetSymbles, includeFuShen);
-
-                for(Line y : result.getUpper().getLines())
-                {
-                    y.setSixRelation(parseSixRelationByFiveElement(original.getFiveElement(), y.getFiveElement()));
-                }
-
-                for(Line y : result.getLower().getLines())
-                {
-                    y.setSixRelation(parseSixRelationByFiveElement(original.getFiveElement(), y.getFiveElement()));
-                }
-                return result;
+        ArrayList<Line> targetSymbols = new ArrayList<Line>();
+        for (Line line : lines) {
+            
+            EnumLineSymbol lineSymbol = line.getLineSymbol();
+            
+            if (line.getLineSymbol() == EnumLineSymbol.LaoYang || line.getLineSymbol() == EnumLineSymbol.LaoYin) {
+                lineSymbol = lineChange(line.getLineSymbol());
+                noChangedHexagram = false;
             }
+            Line tempLine = new Line();
+            tempLine.setLineSymbol(lineSymbol);
+            tempLine.setPosition(line.getPosition());
+
+            targetSymbols.add(tempLine);
         }
-        return null;
+
+        if(noChangedHexagram)
+            return null;
+
+        Hexagram result = getHexagramByLines(targetSymbols, includeFuShen);
+
+        for (Line y : result.getUpper().getLines()) {
+            y.setSixRelation(parseSixRelationByFiveElement(original.getFiveElement(), y.getFiveElement()));
+        }
+
+        for (Line y : result.getLower().getLines()) {
+            y.setSixRelation(parseSixRelationByFiveElement(original.getFiveElement(), y.getFiveElement()));
+        }
+        return result;
+
     }
 
-    public EnumLineSymble lineToInvariant(EnumLineSymble symble)
+    public EnumLineSymbol lineToInvariant(EnumLineSymbol symble)
     {
-        if (symble == EnumLineSymble.LaoYang)
-            return EnumLineSymble.Yang;
-        else if (symble == EnumLineSymble.LaoYin)
-            return EnumLineSymble.Yin;
+        if (symble == EnumLineSymbol.LaoYang)
+            return EnumLineSymbol.Yang;
+        else if (symble == EnumLineSymbol.LaoYin)
+            return EnumLineSymbol.Yin;
         else
             return symble;
     }
 
-    public EnumLineSymble lineToVariant(EnumLineSymble original)
+    public EnumLineSymbol lineToVariant(EnumLineSymbol original)
     {
-        if (original == EnumLineSymble.Yang)
-            return EnumLineSymble.LaoYang;
-        if (original == EnumLineSymble.Yin)
-            return EnumLineSymble.LaoYin;
+        if (original == EnumLineSymbol.Yang)
+            return EnumLineSymbol.LaoYang;
+        if (original == EnumLineSymbol.Yin)
+            return EnumLineSymbol.LaoYin;
         return original;
     }
 
-    public EnumLineSymble lineChange(EnumLineSymble original)
+    public EnumLineSymbol lineChange(EnumLineSymbol original)
     {
-        if (original == EnumLineSymble.LaoYang)
-            return EnumLineSymble.Yin;
-        else if (original == EnumLineSymble.LaoYin)
-            return EnumLineSymble.Yang;
+        if (original == EnumLineSymbol.LaoYang)
+            return EnumLineSymbol.Yin;
+        else if (original == EnumLineSymbol.LaoYin)
+            return EnumLineSymbol.Yang;
         else
             return original;
     }
@@ -535,8 +487,6 @@ public class Builder
     public Trigram createTrigram(HexagramDefault g, boolean isLowerPart)
     {
         Trigram gh = new Trigram();
-
-
 
         gh.setLines(new ArrayList<Line>());
 
@@ -580,15 +530,15 @@ public class Builder
         return gh;
     }
 
-    public EnumLineSymble getSybmleByString(String sybmle) {
+    public EnumLineSymbol getSybmleByString(String sybmle) {
         if (sybmle.equals("|"))
-            return EnumLineSymble.Yang;
+            return EnumLineSymbol.Yang;
         else if (sybmle.equals("||"))
-            return EnumLineSymble.Yin;
+            return EnumLineSymbol.Yin;
         else if (sybmle.equals("x"))
-            return EnumLineSymble.LaoYin;
+            return EnumLineSymbol.LaoYin;
         else
-            return EnumLineSymble.LaoYang;
+            return EnumLineSymbol.LaoYang;
     }
 
     public Line createLine(String place, int position, String earthlyBranch, String symble)
@@ -603,7 +553,7 @@ public class Builder
 
         line.setEarthlyBranch(tempEarthlyBranch);
         line.setPosition(position);
-        line.setSymble(getSybmleByString(symble));
+        line.setLineSymbol(getSybmleByString(symble));
         line.setFiveElement(parseFiveElementByEarthlyBranch(earthlyBranch));
         line.setSixRelation(parseSixRelationByFiveElement(parseFiveElementByPalace(place), line.getFiveElement()));
         return line;
@@ -613,7 +563,8 @@ public class Builder
     {
         try {
             for (int i = 0; i < lines.size(); i++) {
-                String earthlyBranch = trigram.getClass().getMethod("getC" + (i + beginLineIndex), null).toString();
+                Method method = TrigramDefault.class.getMethod("getC" + (i + beginLineIndex));
+                String earthlyBranch = method.invoke(trigram, null).toString();
                 EnumFiveElement fiveElement = parseFiveElementByEarthlyBranch(earthlyBranch);
                 EnumSixRelation sixRelation = parseSixRelationByFiveElement(parseFiveElementByPalace(place), fiveElement);
 
@@ -630,17 +581,17 @@ public class Builder
                 lines.get(i).setFiveElement(fiveElement);
             }
         }
-        catch(NoSuchMethodException e) {
+        catch(Exception e) {
             System.out.println(e.toString());
         }
     }
 
-    public void createLineFuShen(String place, Line line,String earthlyBranch, ArrayList<EnumSixRelation> existedSixRelation)
+    public void createLineFuShen(String place, Line line,String earthlyBranch, ArrayList<EnumSixRelation> notExistedSixRelation)
     {
         EnumFiveElement fiveElement = parseFiveElementByEarthlyBranch(earthlyBranch);
         EnumSixRelation sixRelation = parseSixRelationByFiveElement(parseFiveElementByPalace(place), fiveElement);
 
-        if (existedSixRelation.contains(sixRelation))
+        if (notExistedSixRelation.contains(sixRelation))
         {
             EarthlyBranch earthlyBranchAttached = new EarthlyBranch();
 

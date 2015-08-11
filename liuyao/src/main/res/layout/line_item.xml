@@ -4,7 +4,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView android:id="@+id/tvAttachedYao"
+        <TextView android:id="@+id/tvAttachedLine"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -12,13 +12,19 @@
             android:text="妻财酉金" />
 
         <ImageView
-            android:id="@+id/ivYao"
+            android:id="@+id/ivLineSymbol"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:src="@drawable/yang" />
 
-        <TextView android:id="@+id/tvYao"
+        <TextView android:id="@+id/tvSelfOrTarget"
+            android:layout_height="match_parent"
+            android:layout_width="20dp"
+            android:gravity="center"
+            android:text="" />
+
+        <TextView android:id="@+id/tvLine"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"

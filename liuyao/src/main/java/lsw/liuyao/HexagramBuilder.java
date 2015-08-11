@@ -7,42 +7,46 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import lsw.hexagram.Builder;
-import lsw.liuyao.common.EnumYaoType;
+import lsw.library.DateExt;
+import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
-import lsw.liuyao.common.YaoDragListener;
-import lsw.liuyao.model.YaoModel;
-import lsw.model.EnumLineSymble;
+import lsw.liuyao.common.LineDragListener;
+import lsw.model.EnumLineSymbol;
 import lsw.model.Line;
 
 
-public class QiGua extends Activity implements YaoDragListener.OnDropInteraction {
+public class HexagramBuilder extends Activity implements LineDragListener.OnDropInteraction {
 
     private LinearLayout linearLayout1,linearLayout2,linearLayout3,linearLayout4,linearLayout5,linearLayout6;
     private ImageView ivYin,ivYang,ivLaoYin,ivLaoYang;
 
+    private TextView tvDateSelector;
+
     private void initControls(){
+
+        tvDateSelector = (TextView) findViewById(R.id.tvDateSelect);
+
         ivYin = (ImageView)findViewById(R.id.ivYin);
         ivLaoYin = (ImageView)findViewById(R.id.ivLaoYin);
         ivYang = (ImageView)findViewById(R.id.ivYang);
         ivLaoYang = (ImageView)findViewById(R.id.ivLaoYang);
 
-        ivYang.setOnTouchListener(new MyTouchListener(EnumYaoType.Yang));
-        ivYin.setOnTouchListener(new MyTouchListener(EnumYaoType.Yin));
-        ivLaoYang.setOnTouchListener(new MyTouchListener(EnumYaoType.LaoYang));
-        ivLaoYin.setOnTouchListener(new MyTouchListener(EnumYaoType.LaoYin));
+        ivYang.setOnTouchListener(new MyTouchListener(EnumLineSymbol.Yang));
+        ivYin.setOnTouchListener(new MyTouchListener(EnumLineSymbol.Yin));
+        ivLaoYang.setOnTouchListener(new MyTouchListener(EnumLineSymbol.LaoYang));
+        ivLaoYin.setOnTouchListener(new MyTouchListener(EnumLineSymbol.LaoYin));
 
         linearLayout1 = (LinearLayout)findViewById(R.id.llLine1);
         linearLayout2 = (LinearLayout)findViewById(R.id.llLine2);
@@ -51,17 +55,17 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         linearLayout5 = (LinearLayout)findViewById(R.id.llLine5);
         linearLayout6 = (LinearLayout)findViewById(R.id.llLine6);
 
-        YaoDragListener listener1 = new YaoDragListener(1);
+        LineDragListener listener1 = new LineDragListener(1);
         listener1.setOnDropInteraction(this);
-        YaoDragListener listener2 = new YaoDragListener(2);
+        LineDragListener listener2 = new LineDragListener(2);
         listener2.setOnDropInteraction(this);
-        YaoDragListener listener3 = new YaoDragListener(3);
+        LineDragListener listener3 = new LineDragListener(3);
         listener3.setOnDropInteraction(this);
-        YaoDragListener listener4 = new YaoDragListener(4);
+        LineDragListener listener4 = new LineDragListener(4);
         listener4.setOnDropInteraction(this);
-        YaoDragListener listener5 = new YaoDragListener(5);
+        LineDragListener listener5 = new LineDragListener(5);
         listener5.setOnDropInteraction(this);
-        YaoDragListener listener6 = new YaoDragListener(6);
+        LineDragListener listener6 = new LineDragListener(6);
         listener6.setOnDropInteraction(this);
 
         linearLayout1.setOnDragListener(listener1);
@@ -72,10 +76,32 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         linearLayout6.setOnDragListener(listener6);
     }
 
+    DateExt dateExt;
+    String formatDateTime = "yyyy年MM月dd日 HH:mm";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qi_gua);
+        setContentView(R.layout.hexagram_build_activity);
+
+        initControls();
+
+        dateExt = new DateExt();
+        tvDateSelector.setText(dateExt.getFormatDateTime(formatDateTime));
+
+        tvDateSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DateTimePickerDialog dialog = new DateTimePickerDialog(dateExt,HexagramBuilder.this);
+                dialog.setCallBack(new DateTimePickerDialog.ICallBack() {
+                    @Override
+                    public void invoke(DateExt dateExt) {
+                        tvDateSelector.setText(dateExt.getFormatDateTime(formatDateTime));
+                    }
+                });
+                dialog.show();
+            }
+        });
     }
 
     @Override
@@ -83,22 +109,20 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        initControls();
-
         return true;
     }
 
     private Point lastTouch;
     private ImageView moveImageView;
-    private EnumYaoType tempEnumYaoType;
-    private HashMap<Integer,EnumYaoType> dicYaos = new HashMap<Integer, EnumYaoType>();
+    private EnumLineSymbol enumLineSymbol;
+    private HashMap<Integer,EnumLineSymbol> lineSymbolHashMap = new HashMap<Integer, EnumLineSymbol>();
 
     @Override
     public void OnDrop(View containerView, int position) {
         LinearLayout container = (LinearLayout) containerView;
         container.removeAllViews();
         container.addView(moveImageView);
-        dicYaos.put(position,tempEnumYaoType);
+        lineSymbolHashMap.put(position, enumLineSymbol);
     }
 
     @Override
@@ -109,9 +133,9 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
 
     private final class MyTouchListener implements View.OnTouchListener {
 
-        EnumYaoType enumYaoType;
+        EnumLineSymbol enumYaoType;
 
-        public MyTouchListener(EnumYaoType type)
+        public MyTouchListener(EnumLineSymbol type)
         {
             this.enumYaoType = type;
         }
@@ -119,11 +143,11 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
 
-                tempEnumYaoType = enumYaoType;
+                enumLineSymbol = enumYaoType;
                 ImageView iv = (ImageView)view;
                 Drawable drawable = iv.getDrawable();
 
-                moveImageView = new ImageView(QiGua.this);
+                moveImageView = new ImageView(HexagramBuilder.this);
                 moveImageView.setImageDrawable(drawable);
 
                 lastTouch = new Point((int) motionEvent.getX(), (int) motionEvent.getY()) ;
@@ -182,51 +206,33 @@ public class QiGua extends Activity implements YaoDragListener.OnDropInteraction
 
     public void reload(View view)
     {
-        Intent intent = new Intent(QiGua.this, QiGua.class);
+        Intent intent = new Intent(HexagramBuilder.this, HexagramBuilder.class);
         startActivity(intent);
         finish();
     }
 
     public void zhuangGua(View view)
     {
-//        if(dicYaos.size() != 6)
-//        {
-//            Toast.makeText(this,"爻位填充不全!",Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        ArrayList<YaoModel> models = new ArrayList<YaoModel>();
-//
-        ArrayList<Line> lines = new ArrayList<Line>();
-//
-//        for(Integer key: dicYaos.keySet())
-//        {
-//            YaoModel yaoModel = new YaoModel();
-//            yaoModel.setPosition(key);
-//            yaoModel.setEnumYaoType(dicYaos.get(key));
-//            models.add(yaoModel);
-//        }
+        if(lineSymbolHashMap.size() != 6)
+        {
+            Toast.makeText(this,"爻位填充不全!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        for(int i=0; i<6; i++)
+        ArrayList<Line> lines = new ArrayList<Line>();
+
+        for(Integer key: lineSymbolHashMap.keySet())
         {
             Line line = new Line();
-            line.setPosition(i+1);
-            line.setSymble(EnumLineSymble.Yang);
+            line.setPosition(key);
+            line.setLineSymbol(lineSymbolHashMap.get(key));
             lines.add(line);
         }
 
-        Builder builder = new Builder(QiGua.this);
-        try {
-            builder.getHexagramByLines(lines, true);
-        }
-        catch (Exception ex)
-        {
-            Log.e("Hexagram Builder",ex.getMessage());
-        }
-
-        Intent mIntent = new Intent(this,AnalyzeGua.class);
+        Intent mIntent = new Intent(this,HexagramAnalyzer.class);
         Bundle mBundle = new Bundle();
-       // mBundle.putSerializable(IntentKeys.YaoModelList,models);
+        mBundle.putString(IntentKeys.FormatDate,dateExt.getFormatDateTime());
+        mBundle.putSerializable(IntentKeys.LineModelList,lines);
         mIntent.putExtras(mBundle);
 
         startActivity(mIntent);

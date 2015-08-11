@@ -22,7 +22,7 @@ public class Default {
         hexagramDefault.setName(name);
         hexagramDefault.setUpperPart(upperPart);
         hexagramDefault.setLowerPart(lowerPart);
-        hexagramDefault.setSide(true);
+        hexagramDefault.setSide(side);
         hexagramDefault.setPlace(place);
         hexagramDefault.setC1(c1);
         hexagramDefault.setC2(c2);

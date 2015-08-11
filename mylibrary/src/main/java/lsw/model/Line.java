@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Line implements Serializable
 {
     public int position;
-    public EnumLineSymble symble;
+    public EnumLineSymbol lineSymbol;
 
     public EnumFiveElement fiveElement;
     public EnumSixRelation sixRelation;
@@ -22,12 +22,12 @@ public class Line implements Serializable
         this.position = position;
     }
 
-    public EnumLineSymble getSymble() {
-        return symble;
+    public EnumLineSymbol getLineSymbol() {
+        return lineSymbol;
     }
 
-    public void setSymble(EnumLineSymble symble) {
-        this.symble = symble;
+    public void setLineSymbol(EnumLineSymbol lineSymbol) {
+        this.lineSymbol = lineSymbol;
     }
 
     public EnumFiveElement getFiveElement() {

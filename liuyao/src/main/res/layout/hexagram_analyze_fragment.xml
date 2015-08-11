@@ -8,7 +8,8 @@
         android:id="@+id/tvDate"
         android:text="2015年7月25日 19:50" />
 
-    <TextView style="@style/TitleTextView"
+    <TextView
+        style="@style/TitleTextView"
         android:id="@+id/tvEraDate"
         android:text="甲子月 甲子日 (戌亥)" />
 
@@ -25,10 +26,11 @@
             android:layout_weight="3"
             android:orientation="vertical">
 
-            <TextView style="@style/TitleTextView"
+            <TextView android:id="@+id/tvTitleMain"
+                style="@style/TitleTextView"
                 android:text="主卦:" />
 
-            <ListView android:id="@+id/lvGuaMain"
+            <ListView android:id="@+id/lvHexagramMain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"></ListView>
 
@@ -42,10 +44,11 @@
             android:layout_weight="2"
             android:orientation="vertical">
 
-            <TextView style="@style/TitleTextView"
+            <TextView android:id="@+id/tvTitleChanged"
+                style="@style/TitleTextView"
                 android:text="变卦:" />
 
-            <ListView android:id="@+id/lvGuaChanged"
+            <ListView android:id="@+id/lvHexagramChanged"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"></ListView>
 
