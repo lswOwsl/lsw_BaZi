@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 
 import lsw.hexagram.LineComparator;
 import lsw.liuyao.R;
@@ -30,6 +31,16 @@ public class HexagramAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private Context context;
     private boolean isChangedHexagram;
+
+    private HashMap<Integer,String> sixAnimals;
+    public void setSixAnimals(HashMap<Integer,String> sixAnimals)
+    {
+        this.sixAnimals = sixAnimals;
+    }
+    private HashMap<Integer,String> getSixAnimals()
+    {
+        return this.sixAnimals;
+    }
 
     public HexagramAdapter(Hexagram hexagram, Context context)
     {
@@ -73,6 +84,7 @@ public class HexagramAdapter extends BaseAdapter {
             controls.ivLineSymbol = (ImageView) view.findViewById(R.id.ivLineSymbol);
             controls.tvLine = (TextView) view.findViewById(R.id.tvLine);
             controls.tvSelfTarget = (TextView)view.findViewById(R.id.tvSelfOrTarget);
+            controls.tvSixAnimal = (TextView)view.findViewById(R.id.tvSixAnimal);
 
             view.setTag(controls);
         } else {
@@ -101,6 +113,13 @@ public class HexagramAdapter extends BaseAdapter {
             controls.tvAttachedLine.setVisibility(View.GONE);
         }
 
+        if(getSixAnimals() == null)
+            controls.tvSixAnimal.setText("");
+        else
+        {
+            controls.tvSixAnimal.setText(getSixAnimals().get(line.getPosition()));
+        }
+
         int resourceId = R.drawable.yang;
         EnumLineSymbol lineSymbol = line.getLineSymbol();
         if(lineSymbol.equals(EnumLineSymbol.LaoYang))
@@ -119,5 +138,6 @@ public class HexagramAdapter extends BaseAdapter {
         public ImageView ivLineSymbol;
         public TextView tvLine;
         public TextView tvSelfTarget;
+        public TextView tvSixAnimal;
     }
 }

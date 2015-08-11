@@ -3,6 +3,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+     <TextView android:id="@+id/tvSixAnimal"
+        android:layout_height="match_parent"
+        android:layout_width="35dp"
+        android:gravity="center"
+        android:text="朱雀" />
 
         <TextView android:id="@+id/tvAttachedLine"
             android:layout_width="0dp"

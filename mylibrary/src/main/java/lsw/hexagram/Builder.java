@@ -675,6 +675,44 @@ public class Builder
                 return EnumFiveElement.Fire;
         }
     }
+
+    public static HashMap<Integer,String> getSixAnimalsByCelestialStem(String celestialStem)
+    {
+        int variable = 0;
+        HashMap<String,Integer> mapping = Default.getCelestialStemSixAnimalsMapping();
+        for (String s: mapping.keySet())
+        {
+            if(s.contains(celestialStem))
+            {
+                variable = mapping.get(s);
+            }
+        }
+        HashMap<Integer,String> sixAnimals = Default.getSixAnimals();
+        HashMap<Integer,String> rebuild = new HashMap<Integer,String>();
+
+        //rebuild.put(1,sixAnimals.get(variable));
+
+        for(int i=variable;i<7;i++) {
+            rebuild.put(rebuild.size() + 1, sixAnimals.get(i));
+        }
+
+        for(int i=1;i<variable; i++) {
+            rebuild.put(rebuild.size() + 1, sixAnimals.get(i));
+        }
+
+//        for(Integer key: sixAnimals.keySet())
+//        {
+//            if(variable < key)
+//                rebuild.put(rebuild.size()+1,sixAnimals.get(key));
+//        }
+//        for(Integer key: sixAnimals.keySet())
+//        {
+//            if(variable < key)
+//                rebuild.put(rebuild.size()+1,sixAnimals.get(key));
+//        }
+
+        return rebuild;
+    }
 }
 
 

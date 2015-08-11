@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.Date;
 
+import lsw.hexagram.Builder;
 import lsw.library.BaZiHelper;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
@@ -75,7 +76,14 @@ public class HexagramAnalyzerFragment extends Fragment {
         lvHexagramMain = (ListView) view.findViewById(R.id.lvHexagramMain);
         lvHexagramChanged = (ListView) view.findViewById(R.id.lvHexagramChanged);
 
-        lvHexagramMain.setAdapter(new HexagramAdapter(mainHexagram,getActivity()));
+        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
+        int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
+
+        HexagramAdapter mainAdapter = new HexagramAdapter(mainHexagram,getActivity());
+        mainAdapter.setSixAnimals(Builder.getSixAnimalsByCelestialStem(lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex)));
+        lvHexagramMain.setAdapter(mainAdapter);
+
         if(changedHexagram != null)
         {
             tvChangedTitle.setText("变卦:"+ changedHexagram.getName() + "  宫:" + changedHexagram.getPlace()+ "  位置:"+getPlacePostion(changedHexagram.getId()));
@@ -86,9 +94,7 @@ public class HexagramAnalyzerFragment extends Fragment {
 
 
         tvDate.setText(dateExt.getFormatDateTime(formatDateTime));
-        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
-        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
-        int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
+
         Pair<String,String> xunKong = BaZiHelper.getXunKong(getActivity(), lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
         String eraText =
                 lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
