@@ -690,8 +690,6 @@ public class Builder
         HashMap<Integer,String> sixAnimals = Default.getSixAnimals();
         HashMap<Integer,String> rebuild = new HashMap<Integer,String>();
 
-        //rebuild.put(1,sixAnimals.get(variable));
-
         for(int i=variable;i<7;i++) {
             rebuild.put(rebuild.size() + 1, sixAnimals.get(i));
         }
@@ -699,17 +697,6 @@ public class Builder
         for(int i=1;i<variable; i++) {
             rebuild.put(rebuild.size() + 1, sixAnimals.get(i));
         }
-
-//        for(Integer key: sixAnimals.keySet())
-//        {
-//            if(variable < key)
-//                rebuild.put(rebuild.size()+1,sixAnimals.get(key));
-//        }
-//        for(Integer key: sixAnimals.keySet())
-//        {
-//            if(variable < key)
-//                rebuild.put(rebuild.size()+1,sixAnimals.get(key));
-//        }
 
         return rebuild;
     }

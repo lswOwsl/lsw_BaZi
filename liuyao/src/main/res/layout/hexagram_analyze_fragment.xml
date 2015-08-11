@@ -4,14 +4,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical" android:padding="5dp">
 
-    <TextView style="@style/TitleTextView"
-        android:id="@+id/tvDate"
-        android:text="2015年7月25日 19:50" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal">
 
-    <TextView
-        style="@style/TitleTextView"
-        android:id="@+id/tvEraDate"
-        android:text="甲子月 甲子日 (戌亥)" />
+        <TextView android:layout_width="wrap_content" android:layout_marginRight="30dp"
+            style="@style/TitleTextView"
+            android:id="@+id/tvEraDate"
+            android:text="甲子月 甲子日 (戌亥)" />
+
+        <TextView style="@style/TitleTextView"
+            android:id="@+id/tvDate"
+            android:text="2015年7月25日 19:50" />
+
+    </LinearLayout>
+
+
+
 
     <View style="@style/PartLine"></View>
 
@@ -29,6 +38,8 @@
             <TextView android:id="@+id/tvTitleMain"
                 style="@style/TitleTextView"
                 android:text="主卦:" />
+
+            <View style="@style/PartLine"></View>
 
             <ListView android:id="@+id/lvHexagramMain"
                 android:layout_width="match_parent"
@@ -48,6 +59,8 @@
                 style="@style/TitleTextView"
                 android:text="变卦:" />
 
+            <View style="@style/PartLine"></View>
+
             <ListView android:id="@+id/lvHexagramChanged"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"></ListView>
@@ -55,5 +68,6 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View style="@style/PartLine"></View>
 
 </LinearLayout>
