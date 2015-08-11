@@ -78,24 +78,39 @@ public class HexagramAnalyzerFragment extends Fragment {
         lvHexagramMain.setAdapter(new HexagramAdapter(mainHexagram,getActivity()));
         if(changedHexagram != null)
         {
-            tvChangedTitle.setText("变卦:"+ mainHexagram.getName() + "  宫:" + mainHexagram.getPlace()+ "  位置:"+mainHexagram.getId() % 8);
+            tvChangedTitle.setText("变卦:"+ changedHexagram.getName() + "  宫:" + changedHexagram.getPlace()+ "  位置:"+getPlacePostion(changedHexagram.getId()));
             lvHexagramChanged.setAdapter(new HexagramAdapter(changedHexagram, getActivity(), true));
         }
 
-        tvMainTitle.setText("主卦:" + mainHexagram.getName() + "  宫:" + mainHexagram.getPlace() + "  位置:" + mainHexagram.getId() % 8);
+        tvMainTitle.setText("主卦:" + mainHexagram.getName() + "  宫:" + mainHexagram.getPlace() + "  位置:" + getPlacePostion(mainHexagram.getId()));
 
 
         tvDate.setText(dateExt.getFormatDateTime(formatDateTime));
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
         int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
-        Pair<String,String> xunKong = BaZiHelper.getXunKong(getActivity(), lunarCalendarWrapper.toStringWithCelestialStem(eraMonthIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
+        Pair<String,String> xunKong = BaZiHelper.getXunKong(getActivity(), lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
         String eraText =
                 lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
                 lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
         tvEraDate.setText(eraText);
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private String getPlacePostion(int id)
+    {
+        int index = id%8;
+
+        String positionName = "";
+        if(index == 0)
+            positionName = "8 归魂";
+        else if(index == 7)
+            positionName = "7 游魂";
+        else
+            positionName += index;
+
+        return positionName;
     }
 
 
