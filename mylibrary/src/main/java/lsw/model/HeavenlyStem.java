@@ -9,6 +9,15 @@ public class HeavenlyStem {
     public String name;
     public EnumFiveElement fiveElement;
 
+    public HeavenlyStem(){}
+
+    public HeavenlyStem(int id, String name, EnumFiveElement fiveElement)
+    {
+        this.id = id;
+        this.name = name;
+        this.fiveElement = fiveElement;
+    }
+
     public int getId() {
         return id;
     }

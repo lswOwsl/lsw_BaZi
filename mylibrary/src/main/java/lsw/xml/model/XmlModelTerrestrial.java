@@ -94,14 +94,17 @@ public class XmlModelTerrestrial {
         return getTerrestrialHiddens().get(terrestrial);
     }
 
+    private static HashMap<Integer,String> terrestrialMaps;
+
     public HashMap<Integer,String> getTerrestrialMaps() {
-        HashMap<Integer,String> list = new HashMap<Integer, String>();
-        for(String key: terrestrials.keySet())
-        {
-            int id = terrestrials.get(key).getId();
-            String name = key;
-            list.put(id,key);
+        if(terrestrialMaps == null) {
+            terrestrialMaps = new HashMap<Integer, String>();
+            for (String key : terrestrials.keySet()) {
+                int id = terrestrials.get(key).getId();
+                String name = key;
+                terrestrialMaps.put(id, key);
+            }
         }
-        return list;
+        return terrestrialMaps;
     }
 }

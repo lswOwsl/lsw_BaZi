@@ -1,6 +1,7 @@
 package lsw.value;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -283,30 +284,66 @@ public class Default {
         return earthlyBranchSixInverse;
     }
 
-    private static HashMap<Integer,Integer> bathMapping;
+    public final static String Twelve_Grow_Bing = "病";
+    public final static String Twelve_Grow_Si = "死";
+    public final static String Twelve_Grow_Mu = "墓";
+    public final static String Twelve_Grow_Jue = "绝";
+    public final static String Twelve_Grow_Tai = "胎";
+    public final static String Twelve_Grow_Yang = "养";
+    public final static String Twelve_Grow_ZhangSheng = "长生";
+    public final static String Twelve_Grow_MuYu = "沐浴";
 
-    public static HashMap<Integer,Integer> getBathMapping(Context context)
-    {
-        if(bathMapping == null) {
+    private static HashMap<String,HashMap<Integer,Integer>> growsMapping;
 
-            bathMapping = new HashMap<Integer, Integer>();
+    public static HashMap<String,HashMap<Integer,Integer>> getGrowsMapping(Context context) {
+        if (growsMapping == null) {
+
+            growsMapping = new HashMap<String, HashMap<Integer, Integer>>();
 
             XmlModelCache xmlModelCache = XmlModelCache.getInstance(context);
+
+            //墓多暗昧。（墓，十二宫之第九位。凶爻要入墓，吉爻不要入墓。墓为沉滞、暗昧不明之象。用神带刑动入墓者，占病必死，占讼入狱，参看《通玄妙论．随官入墓》）
+            //（养，十二宫之第十二位。用神化入此爻主凡事未决，狐疑不定。）
+            //化病兮伤损，（病，十二宫第七位，与长生对冲。用神化入病爻，凡事有损：占病未痊，占物不中，占药不效，占文书有破绽，占行人未回，占身命带疾，占妇人必不贞洁，占容貌必有破损。）
+            //化胎兮勾连。（胎，十二宫第十一位，主迟滞不响快，占行人主象化胎，必有羁绊未能动身。占盗贼，失脱，若官鬼化入胎爻，主内外勾连。）
+            //凶化长生，炽而未散；（用神化为长生，主吉，只是成事稍迟，不如帝旺来得快。但是凶爻化为长生，则祸根已萌，有日渐增长之势。如占病，子孙化长生病渐减，如官鬼化长生，日加沉重，直至墓绝日，其势始杀。）
+            //吉连沐浴，败而不成。（沐浴，十二宫之第二位，又称败神、主凶。金败在午，木败在子，火败在卯，水土败在酉。用神化入败爻凶，忌爻化入败爻不成凶。）
+            HashMap<Integer, Integer> hashMapSi = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> hashMapMu = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> hashMapJue = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> hashMapTai = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> hashMapYang = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> hashMapZhangSheng = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> hashMapMuYu = new HashMap<Integer, Integer>();
+            HashMap<Integer,Integer> hashMapBing = new HashMap<Integer, Integer>();
+            growsMapping.put(Twelve_Grow_Si, hashMapSi);
+            growsMapping.put(Twelve_Grow_Mu, hashMapMu);
+            growsMapping.put(Twelve_Grow_Jue, hashMapJue);
+            growsMapping.put(Twelve_Grow_Tai, hashMapTai);
+            growsMapping.put(Twelve_Grow_Yang, hashMapYang);
+            growsMapping.put(Twelve_Grow_ZhangSheng, hashMapZhangSheng);
+            growsMapping.put(Twelve_Grow_MuYu, hashMapMuYu);
+            growsMapping.put(Twelve_Grow_Bing,hashMapBing);
 
             for (String t : xmlModelCache.getInstance(context).getTerrestrial().getTerrestrials().keySet()) {
 
                 XmlModelExtProperty property = xmlModelCache.getTerrestrial().getTerrestrials().get(t);
 
-                ArrayList<Pair<Integer,String>> list = xmlModelCache.getXmlModelTwelveGrow().getFiveElementGrowsMapping().get(EnumFiveElement.toEnum(property.getWuXing()));
+                ArrayList<Pair<Integer, String>> list = xmlModelCache.getXmlModelTwelveGrow().getFiveElementGrowsMapping().get(EnumFiveElement.toEnum(property.getWuXing()));
 
-                for(Pair<Integer,String> pair: list)
-                {
-                    if(pair.second.equals("沐浴"))
-                        bathMapping.put(property.getId(),pair.first);
+                for (Pair<Integer, String> pair : list) {
+
+                    for (String text : growsMapping.keySet()) {
+                        if (pair.second.equals(text)) {
+                            growsMapping.get(text).put(property.getId(), pair.first);
+                            //String logText = xmlModelCache.getTerrestrial().getTerrestrialMaps().get(pair.first);
+                            //Log.d("twelve grows "+ text, property.getId() +"/"+ t+"-----------" + pair.first+"/"+ logText);
+                        }
+                    }
                 }
             }
         }
-        return bathMapping;
+        return growsMapping;
     }
 
 }

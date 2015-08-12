@@ -8,11 +8,11 @@ import java.io.Serializable;
 
 public class Line implements Serializable
 {
-    public int position;
-    public EnumLineSymbol lineSymbol;
+    private int position;
+    private EnumLineSymbol lineSymbol;
 
-    public EnumFiveElement fiveElement;
-    public EnumSixRelation sixRelation;
+    private EnumFiveElement fiveElement;
+    private EnumSixRelation sixRelation;
 
     public int getPosition() {
         return position;
@@ -78,10 +78,10 @@ public class Line implements Serializable
         this.earthlyBranchAttached = earthlyBranchAttached;
     }
 
-    public EarthlyBranch earthlyBranch;
+    private EarthlyBranch earthlyBranch;
 
-    public EnumSixRelation sixRelationAttached;
-    public EnumFiveElement fiveElementAttached;
-    public EarthlyBranch earthlyBranchAttached;
+    private EnumSixRelation sixRelationAttached;
+    private EnumFiveElement fiveElementAttached;
+    private EarthlyBranch earthlyBranchAttached;
 
 }

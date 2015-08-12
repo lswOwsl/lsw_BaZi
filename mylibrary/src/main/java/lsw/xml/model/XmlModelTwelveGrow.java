@@ -3,9 +3,12 @@ package lsw.xml.model;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import lsw.model.EnumFiveElement;
 
@@ -48,7 +51,11 @@ public class XmlModelTwelveGrow {
                 ArrayList<Pair<Integer, String>> list = new ArrayList<Pair<Integer, String>>();
 
                 int tempId = fiveElementGrows.get(enumFiveElement);
-                for (Integer integer : getGrowsItem().keySet()) {
+                //把12长生按xml里的id排序
+                List<Integer> integers = Arrays.asList(getGrowsItem().keySet().toArray(new Integer[]{}));
+                Collections.sort(integers);
+
+                for (Integer integer : integers) {
                     if (tempId > 12)
                         tempId = 1;
                     list.add(Pair.create(tempId, getGrowsItem().get(integer)));

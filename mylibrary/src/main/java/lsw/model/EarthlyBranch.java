@@ -7,9 +7,17 @@ import java.io.Serializable;
  */
 public class EarthlyBranch implements Serializable{
 
-    public int id;
-    public String name;
-    public EnumFiveElement fiveElement;
+    private int id;
+    private String name;
+    private EnumFiveElement fiveElement;
+
+    public EarthlyBranch(){}
+    public EarthlyBranch(int id, String name, EnumFiveElement fiveElement)
+    {
+        this.id = id;
+        this.name = name;
+        this.fiveElement = fiveElement;
+    }
 
     public int getId() {
         return id;

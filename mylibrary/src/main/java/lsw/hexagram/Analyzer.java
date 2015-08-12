@@ -3,23 +3,33 @@ package lsw.hexagram;
 import android.content.Context;
 import android.util.Pair;
 
+import java.nio.channels.Pipe;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import lsw.library.BaZiHelper;
 import lsw.library.R;
 import lsw.library.StringHelper;
 import lsw.library.Utility;
 import lsw.model.EarthlyBranch;
+import lsw.model.EarthlyBranchDay;
+import lsw.model.EarthlyBranchMonth;
+import lsw.model.EnumFiveElement;
 import lsw.model.EnumLineStatus;
 import lsw.model.EnumLineSymbol;
 import lsw.model.EnumLing;
 import lsw.model.EnumLingRelation;
+import lsw.model.EnumSixRelation;
 import lsw.model.HeavenlyStem;
+import lsw.model.Hexagram;
 import lsw.model.Line;
 import lsw.value.Default;
 import lsw.xml.XmlModelCache;
+import lsw.xml.model.XmlModelExtProperty;
 
 /**
  * Created by swli on 8/12/2015.
@@ -34,86 +44,73 @@ public class Analyzer  {
         xmlModelCache = XmlModelCache.getInstance(context);
     }
 
-    public Dictionary<int, string> GetSixAnimalsByHeavenlyStem(string day)
-    {
-        var dayTianGan = DefaultValue.HeavenlyStem.Single(p => p.Name == day.Substring(0, 1));
-        return GetSixAnimalsByHeavenlyStem(dayTianGan);
-    }
+    public final String BreakLineSymble = "\r\n";
 
-    public Dictionary<int, string> GetSixAnimalsByHeavenlyStem(HeavenlyStem dayHeavenlyStem)
+    public List<String> OrderedStringResult(String sb)
     {
-        var variable = DefaultValue.SixAnimalsDayIndex.Single(p => p.Key.Contains(dayHeavenlyStem.ID));
-        var result = new Dictionary<int, string>();
-
-        var bigger = DefaultValue.SixAnimals.Where(p => p.Key > variable.Value).OrderBy(p => p.Key);
-        var smaller = DefaultValue.SixAnimals.Where(p => p.Key < variable.Value).OrderBy(p => p.Key);
-        result.Add(1, DefaultValue.SixAnimals[variable.Value]);
-        foreach (var b in bigger)
+        String[] items = sb.replace(BreakLineSymble, "|").split("|");
+        ArrayList<String> tempItems = new ArrayList<String>();
+        for(String item: items)
         {
-            result.Add(result.Count + 1, b.Value);
+            if(!StringHelper.isNullOrEmpty(item))
+                tempItems.add(item);
         }
-
-        foreach (var s in smaller)
-        {
-            result.Add(result.Count + 1, s.Value);
-        }
-
-        return result;
-    }
-
-    public const string BreakLineSymble = "\r\n";
-
-    public List<string> OrderedStringResult(string sb)
-    {
-        var items = sb.Replace(BreakLineSymble, "|").Split('|').Where(p => !string.IsNullOrEmpty(p));
 
         return items.OrderByDescending(p => p.Substring(0, 1)).ToList();
     }
 
-    public StringBuilder AnalyzeHexagramResult(string month, string day, Hexagram originalHexagram, Hexagram resultHexagram = null)
+    public StringBuilder AnalyzeHexagramResult(String month, String day, Hexagram originalHexagram, Hexagram resultHexagram)
     {
-        var mHS = DefaultValue.HeavenlyStem.Single(p => p.Name == month.Substring(0, 1));
-        var mEB = DefaultValue.EarthlyBranch.Single(p => p.Name == month.Substring(1, 1));
+        HeavenlyStem mHS = new HeavenlyStem();
+        String cM = month.substring(0,1);
+        XmlModelExtProperty cP = xmlModelCache.getCelestialStem().getCelestialStems().get(cM);
+        mHS.setId(cP.getId());
+        mHS.setFiveElement(EnumFiveElement.toEnum(cP.getWuXing()));
+        mHS.setName(cM);
 
-        var dHS = DefaultValue.HeavenlyStem.Single(p => p.Name == day.Substring(0, 1));
-        var dEB = DefaultValue.EarthlyBranch.Single(p => p.Name == day.Substring(1, 1));
+        String dM = day.substring(0,1);
+        XmlModelExtProperty dP = xmlModelCache.getTerrestrial().getTerrestrials().get(dM);
+        EarthlyBranch mEB = new EarthlyBranch(dP.getId(),dM, EnumFiveElement.toEnum(dP.getWuXing()));
+
+        HeavenlyStem dHS = DefaultValue.HeavenlyStem.Single(p => p.Name == day.Substring(0, 1));
+        EarthlyBranch dEB = DefaultValue.EarthlyBranch.Single(p => p.Name == day.Substring(1, 1));
 
         return ParseAnalyzeResultToString(AnalyzeHexagramResult(mEB, dHS, dEB, originalHexagram, resultHexagram));
     }
 
     public StringBuilder ParseAnalyzeLineResultToString(List<EnumLineStatus> lineStatus)
     {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        foreach (var status in lineStatus)
+        for (EnumLineStatus status : lineStatus)
         {
-            sb.Append(status.ToText());
-            sb.Append(",");
+            sb.append(status.toString());
+            sb.append(",");
         }
         return sb;
     }
 
-    public StringBuilder ParseAnalyzeThreeSuitResult(List<object> threeSuit)
+    public StringBuilder ParseAnalyzeThreeSuitResult(List<Object> threeSuit)
     {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        foreach (var o in threeSuit)
+        for (Object o : threeSuit)
         {
-            if (o is EarthlyBranchDay)
+            if (o instanceof EarthlyBranchDay)
             {
-                sb.Append("?");
-                sb.Append(",");
+                sb.append("?");
+                sb.append(",");
             }
-            if (o is EarthlyBranchMonth)
+            if (o instanceof EarthlyBranchMonth)
             {
-                sb.Append("?");
-                sb.Append(",");
+                sb.append("?");
+                sb.append(",");
             }
-            if (o is Line)
+            if (o instanceof Line)
             {
-                var line = o as Line;
-                sb.Append(line.Position);
-                sb.Append("?,");
+                Line line = (Line) o;
+                sb.append(line.getPosition());
+                sb.append("?,");
             }
         }
 
@@ -122,12 +119,12 @@ public class Analyzer  {
 
     public StringBuilder ParseAnalyzeEnterDynamicLineTombRepositoryResult(List<Line> lines)
     {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        foreach (var l in lines)
+        for (Line l : lines)
         {
-            sb.Append(l.Position);
-            sb.Append("?,");
+            sb.append(l.getPosition());
+            sb.append("?,");
         }
 
         return sb;
@@ -135,7 +132,7 @@ public class Analyzer  {
 
     public StringBuilder ParseAnalyzeResultToString(AnalyzeResultCollection collection)
     {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         var lineResults = collection.LineLevelResult;
         foreach (var lineResult in lineResults)
@@ -248,7 +245,7 @@ public class Analyzer  {
     public void AnalyzeOneLineTombRepository(Line oline, IEnumerable<Line> dynamicLines, Dictionary<Line, List<Line>> dynamicLineTombRepository)
     {
         //check dynamic tomb repository
-        foreach (var dl in dynamicLines)
+        foreach(var dl in dynamicLines)
         {
             var dynamicLineEBIndex = dl.EarthlyBranch.ID;
             var originalLineEBIndex = oline.EarthlyBranch.ID;
@@ -266,67 +263,64 @@ public class Analyzer  {
         }
     }
 
-    public List<Tuple<EnumSixRelation, List<object>>> AnalyzeThreeSuit(EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, List<Tuple<Line, Line>> linesSuitSet)
+    public List<Pair<EnumSixRelation, ArrayList<Object>>> AnalyzeThreeSuit(EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, List<Pair<Line, Line>> linesSuitSet)
     {
-        var threeSuit = new List<Tuple<EnumSixRelation, List<object>>>();
+        List<Pair<EnumSixRelation, ArrayList<Object>>> threeSuit = new ArrayList<Pair<EnumSixRelation, ArrayList<Object>>>();
 
-        var dayEarthlyBranchType = new EarthlyBranchDay()
+        EarthlyBranchDay dayEarthlyBranchType = new EarthlyBranchDay();
+        dayEarthlyBranchType.setId(dayEarthlyBranch.getId());
+        dayEarthlyBranchType.setName(dayEarthlyBranch.getName());
+        dayEarthlyBranchType.setFiveElement(dayEarthlyBranch.getFiveElement());
+
+        EarthlyBranchMonth monthEarthlyBranchType = new EarthlyBranchMonth();
+        monthEarthlyBranchType.setId(monthEarthlyBranch.getId());
+        monthEarthlyBranchType.setName(monthEarthlyBranch.getName());
+        monthEarthlyBranchType.setFiveElement(monthEarthlyBranch.getFiveElement());
+
+
+        if (linesSuitSet.size() > 0)
         {
-            ID = dayEarthlyBranch.ID,
-            Name = dayEarthlyBranch.Name,
-            Property = dayEarthlyBranch.Property
-        };
+            int monthIndex = monthEarthlyBranch.getId();
+            int dayIndex = dayEarthlyBranch.getId();
 
-        var monthEarthlyBranchType = new EarthlyBranchMonth()
-        {
-            ID = monthEarthlyBranch.ID,
-            Name = monthEarthlyBranch.Name,
-            Property = monthEarthlyBranch.Property
-        };
+            ArrayList<Line> threeDynamicLineSuit = new ArrayList<Line>();
 
-        if (linesSuitSet.Count > 0)
-        {
-            var monthIndex = monthEarthlyBranch.ID;
-            var dayIndex = dayEarthlyBranch.ID;
-
-            var threeDynamicLineSuit = new List<Line>();
-
-            foreach (var tuple in linesSuitSet)
+            for (Pair<Line,Line> tuple : linesSuitSet)
             {
-                var oneDynamicLine = new int[] { tuple.Item1.EarthlyBranch.ID, monthIndex, dayIndex }.Distinct();
-                if (oneDynamicLine.Count() == 3)
+                int[] oneDynamicLine = new int[] { tuple.first.getEarthlyBranch().getId(), monthIndex, dayIndex }.Distinct();
+                if (oneDynamicLine.length == 3)
                 {
                     var r = from k in DefaultValue.EarthlyBranchThreeSuitSet
                     where k.Key.Where(p => oneDynamicLine.Contains(p)).Count() == 3
                     select k;
                     if (r != null && r.Count() > 0)
                     {
-                        var sixRelation = Builder.ParseSixRelationByFiveElement(originalHexagram.Property, r.Single().Value);
+                        var sixRelation = Builder.parseSixRelationByFiveElement(originalHexagram.getFiveElement(), r.Single().Value);
                         threeSuit.Add(Tuple.Create(sixRelation, new List<object> { tuple.Item1, monthEarthlyBranchType, dayEarthlyBranchType }));
                     }
                 }
                 //?????????????
-                var dynamicResultWithMonthDay = CreateThreeSuitByDynamicLines(tuple.Item1, monthEarthlyBranchType, dayEarthlyBranchType, originalHexagram);
+                var dynamicResultWithMonthDay = CreateThreeSuitByDynamicLines(tuple.first, monthEarthlyBranchType, dayEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithMonthDay != null)
                     threeSuit.Add(dynamicResultWithMonthDay);
 
                 //?????????????
-                var dynamicResultWithMonth = CreateThreeSuitByDynamicLines(tuple.Item1, tuple.Item2, monthEarthlyBranchType, originalHexagram);
+                var dynamicResultWithMonth = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, monthEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithMonth != null)
                     threeSuit.Add(dynamicResultWithMonth);
 
-                var dynamicResultWithDay = CreateThreeSuitByDynamicLines(tuple.Item1, tuple.Item2, dayEarthlyBranchType, originalHexagram);
+                var dynamicResultWithDay = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, dayEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithDay != null)
                     threeSuit.Add(dynamicResultWithDay);
 
-                if (DefaultValue.EarthlyBranchThreeSuitSet.Any(p => p.Key.Contains(tuple.Item1.EarthlyBranch.ID)))
+                if (DefaultValue.EarthlyBranchThreeSuitSet.Any(p => p.Key.Contains(tuple.first.EarthlyBranch.ID)))
                 {
-                    threeDynamicLineSuit.Add(tuple.Item1);
+                    threeDynamicLineSuit.add(tuple.first);
                 }
             }
 
             //?????????????
-            Func<List<int>, Dictionary<int[], EnumFiveElement>> funFindSuits = suitList =>
+            Func<List<int>, HashMap<int[], EnumFiveElement>> funFindSuits = suitList =>
             {
                 var result = new Dictionary<int[], EnumFiveElement>();
 
@@ -349,15 +343,15 @@ public class Analyzer  {
             };
 
             //?????????
-            if(threeDynamicLineSuit.Count >= 2)
+            if(threeDynamicLineSuit.size() >= 2)
             {
                 var listIncludeMonthAndDay = threeDynamicLineSuit.Select(p => p.EarthlyBranch.ID).ToList();
-                listIncludeMonthAndDay.Add(monthEarthlyBranchType.ID);
-                listIncludeMonthAndDay.Add(dayEarthlyBranchType.ID);
+                listIncludeMonthAndDay.Add(monthEarthlyBranchType.getId());
+                listIncludeMonthAndDay.Add(dayEarthlyBranchType.getId());
 
                 var existedSuit = funFindSuits(listIncludeMonthAndDay.Distinct().ToList());
 
-                var groupLines = new List<object>();
+                var groupLines = new List<Object>();
                 foreach (var k in existedSuit)
                 {
                     if (k.Key.Contains(monthEarthlyBranchType.ID))
@@ -421,101 +415,128 @@ public class Analyzer  {
         return null;
     }
 
-    Tuple<EnumSixRelation, List<object>> CreateThreeSuitByDynamicLines(List<Tuple<Line, Line>> lines, int beginPosition, Hexagram hexagram, bool withFirstResultLine = true)
+    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(List<Pair<Line, Line>> lines, int beginPosition, Hexagram hexagram, boolean withFirstResultLine)
     {
-        var suitLines = lines.Where(p => p.Item1.Position == beginPosition || p.Item1.Position == beginPosition + 2);
-        if (suitLines.Count() >= 2)
+        ArrayList<Pair<Line,Line>> suitLines = new ArrayList<Pair<Line,Line>>();
+        for(Pair<Line,Line> pair: lines)
         {
-            var linePairOne = suitLines.First();
-            var linePairTwo = suitLines.Last();
+            if(pair.first.getPosition() == beginPosition || pair.first.getPosition() == beginPosition +2)
+                suitLines.add(pair);
+        }
+
+        if (suitLines.size() >= 2)
+        {
+            Pair<Line,Line> linePairOne = suitLines.get(0);
+            Pair<Line,Line> linePairTwo = suitLines.get(suitLines.size()-1);
             if (withFirstResultLine)
             {
                 //means AnDong Line
-                if (linePairOne.Item2 == null)
+                if (linePairOne.first == null)
                     return null;
-                return CreateThreeSuitByDynamicLines(linePairOne.Item1, linePairOne.Item2, linePairTwo.Item1, hexagram);
+                return CreateThreeSuitByDynamicLines(linePairOne.first, linePairOne.second, linePairTwo.first, hexagram);
             }
             else
             {
-                if (linePairTwo.Item2 == null)
+                if (linePairTwo.second == null)
                     return null;
-                return CreateThreeSuitByDynamicLines(linePairOne.Item1, linePairTwo.Item1, linePairTwo.Item2, hexagram);
+                return CreateThreeSuitByDynamicLines(linePairOne.first, linePairTwo.first, linePairTwo.second, hexagram);
             }
         }
         return null;
     }
 
-    Tuple<EnumSixRelation, List<object>> CreateThreeSuitByDynamicLines(Line line1, Line line2, EarthlyBranch dayOrMonthEarthlyBranch, Hexagram hexagram)
+    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(Line line1, Line line2, EarthlyBranch dayOrMonthEarthlyBranch, Hexagram hexagram)
     {
         //line2 == null means this line is AnDong
         if (line2 == null)
             return null;
 
-        var kind = CreateThreeSuitByLineOrMonthOrDay(
-                line1.EarthlyBranch.ID,
-                line2.EarthlyBranch.ID,
-                dayOrMonthEarthlyBranch.ID
+        int[] kind = CreateThreeSuitByLineOrMonthOrDay(
+                line1.getEarthlyBranch().getId(),
+                line2.getEarthlyBranch().getId(),
+                dayOrMonthEarthlyBranch.getId()
         );
 
-        var kindResult = CreateThreeSuitByIndex(kind, hexagram);
+        EnumSixRelation kindResult = CreateThreeSuitByIndex(kind, hexagram);
 
-        if (kindResult.HasValue)
-            return Tuple.Create(kindResult.Value, new List<object>() { line1, line2, dayOrMonthEarthlyBranch });
+        if (kindResult != null) {
+            ArrayList<Object> list = new ArrayList<Object>();
+            list.add(line1);
+            list.add(line2);
+            list.add(dayOrMonthEarthlyBranch);
+
+            return Pair.create(kindResult, list);
+        }
         else
             return null;
     }
 
-    Tuple<EnumSixRelation, List<object>> CreateThreeSuitByDynamicLines(Line line1, EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram hexagram)
-    {
-        var kind = CreateThreeSuitByLineOrMonthOrDay(
-                line1.EarthlyBranch.ID,
-                monthEarthlyBranch.ID,
-                dayEarthlyBranch.ID
+    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(Line line1, EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram hexagram) {
+        int[] kind = CreateThreeSuitByLineOrMonthOrDay(
+                line1.getEarthlyBranch().getId(),
+                monthEarthlyBranch.getId(),
+                dayEarthlyBranch.getId()
         );
 
-        var kindResult = CreateThreeSuitByIndex(kind, hexagram);
+        EnumSixRelation kindResult = CreateThreeSuitByIndex(kind, hexagram);
 
-        if (kindResult.HasValue)
-            return Tuple.Create(kindResult.Value, new List<object>() { line1, monthEarthlyBranch, dayEarthlyBranch });
-        else
+        if (kindResult != null) {
+            ArrayList<Object> list = new ArrayList<Object>();
+            list.add(line1);
+            list.add(monthEarthlyBranch);
+            list.add(dayEarthlyBranch);
+            return Pair.create(kindResult, list);
+        } else
             return null;
     }
 
-    Tuple<EnumSixRelation, List<object>> CreateThreeSuitByDynamicLines(Line line1, Line line2, Line line3, Hexagram hexagram)
+    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(Line line1, Line line2, Line line3, Hexagram hexagram)
     {
-        var kind = CreateThreeSuitByLineOrMonthOrDay(
-                line1.EarthlyBranch.ID,
-                line2.EarthlyBranch.ID,
-                line3.EarthlyBranch.ID
+        int[] kind = CreateThreeSuitByLineOrMonthOrDay(
+                line1.getEarthlyBranch().getId(),
+                line2.getEarthlyBranch().getId(),
+                line3.getEarthlyBranch().getId()
         );
 
-        var kindResult = CreateThreeSuitByIndex(kind, hexagram);
+        EnumSixRelation kindResult = CreateThreeSuitByIndex(kind, hexagram);
 
-        if (kindResult.HasValue)
-            return Tuple.Create(kindResult.Value, new List<object>() { line1, line2, line3 });
+        if (kindResult != null) {
+            ArrayList<Object> list = new ArrayList<Object>();
+            list.add(line1);
+            list.add(line2);
+            list.add(line3);
+            return Pair.create(kindResult, list);
+        }
         else
             return null;
     }
 
     int[] CreateThreeSuitByLineOrMonthOrDay(int earthBranchID1, int earthBranchID2, int earthBranchID3)
     {
-        var list =  new int[] { earthBranchID1, earthBranchID2, earthBranchID3 };
-        if (list.Distinct().Count() == 3)
+        int[] list =  new int[] { earthBranchID1, earthBranchID2, earthBranchID3 };
+        //³ýµôÖØ¸´¼ÍÂ¼
+        List<Integer> tempList= new ArrayList<Integer>();
+        for(Integer i:list){
+            if(!tempList.contains(i)){
+                tempList.add(i);
+            }
+        }
+        if (tempList.size() == 3)
             return list;
         else
             return null;
     }
 
-    EnumSixRelation? CreateThreeSuitByIndex(int[] indexSummary, Hexagram hexagram)
+    EnumSixRelation CreateThreeSuitByIndex(int[] indexSummary, Hexagram hexagram)
     {
-        if (indexSummary != null && indexSummary.Length == 3)
+        if (indexSummary != null && indexSummary.length == 3)
         {
             var result = from k in DefaultValue.EarthlyBranchThreeSuitSet
             where k.Key.Join(indexSummary, i => i, o => o, (i, o) => o).Distinct().Count() == 3
             select k;
             if (result != null && result.Count() > 0)
             {
-                var sixRelation = Builder.ParseSixRelationByFiveElement(hexagram.Property, result.First().Value);
+                EnumSixRelation sixRelation = Builder.parseSixRelationByFiveElement(hexagram.getFiveElement(), result.First().Value);
 
                 return sixRelation;
             }
@@ -523,188 +544,175 @@ public class Analyzer  {
         return null;
     }
 
-    public Tuple<EnumSixRelation, List<EnumLineStatus>> AnalyzeLineResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
-                                                                          EarthlyBranch dayEarthlyBranch, Line oLine, Line tLine, bool checkFuShen = false)
+    public Pair<EnumSixRelation, ArrayList<EnumLineStatus>> AnalyzeLineResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
+                                                                          EarthlyBranch dayEarthlyBranch, Line oLine, Line tLine, boolean checkFuShen)
     {
-        var lineStatus = new List<EnumLineStatus>();
-        EnumSixRelation? enumSixRelation;
+        ArrayList<EnumLineStatus> lineStatus = new ArrayList<EnumLineStatus>();
+        EnumSixRelation enumSixRelation;
 
         if (checkFuShen)
         {
-            enumSixRelation = oLine.SixRelationAttached;
+            enumSixRelation = oLine.getSixRelationAttached();
 
-            lineStatus.Add(EnumLineStatus.Fu);
-            var kong = AnalyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
-            if (kong.HasValue)
-                lineStatus.Add(kong.Value);
+            lineStatus.add(EnumLineStatus.Fu);
+            EnumLineStatus kong = AnalyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
+            if (kong != null)
+                lineStatus.add(kong);
         }
         else
         {
-            enumSixRelation = oLine.SixRelation;
+            enumSixRelation = oLine.getSixRelation();
 
             if (IsDynamicLine(oLine))
             {
-                lineStatus.Add(EnumLineStatus.Dong);
+                lineStatus.add(EnumLineStatus.Dong);
             }
             else
             {
-                var kong = AnalyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine);
-                if (kong.HasValue)
-                    lineStatus.Add(kong.Value);
+                EnumLineStatus kong = AnalyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, false);
+                if (kong != null)
+                    lineStatus.add(kong);
             }
         }
 
-        var lineStatusWithMonthAndDay = AnalyzeLineRelationWithMonthAndDay(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
+        ArrayList<EnumLineStatus> lineStatusWithMonthAndDay = AnalyzeLineRelationWithMonthAndDay(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
 
-        lineStatus = lineStatus.Union(lineStatusWithMonthAndDay).ToList();
+        lineStatus.addAll(lineStatusWithMonthAndDay);
 
         if (!checkFuShen && IsDynamicLine(oLine))
         {
-            var dynamicLineChanged = AnalyzeDynamicLineChanged(oLine, tLine, monthEarthlyBranch, dayEarthlyBranch, dayHeavenlyStem);
+            ArrayList<EnumLineStatus> dynamicLineChanged = AnalyzeDynamicLineChanged(oLine, tLine, monthEarthlyBranch, dayEarthlyBranch, dayHeavenlyStem);
 
-            lineStatus = lineStatus.Union(dynamicLineChanged).ToList();
+            lineStatus.addAll(dynamicLineChanged);
         }
 
-        return Tuple.Create(enumSixRelation.Value, lineStatus);
+        return Pair.create(enumSixRelation, lineStatus);
     }
 
-    public List<EnumLineStatus> AnalyzeLineRelationWithMonthAndDay(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
-                                                                   EarthlyBranch dayEarthlyBranch, Line originalLine, bool checkFuShen)
+    public ArrayList<EnumLineStatus> AnalyzeLineRelationWithMonthAndDay(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
+                                                                   EarthlyBranch dayEarthlyBranch, Line originalLine, boolean checkFuShen)
     {
-        var listStatus = new List<EnumLineStatus>();
+        ArrayList<EnumLineStatus> listStatus = new ArrayList<EnumLineStatus>();
 
-        var oLineEarthlyBranchIndex = originalLine.EarthlyBranch.ID;
-        var oLineEarthlyBranch = originalLine.EarthlyBranch;
+        int oLineEarthlyBranchIndex = originalLine.getEarthlyBranch().getId();
+        EarthlyBranch oLineEarthlyBranch = originalLine.getEarthlyBranch();
 
         if (checkFuShen)
         {
-            oLineEarthlyBranchIndex = originalLine.EarthlyBranchAttached.ID;
-            oLineEarthlyBranch = originalLine.EarthlyBranchAttached;
+            oLineEarthlyBranchIndex = originalLine.getEarthlyBranchAttached().getId();
+            oLineEarthlyBranch = originalLine.getEarthlyBranchAttached();
         }
         //??????
-        var rMonth = AnalyzeLineLingRelation(monthEarthlyBranch, originalLine, checkFuShen);
-        if (monthEarthlyBranch.ID == oLineEarthlyBranch.ID)
+        EnumLingRelation rMonth = AnalyzeLineLingRelation(monthEarthlyBranch, originalLine, checkFuShen);
+        if (monthEarthlyBranch.getId() == oLineEarthlyBranch.getId())
         {
-            listStatus.Add(EnumLineStatus.LinYue);
+            listStatus.add(EnumLineStatus.LinYue);
         }
         else
         {
-            listStatus.Add(ConvertEarthlyBranchRelationToEnum(rMonth, true));
+            listStatus.add(ConvertEarthlyBranchRelationToEnum(rMonth, true));
             //Yu Qi ex: ????
-            var yuQi = AnalyzeLineLingRelationYuQi(monthEarthlyBranch.ID, originalLine, checkFuShen);
-            if (yuQi.HasValue)
+            EnumLineStatus yuQi = AnalyzeLineLingRelationYuQi(monthEarthlyBranch.getId(), originalLine, checkFuShen);
+            if (yuQi != null)
             {
-                listStatus.Add(yuQi.Value);
+                listStatus.add(yuQi);
             }
 
-            if (DefaultValue.EarthlyBranchSixSuit[monthEarthlyBranch.ID] == oLineEarthlyBranchIndex)
+            if (Default.getEarthlyBranchSixSuit(context).get(monthEarthlyBranch.getId()) == oLineEarthlyBranchIndex)
             {
-                listStatus.Add(EnumLineStatus.YueHe);
+                listStatus.add(EnumLineStatus.YueHe);
             }
-            if (DefaultValue.EarthlyBranchSixInverse[monthEarthlyBranch.ID] == oLineEarthlyBranchIndex)
+            if (Default.getEarthlyBranchSixInverse(context).get(monthEarthlyBranch.getId()) == oLineEarthlyBranchIndex)
             {
-                listStatus.Add(EnumLineStatus.YuePo);
+                listStatus.add(EnumLineStatus.YuePo);
             }
         }
         //??????
-        var rDay = AnalyzeLineLingRelation(dayEarthlyBranch, originalLine, checkFuShen);
-        if (dayEarthlyBranch.ID == oLineEarthlyBranch.ID)
+        EnumLingRelation rDay = AnalyzeLineLingRelation(dayEarthlyBranch, originalLine, checkFuShen);
+        if (dayEarthlyBranch.getId() == oLineEarthlyBranch.getId())
         {
-            listStatus.Add(EnumLineStatus.LinRi);
+            listStatus.add(EnumLineStatus.LinRi);
         }
         else
         {
-            listStatus.Add(ConvertEarthlyBranchRelationToEnum(rDay));
-            if (DefaultValue.EarthlyBranchSixSuit[dayEarthlyBranch.ID] == oLineEarthlyBranchIndex)
+            listStatus.add(ConvertEarthlyBranchRelationToEnum(rDay, false));
+            if (Default.getEarthlyBranchSixSuit(context).get(dayEarthlyBranch.getId()) == oLineEarthlyBranchIndex)
             {
-                listStatus.Add(EnumLineStatus.RiHe);
+                listStatus.add(EnumLineStatus.RiHe);
             }
         }
 
-        //?????
-        Action<Dictionary<int, int>, int, EnumLineStatus> actionDayMonthDeadTombDesperate = (dic, earthlyBranchIndex, @enum) =>
-        {
+        actionDayMonthDeadTombDesperate(listStatus,Default.Twelve_Grow_Mu,dayEarthlyBranch.getId(),EnumLineStatus.RiMuKu,oLineEarthlyBranchIndex);
+        actionDayMonthDeadTombDesperate(listStatus,Default.Twelve_Grow_Si,dayEarthlyBranch.getId(),EnumLineStatus.RiSi,oLineEarthlyBranchIndex);
+        actionDayMonthDeadTombDesperate(listStatus,Default.Twelve_Grow_Jue,dayEarthlyBranch.getId(),EnumLineStatus.RiJue,oLineEarthlyBranchIndex);
 
-            if (dic.ContainsKey(oLineEarthlyBranchIndex) &&
-                    dic[oLineEarthlyBranchIndex] == earthlyBranchIndex)
-            {
-                listStatus.Add(@enum);
-            }
-        };
+        actionDayMonthDeadTombDesperate(listStatus, Default.Twelve_Grow_Mu, monthEarthlyBranch.getId(), EnumLineStatus.YueMuKu, oLineEarthlyBranchIndex);
+        actionDayMonthDeadTombDesperate(listStatus, Default.Twelve_Grow_Si, monthEarthlyBranch.getId(), EnumLineStatus.YueSi, oLineEarthlyBranchIndex);
+        actionDayMonthDeadTombDesperate(listStatus, Default.Twelve_Grow_Jue, monthEarthlyBranch.getId(), EnumLineStatus.YueJue, oLineEarthlyBranchIndex);
 
-        Action<Dictionary<int, int>, EnumLineStatus> actionDayDeadTombDesperate = (dic, @enum) =>
-        {
-            actionDayMonthDeadTombDesperate(dic, dayEarthlyBranch.ID, @enum);
-        };
-
-        Action<Dictionary<int, int>, EnumLineStatus> actionMonthDeadTombDesperate = (dic, @enum) =>
-        {
-            actionDayMonthDeadTombDesperate(dic, monthEarthlyBranch.ID, @enum);
-        };
-
-        actionDayDeadTombDesperate(DefaultValue.FiveElementTombRepository, EnumLineStatus.RiMuKu);
-        actionDayDeadTombDesperate(DefaultValue.FiveElementDead, EnumLineStatus.RiSi);
-        actionDayDeadTombDesperate(DefaultValue.FiveElementDesperation, EnumLineStatus.RiJue);
-
-        actionMonthDeadTombDesperate(DefaultValue.FiveElementTombRepository, EnumLineStatus.YueMuKu);
-        actionMonthDeadTombDesperate(DefaultValue.FiveElementDead, EnumLineStatus.YueSi);
-        actionMonthDeadTombDesperate(DefaultValue.FiveElementDesperation, EnumLineStatus.YueJue);
-
-        //????????
-        var lineExtensionStatus = AnalyzeLineExtension(rMonth, monthEarthlyBranch, originalLine, dayHeavenlyStem, dayEarthlyBranch, checkFuShen);
-        listStatus = listStatus.Union(lineExtensionStatus).ToList();
+        ArrayList<EnumLineStatus> lineExtensionStatus = AnalyzeLineExtension(rMonth, monthEarthlyBranch, originalLine, dayHeavenlyStem, dayEarthlyBranch, checkFuShen);
+        listStatus.addAll(lineExtensionStatus);
 
         return listStatus;
     }
 
-
-    public List<EnumLineStatus> AnalyzeLineExtension(EnumLingRelation rMonth, EarthlyBranch monthEarthlyBranch, Line oLine,
-                                                     HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, bool checkFuShen = false)
+    public void actionDayMonthDeadTombDesperate(ArrayList<EnumLineStatus> lineStatuses, String key, int earthlyBranchIndex,EnumLineStatus lineStatus, int oLineEarthlyBranchIndex)
     {
-        var listStatus = new List<EnumLineStatus>();
+        HashMap<Integer,Integer> dic = Default.getGrowsMapping(context).get(key);
+        if (dic.containsKey(oLineEarthlyBranchIndex) &&
+                dic.get(oLineEarthlyBranchIndex) == earthlyBranchIndex) {
+            lineStatuses.add(lineStatus);
+        }
+    }
 
-        var oDiZhiIndex = oLine.EarthlyBranch.ID;
+
+    public ArrayList<EnumLineStatus> AnalyzeLineExtension(EnumLingRelation rMonth, EarthlyBranch monthEarthlyBranch, Line oLine,
+                                                     HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, boolean checkFuShen)
+    {
+        ArrayList<EnumLineStatus> listStatus = new ArrayList<EnumLineStatus>();
+
+        int oDiZhiIndex = oLine.getEarthlyBranch().getId();
 
         if (checkFuShen)
-            oDiZhiIndex = oLine.EarthlyBranchAttached.ID;
+            oDiZhiIndex = oLine.getEarthlyBranchAttached().getId();
 
         if (rMonth == EnumLingRelation.Wang || rMonth == EnumLingRelation.Xiang)
         {
-            if (DefaultValue.EarthlyBranchSixInverse[dayEarthlyBranch.ID] == oDiZhiIndex)
+            if (Default.getEarthlyBranchSixInverse(context).get(dayEarthlyBranch.getId()) == oDiZhiIndex)
             {
-                listStatus.Add(EnumLineStatus.AnDong);
+                listStatus.add(EnumLineStatus.AnDong);
             }
         }
         else
         {
-            var earthlyBranchName = checkFuShen ? oLine.EarthlyBranchAttached : oLine.EarthlyBranch;
-            if ((monthEarthlyBranch.Name != earthlyBranchName.Name && dayEarthlyBranch.Name != earthlyBranchName.Name)
+            EarthlyBranch earthlyBranchName = checkFuShen ? oLine.getEarthlyBranchAttached() : oLine.getEarthlyBranch();
+            if (!(monthEarthlyBranch.getName().equals(earthlyBranchName.getName())
+                    && !dayEarthlyBranch.getName().equals(earthlyBranchName.getName()))
                     && IsXunKong(dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen))
             {
-                if (DefaultValue.EarthlyBranchSixInverse[dayEarthlyBranch.ID] == oDiZhiIndex)
+                if (Default.getEarthlyBranchSixInverse(context).get(dayEarthlyBranch.getId()) == oDiZhiIndex)
                 {
-                    listStatus.Add(EnumLineStatus.ChongShi);
+                    listStatus.add(EnumLineStatus.ChongShi);
                 }
             }
             else
             {
-                if (DefaultValue.EarthlyBranchSixInverse[dayEarthlyBranch.ID] == oDiZhiIndex)
+                if (Default.getEarthlyBranchSixInverse(context).get(dayEarthlyBranch.getId()) == oDiZhiIndex)
                 {
-                    listStatus.Add(EnumLineStatus.RiPo);
+                    listStatus.add(EnumLineStatus.RiPo);
                 }
             }
         }
         return listStatus;
     }
 
-    public EnumLineStatus? AnalyzeLineXunKong(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
-                                              EarthlyBranch dayEarthlyBranch, Line oLine, bool isFuShen = false)
+    public EnumLineStatus AnalyzeLineXunKong(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
+                                              EarthlyBranch dayEarthlyBranch, Line oLine, boolean isFuShen)
     {
-        var builder = new StringBuilder();
 
-        var monthEarthlyBranchCompare = !isFuShen ?
-                monthEarthlyBranch.Name != oLine.EarthlyBranch.Name && dayEarthlyBranch.Name != oLine.EarthlyBranch.Name :
-                monthEarthlyBranch.Name != oLine.EarthlyBranchAttached.Name && dayEarthlyBranch.Name != oLine.EarthlyBranchAttached.Name;
+        boolean monthEarthlyBranchCompare = !isFuShen ?
+                !monthEarthlyBranch.getName().equals(oLine.getEarthlyBranch().getName()) && !dayEarthlyBranch.getName().equals(oLine.getEarthlyBranch().getName()) :
+                !monthEarthlyBranch.getName().equals(oLine.getEarthlyBranchAttached().getName()) && !dayEarthlyBranch.getName().equals(oLine.getEarthlyBranchAttached().getName());
 
         if (monthEarthlyBranchCompare)
         {
@@ -797,58 +805,40 @@ public class Analyzer  {
             listStatus.add(EnumLineStatus.HuiTouKe);
         }
 
-        Action<HashMap<Integer, Integer>, EnumLineStatus> actionHua = (dic, status) =>
-        {
-            if (dic.ContainsKey(oLine.EarthlyBranch.ID) && dic[oLine.EarthlyBranch.ID] == tLine.EarthlyBranch.ID)
-            {
-                listStatus.Add(status);
-            }
-        };
-        //???
-        actionHua(DefaultValue.FiveElementTombRepository, EnumLineStatus.HuaMuKu);
-        //??
-        actionHua(DefaultValue.FiveElementDesperation, EnumLineStatus.HuaJue);
-        //??
-        actionHua(DefaultValue.FiveElementDead, EnumLineStatus.HuaSi);
-        //?
-        actionHua(DefaultValue.FiveElementSick, EnumLineStatus.HuaBing);
-        //???
-        actionHua(DefaultValue.FiveElementGrow, EnumLineStatus.HuaZhangSheng);
-        //???
-        actionHua(DefaultValue.FiveElementBath, EnumLineStatus.HuaMuYu);
-        //?
-        actionHua(DefaultValue.FiveElementFoetus, EnumLineStatus.HuaTai);
-        //?
-        actionHua(DefaultValue.FiveElementRaise, EnumLineStatus.HuaYang);
+        getLineStatus(listStatus, Default.Twelve_Grow_Mu,EnumLineStatus.HuaMuKu,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_Jue,EnumLineStatus.HuaJue,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_Si,EnumLineStatus.HuaSi,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_ZhangSheng,EnumLineStatus.HuaZhangSheng,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_Tai,EnumLineStatus.HuaTai,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_Yang,EnumLineStatus.HuaYang,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_Bing,EnumLineStatus.HuaBing,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_MuYu,EnumLineStatus.HuaMuKu,oLine,tLine);
 
-        //???????????
-        var rMonth = AnalyzeLineLingRelation(monthEarthlyBranch, tLine);
-        var rDay = AnalyzeLineLingRelation(dayEarthlyBranch, tLine);
-        var monthStatus = ConvertEarthlyBranchRelationToEnumChangedLine(rMonth, true);
-        var dayStatus = ConvertEarthlyBranchRelationToEnumChangedLine(rDay);
-        if (monthStatus.HasValue)
-            listStatus.Add(monthStatus.Value);
-        if (dayStatus.HasValue)
-            listStatus.Add(dayStatus.Value);
+        EnumLingRelation rMonth = AnalyzeLineLingRelation(monthEarthlyBranch, tLine,false);
+        EnumLingRelation rDay = AnalyzeLineLingRelation(dayEarthlyBranch, tLine,false);
+        EnumLineStatus monthStatus = ConvertEarthlyBranchRelationToEnumChangedLine(rMonth, true);
+        EnumLineStatus dayStatus = ConvertEarthlyBranchRelationToEnumChangedLine(rDay,false);
+        if (monthStatus != null)
+            listStatus.add(monthStatus);
+        if (dayStatus != null)
+            listStatus.add(dayStatus);
 
-        //??
-        var yuQi = AnalyzeLineLingRelationYuQi(monthEarthlyBranch.ID, tLine);
-        if (yuQi.HasValue)
+        EnumLineStatus yuQi = AnalyzeLineLingRelationYuQi(monthEarthlyBranch.getId(), tLine,false);
+        if (yuQi != null)
         {
-            listStatus.Add(EnumLineStatus.BianYaoYuQiYue);
+            listStatus.add(EnumLineStatus.BianYaoYuQiYue);
         }
 
         return listStatus;
     }
 
-    private EnumLineStatus getLineStatus(HashMap<Integer, Integer> source, EnumLineStatus enumLineStatus, Line oLine, Line tLine)
+    private void getLineStatus(ArrayList<EnumLineStatus> lineStatuses, String key, EnumLineStatus enumLineStatus, Line oLine, Line tLine)
     {
+        HashMap<Integer,Integer> source = Default.getGrowsMapping(context).get(key);
         if (source.containsKey(oLine.getEarthlyBranch().getId()) && source.get(oLine.getEarthlyBranch().getId()) == tLine.getEarthlyBranch().getId())
         {
-            return enumLineStatus;
+            lineStatuses.add(enumLineStatus);
         }
-        else
-            return null;
     }
 
     public EnumLingRelation AnalyzeLineLingRelation(EarthlyBranch earthlyBranch, Line line, boolean checkFuShen) {
