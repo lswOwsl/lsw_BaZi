@@ -3,18 +3,16 @@ package lsw.hexagram;
 import android.content.Context;
 import android.util.Pair;
 
-import java.nio.channels.Pipe;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
-import lsw.library.BaZiHelper;
-import lsw.library.R;
 import lsw.library.StringHelper;
 import lsw.library.Utility;
+import lsw.model.AnalyzeResultCollection;
 import lsw.model.EarthlyBranch;
 import lsw.model.EarthlyBranchDay;
 import lsw.model.EarthlyBranchMonth;
@@ -56,24 +54,39 @@ public class Analyzer  {
                 tempItems.add(item);
         }
 
-        return items.OrderByDescending(p => p.Substring(0, 1)).ToList();
+        Collections.sort(tempItems, new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return s.substring(0,1).compareTo(t1.substring(0,1));
+
+            }
+        });
+
+        return tempItems;
+        //return items.OrderByDescending(p => p.Substring(0, 1)).ToList();
     }
 
     public StringBuilder AnalyzeHexagramResult(String month, String day, Hexagram originalHexagram, Hexagram resultHexagram)
     {
         HeavenlyStem mHS = new HeavenlyStem();
         String cM = month.substring(0,1);
-        XmlModelExtProperty cP = xmlModelCache.getCelestialStem().getCelestialStems().get(cM);
-        mHS.setId(cP.getId());
-        mHS.setFiveElement(EnumFiveElement.toEnum(cP.getWuXing()));
+        XmlModelExtProperty cMP = xmlModelCache.getCelestialStem().getCelestialStems().get(cM);
+        mHS.setId(cMP.getId());
+        mHS.setFiveElement(EnumFiveElement.toEnum(cMP.getWuXing()));
         mHS.setName(cM);
 
-        String dM = day.substring(0,1);
-        XmlModelExtProperty dP = xmlModelCache.getTerrestrial().getTerrestrials().get(dM);
-        EarthlyBranch mEB = new EarthlyBranch(dP.getId(),dM, EnumFiveElement.toEnum(dP.getWuXing()));
+        String tM = month.substring(1,1);
+        XmlModelExtProperty tMP = xmlModelCache.getTerrestrial().getTerrestrials().get(tM);
+        EarthlyBranch mEB = new EarthlyBranch(tMP.getId(),tM, EnumFiveElement.toEnum(tMP.getWuXing()));
 
-        HeavenlyStem dHS = DefaultValue.HeavenlyStem.Single(p => p.Name == day.Substring(0, 1));
-        EarthlyBranch dEB = DefaultValue.EarthlyBranch.Single(p => p.Name == day.Substring(1, 1));
+        String dM = day.substring(0,1);
+        XmlModelExtProperty dMP = xmlModelCache.getCelestialStem().getCelestialStems().get(dM);
+        HeavenlyStem dHS = new HeavenlyStem(dMP.getId(),dM,EnumFiveElement.toEnum(dMP.getWuXing()));
+
+        String dtM = day.substring(1,1);
+        XmlModelExtProperty dtMP = xmlModelCache.getTerrestrial().getTerrestrials().get(dtM);
+        EarthlyBranch dEB = new EarthlyBranch(dtMP.getId(),dtM, EnumFiveElement.toEnum(dtMP.getWuXing()));
+
 
         return ParseAnalyzeResultToString(AnalyzeHexagramResult(mEB, dHS, dEB, originalHexagram, resultHexagram));
     }
@@ -134,63 +147,73 @@ public class Analyzer  {
     {
         StringBuilder sb = new StringBuilder();
 
-        var lineResults = collection.LineLevelResult;
-        foreach (var lineResult in lineResults)
+        HashMap<Pair<Integer, EnumSixRelation>, ArrayList<EnumLineStatus>>  lineResults = collection.getLineLevelResult();
+        for (Pair<Integer, EnumSixRelation> key : lineResults.keySet())
         {
-            sb.Append(lineResult.Key.Item1);
-            sb.Append("-");
-            sb.Append(lineResult.Key.Item2.ToText());
-            sb.Append(":");
-            sb.Append(ParseAnalyzeLineResultToString(lineResult.Value));
-            sb.Append(BreakLineSymble);
+            sb.append(key.first);
+            sb.append("-");
+            sb.append(key.second.toString());
+            sb.append(":");
+            sb.append(ParseAnalyzeLineResultToString(lineResults.get(key)));
+            sb.append(BreakLineSymble);
         }
 
-        if (collection.HexagramLevelThreeSuitResult != null)
+        if (collection.getHexagramLevelThreeSuitResult() != null)
         {
-            foreach (var suit in collection.HexagramLevelThreeSuitResult)
+            for (Pair<EnumSixRelation, ArrayList<Object>> suit : collection.getHexagramLevelThreeSuitResult())
             {
-                sb.Append("!-");
-                sb.Append(suit.Item1.ToText());
-                sb.Append(":");
-                sb.Append("?,");
-                sb.Append(ParseAnalyzeThreeSuitResult(suit.Item2));
-                sb.Append(BreakLineSymble);
+                sb.append("!-");
+                sb.append(suit.first.toString());
+                sb.append(":");
+                sb.append("?,");
+                sb.append(ParseAnalyzeThreeSuitResult(suit.second));
+                sb.append(BreakLineSymble);
             }
         }
-        if (collection.LineLevelTombRepository != null)
+        if (collection.getLineLevelTombRepository() != null)
         {
-            foreach (var tombRepository in collection.LineLevelTombRepository)
+            for (Line key : collection.getLineLevelTombRepository().keySet())
             {
-                sb.Append(tombRepository.Key.Position);
-                sb.Append("-");
-                sb.Append(tombRepository.Key.SixRelation.ToText());
-                sb.Append(":");
-                sb.Append(ParseAnalyzeEnterDynamicLineTombRepositoryResult(tombRepository.Value));
-                sb.Append("??");
+                sb.append(key.getPosition());
+                sb.append("-");
+                sb.append(key.getSixRelation().toString());
+                sb.append(":");
+                sb.append(ParseAnalyzeEnterDynamicLineTombRepositoryResult(collection.getLineLevelTombRepository().get(key)));
+                sb.append("??");
             }
         }
 
         return sb;
     }
 
-    public AnalyzeResultCollection AnalyzeHexagramResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, Hexagram resultHexagram = null)
+    public AnalyzeResultCollection AnalyzeHexagramResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, Hexagram resultHexagram)
     {
-        var result = new AnalyzeResultCollection();
+        AnalyzeResultCollection result = new AnalyzeResultCollection();
 
-        var lineStatus = new Dictionary<Tuple<int, EnumSixRelation>, List<EnumLineStatus>>();
+        HashMap<Pair<Integer, EnumSixRelation>, ArrayList<EnumLineStatus>> lineStatus = new HashMap<Pair<Integer, EnumSixRelation>, ArrayList<EnumLineStatus>>();
 
-        var linesSuitSet = new List<Tuple<Line, Line>>();
+        ArrayList<Pair<Line, Line>> linesSuitSet = new ArrayList<Pair<Line, Line>>();
         //tomb repository
-        var dynamicLineTombRepository = new Dictionary<Line, List<Line>>();
+        HashMap<Line, ArrayList<Line>> dynamicLineTombRepository = new HashMap<Line, ArrayList<Line>>();
 
-        var lines = originalHexagram.Upper.Lines.Union(originalHexagram.Lower.Lines);
+        ArrayList<Line> lines = originalHexagram.getLines();
 
         //check tomb repositroy dynamic
-        var dynamicLines = lines.Where(p => IsDynamicLine(p))
-        .Where(p => DefaultValue.FiveElementTombRepository.ContainsValue(p.EarthlyBranch.ID));
+        ArrayList<Line> dynamicLines = new ArrayList<Line>();
+        for(Line line :lines)
+        {
+            if(IsDynamicLine(line) && Default.getGrowsMapping(context).get(Default.Twelve_Grow_Mu).containsValue(line.getEarthlyBranch().getId()))
+                dynamicLines.add(line);
+        }
 
+        Collections.sort(lines, new Comparator<Line>() {
+            @Override
+            public int compare(Line line, Line t1) {
+                return line.getSixRelation().compareTo(t1.getSixRelation());
+            }
+        });
 
-        foreach (var oline in lines.OrderBy(p => p.SixRelation))
+        for(Line oline : lines)
         {
 
             AnalyzeOneLineTombRepository(oline, dynamicLines, dynamicLineTombRepository);
@@ -200,70 +223,79 @@ public class Analyzer  {
             //check three suit
             if (resultHexagram != null)
             {
-                tLine = resultHexagram.Upper.Lines.Union(resultHexagram.Lower.Lines).Single(p => p.Position == oline.Position);
-
+                for(Line line : resultHexagram.getLines()) {
+                    if(line.getPosition() == oline.getPosition()) {
+                        tLine = line;
+                        break;
+                    }
+                }
                 if (IsDynamicLine(oline))
                 {
                     //check three suit
-                    linesSuitSet.Add(Tuple.Create(oline, tLine));
+                    linesSuitSet.add(Pair.create(oline, tLine));
                 }
             }
 
-            bool isFuShen = oline.EarthlyBranchAttached != null && !string.IsNullOrEmpty(oline.EarthlyBranch.Name);
+            boolean isFuShen = oline.getEarthlyBranchAttached() != null && !StringHelper.isNullOrEmpty(oline.getEarthlyBranch().getName());
 
-            Tuple<EnumSixRelation, List<EnumLineStatus>> tupleAttachedLineResult = null, tupleLineResult = null;
+            Pair<EnumSixRelation, ArrayList<EnumLineStatus>> tupleAttachedLineResult = null, tupleLineResult = null;
 
             if (isFuShen)
             {
-                var analyzeAttachedLineResult = AnalyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine, isFuShen);
+                Pair<EnumSixRelation, ArrayList<EnumLineStatus>> analyzeAttachedLineResult = AnalyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine, isFuShen);
                 tupleAttachedLineResult = analyzeAttachedLineResult;
             }
 
-            var analyzeLineResult = AnalyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine);
+            Pair<EnumSixRelation, ArrayList<EnumLineStatus>> analyzeLineResult = AnalyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine, false);
             tupleLineResult = analyzeLineResult;
 
             if (tupleAttachedLineResult != null)
-                lineStatus.Add(Tuple.Create(oline.Position, tupleAttachedLineResult.Item1), tupleAttachedLineResult.Item2);
+                lineStatus.put(Pair.create(oline.getPosition(), tupleAttachedLineResult.first), tupleAttachedLineResult.second);
 
             if (tupleLineResult != null)
-                lineStatus.Add(Tuple.Create(oline.Position, analyzeLineResult.Item1), analyzeLineResult.Item2);
+                lineStatus.put(Pair.create(oline.getPosition(), analyzeLineResult.first), analyzeLineResult.second);
 
-            if (tupleLineResult.Item2.Contains(EnumLineStatus.AnDong))
-                linesSuitSet.Add(Tuple.Create(oline, default(Line)));
+            Line tempLine = null;
+            if (tupleLineResult.second.contains(EnumLineStatus.AnDong))
+                linesSuitSet.add(Pair.create(oline, tempLine));
         }
 
         //three suit
-        var threeSuitResult = AnalyzeThreeSuit(monthEarthlyBranch, dayEarthlyBranch, originalHexagram, linesSuitSet);
+        ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> threeSuitResult = AnalyzeThreeSuit(monthEarthlyBranch, dayEarthlyBranch, originalHexagram, linesSuitSet);
 
-        result.HexagramLevelThreeSuitResult = threeSuitResult;
-        result.LineLevelResult = lineStatus;
-        result.LineLevelTombRepository = dynamicLineTombRepository;
+        result.setHexagramLevelThreeSuitResult(threeSuitResult);
+        result.setLineLevelResult(lineStatus);
+        result.setLineLevelTombRepository(dynamicLineTombRepository);
 
         return result;
     }
 
-    public void AnalyzeOneLineTombRepository(Line oline, IEnumerable<Line> dynamicLines, Dictionary<Line, List<Line>> dynamicLineTombRepository)
+    public void AnalyzeOneLineTombRepository(Line oline, ArrayList<Line> dynamicLines, HashMap<Line, ArrayList<Line>> dynamicLineTombRepository)
     {
         //check dynamic tomb repository
-        foreach(var dl in dynamicLines)
+        for(Line dl : dynamicLines)
         {
-            var dynamicLineEBIndex = dl.EarthlyBranch.ID;
-            var originalLineEBIndex = oline.EarthlyBranch.ID;
+            int dynamicLineEBIndex = dl.getEarthlyBranch().getId();
+            int originalLineEBIndex = oline.getEarthlyBranch().getId();
 
-            if (!oline.Equals(dl) && !IsDynamicLine(oline) && DefaultValue.FiveElementTombRepository.ContainsKey(originalLineEBIndex))
+            boolean hasMu = Default.getGrowsMapping(context).get(Default.Twelve_Grow_Mu).containsKey(originalLineEBIndex);
+            if (!oline.equals(dl) && !IsDynamicLine(oline) && hasMu)
             {
-                if (dynamicLineEBIndex == DefaultValue.FiveElementTombRepository[originalLineEBIndex])
+                if (dynamicLineEBIndex == Default.getGrowsMapping(context).get(Default.Twelve_Grow_Mu).get(originalLineEBIndex))
                 {
-                    if (!dynamicLineTombRepository.ContainsKey(dl))
-                        dynamicLineTombRepository.Add(dl, new List<Line>() { oline });
+                    if (!dynamicLineTombRepository.containsKey(dl)) {
+                        ArrayList<Line> tempLine = new ArrayList<Line>();
+                        tempLine.add(oline);
+                        dynamicLineTombRepository.put(dl, tempLine);
+                    }
                     else
-                        dynamicLineTombRepository[dl].Add(oline);
+                        dynamicLineTombRepository.get(dl).add(oline);
                 }
             }
         }
     }
 
-    public List<Pair<EnumSixRelation, ArrayList<Object>>> AnalyzeThreeSuit(EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, List<Pair<Line, Line>> linesSuitSet)
+    public ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> AnalyzeThreeSuit(EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, List<Pair<Line, Line>> linesSuitSet)
     {
         List<Pair<EnumSixRelation, ArrayList<Object>>> threeSuit = new ArrayList<Pair<EnumSixRelation, ArrayList<Object>>>();
 
@@ -288,7 +320,16 @@ public class Analyzer  {
             for (Pair<Line,Line> tuple : linesSuitSet)
             {
                 int[] oneDynamicLine = new int[] { tuple.first.getEarthlyBranch().getId(), monthIndex, dayIndex }.Distinct();
-                if (oneDynamicLine.length == 3)
+
+                ArrayList<Integer> distinctOneDynamicLine = new ArrayList<Integer>();
+
+                for(int one : oneDynamicLine)
+                {
+                    if(!distinctOneDynamicLine.contains(one))
+                        distinctOneDynamicLine.add(one);
+                }
+
+                if (distinctOneDynamicLine.size() == 3)
                 {
                     var r = from k in DefaultValue.EarthlyBranchThreeSuitSet
                     where k.Key.Where(p => oneDynamicLine.Contains(p)).Count() == 3
@@ -299,23 +340,30 @@ public class Analyzer  {
                         threeSuit.Add(Tuple.Create(sixRelation, new List<object> { tuple.Item1, monthEarthlyBranchType, dayEarthlyBranchType }));
                     }
                 }
-                //?????????????
-                var dynamicResultWithMonthDay = CreateThreeSuitByDynamicLines(tuple.first, monthEarthlyBranchType, dayEarthlyBranchType, originalHexagram);
+
+                //一、一爻动与日月组成三合局
+                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithMonthDay = CreateThreeSuitByDynamicLines(tuple.first, monthEarthlyBranchType, dayEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithMonthDay != null)
-                    threeSuit.Add(dynamicResultWithMonthDay);
+                    threeSuit.add(dynamicResultWithMonthDay);
 
-                //?????????????
-                var dynamicResultWithMonth = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, monthEarthlyBranchType, originalHexagram);
+                //五、四爻与六爻和变爻组成
+                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithMonth = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, monthEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithMonth != null)
-                    threeSuit.Add(dynamicResultWithMonth);
+                    threeSuit.add(dynamicResultWithMonth);
 
-                var dynamicResultWithDay = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, dayEarthlyBranchType, originalHexagram);
+                //六、动爻与变爻和日或月组成
+                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithDay = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, dayEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithDay != null)
-                    threeSuit.Add(dynamicResultWithDay);
+                    threeSuit.add(dynamicResultWithDay);
 
-                if (DefaultValue.EarthlyBranchThreeSuitSet.Any(p => p.Key.Contains(tuple.first.EarthlyBranch.ID)))
+                for(String key: xmlModelCache.getTerrestrial().getThreeSuits().keySet())
                 {
-                    threeDynamicLineSuit.add(tuple.first);
+                    for(String value: xmlModelCache.getTerrestrial().getThreeSuits().get(key))
+                    {
+                        if(value.equals(tuple.first.getEarthlyBranch().getName())) {
+                            threeDynamicLineSuit.add(tuple.first);
+                    }
+                    }
                 }
             }
 
@@ -395,20 +443,20 @@ public class Analyzer  {
             }
 
             //????????????
-            var lines13KindOne = CreateThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram);
+            Pair<EnumSixRelation, ArrayList<Object>> lines13KindOne = CreateThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram, true);
             if (lines13KindOne != null)
-                threeSuit.Add(lines13KindOne);
-            var lines13KindTwo = CreateThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram, false);
+                threeSuit.add(lines13KindOne);
+            Pair<EnumSixRelation, ArrayList<Object>> lines13KindTwo = CreateThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram, false);
             if (lines13KindTwo != null)
-                threeSuit.Add(lines13KindTwo);
+                threeSuit.add(lines13KindTwo);
 
             //????????????
-            var lines46KindOne = CreateThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram);
+            Pair<EnumSixRelation, ArrayList<Object>> lines46KindOne = CreateThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram, true);
             if (lines46KindOne != null)
-                threeSuit.Add(lines46KindOne);
-            var lines46KindTwo = CreateThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram, false);
+                threeSuit.add(lines46KindOne);
+            Pair<EnumSixRelation, ArrayList<Object>> lines46KindTwo = CreateThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram, false);
             if (lines46KindTwo != null)
-                threeSuit.Add(lines46KindTwo);
+                threeSuit.add(lines46KindTwo);
 
             return threeSuit;
         }
@@ -514,7 +562,7 @@ public class Analyzer  {
     int[] CreateThreeSuitByLineOrMonthOrDay(int earthBranchID1, int earthBranchID2, int earthBranchID3)
     {
         int[] list =  new int[] { earthBranchID1, earthBranchID2, earthBranchID3 };
-        //�����ظ���¼
+        //����ظ���¼
         List<Integer> tempList= new ArrayList<Integer>();
         for(Integer i:list){
             if(!tempList.contains(i)){
@@ -531,12 +579,35 @@ public class Analyzer  {
     {
         if (indexSummary != null && indexSummary.length == 3)
         {
-            var result = from k in DefaultValue.EarthlyBranchThreeSuitSet
-            where k.Key.Join(indexSummary, i => i, o => o, (i, o) => o).Distinct().Count() == 3
-            select k;
-            if (result != null && result.Count() > 0)
+            HashMap<String, ArrayList<String>> threeSuits = xmlModelCache.getTerrestrial().getThreeSuits();
+            Pair<EnumFiveElement,ArrayList<Integer>> threeSuitOne = null;
+
+            for(String key: threeSuits.keySet())
             {
-                EnumSixRelation sixRelation = Builder.parseSixRelationByFiveElement(hexagram.getFiveElement(), result.First().Value);
+                ArrayList<Integer> tempSuit = new ArrayList<Integer>();
+
+                for(int iSummary : indexSummary) {
+                    String t= xmlModelCache.getTerrestrial().getTerrestrialMaps().get(iSummary);
+                    if(threeSuits.get(key).contains(t))
+                    {
+                        tempSuit.add(iSummary);
+                    }
+                }
+
+                ArrayList<Integer> tempDistinctList = new ArrayList<Integer>();
+                for(int tempI : tempSuit)
+                {
+                    if(!tempDistinctList.contains(tempI))
+                        tempDistinctList.add(tempI);
+                }
+
+                if(tempDistinctList.size() == 3)
+                    threeSuitOne = Pair.create(EnumFiveElement.toEnum(key),tempDistinctList);
+            }
+
+            if (threeSuitOne != null)
+            {
+                EnumSixRelation sixRelation = Builder.parseSixRelationByFiveElement(hexagram.getFiveElement(), threeSuitOne.first);
 
                 return sixRelation;
             }
