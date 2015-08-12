@@ -2,6 +2,7 @@ package lsw.lunar_calendar;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import lsw.library.DateExt;
 import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.SolarTerm;
+import lsw.lunar_calendar.advertising.BaiDuBanner;
 import lsw.lunar_calendar.common.DateSelectorDialog;
 import lsw.lunar_calendar.common.LunarDateSelectorDialog;
 import lsw.lunar_calendar.common.ViewGesture;
@@ -49,6 +51,10 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_month);
+
+
+        BaiDuBanner banner = new BaiDuBanner(this);
+        banner.create();
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -195,6 +201,9 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_month, menu);
+
+
+
         return true;
     }
 
@@ -220,6 +229,15 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
             loadEraTextDetail(lunarCalendarWrapper);
             return true;
         }
+
+        if(id == R.id.menuContact)
+        {
+            Intent intentContact = new Intent();
+            intentContact.setClass(Month.this, ContactAuthor.class);
+            startActivityForResult(intentContact, 0);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

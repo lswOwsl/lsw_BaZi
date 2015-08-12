@@ -37,6 +37,13 @@
         android:text="二零一五年六月十一"
         android:textSize="20dp" />
 
+    <RelativeLayout
+        android:id="@+id/appx_banner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
+    </RelativeLayout>
+
     <GridView
         android:id="@+id/gv_calendarTitle"
         android:layout_width="wrap_content"
