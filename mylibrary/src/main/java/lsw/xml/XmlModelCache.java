@@ -7,11 +7,12 @@ import lsw.xml.data.XmlParserCelestialStem;
 import lsw.xml.data.XmlParserFiveElement;
 import lsw.xml.data.XmlParserSixRelation;
 import lsw.xml.data.XmlParserTerrestrial;
+import lsw.xml.data.XmlParserTwelveGrow;
 import lsw.xml.model.XmlModelCelestialStem;
-import lsw.xml.model.XmlModelExtProperty;
 import lsw.xml.model.XmlModelFiveElement;
 import lsw.xml.model.XmlModelSixRelation;
 import lsw.xml.model.XmlModelTerrestrial;
+import lsw.xml.model.XmlModelTwelveGrow;
 
 /**
  * Created by swli on 8/4/2015.
@@ -65,7 +66,7 @@ public class XmlModelCache {
     {
         if(xmlModelSixRelation == null)
         {
-            xmlModelSixRelation = new XmlParserSixRelation(getInputStream(R.raw.liu_qin)).getT();
+            xmlModelSixRelation = new XmlParserSixRelation(getInputStream(R.raw.six_relation)).getT();
         }
         return xmlModelSixRelation;
     }
@@ -75,8 +76,18 @@ public class XmlModelCache {
     {
         if(xmlModelFiveElement == null)
         {
-            xmlModelFiveElement = new XmlParserFiveElement(getInputStream(R.raw.wu_xing)).getT();
+            xmlModelFiveElement = new XmlParserFiveElement(getInputStream(R.raw.five_element)).getT();
         }
         return xmlModelFiveElement;
+    }
+
+    private static XmlModelTwelveGrow xmlModelTwelveGrow;
+    public XmlModelTwelveGrow getXmlModelTwelveGrow()
+    {
+        if(xmlModelTwelveGrow == null)
+        {
+            xmlModelTwelveGrow = new XmlParserTwelveGrow(getInputStream(R.raw.twelve_grow)).getT();
+        }
+        return xmlModelTwelveGrow;
     }
 }

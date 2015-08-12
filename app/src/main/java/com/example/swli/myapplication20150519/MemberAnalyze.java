@@ -22,6 +22,7 @@ import lsw.library.DateExt;
 import lsw.library.LunarSolarTerm;
 import lsw.library.SolarTerm;
 import lsw.library.StringHelper;
+import lsw.library.Utility;
 
 public class MemberAnalyze extends MemberBase {
 
@@ -360,7 +361,7 @@ public class MemberAnalyze extends MemberBase {
 
     private boolean isXunKongText(String terrestrialText)
     {
-        Pair<String,String> kong = BaZiHelperExtender.getXunKong(this,
+        Pair<String,String> kong = Utility.getXunKong(this,
                 baZiActivityWrapper.getC(baZiActivityWrapper.getDayEraIndex()),
                 baZiActivityWrapper.getT(baZiActivityWrapper.getDayEraIndex()));
 

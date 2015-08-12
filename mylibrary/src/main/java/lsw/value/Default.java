@@ -1,11 +1,17 @@
 package lsw.value;
 
+import android.content.Context;
+import android.util.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import lsw.model.EnumFiveElement;
+import lsw.model.EnumLing;
 import lsw.model.HexagramDefault;
 import lsw.model.TrigramDefault;
+import lsw.xml.XmlModelCache;
+import lsw.xml.model.XmlModelExtProperty;
 
 /**
  * Created by swli on 8/10/2015.
@@ -139,11 +145,10 @@ public class Default {
         return trigrams;
     }
 
-    private static HashMap<String,String> trigramReverse;
+    private static HashMap<String, String> trigramReverse;
 
-    public static String getTrigramReverseByName(String name)
-    {
-        if(trigramReverse == null) {
+    public static String getTrigramReverseByName(String name) {
+        if (trigramReverse == null) {
             trigramReverse = new HashMap<String, String>();
             trigramReverse.put("天", "地");
             trigramReverse.put("水", "火");
@@ -157,9 +162,9 @@ public class Default {
         return trigramReverse.get(name);
     }
 
-    private static HashMap<Integer,String> sixAnimals;
+    private static HashMap<Integer, String> sixAnimals;
 
-    public static HashMap<Integer,String> getSixAnimals() {
+    public static HashMap<Integer, String> getSixAnimals() {
         if (sixAnimals == null) {
             sixAnimals = new HashMap<Integer, String>();
             sixAnimals.put(1, "青龙");
@@ -172,21 +177,136 @@ public class Default {
         return sixAnimals;
     }
 
-    private static HashMap<String,Integer> celestialStemSixAnimalsMapping;
+    private static HashMap<String, Integer> celestialStemSixAnimalsMapping;
 
-    public static HashMap<String,Integer> getCelestialStemSixAnimalsMapping()
-    {
-        if(celestialStemSixAnimalsMapping == null)
-        {
+    public static HashMap<String, Integer> getCelestialStemSixAnimalsMapping() {
+        if (celestialStemSixAnimalsMapping == null) {
             celestialStemSixAnimalsMapping = new HashMap<String, Integer>();
-            celestialStemSixAnimalsMapping.put("甲乙",1);
-            celestialStemSixAnimalsMapping.put("丙丁",2);
-            celestialStemSixAnimalsMapping.put("戊",3);
-            celestialStemSixAnimalsMapping.put("己",4);
-            celestialStemSixAnimalsMapping.put("庚辛",5);
-            celestialStemSixAnimalsMapping.put("壬癸",6);
+            celestialStemSixAnimalsMapping.put("甲乙", 1);
+            celestialStemSixAnimalsMapping.put("丙丁", 2);
+            celestialStemSixAnimalsMapping.put("戊", 3);
+            celestialStemSixAnimalsMapping.put("己", 4);
+            celestialStemSixAnimalsMapping.put("庚辛", 5);
+            celestialStemSixAnimalsMapping.put("壬癸", 6);
         }
         return celestialStemSixAnimalsMapping;
+    }
+
+    private static HashMap<EnumLing, int[]> lingEarthlyBranchMapping;
+
+    public static HashMap<EnumLing, int[]> getLingEarthlyBranchMapping() {
+        if (lingEarthlyBranchMapping == null) {
+            lingEarthlyBranchMapping.put(EnumLing.Chun, new int[]{3, 4});
+            lingEarthlyBranchMapping.put(EnumLing.Xia, new int[]{6, 7});
+            lingEarthlyBranchMapping.put(EnumLing.Qiu, new int[]{9, 10});
+            lingEarthlyBranchMapping.put(EnumLing.Dong, new int[]{1, 12});
+            lingEarthlyBranchMapping.put(EnumLing.Tu, new int[]{2, 5, 8, 11});
+        }
+        return lingEarthlyBranchMapping;
+    }
+
+    ;
+
+
+    private static HashMap<Integer, EnumLing> lingYuQiMapping;
+
+    public static HashMap<Integer, EnumLing> getLingYuQiMapping() {
+        if (lingYuQiMapping == null) {
+            lingYuQiMapping = new HashMap<Integer, EnumLing>();
+            lingYuQiMapping.put(5, EnumLing.Chun);
+            lingYuQiMapping.put(8, EnumLing.Xia);
+            lingYuQiMapping.put(11, EnumLing.Qiu);
+            lingYuQiMapping.put(2, EnumLing.Dong);
+        }
+        return lingYuQiMapping;
+    }
+
+    private static HashMap<Integer, Integer> earthlyBranchForward;
+
+    public static HashMap<Integer, Integer> getEarthlyBranchForward() {
+        if (earthlyBranchForward == null) {
+            earthlyBranchForward.put(3, 4);
+            earthlyBranchForward.put(9, 10);
+            earthlyBranchForward.put(2, 5);
+            earthlyBranchForward.put(8, 11);
+        }
+        return earthlyBranchForward;
+    }
+
+    private static HashMap<Integer, Integer> earthlyBranchBackward;
+
+    public static HashMap<Integer, Integer> getEarthlyBranchBackward() {
+        if (earthlyBranchBackward == null) {
+            earthlyBranchBackward.put(4, 3);
+            earthlyBranchBackward.put(10, 9);
+            earthlyBranchBackward.put(5, 2);
+            earthlyBranchBackward.put(11, 8);
+        }
+        return earthlyBranchBackward;
+    }
+
+    private static HashMap<Integer,Integer> earthlyBranchSixSuit;
+
+    public static HashMap<Integer,Integer> getEarthlyBranchSixSuit(Context context)
+    {
+        if(earthlyBranchSixSuit == null) {
+            XmlModelCache xmlModelCache = XmlModelCache.getInstance(context);
+            earthlyBranchSixSuit = new HashMap<Integer, Integer>();
+            for(Pair<String,String> pair: xmlModelCache.getTerrestrial().getSixSuits().keySet())
+            {
+                int firstId = xmlModelCache.getTerrestrial().getTerrestrials().get(pair.first).getId();
+                int secondId = xmlModelCache.getTerrestrial().getTerrestrials().get(pair.second).getId();
+                earthlyBranchSixSuit.put(firstId,secondId);
+                earthlyBranchSixSuit.put(secondId,firstId);
+            }
+        }
+        return earthlyBranchSixSuit;
+    }
+
+    private static HashMap<Integer,Integer> earthlyBranchSixInverse;
+
+    public static HashMap<Integer,Integer> getEarthlyBranchSixInverse(Context context)
+    {
+        if(earthlyBranchSixInverse == null)
+        {
+            XmlModelCache xmlModelCache = XmlModelCache.getInstance(context);
+            earthlyBranchSixInverse = new HashMap<Integer, Integer>();
+            for(Pair<String,String> pair: xmlModelCache.getTerrestrial().getSixInverses())
+            {
+                int firstId = xmlModelCache.getTerrestrial().getTerrestrials().get(pair.first).getId();
+                int secondId = xmlModelCache.getTerrestrial().getTerrestrials().get(pair.second).getId();
+                earthlyBranchSixInverse.put(firstId,secondId);
+                earthlyBranchSixInverse.put(secondId,firstId);
+            }
+        }
+
+        return earthlyBranchSixInverse;
+    }
+
+    private static HashMap<Integer,Integer> bathMapping;
+
+    public static HashMap<Integer,Integer> getBathMapping(Context context)
+    {
+        if(bathMapping == null) {
+
+            bathMapping = new HashMap<Integer, Integer>();
+
+            XmlModelCache xmlModelCache = XmlModelCache.getInstance(context);
+
+            for (String t : xmlModelCache.getInstance(context).getTerrestrial().getTerrestrials().keySet()) {
+
+                XmlModelExtProperty property = xmlModelCache.getTerrestrial().getTerrestrials().get(t);
+
+                ArrayList<Pair<Integer,String>> list = xmlModelCache.getXmlModelTwelveGrow().getFiveElementGrowsMapping().get(EnumFiveElement.toEnum(property.getWuXing()));
+
+                for(Pair<Integer,String> pair: list)
+                {
+                    if(pair.second.equals("沐浴"))
+                        bathMapping.put(property.getId(),pair.first);
+                }
+            }
+        }
+        return bathMapping;
     }
 
 }

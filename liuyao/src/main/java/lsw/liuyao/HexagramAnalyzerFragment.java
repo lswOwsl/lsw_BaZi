@@ -17,6 +17,7 @@ import lsw.hexagram.Builder;
 import lsw.library.BaZiHelper;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
+import lsw.library.Utility;
 import lsw.liuyao.data.HexagramAdapter;
 import lsw.model.Hexagram;
 
@@ -95,7 +96,7 @@ public class HexagramAnalyzerFragment extends Fragment {
 
         tvDate.setText(dateExt.getFormatDateTime(formatDateTime));
 
-        Pair<String,String> xunKong = BaZiHelper.getXunKong(getActivity(), lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
+        Pair<String,String> xunKong = Utility.getXunKong(getActivity(), lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
         String eraText =
                 lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
                 lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
