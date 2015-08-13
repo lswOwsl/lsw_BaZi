@@ -107,4 +107,18 @@ public class XmlModelTerrestrial {
         }
         return terrestrialMaps;
     }
+
+    private static HashMap<String,Integer> terrestrialMapsInverse;
+
+    public HashMap<String,Integer> getTerrestrialMapsInverse() {
+        if(terrestrialMapsInverse == null) {
+            terrestrialMapsInverse = new HashMap<String, Integer>();
+            for (String key : terrestrials.keySet()) {
+                int id = terrestrials.get(key).getId();
+                String name = key;
+                terrestrialMapsInverse.put(key, id);
+            }
+        }
+        return terrestrialMapsInverse;
+    }
 }

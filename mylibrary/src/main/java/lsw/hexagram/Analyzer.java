@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import lsw.library.ListHelper;
 import lsw.library.StringHelper;
 import lsw.library.Utility;
 import lsw.model.AnalyzeResultCollection;
@@ -297,7 +298,7 @@ public class Analyzer  {
 
     public ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> AnalyzeThreeSuit(EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, List<Pair<Line, Line>> linesSuitSet)
     {
-        List<Pair<EnumSixRelation, ArrayList<Object>>> threeSuit = new ArrayList<Pair<EnumSixRelation, ArrayList<Object>>>();
+        ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> threeSuit = new ArrayList<Pair<EnumSixRelation, ArrayList<Object>>>();
 
         EarthlyBranchDay dayEarthlyBranchType = new EarthlyBranchDay();
         dayEarthlyBranchType.setId(dayEarthlyBranch.getId());
@@ -319,7 +320,7 @@ public class Analyzer  {
 
             for (Pair<Line,Line> tuple : linesSuitSet)
             {
-                int[] oneDynamicLine = new int[] { tuple.first.getEarthlyBranch().getId(), monthIndex, dayIndex }.Distinct();
+                int[] oneDynamicLine = new int[] { tuple.first.getEarthlyBranch().getId(), monthIndex, dayIndex };
 
                 ArrayList<Integer> distinctOneDynamicLine = new ArrayList<Integer>();
 
@@ -331,13 +332,30 @@ public class Analyzer  {
 
                 if (distinctOneDynamicLine.size() == 3)
                 {
-                    var r = from k in DefaultValue.EarthlyBranchThreeSuitSet
-                    where k.Key.Where(p => oneDynamicLine.Contains(p)).Count() == 3
-                    select k;
-                    if (r != null && r.Count() > 0)
+                    HashMap<String,Integer> terrestrialMappingInverse = xmlModelCache.getTerrestrial().getTerrestrialMapsInverse();
+                    HashMap<String,ArrayList<String>> threeSuits = xmlModelCache.getTerrestrial().getThreeSuits();
+                    String tempFiveElement = "";
+                    for(String fiveElement :  threeSuits.keySet())
                     {
-                        var sixRelation = Builder.parseSixRelationByFiveElement(originalHexagram.getFiveElement(), r.Single().Value);
-                        threeSuit.Add(Tuple.Create(sixRelation, new List<object> { tuple.Item1, monthEarthlyBranchType, dayEarthlyBranchType }));
+                        ArrayList<Integer> tIndexs = new ArrayList<Integer>();
+                        for(String t: threeSuits.get(fiveElement))
+                        {
+                            tIndexs.add(terrestrialMappingInverse.get(t));
+                        }
+
+                        int[] temp = ListHelper.toIntArray(tIndexs);
+                        if(Arrays.equals(temp,oneDynamicLine))
+                            tempFiveElement = fiveElement;
+                    }
+
+                    if(!StringHelper.isNullOrEmpty(tempFiveElement))
+                    {
+                        EnumSixRelation sixRelation = Builder.parseSixRelationByFiveElement(originalHexagram.getFiveElement(), EnumFiveElement.toEnum(tempFiveElement));
+                        ArrayList<Object> tempObjests = new ArrayList<Object>();
+                        tempObjests.add(tuple.first);
+                        tempObjests.add(monthEarthlyBranchType);
+                        tempObjests.add(dayEarthlyBranchType);
+                        threeSuit.add(Pair.create(sixRelation, tempObjests));
                     }
                 }
 
@@ -367,78 +385,84 @@ public class Analyzer  {
                 }
             }
 
-            //?????????????
-            Func<List<int>, HashMap<int[], EnumFiveElement>> funFindSuits = suitList =>
-            {
-                var result = new Dictionary<int[], EnumFiveElement>();
-
-                foreach (var suit in DefaultValue.EarthlyBranchThreeSuitSet)
-                {
-                    int count = 0;
-                    foreach (var k in suit.Key)
-                    {
-                        if (suitList.Any(p => p == k))
-                        {
-                            count += 1;
-                        }
-                    }
-
-                    if (count == 3)
-                        result.Add(suit.Key, suit.Value);
-                }
-
-                return result;
-            };
-
             //?????????
             if(threeDynamicLineSuit.size() >= 2)
             {
-                var listIncludeMonthAndDay = threeDynamicLineSuit.Select(p => p.EarthlyBranch.ID).ToList();
-                listIncludeMonthAndDay.Add(monthEarthlyBranchType.getId());
-                listIncludeMonthAndDay.Add(dayEarthlyBranchType.getId());
-
-                var existedSuit = funFindSuits(listIncludeMonthAndDay.Distinct().ToList());
-
-                var groupLines = new List<Object>();
-                foreach (var k in existedSuit)
+                ArrayList<Integer> listIncludeMonthAndDay = new ArrayList<Integer>();
+                for (Line line: threeDynamicLineSuit)
                 {
-                    if (k.Key.Contains(monthEarthlyBranchType.ID))
+                    listIncludeMonthAndDay.add(line.getEarthlyBranch().getId());
+                }
+                listIncludeMonthAndDay.add(monthEarthlyBranchType.getId());
+                listIncludeMonthAndDay.add(dayEarthlyBranchType.getId());
+
+                ArrayList<Integer> listIncludeMonthAndDayDistinct = new ArrayList<Integer>();
+                for(Integer i : listIncludeMonthAndDay)
+                {
+                    if(!listIncludeMonthAndDayDistinct.contains(i))
+                        listIncludeMonthAndDayDistinct.add(i);
+                }
+
+
+                HashMap<ArrayList<Integer>, EnumFiveElement> existedSuit = funFindSuits(listIncludeMonthAndDayDistinct);
+
+                ArrayList<Object> groupLines = new ArrayList<Object>();
+                for (ArrayList<Integer> k : existedSuit.keySet())
+                {
+                    if (k.contains(monthEarthlyBranchType.getId()))
                     {
-                        groupLines.Add(monthEarthlyBranchType);
+                        groupLines.add(monthEarthlyBranchType);
                     }
-                    else if (k.Key.Contains(dayEarthlyBranchType.ID))
+                    else if (k.contains(dayEarthlyBranchType.getId()))
                     {
-                        groupLines.Add(dayEarthlyBranchType);
+                        groupLines.add(dayEarthlyBranchType);
                     }
 
-                    var ls = threeDynamicLineSuit.Where(p => k.Key.Contains(p.EarthlyBranch.ID));
-                    foreach (var l in ls)
+                    ArrayList<Line> ls = new ArrayList<Line>();
+                    for(Line line: threeDynamicLineSuit)
                     {
-                        groupLines.Add(l);
+                        if(k.contains(line.getEarthlyBranch().getId()))
+                            ls.add(line);
+                    }
+                    for(Line l : ls)
+                    {
+                        groupLines.add(l);
                     }
 
-                    var sixRelation = Builder.ParseSixRelationByFiveElement(originalHexagram.Property, k.Value);
-                    threeSuit.Add(Tuple.Create(sixRelation, groupLines));
+                    EnumSixRelation sixRelation = Builder.parseSixRelationByFiveElement(originalHexagram.getFiveElement(), existedSuit.get(k));
+                    threeSuit.add(Pair.create(sixRelation, groupLines));
                 }
             }
 
             //?????????????
             //???????
-            if (threeDynamicLineSuit.Count >= 3)
+            if (threeDynamicLineSuit.size() >= 3)
             {
-
-                var existedSuit = funFindSuits(threeDynamicLineSuit.Select(p => p.EarthlyBranch.ID).ToList());
-
-                var groupLines = new List<object>();
-                foreach (var k in existedSuit)
+                ArrayList<Integer> tempInt = new ArrayList<Integer>();
+                for(Line line : threeDynamicLineSuit)
                 {
-                    var ls = threeDynamicLineSuit.Where(p => k.Key.Contains(p.EarthlyBranch.ID));
-                    foreach (var l in ls)
+                    tempInt.add(line.getEarthlyBranch().getId());
+                }
+
+                HashMap<ArrayList<Integer>, EnumFiveElement> existedSuit = funFindSuits(tempInt);
+
+                ArrayList<Object> groupLines = new ArrayList<Object>();
+                for (ArrayList<Integer> k : existedSuit.keySet())
+                {
+                    ArrayList<Line> tempLine = new ArrayList<Line>();
+
+                    for(Line line: threeDynamicLineSuit)
                     {
-                        groupLines.Add(l);
+                        if(k.contains(line.getEarthlyBranch().getId()))
+                            tempLine.add(line);
                     }
-                    var sixRelation = Builder.ParseSixRelationByFiveElement(originalHexagram.Property, k.Value);
-                    threeSuit.Add(Tuple.Create(sixRelation, groupLines));
+
+                    for (Line l : tempLine)
+                    {
+                        groupLines.add(l);
+                    }
+                    EnumSixRelation sixRelation = Builder.parseSixRelationByFiveElement(originalHexagram.getFiveElement(), existedSuit.get(k));
+                    threeSuit.add(Pair.create(sixRelation, groupLines));
                 }
             }
 
@@ -461,6 +485,38 @@ public class Analyzer  {
             return threeSuit;
         }
         return null;
+    }
+
+    HashMap<ArrayList<Integer>, EnumFiveElement> funFindSuits(List<Integer> suitList)
+    {
+        HashMap<ArrayList<Integer>, EnumFiveElement> result = new HashMap<ArrayList<Integer>, EnumFiveElement>();
+
+        HashMap<String,ArrayList<String>> threeSuits = xmlModelCache.getTerrestrial().getThreeSuits();
+
+        for (String suit : threeSuits.keySet())
+        {
+            int count = 0;
+            for (String k : threeSuits.get(suit))
+            {
+                for(Integer sl: suitList)
+                {
+                    String temp = xmlModelCache.getTerrestrial().getTerrestrialMaps().get(sl);
+                    if(temp.equals(k))
+                        count +=1;
+                }
+            }
+
+            if (count == 3) {
+                ArrayList<Integer> temp = new ArrayList<Integer>();
+                for(String s: threeSuits.get(suit))
+                {
+                    temp.add(xmlModelCache.getTerrestrial().getTerrestrialMapsInverse().get(s));
+                }
+                result.put(temp, EnumFiveElement.toEnum(suit));
+            }
+        }
+
+        return result;
     }
 
     Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(List<Pair<Line, Line>> lines, int beginPosition, Hexagram hexagram, boolean withFirstResultLine)
