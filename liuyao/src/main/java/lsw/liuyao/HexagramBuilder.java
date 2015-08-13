@@ -76,7 +76,7 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
         linearLayout6.setOnDragListener(listener6);
     }
 
-    DateExt dateExt;
+    DateExt initialDateExt;
     String formatDateTime = "yyyy年MM月dd日 HH:mm";
 
     @Override
@@ -86,17 +86,18 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
 
         initControls();
 
-        dateExt = new DateExt();
-        tvDateSelector.setText(dateExt.getFormatDateTime(formatDateTime));
+        initialDateExt = new DateExt();
+        tvDateSelector.setText(initialDateExt.getFormatDateTime(formatDateTime));
 
         tvDateSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateTimePickerDialog dialog = new DateTimePickerDialog(dateExt,HexagramBuilder.this);
+                DateTimePickerDialog dialog = new DateTimePickerDialog(initialDateExt,HexagramBuilder.this);
                 dialog.setCallBack(new DateTimePickerDialog.ICallBack() {
                     @Override
                     public void invoke(DateExt dateExt) {
                         tvDateSelector.setText(dateExt.getFormatDateTime(formatDateTime));
+                        initialDateExt = dateExt;
                     }
                 });
                 dialog.show();
@@ -231,7 +232,7 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
 
         Intent mIntent = new Intent(this,HexagramAnalyzer.class);
         Bundle mBundle = new Bundle();
-        mBundle.putString(IntentKeys.FormatDate,dateExt.getFormatDateTime());
+        mBundle.putString(IntentKeys.FormatDate, initialDateExt.getFormatDateTime());
         mBundle.putSerializable(IntentKeys.LineModelList,lines);
         mIntent.putExtras(mBundle);
 
