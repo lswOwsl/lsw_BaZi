@@ -1006,7 +1006,7 @@ public class Analyzer  {
     {
         for(EnumLing ling: Default.getLingEarthlyBranchMapping().keySet())
         {
-            if(Arrays.asList(Default.getLingEarthlyBranchMapping().get(ling)).contains(index))
+            if(Arrays.binarySearch(Default.getLingEarthlyBranchMapping().get(ling), index) >= 0)
                 return ling;
         }
         return null;
