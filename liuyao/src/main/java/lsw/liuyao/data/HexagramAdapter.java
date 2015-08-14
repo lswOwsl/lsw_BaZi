@@ -1,7 +1,9 @@
 package lsw.liuyao.data;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import lsw.hexagram.LineComparator;
+import lsw.library.ColorHelper;
 import lsw.liuyao.R;
 import lsw.model.EnumLineSymbol;
 import lsw.model.Hexagram;
@@ -31,6 +34,7 @@ public class HexagramAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private Context context;
     private boolean isChangedHexagram;
+    private ColorHelper colorHelper;
 
     private HashMap<Integer,String> sixAnimals;
     public void setSixAnimals(HashMap<Integer,String> sixAnimals)
@@ -55,6 +59,7 @@ public class HexagramAdapter extends BaseAdapter {
         Collections.sort(this.lines,new LineComparator());
         this.layoutInflater = LayoutInflater.from(context);
         this.isChangedHexagram = isChangedHexagram;
+        colorHelper = ColorHelper.getInstance(context);
     }
 
     @Override
@@ -91,8 +96,18 @@ public class HexagramAdapter extends BaseAdapter {
             controls = (Controls) view.getTag();
         }
         Line line = lines.get(i);
-        String lineText= line.getSixRelation().toString() +" " + line.getEarthlyBranch().getName() + " " + line.getEarthlyBranch().getFiveElement().toString();
-        controls.tvLine.setText(lineText);
+        //String lineText= line.getSixRelation().toString() +" " + line.getEarthlyBranch().getName() + " " + line.getEarthlyBranch().getFiveElement().toString();
+        //controls.tvLine.setText(lineText);
+        controls.tvLine.setText("");
+        SpannableString ssSixRelation = ColorHelper.getTextByColor(line.getSixRelation().toString(), Color.GRAY);
+        SpannableString ssName = colorHelper.getColorTerrestrial(line.getEarthlyBranch().getName());
+        SpannableString ssFiveElement = ColorHelper.getTextByColor(line.getEarthlyBranch().getFiveElement().toString(),Color.GRAY);
+        controls.tvLine.append(ssSixRelation);
+        controls.tvLine.append(" ");
+        controls.tvLine.append(ssName);
+        controls.tvLine.append(" ");
+        controls.tvLine.append(ssFiveElement);
+
         if(!isChangedHexagram) {
 
             String self = hexagram.getSelf() == line.getPosition() ? "世" : "";
@@ -100,10 +115,19 @@ public class HexagramAdapter extends BaseAdapter {
             controls.tvSelfTarget.setText(self+target);
 
             if (line.getEarthlyBranchAttached() != null) {
-                String attachedLineText = line.getSixRelationAttached().toString() + " "
-                        + line.getEarthlyBranchAttached().getName() + " "
-                        + line.getEarthlyBranchAttached().getFiveElement().toString();
-                controls.tvAttachedLine.setText(attachedLineText);
+//                String attachedLineText = line.getSixRelationAttached().toString() + " "
+//                        + line.getEarthlyBranchAttached().getName() + " "
+//                        + line.getEarthlyBranchAttached().getFiveElement().toString();
+//                controls.tvAttachedLine.setText(attachedLineText);
+                controls.tvAttachedLine.setText("");
+                SpannableString ssSixRelationAttached = ColorHelper.getTextByColor(line.getSixRelationAttached().toString(), Color.GRAY);
+                SpannableString ssNameAttached = colorHelper.getColorTerrestrial(line.getEarthlyBranchAttached().getName());
+                SpannableString ssFiveElementAttached = ColorHelper.getTextByColor(line.getEarthlyBranchAttached().getFiveElement().toString(),Color.GRAY);
+                controls.tvAttachedLine.append(ssSixRelationAttached);
+                controls.tvAttachedLine.append(" ");
+                controls.tvAttachedLine.append(ssNameAttached);
+                controls.tvAttachedLine.append(" ");
+                controls.tvAttachedLine.append(ssFiveElementAttached);
             } else {
                 controls.tvAttachedLine.setText("");
             }

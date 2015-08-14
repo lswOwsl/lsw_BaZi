@@ -114,14 +114,14 @@ public class HexagramBuilderFragment extends Fragment {
         tvEraDate.setText("");
         tvEraDate.append(sMonthC);
         tvEraDate.append(sMonthT);
-        tvEraDate.append(ColorHelper.getTextByColor("月   ", Color.LTGRAY));
+        tvEraDate.append(ColorHelper.getTextByColor("月   ", Color.GRAY));
         tvEraDate.append(sDayC);
         tvEraDate.append(sDayT);
-        tvEraDate.append(ColorHelper.getTextByColor("日   (", Color.LTGRAY));
+        tvEraDate.append(ColorHelper.getTextByColor("日   (", Color.GRAY));
         tvEraDate.append(xunKong1);
-        tvEraDate.append(ColorHelper.getTextByColor(",", Color.LTGRAY));
+        tvEraDate.append(ColorHelper.getTextByColor(",", Color.GRAY));
         tvEraDate.append(xunKong2);
-        tvEraDate.append(ColorHelper.getTextByColor(")", Color.LTGRAY));
+        tvEraDate.append(ColorHelper.getTextByColor(")", Color.GRAY));
 
 
         return view;
