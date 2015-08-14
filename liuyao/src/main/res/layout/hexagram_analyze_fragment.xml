@@ -9,11 +9,11 @@
         android:layout_height="wrap_content" android:orientation="horizontal">
 
         <TextView android:layout_width="wrap_content" android:layout_marginRight="30dp"
-            style="@style/TitleTextView"
+            style="@style/TitleTextViewBig"
             android:id="@+id/tvEraDate"
             android:text="甲子月 甲子日 (戌亥)" />
 
-        <TextView style="@style/TitleTextView"
+        <TextView style="@style/TitleTextViewBig"
             android:id="@+id/tvDate"
             android:text="2015年7月25日 19:50" />
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <View style="@style/PartLineVertical"></View>
+    <TextView
+        android:id="@+id/tvAutoAnalyze"
+        android:text="自\n动\n分\n析"
+        android:gravity="center"
+        android:layout_width="50px"
+        android:layout_height="match_parent" />
+    <View style="@style/PartLineVertical"></View>
+
+    <LinearLayout android:id="@+id/llContent"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="5dp">
+    <ListView android:id="@+id/lvAnalyzResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+    </LinearLayout>
+</LinearLayout>

@@ -2,8 +2,10 @@ package lsw.liuyao;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.Date;
-
 import lsw.hexagram.Builder;
-import lsw.library.BaZiHelper;
+import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.Utility;
@@ -24,7 +24,7 @@ import lsw.model.Hexagram;
 /**
  * Created by swli on 8/11/2015.
  */
-public class HexagramAnalyzerFragment extends Fragment {
+public class HexagramBuilderFragment extends Fragment {
 
     private static final String Param_Hexagram_Main = "param1";
     private static final String Param_Hexagram_Changed = "param2";
@@ -39,8 +39,8 @@ public class HexagramAnalyzerFragment extends Fragment {
 
     private TextView tvMainTitle, tvChangedTitle, tvEraDate, tvDate;
 
-    public static HexagramAnalyzerFragment newInstance(Hexagram mainHexagram, Hexagram changedHexagram, String formatDate) {
-        HexagramAnalyzerFragment fragment = new HexagramAnalyzerFragment();
+    public static HexagramBuilderFragment newInstance(Hexagram mainHexagram, Hexagram changedHexagram, String formatDate) {
+        HexagramBuilderFragment fragment = new HexagramBuilderFragment();
         Bundle args = new Bundle();
         args.putSerializable(Param_Hexagram_Main, mainHexagram);
         args.putSerializable(Param_Hexagram_Changed, changedHexagram);
@@ -49,7 +49,7 @@ public class HexagramAnalyzerFragment extends Fragment {
         return fragment;
     }
 
-    public HexagramAnalyzerFragment() {
+    public HexagramBuilderFragment() {
     }
 
     @Override
@@ -97,11 +97,33 @@ public class HexagramAnalyzerFragment extends Fragment {
         tvDate.setText(dateExt.getFormatDateTime(formatDateTime));
 
         Pair<String,String> xunKong = Utility.getXunKong(getActivity(), lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
-        String eraText =
-                lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
-                lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
-        tvEraDate.setText(eraText);
-        // Inflate the layout for this fragment
+//        String eraText =
+//                lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
+//                lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
+
+        ColorHelper colorHelper = ColorHelper.getInstance(getActivity());
+        SpannableString sMonthC = colorHelper.getColorCelestialStem(lunarCalendarWrapper.toStringWithCelestialStem(eraMonthIndex));
+        SpannableString sMonthT = colorHelper.getColorTerrestrial(lunarCalendarWrapper.toStringWithTerrestrialBranch(eraMonthIndex));
+
+        SpannableString sDayC = colorHelper.getColorCelestialStem(lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex));
+        SpannableString sDayT = colorHelper.getColorTerrestrial(lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
+
+        SpannableString xunKong1 = colorHelper.getColorTerrestrial(xunKong.first);
+        SpannableString xunKong2 = colorHelper.getColorTerrestrial(xunKong.second);
+
+        tvEraDate.setText("");
+        tvEraDate.append(sMonthC);
+        tvEraDate.append(sMonthT);
+        tvEraDate.append(ColorHelper.getTextByColor("月   ", Color.LTGRAY));
+        tvEraDate.append(sDayC);
+        tvEraDate.append(sDayT);
+        tvEraDate.append(ColorHelper.getTextByColor("日   (", Color.LTGRAY));
+        tvEraDate.append(xunKong1);
+        tvEraDate.append(ColorHelper.getTextByColor(",", Color.LTGRAY));
+        tvEraDate.append(xunKong2);
+        tvEraDate.append(ColorHelper.getTextByColor(")", Color.LTGRAY));
+
+
         return view;
     }
 

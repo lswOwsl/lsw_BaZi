@@ -43,11 +43,11 @@ public class Analyzer  {
         xmlModelCache = XmlModelCache.getInstance(context);
     }
 
-    public final String BreakLineSymble = "\r\n";
+    public final String BreakLineSymbol = "\r\n";
 
-    public List<String> OrderedStringResult(String sb)
+    public ArrayList<String> orderedStringResult(String sb)
     {
-        String[] items = sb.replace(BreakLineSymble, "|").split("|");
+        String[] items = sb.replace(BreakLineSymbol, "<").split("<");
         ArrayList<String> tempItems = new ArrayList<String>();
         for(String item: items)
         {
@@ -58,7 +58,8 @@ public class Analyzer  {
         Collections.sort(tempItems, new Comparator<String>() {
             @Override
             public int compare(String s, String t1) {
-                return s.substring(0,1).compareTo(t1.substring(0,1));
+                //return s.substring(0,1).compareTo(t1.substring(0,1));
+                return t1.substring(0,1).compareTo(s.substring(0,1));
 
             }
         });
@@ -67,16 +68,14 @@ public class Analyzer  {
         //return items.OrderByDescending(p => p.Substring(0, 1)).ToList();
     }
 
-    public StringBuilder AnalyzeHexagramResult(String month, String day, Hexagram originalHexagram, Hexagram resultHexagram)
+    public StringBuilder analyzeHexagramResult(String month, String day, Hexagram originalHexagram, Hexagram resultHexagram)
     {
-        HeavenlyStem mHS = new HeavenlyStem();
+
         String cM = month.substring(0,1);
         XmlModelExtProperty cMP = xmlModelCache.getCelestialStem().getCelestialStems().get(cM);
-        mHS.setId(cMP.getId());
-        mHS.setFiveElement(EnumFiveElement.toEnum(cMP.getWuXing()));
-        mHS.setName(cM);
+        HeavenlyStem mHS = new HeavenlyStem(cMP.getId(),cM,EnumFiveElement.toEnum(cMP.getWuXing()));
 
-        String tM = month.substring(1,1);
+        String tM = month.substring(1);
         XmlModelExtProperty tMP = xmlModelCache.getTerrestrial().getTerrestrials().get(tM);
         EarthlyBranch mEB = new EarthlyBranch(tMP.getId(),tM, EnumFiveElement.toEnum(tMP.getWuXing()));
 
@@ -84,15 +83,14 @@ public class Analyzer  {
         XmlModelExtProperty dMP = xmlModelCache.getCelestialStem().getCelestialStems().get(dM);
         HeavenlyStem dHS = new HeavenlyStem(dMP.getId(),dM,EnumFiveElement.toEnum(dMP.getWuXing()));
 
-        String dtM = day.substring(1,1);
+        String dtM = day.substring(1);
         XmlModelExtProperty dtMP = xmlModelCache.getTerrestrial().getTerrestrials().get(dtM);
         EarthlyBranch dEB = new EarthlyBranch(dtMP.getId(),dtM, EnumFiveElement.toEnum(dtMP.getWuXing()));
 
-
-        return ParseAnalyzeResultToString(AnalyzeHexagramResult(mEB, dHS, dEB, originalHexagram, resultHexagram));
+        return parseAnalyzeResultToString(analyzeHexagramResult(mEB, dHS, dEB, originalHexagram, resultHexagram));
     }
 
-    public StringBuilder ParseAnalyzeLineResultToString(List<EnumLineStatus> lineStatus)
+    public StringBuilder parseAnalyzeLineResultToString(List<EnumLineStatus> lineStatus)
     {
         StringBuilder sb = new StringBuilder();
 
@@ -104,7 +102,7 @@ public class Analyzer  {
         return sb;
     }
 
-    public StringBuilder ParseAnalyzeThreeSuitResult(List<Object> threeSuit)
+    public StringBuilder parseAnalyzeThreeSuitResult(List<Object> threeSuit)
     {
         StringBuilder sb = new StringBuilder();
 
@@ -112,39 +110,39 @@ public class Analyzer  {
         {
             if (o instanceof EarthlyBranchDay)
             {
-                sb.append("?");
+                sb.append("日");
                 sb.append(",");
             }
             if (o instanceof EarthlyBranchMonth)
             {
-                sb.append("?");
+                sb.append("月");
                 sb.append(",");
             }
             if (o instanceof Line)
             {
                 Line line = (Line) o;
                 sb.append(line.getPosition());
-                sb.append("?,");
+                sb.append("爻,");
             }
         }
 
         return sb;
     }
 
-    public StringBuilder ParseAnalyzeEnterDynamicLineTombRepositoryResult(List<Line> lines)
+    public StringBuilder parseAnalyzeEnterDynamicLineTombRepositoryResult(List<Line> lines)
     {
         StringBuilder sb = new StringBuilder();
 
         for (Line l : lines)
         {
             sb.append(l.getPosition());
-            sb.append("?,");
+            sb.append("爻,");
         }
 
         return sb;
     }
 
-    public StringBuilder ParseAnalyzeResultToString(AnalyzeResultCollection collection)
+    public StringBuilder parseAnalyzeResultToString(AnalyzeResultCollection collection)
     {
         StringBuilder sb = new StringBuilder();
 
@@ -155,8 +153,8 @@ public class Analyzer  {
             sb.append("-");
             sb.append(key.second.toString());
             sb.append(":");
-            sb.append(ParseAnalyzeLineResultToString(lineResults.get(key)));
-            sb.append(BreakLineSymble);
+            sb.append(parseAnalyzeLineResultToString(lineResults.get(key)));
+            sb.append(BreakLineSymbol);
         }
 
         if (collection.getHexagramLevelThreeSuitResult() != null)
@@ -166,9 +164,9 @@ public class Analyzer  {
                 sb.append("!-");
                 sb.append(suit.first.toString());
                 sb.append(":");
-                sb.append("?,");
-                sb.append(ParseAnalyzeThreeSuitResult(suit.second));
-                sb.append(BreakLineSymble);
+                sb.append("局,");
+                sb.append(parseAnalyzeThreeSuitResult(suit.second));
+                sb.append(BreakLineSymbol);
             }
         }
         if (collection.getLineLevelTombRepository() != null)
@@ -179,15 +177,16 @@ public class Analyzer  {
                 sb.append("-");
                 sb.append(key.getSixRelation().toString());
                 sb.append(":");
-                sb.append(ParseAnalyzeEnterDynamicLineTombRepositoryResult(collection.getLineLevelTombRepository().get(key)));
-                sb.append("??");
+                sb.append(parseAnalyzeEnterDynamicLineTombRepositoryResult(collection.getLineLevelTombRepository().get(key)));
+                sb.append("墓库");
+                sb.append(BreakLineSymbol);
             }
         }
 
         return sb;
     }
 
-    public AnalyzeResultCollection AnalyzeHexagramResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, Hexagram resultHexagram)
+    public AnalyzeResultCollection analyzeHexagramResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, Hexagram resultHexagram)
     {
         AnalyzeResultCollection result = new AnalyzeResultCollection();
 
@@ -203,7 +202,7 @@ public class Analyzer  {
         ArrayList<Line> dynamicLines = new ArrayList<Line>();
         for(Line line :lines)
         {
-            if(IsDynamicLine(line) && Default.getGrowsMapping(context).get(Default.Twelve_Grow_Mu).containsValue(line.getEarthlyBranch().getId()))
+            if(isDynamicLine(line) && Default.getGrowsMapping(context).get(Default.Twelve_Grow_Mu).containsValue(line.getEarthlyBranch().getId()))
                 dynamicLines.add(line);
         }
 
@@ -217,7 +216,7 @@ public class Analyzer  {
         for(Line oline : lines)
         {
 
-            AnalyzeOneLineTombRepository(oline, dynamicLines, dynamicLineTombRepository);
+            analyzeOneLineTombRepository(oline, dynamicLines, dynamicLineTombRepository);
 
             Line tLine = null;
 
@@ -230,7 +229,7 @@ public class Analyzer  {
                         break;
                     }
                 }
-                if (IsDynamicLine(oline))
+                if (isDynamicLine(oline))
                 {
                     //check three suit
                     linesSuitSet.add(Pair.create(oline, tLine));
@@ -243,11 +242,11 @@ public class Analyzer  {
 
             if (isFuShen)
             {
-                Pair<EnumSixRelation, ArrayList<EnumLineStatus>> analyzeAttachedLineResult = AnalyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine, isFuShen);
+                Pair<EnumSixRelation, ArrayList<EnumLineStatus>> analyzeAttachedLineResult = analyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine, isFuShen);
                 tupleAttachedLineResult = analyzeAttachedLineResult;
             }
 
-            Pair<EnumSixRelation, ArrayList<EnumLineStatus>> analyzeLineResult = AnalyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine, false);
+            Pair<EnumSixRelation, ArrayList<EnumLineStatus>> analyzeLineResult = analyzeLineResult(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oline, tLine, false);
             tupleLineResult = analyzeLineResult;
 
             if (tupleAttachedLineResult != null)
@@ -262,7 +261,7 @@ public class Analyzer  {
         }
 
         //three suit
-        ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> threeSuitResult = AnalyzeThreeSuit(monthEarthlyBranch, dayEarthlyBranch, originalHexagram, linesSuitSet);
+        ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> threeSuitResult = analyzeThreeSuit(monthEarthlyBranch, dayEarthlyBranch, originalHexagram, linesSuitSet);
 
         result.setHexagramLevelThreeSuitResult(threeSuitResult);
         result.setLineLevelResult(lineStatus);
@@ -271,7 +270,7 @@ public class Analyzer  {
         return result;
     }
 
-    public void AnalyzeOneLineTombRepository(Line oline, ArrayList<Line> dynamicLines, HashMap<Line, ArrayList<Line>> dynamicLineTombRepository)
+    public void analyzeOneLineTombRepository(Line oline, ArrayList<Line> dynamicLines, HashMap<Line, ArrayList<Line>> dynamicLineTombRepository)
     {
         //check dynamic tomb repository
         for(Line dl : dynamicLines)
@@ -280,7 +279,7 @@ public class Analyzer  {
             int originalLineEBIndex = oline.getEarthlyBranch().getId();
 
             boolean hasMu = Default.getGrowsMapping(context).get(Default.Twelve_Grow_Mu).containsKey(originalLineEBIndex);
-            if (!oline.equals(dl) && !IsDynamicLine(oline) && hasMu)
+            if (!oline.equals(dl) && !isDynamicLine(oline) && hasMu)
             {
                 if (dynamicLineEBIndex == Default.getGrowsMapping(context).get(Default.Twelve_Grow_Mu).get(originalLineEBIndex))
                 {
@@ -296,7 +295,7 @@ public class Analyzer  {
         }
     }
 
-    public ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> AnalyzeThreeSuit(EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, List<Pair<Line, Line>> linesSuitSet)
+    public ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> analyzeThreeSuit(EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram originalHexagram, List<Pair<Line, Line>> linesSuitSet)
     {
         ArrayList<Pair<EnumSixRelation, ArrayList<Object>>> threeSuit = new ArrayList<Pair<EnumSixRelation, ArrayList<Object>>>();
 
@@ -360,17 +359,17 @@ public class Analyzer  {
                 }
 
                 //一、一爻动与日月组成三合局
-                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithMonthDay = CreateThreeSuitByDynamicLines(tuple.first, monthEarthlyBranchType, dayEarthlyBranchType, originalHexagram);
+                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithMonthDay = createThreeSuitByDynamicLines(tuple.first, monthEarthlyBranchType, dayEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithMonthDay != null)
                     threeSuit.add(dynamicResultWithMonthDay);
 
                 //五、四爻与六爻和变爻组成
-                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithMonth = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, monthEarthlyBranchType, originalHexagram);
+                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithMonth = createThreeSuitByDynamicLines(tuple.first, tuple.second, monthEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithMonth != null)
                     threeSuit.add(dynamicResultWithMonth);
 
                 //六、动爻与变爻和日或月组成
-                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithDay = CreateThreeSuitByDynamicLines(tuple.first, tuple.second, dayEarthlyBranchType, originalHexagram);
+                Pair<EnumSixRelation, ArrayList<Object>> dynamicResultWithDay = createThreeSuitByDynamicLines(tuple.first, tuple.second, dayEarthlyBranchType, originalHexagram);
                 if (dynamicResultWithDay != null)
                     threeSuit.add(dynamicResultWithDay);
 
@@ -434,8 +433,6 @@ public class Analyzer  {
                 }
             }
 
-            //?????????????
-            //???????
             if (threeDynamicLineSuit.size() >= 3)
             {
                 ArrayList<Integer> tempInt = new ArrayList<Integer>();
@@ -467,18 +464,18 @@ public class Analyzer  {
             }
 
             //????????????
-            Pair<EnumSixRelation, ArrayList<Object>> lines13KindOne = CreateThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram, true);
+            Pair<EnumSixRelation, ArrayList<Object>> lines13KindOne = createThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram, true);
             if (lines13KindOne != null)
                 threeSuit.add(lines13KindOne);
-            Pair<EnumSixRelation, ArrayList<Object>> lines13KindTwo = CreateThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram, false);
+            Pair<EnumSixRelation, ArrayList<Object>> lines13KindTwo = createThreeSuitByDynamicLines(linesSuitSet, 1, originalHexagram, false);
             if (lines13KindTwo != null)
                 threeSuit.add(lines13KindTwo);
 
             //????????????
-            Pair<EnumSixRelation, ArrayList<Object>> lines46KindOne = CreateThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram, true);
+            Pair<EnumSixRelation, ArrayList<Object>> lines46KindOne = createThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram, true);
             if (lines46KindOne != null)
                 threeSuit.add(lines46KindOne);
-            Pair<EnumSixRelation, ArrayList<Object>> lines46KindTwo = CreateThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram, false);
+            Pair<EnumSixRelation, ArrayList<Object>> lines46KindTwo = createThreeSuitByDynamicLines(linesSuitSet, 4, originalHexagram, false);
             if (lines46KindTwo != null)
                 threeSuit.add(lines46KindTwo);
 
@@ -519,7 +516,7 @@ public class Analyzer  {
         return result;
     }
 
-    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(List<Pair<Line, Line>> lines, int beginPosition, Hexagram hexagram, boolean withFirstResultLine)
+    Pair<EnumSixRelation, ArrayList<Object>> createThreeSuitByDynamicLines(List<Pair<Line, Line>> lines, int beginPosition, Hexagram hexagram, boolean withFirstResultLine)
     {
         ArrayList<Pair<Line,Line>> suitLines = new ArrayList<Pair<Line,Line>>();
         for(Pair<Line,Line> pair: lines)
@@ -537,31 +534,31 @@ public class Analyzer  {
                 //means AnDong Line
                 if (linePairOne.first == null)
                     return null;
-                return CreateThreeSuitByDynamicLines(linePairOne.first, linePairOne.second, linePairTwo.first, hexagram);
+                return createThreeSuitByDynamicLines(linePairOne.first, linePairOne.second, linePairTwo.first, hexagram);
             }
             else
             {
                 if (linePairTwo.second == null)
                     return null;
-                return CreateThreeSuitByDynamicLines(linePairOne.first, linePairTwo.first, linePairTwo.second, hexagram);
+                return createThreeSuitByDynamicLines(linePairOne.first, linePairTwo.first, linePairTwo.second, hexagram);
             }
         }
         return null;
     }
 
-    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(Line line1, Line line2, EarthlyBranch dayOrMonthEarthlyBranch, Hexagram hexagram)
+    Pair<EnumSixRelation, ArrayList<Object>> createThreeSuitByDynamicLines(Line line1, Line line2, EarthlyBranch dayOrMonthEarthlyBranch, Hexagram hexagram)
     {
         //line2 == null means this line is AnDong
         if (line2 == null)
             return null;
 
-        int[] kind = CreateThreeSuitByLineOrMonthOrDay(
+        int[] kind = createThreeSuitByLineOrMonthOrDay(
                 line1.getEarthlyBranch().getId(),
                 line2.getEarthlyBranch().getId(),
                 dayOrMonthEarthlyBranch.getId()
         );
 
-        EnumSixRelation kindResult = CreateThreeSuitByIndex(kind, hexagram);
+        EnumSixRelation kindResult = createThreeSuitByIndex(kind, hexagram);
 
         if (kindResult != null) {
             ArrayList<Object> list = new ArrayList<Object>();
@@ -575,14 +572,14 @@ public class Analyzer  {
             return null;
     }
 
-    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(Line line1, EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram hexagram) {
-        int[] kind = CreateThreeSuitByLineOrMonthOrDay(
+    Pair<EnumSixRelation, ArrayList<Object>> createThreeSuitByDynamicLines(Line line1, EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, Hexagram hexagram) {
+        int[] kind = createThreeSuitByLineOrMonthOrDay(
                 line1.getEarthlyBranch().getId(),
                 monthEarthlyBranch.getId(),
                 dayEarthlyBranch.getId()
         );
 
-        EnumSixRelation kindResult = CreateThreeSuitByIndex(kind, hexagram);
+        EnumSixRelation kindResult = createThreeSuitByIndex(kind, hexagram);
 
         if (kindResult != null) {
             ArrayList<Object> list = new ArrayList<Object>();
@@ -594,15 +591,15 @@ public class Analyzer  {
             return null;
     }
 
-    Pair<EnumSixRelation, ArrayList<Object>> CreateThreeSuitByDynamicLines(Line line1, Line line2, Line line3, Hexagram hexagram)
+    Pair<EnumSixRelation, ArrayList<Object>> createThreeSuitByDynamicLines(Line line1, Line line2, Line line3, Hexagram hexagram)
     {
-        int[] kind = CreateThreeSuitByLineOrMonthOrDay(
+        int[] kind = createThreeSuitByLineOrMonthOrDay(
                 line1.getEarthlyBranch().getId(),
                 line2.getEarthlyBranch().getId(),
                 line3.getEarthlyBranch().getId()
         );
 
-        EnumSixRelation kindResult = CreateThreeSuitByIndex(kind, hexagram);
+        EnumSixRelation kindResult = createThreeSuitByIndex(kind, hexagram);
 
         if (kindResult != null) {
             ArrayList<Object> list = new ArrayList<Object>();
@@ -615,7 +612,7 @@ public class Analyzer  {
             return null;
     }
 
-    int[] CreateThreeSuitByLineOrMonthOrDay(int earthBranchID1, int earthBranchID2, int earthBranchID3)
+    int[] createThreeSuitByLineOrMonthOrDay(int earthBranchID1, int earthBranchID2, int earthBranchID3)
     {
         int[] list =  new int[] { earthBranchID1, earthBranchID2, earthBranchID3 };
         //����ظ���¼
@@ -631,7 +628,7 @@ public class Analyzer  {
             return null;
     }
 
-    EnumSixRelation CreateThreeSuitByIndex(int[] indexSummary, Hexagram hexagram)
+    EnumSixRelation createThreeSuitByIndex(int[] indexSummary, Hexagram hexagram)
     {
         if (indexSummary != null && indexSummary.length == 3)
         {
@@ -671,8 +668,8 @@ public class Analyzer  {
         return null;
     }
 
-    public Pair<EnumSixRelation, ArrayList<EnumLineStatus>> AnalyzeLineResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
-                                                                          EarthlyBranch dayEarthlyBranch, Line oLine, Line tLine, boolean checkFuShen)
+    public Pair<EnumSixRelation, ArrayList<EnumLineStatus>> analyzeLineResult(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
+                                                                              EarthlyBranch dayEarthlyBranch, Line oLine, Line tLine, boolean checkFuShen)
     {
         ArrayList<EnumLineStatus> lineStatus = new ArrayList<EnumLineStatus>();
         EnumSixRelation enumSixRelation;
@@ -682,7 +679,7 @@ public class Analyzer  {
             enumSixRelation = oLine.getSixRelationAttached();
 
             lineStatus.add(EnumLineStatus.Fu);
-            EnumLineStatus kong = AnalyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
+            EnumLineStatus kong = analyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
             if (kong != null)
                 lineStatus.add(kong);
         }
@@ -690,25 +687,25 @@ public class Analyzer  {
         {
             enumSixRelation = oLine.getSixRelation();
 
-            if (IsDynamicLine(oLine))
+            if (isDynamicLine(oLine))
             {
                 lineStatus.add(EnumLineStatus.Dong);
             }
             else
             {
-                EnumLineStatus kong = AnalyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, false);
+                EnumLineStatus kong = analyzeLineXunKong(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, false);
                 if (kong != null)
                     lineStatus.add(kong);
             }
         }
 
-        ArrayList<EnumLineStatus> lineStatusWithMonthAndDay = AnalyzeLineRelationWithMonthAndDay(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
+        ArrayList<EnumLineStatus> lineStatusWithMonthAndDay = analyzeLineRelationWithMonthAndDay(monthEarthlyBranch, dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen);
 
         lineStatus.addAll(lineStatusWithMonthAndDay);
 
-        if (!checkFuShen && IsDynamicLine(oLine))
+        if (!checkFuShen && isDynamicLine(oLine))
         {
-            ArrayList<EnumLineStatus> dynamicLineChanged = AnalyzeDynamicLineChanged(oLine, tLine, monthEarthlyBranch, dayEarthlyBranch, dayHeavenlyStem);
+            ArrayList<EnumLineStatus> dynamicLineChanged = analyzeDynamicLineChanged(oLine, tLine, monthEarthlyBranch, dayEarthlyBranch, dayHeavenlyStem);
 
             lineStatus.addAll(dynamicLineChanged);
         }
@@ -716,8 +713,8 @@ public class Analyzer  {
         return Pair.create(enumSixRelation, lineStatus);
     }
 
-    public ArrayList<EnumLineStatus> AnalyzeLineRelationWithMonthAndDay(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
-                                                                   EarthlyBranch dayEarthlyBranch, Line originalLine, boolean checkFuShen)
+    public ArrayList<EnumLineStatus> analyzeLineRelationWithMonthAndDay(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
+                                                                        EarthlyBranch dayEarthlyBranch, Line originalLine, boolean checkFuShen)
     {
         ArrayList<EnumLineStatus> listStatus = new ArrayList<EnumLineStatus>();
 
@@ -730,16 +727,16 @@ public class Analyzer  {
             oLineEarthlyBranch = originalLine.getEarthlyBranchAttached();
         }
         //??????
-        EnumLingRelation rMonth = AnalyzeLineLingRelation(monthEarthlyBranch, originalLine, checkFuShen);
+        EnumLingRelation rMonth = analyzeLineLingRelation(monthEarthlyBranch, originalLine, checkFuShen);
         if (monthEarthlyBranch.getId() == oLineEarthlyBranch.getId())
         {
             listStatus.add(EnumLineStatus.LinYue);
         }
         else
         {
-            listStatus.add(ConvertEarthlyBranchRelationToEnum(rMonth, true));
+            listStatus.add(convertEarthlyBranchRelationToEnum(rMonth, true));
             //Yu Qi ex: ????
-            EnumLineStatus yuQi = AnalyzeLineLingRelationYuQi(monthEarthlyBranch.getId(), originalLine, checkFuShen);
+            EnumLineStatus yuQi = analyzeLineLingRelationYuQi(monthEarthlyBranch.getId(), originalLine, checkFuShen);
             if (yuQi != null)
             {
                 listStatus.add(yuQi);
@@ -755,14 +752,14 @@ public class Analyzer  {
             }
         }
         //??????
-        EnumLingRelation rDay = AnalyzeLineLingRelation(dayEarthlyBranch, originalLine, checkFuShen);
+        EnumLingRelation rDay = analyzeLineLingRelation(dayEarthlyBranch, originalLine, checkFuShen);
         if (dayEarthlyBranch.getId() == oLineEarthlyBranch.getId())
         {
             listStatus.add(EnumLineStatus.LinRi);
         }
         else
         {
-            listStatus.add(ConvertEarthlyBranchRelationToEnum(rDay, false));
+            listStatus.add(convertEarthlyBranchRelationToEnum(rDay, false));
             if (Default.getEarthlyBranchSixSuit(context).get(dayEarthlyBranch.getId()) == oLineEarthlyBranchIndex)
             {
                 listStatus.add(EnumLineStatus.RiHe);
@@ -777,7 +774,7 @@ public class Analyzer  {
         actionDayMonthDeadTombDesperate(listStatus, Default.Twelve_Grow_Si, monthEarthlyBranch.getId(), EnumLineStatus.YueSi, oLineEarthlyBranchIndex);
         actionDayMonthDeadTombDesperate(listStatus, Default.Twelve_Grow_Jue, monthEarthlyBranch.getId(), EnumLineStatus.YueJue, oLineEarthlyBranchIndex);
 
-        ArrayList<EnumLineStatus> lineExtensionStatus = AnalyzeLineExtension(rMonth, monthEarthlyBranch, originalLine, dayHeavenlyStem, dayEarthlyBranch, checkFuShen);
+        ArrayList<EnumLineStatus> lineExtensionStatus = analyzeLineExtension(rMonth, monthEarthlyBranch, originalLine, dayHeavenlyStem, dayEarthlyBranch, checkFuShen);
         listStatus.addAll(lineExtensionStatus);
 
         return listStatus;
@@ -793,8 +790,8 @@ public class Analyzer  {
     }
 
 
-    public ArrayList<EnumLineStatus> AnalyzeLineExtension(EnumLingRelation rMonth, EarthlyBranch monthEarthlyBranch, Line oLine,
-                                                     HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, boolean checkFuShen)
+    public ArrayList<EnumLineStatus> analyzeLineExtension(EnumLingRelation rMonth, EarthlyBranch monthEarthlyBranch, Line oLine,
+                                                          HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, boolean checkFuShen)
     {
         ArrayList<EnumLineStatus> listStatus = new ArrayList<EnumLineStatus>();
 
@@ -815,7 +812,7 @@ public class Analyzer  {
             EarthlyBranch earthlyBranchName = checkFuShen ? oLine.getEarthlyBranchAttached() : oLine.getEarthlyBranch();
             if (!(monthEarthlyBranch.getName().equals(earthlyBranchName.getName())
                     && !dayEarthlyBranch.getName().equals(earthlyBranchName.getName()))
-                    && IsXunKong(dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen))
+                    && isXunKong(dayHeavenlyStem, dayEarthlyBranch, oLine, checkFuShen))
             {
                 if (Default.getEarthlyBranchSixInverse(context).get(dayEarthlyBranch.getId()) == oDiZhiIndex)
                 {
@@ -833,8 +830,8 @@ public class Analyzer  {
         return listStatus;
     }
 
-    public EnumLineStatus AnalyzeLineXunKong(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
-                                              EarthlyBranch dayEarthlyBranch, Line oLine, boolean isFuShen)
+    public EnumLineStatus analyzeLineXunKong(EarthlyBranch monthEarthlyBranch, HeavenlyStem dayHeavenlyStem,
+                                             EarthlyBranch dayEarthlyBranch, Line oLine, boolean isFuShen)
     {
 
         boolean monthEarthlyBranchCompare = !isFuShen ?
@@ -843,7 +840,7 @@ public class Analyzer  {
 
         if (monthEarthlyBranchCompare)
         {
-            if (IsXunKong(dayHeavenlyStem, dayEarthlyBranch, oLine, isFuShen))
+            if (isXunKong(dayHeavenlyStem, dayEarthlyBranch, oLine, isFuShen))
             {
                 return EnumLineStatus.Kong;
             }
@@ -852,7 +849,7 @@ public class Analyzer  {
         return null;
     }
 
-    public ArrayList<EnumLineStatus> AnalyzeDynamicLineChanged(Line oLine, Line tLine, EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, HeavenlyStem dayHeavenStem)
+    public ArrayList<EnumLineStatus> analyzeDynamicLineChanged(Line oLine, Line tLine, EarthlyBranch monthEarthlyBranch, EarthlyBranch dayEarthlyBranch, HeavenlyStem dayHeavenStem)
     {
         ArrayList listStatus = new ArrayList<EnumLineStatus>();
 
@@ -902,7 +899,7 @@ public class Analyzer  {
             listStatus.add(EnumLineStatus.BianYaoYueChong);
         }
         //??
-        if (IsXunKong(dayHeavenStem, dayEarthlyBranch, tLine, false))
+        if (isXunKong(dayHeavenStem, dayEarthlyBranch, tLine, false))
         {
             listStatus.add(EnumLineStatus.HuaKong);
         }
@@ -941,16 +938,16 @@ public class Analyzer  {
         getLineStatus(listStatus, Default.Twelve_Grow_Bing,EnumLineStatus.HuaBing,oLine,tLine);
         getLineStatus(listStatus, Default.Twelve_Grow_MuYu,EnumLineStatus.HuaMuKu,oLine,tLine);
 
-        EnumLingRelation rMonth = AnalyzeLineLingRelation(monthEarthlyBranch, tLine,false);
-        EnumLingRelation rDay = AnalyzeLineLingRelation(dayEarthlyBranch, tLine,false);
-        EnumLineStatus monthStatus = ConvertEarthlyBranchRelationToEnumChangedLine(rMonth, true);
-        EnumLineStatus dayStatus = ConvertEarthlyBranchRelationToEnumChangedLine(rDay,false);
+        EnumLingRelation rMonth = analyzeLineLingRelation(monthEarthlyBranch, tLine, false);
+        EnumLingRelation rDay = analyzeLineLingRelation(dayEarthlyBranch, tLine, false);
+        EnumLineStatus monthStatus = convertEarthlyBranchRelationToEnumChangedLine(rMonth, true);
+        EnumLineStatus dayStatus = convertEarthlyBranchRelationToEnumChangedLine(rDay, false);
         if (monthStatus != null)
             listStatus.add(monthStatus);
         if (dayStatus != null)
             listStatus.add(dayStatus);
 
-        EnumLineStatus yuQi = AnalyzeLineLingRelationYuQi(monthEarthlyBranch.getId(), tLine,false);
+        EnumLineStatus yuQi = analyzeLineLingRelationYuQi(monthEarthlyBranch.getId(), tLine, false);
         if (yuQi != null)
         {
             listStatus.add(EnumLineStatus.BianYaoYuQiYue);
@@ -968,21 +965,21 @@ public class Analyzer  {
         }
     }
 
-    public EnumLingRelation AnalyzeLineLingRelation(EarthlyBranch earthlyBranch, Line line, boolean checkFuShen) {
-        EnumLing monthOrDayLing = GetLingByEarthlyBranchIndex(earthlyBranch.getId());
-        EnumLing yaoLing = GetLingByEarthlyBranchIndex(line.getEarthlyBranch().getId());
+    public EnumLingRelation analyzeLineLingRelation(EarthlyBranch earthlyBranch, Line line, boolean checkFuShen) {
+        EnumLing monthOrDayLing = getLingByEarthlyBranchIndex(earthlyBranch.getId());
+        EnumLing yaoLing = getLingByEarthlyBranchIndex(line.getEarthlyBranch().getId());
 
         if (checkFuShen && !StringHelper.isNullOrEmpty(line.getEarthlyBranchAttached().getName()))
-            yaoLing = GetLingByEarthlyBranchIndex(line.getEarthlyBranchAttached().getId());
+            yaoLing = getLingByEarthlyBranchIndex(line.getEarthlyBranchAttached().getId());
 
-        return AnalyzeLineLingRelation(monthOrDayLing, yaoLing);
+        return analyzeLineLingRelation(monthOrDayLing, yaoLing);
     }
 
-    public EnumLineStatus AnalyzeLineLingRelationYuQi(int earthlyBranchID, Line line, boolean checkFuShen)
+    public EnumLineStatus analyzeLineLingRelationYuQi(int earthlyBranchID, Line line, boolean checkFuShen)
     {
-        EnumLing monthLing = GetLingByEarthlyBranchIndex(line.getEarthlyBranch().getId());
+        EnumLing monthLing = getLingByEarthlyBranchIndex(line.getEarthlyBranch().getId());
         if (checkFuShen)
-            monthLing = GetLingByEarthlyBranchIndex(line.getEarthlyBranchAttached().getId());
+            monthLing = getLingByEarthlyBranchIndex(line.getEarthlyBranchAttached().getId());
         if (Default.getLingYuQiMapping().keySet().contains(earthlyBranchID) && Default.getLingYuQiMapping().get(earthlyBranchID) == monthLing)
         {
             return EnumLineStatus.YuQiYue;
@@ -990,12 +987,12 @@ public class Analyzer  {
         return null;
     }
 
-    public boolean IsDynamicLine(Line line)
+    public boolean isDynamicLine(Line line)
     {
         return line.getLineSymbol() == EnumLineSymbol.LaoYin || line.getLineSymbol() == EnumLineSymbol.LaoYang;
     }
 
-    public boolean IsXunKong(HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, Line line, boolean isFuShen)
+    public boolean isXunKong(HeavenlyStem dayHeavenlyStem, EarthlyBranch dayEarthlyBranch, Line line, boolean isFuShen)
     {
         Pair<String,String> kong = Utility.getXunKong(context, dayHeavenlyStem.getName(), dayEarthlyBranch.getName());
 
@@ -1005,7 +1002,7 @@ public class Analyzer  {
             return kong.first.contains(line.getEarthlyBranch().getName()) || kong.second.contains(line.getEarthlyBranch().getName());
     }
 
-    public EnumLing GetLingByEarthlyBranchIndex(int index)
+    public EnumLing getLingByEarthlyBranchIndex(int index)
     {
         for(EnumLing ling: Default.getLingEarthlyBranchMapping().keySet())
         {
@@ -1015,7 +1012,7 @@ public class Analyzer  {
         return null;
     }
 
-    public EnumLingRelation AnalyzeLineLingRelation(EnumLing monthOrDayLing, EnumLing lineLing)
+    public EnumLingRelation analyzeLineLingRelation(EnumLing monthOrDayLing, EnumLing lineLing)
     {
         if (monthOrDayLing == EnumLing.Chun)
         {
@@ -1084,7 +1081,7 @@ public class Analyzer  {
         }
     }
 
-    public EnumLineStatus ConvertEarthlyBranchRelationToEnum(EnumLingRelation relation, boolean isMonth)
+    public EnumLineStatus convertEarthlyBranchRelationToEnum(EnumLingRelation relation, boolean isMonth)
     {
         switch (relation)
         {
@@ -1103,7 +1100,7 @@ public class Analyzer  {
         }
     }
 
-    public EnumLineStatus ConvertEarthlyBranchRelationToEnumChangedLine(EnumLingRelation relation, boolean isMonth)
+    public EnumLineStatus convertEarthlyBranchRelationToEnumChangedLine(EnumLingRelation relation, boolean isMonth)
     {
         switch (relation)
         {

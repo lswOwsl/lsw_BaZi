@@ -197,6 +197,7 @@ public class Default {
 
     public static HashMap<EnumLing, int[]> getLingEarthlyBranchMapping() {
         if (lingEarthlyBranchMapping == null) {
+            lingEarthlyBranchMapping = new HashMap<EnumLing, int[]>();
             lingEarthlyBranchMapping.put(EnumLing.Chun, new int[]{3, 4});
             lingEarthlyBranchMapping.put(EnumLing.Xia, new int[]{6, 7});
             lingEarthlyBranchMapping.put(EnumLing.Qiu, new int[]{9, 10});
@@ -205,8 +206,6 @@ public class Default {
         }
         return lingEarthlyBranchMapping;
     }
-
-    ;
 
 
     private static HashMap<Integer, EnumLing> lingYuQiMapping;
@@ -226,6 +225,7 @@ public class Default {
 
     public static HashMap<Integer, Integer> getEarthlyBranchForward() {
         if (earthlyBranchForward == null) {
+            earthlyBranchForward = new HashMap<Integer, Integer>();
             earthlyBranchForward.put(3, 4);
             earthlyBranchForward.put(9, 10);
             earthlyBranchForward.put(2, 5);
@@ -238,6 +238,7 @@ public class Default {
 
     public static HashMap<Integer, Integer> getEarthlyBranchBackward() {
         if (earthlyBranchBackward == null) {
+            earthlyBranchBackward = new HashMap<Integer, Integer>();
             earthlyBranchBackward.put(4, 3);
             earthlyBranchBackward.put(10, 9);
             earthlyBranchBackward.put(5, 2);
