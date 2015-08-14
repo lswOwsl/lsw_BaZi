@@ -27,7 +27,7 @@ import lsw.model.Line;
 /**
  * Created by swli on 8/7/2015.
  */
-public class HexagramAnalyzer extends Activity implements View.OnTouchListener{
+public class HexagramAnalyzer extends Activity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,6 +225,14 @@ public class HexagramAnalyzer extends Activity implements View.OnTouchListener{
     private void recycleVelocityTracker() {
         mVelocityTracker.recycle();
         mVelocityTracker = null;
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+        if(isMenuVisible)
+            scrollToContent();
+        else
+            scrollToMenu();
     }
 
 

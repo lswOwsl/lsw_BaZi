@@ -2,6 +2,7 @@ package lsw.liuyao;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,10 @@ public class HexagramAutoAnalyzerFragment extends Fragment {
     private static final String Param_Result_List = "param1";
 
     private ArrayList<String> autoAnalyzeResult;
+
+    TextView tvAutoAnalyze;
+
+    private OnFragmentInteractionListener mListener;
 
     public static HexagramAutoAnalyzerFragment newInstance(ArrayList<String> arrayList) {
         HexagramAutoAnalyzerFragment fragment = new HexagramAutoAnalyzerFragment();
@@ -53,8 +58,14 @@ public class HexagramAutoAnalyzerFragment extends Fragment {
         HexagramAutoAnalyzerAdapter adapter = new HexagramAutoAnalyzerAdapter(autoAnalyzeResult,getActivity());
         listView.setAdapter(adapter);
 
-        TextView tvAutoAnalyze = (TextView)view.findViewById(R.id.tvAutoAnalyze);
-        tvAutoAnalyze.setOnTouchListener((View.OnTouchListener)getActivity());
+        tvAutoAnalyze = (TextView)view.findViewById(R.id.tvAutoAnalyze);
+        tvAutoAnalyze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mListener != null)
+                    mListener.onFragmentInteraction();
+            }
+        });
 
         LinearLayout llContent = (LinearLayout)view.findViewById(R.id.llContent);
         llContent.setOnTouchListener((View.OnTouchListener)getActivity());
@@ -65,7 +76,7 @@ public class HexagramAutoAnalyzerFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-
+            mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -76,5 +87,10 @@ public class HexagramAutoAnalyzerFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        public void onFragmentInteraction();
     }
 }
