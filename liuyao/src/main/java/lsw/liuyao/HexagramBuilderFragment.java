@@ -122,7 +122,7 @@ public class HexagramBuilderFragment extends Fragment {
         tvEraDate.append(ColorHelper.getTextByColor(",", Color.GRAY));
         tvEraDate.append(xunKong2);
         tvEraDate.append(ColorHelper.getTextByColor(")", Color.GRAY));
-
+        tvEraDate.append(ColorHelper.getTextByColor("空",Color.GRAY));
 
         return view;
     }

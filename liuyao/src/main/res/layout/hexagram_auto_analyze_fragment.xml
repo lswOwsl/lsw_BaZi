@@ -3,7 +3,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent" >
     <View style="@style/PartLineVertical"></View>
-    <TextView
+    <TextView  style="@style/TextNavigation"
         android:id="@+id/tvAutoAnalyze"
         android:text="自\n动\n分\n析"
         android:gravity="center"
@@ -17,8 +17,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="5dp">
+        <View style="@style/PartLine"></View>
     <ListView android:id="@+id/lvAnalyzResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></ListView>
+        <View style="@style/PartLine"></View>
     </LinearLayout>
 </LinearLayout>
