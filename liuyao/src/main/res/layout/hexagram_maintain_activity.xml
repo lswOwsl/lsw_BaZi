@@ -37,7 +37,7 @@
 
             <include
                 android:id="@+id/cGuaMain"
-                layout="@layout/hexagram_container" />
+                layout="@layout/hexagram_drag_container" />
 
         </LinearLayout>
 
@@ -51,7 +51,7 @@
 
             <include
                 android:id="@+id/cGuaChanged"
-                layout="@layout/hexagram_container" />
+                layout="@layout/hexagram_drag_container" />
 
         </LinearLayout>
     </LinearLayout>

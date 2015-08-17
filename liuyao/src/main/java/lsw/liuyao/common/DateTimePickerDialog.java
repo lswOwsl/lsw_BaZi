@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import lsw.hexagram.Builder;
 import lsw.library.DateExt;
+import lsw.library.LunarCalendarWrapper;
 import lsw.liuyao.R;
 
 /**
@@ -33,10 +35,18 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
     private Activity activity;
 
-    public DateTimePickerDialog(DateExt initDateExt, Activity activity) {
+    private boolean showMinute;
 
+    public DateTimePickerDialog(DateExt initDateExt, Activity activity, boolean showMinute)
+    {
         this.initDateExt = initDateExt;
         this.activity = activity;
+        this.showMinute = showMinute;
+    }
+
+    public DateTimePickerDialog(DateExt initDateExt, Activity activity) {
+
+        this(initDateExt,activity,true);
     }
 
     private void init(DatePicker datePicker, TimePicker timePicker) {
@@ -49,7 +59,7 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
     public AlertDialog show() {
 
-        View dateTimeLayout = LayoutInflater.from(activity).inflate(R.layout.common_datetime_picker,null);
+        View dateTimeLayout = LayoutInflater.from(activity).inflate(R.layout.common_datetime_picker, null);
 
         datePicker = (DatePicker) dateTimeLayout.findViewById(R.id.datepicker);
         timePicker = (TimePicker) dateTimeLayout.findViewById(R.id.timepicker);
@@ -59,11 +69,14 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
         timePicker.setIs24HourView(true);
         timePicker.setOnTimeChangedListener(this);
 
-        ad = new AlertDialog.Builder(this.activity)
-                .setView(dateTimeLayout)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
+        if (!showMinute) {
+            builder.setTitle(getTitleByDate(initDateExt));
+        }
+        ad = builder.setView(dateTimeLayout).
+                setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        if(callBack != null)
+                        if (callBack != null)
                             callBack.invoke(initDateExt);
                     }
                 })
@@ -73,7 +86,13 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
                     }
                 }).show();
 
+
         onDateChanged(null, 0, 0, 0);
+
+        if (!showMinute) {
+            timePicker.setVisibility(View.INVISIBLE);
+        }
+
         return ad;
     }
 
@@ -82,12 +101,23 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
         DateExt de = new DateExt(datePicker.getYear(), datePicker.getMonth()+1,
                 datePicker.getDayOfMonth(), timePicker.getCurrentHour(),
                 timePicker.getCurrentMinute(),0);
-
+        if(!showMinute) {
+            ad.setTitle(getTitleByDate(de));
+        }
         initDateExt = de;
     }
 
     @Override
     public void onTimeChanged(TimePicker timePicker, int i, int i2) {
         onDateChanged(null, 0, 0, 0);
+    }
+
+    private String getTitleByDate(DateExt dateExt)
+    {
+        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+        String monthEar = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfMonth());
+        String dayEra = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfDay());
+
+        return monthEar+"月"+"   "+dayEra+"日";
     }
 }

@@ -82,7 +82,7 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hexagram_build_activity);
+        setContentView(R.layout.hexagram_maintain_activity);
 
         initControls();
 

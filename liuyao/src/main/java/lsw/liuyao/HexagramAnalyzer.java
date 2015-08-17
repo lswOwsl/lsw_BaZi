@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -20,6 +21,8 @@ import lsw.hexagram.Analyzer;
 import lsw.hexagram.Builder;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
+import lsw.library.Utility;
+import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
 import lsw.model.Hexagram;
 import lsw.model.Line;
@@ -29,6 +32,14 @@ import lsw.model.Line;
  */
 public class HexagramAnalyzer extends Activity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
 
+    String formatDateTime = "yyyy年MM月dd日";
+    LunarCalendarWrapper lunarCalendarWrapper;
+    Hexagram original, changed;
+    Analyzer analyzer;
+
+    DateExt analyzeDate, initDate;
+
+    TextView tvAnalyzeDateTitle, tvAnalyzeDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,24 +56,28 @@ public class HexagramAnalyzer extends Activity implements View.OnTouchListener, 
         setContentView(R.layout.hexagram_analyze_activity);
 
         Bundle bundle = getIntent().getExtras();
-        String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
+        final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
 
         ArrayList<Line> models = (ArrayList<Line>)bundle.getSerializable(IntentKeys.LineModelList);
 
-        Builder builder = Builder.getInstance(this);
-        Analyzer analyzer = new Analyzer(this);
-        try {
-            Hexagram hexagram = builder.getHexagramByLines(models, true);
-            Hexagram changed = builder.getChangedHexagramByOriginal(hexagram, false);
+        initDate = new DateExt(formatDate);
+        analyzeDate = initDate;
 
-            LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(new DateExt(formatDate));
+        Builder builder = Builder.getInstance(this);
+        analyzer = new Analyzer(this);
+
+        try {
+            original = builder.getHexagramByLines(models, true);
+            changed = builder.getChangedHexagramByOriginal(original, false);
+
+            lunarCalendarWrapper = new LunarCalendarWrapper(initDate);
             String eraMonth = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfMonth());
             String eraDay = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfDay());
 
-            StringBuilder stringBuilder = analyzer.analyzeHexagramResult(eraMonth, eraDay, hexagram, changed);
+            StringBuilder stringBuilder = analyzer.analyzeHexagramResult(eraMonth, eraDay, original, changed);
             ArrayList<String> list = analyzer.orderedStringResult(stringBuilder.toString());
 
-            HexagramBuilderFragment analyzerFragment = HexagramBuilderFragment.newInstance(hexagram, changed, formatDate);
+            HexagramBuilderFragment analyzerFragment = HexagramBuilderFragment.newInstance(original, changed, formatDate);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.fl_Hexagram_Analyzer, analyzerFragment, null);
 
@@ -78,17 +93,57 @@ public class HexagramAnalyzer extends Activity implements View.OnTouchListener, 
 
         initValues();
 
-//        gestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
-//            @Override
-//            public boolean onSingleTapUp(MotionEvent e) {
-//                // ---Call it directly---
-//                scrollToContent();
-//                return false;
-//            }
-//        });
+        tvAnalyzeDateTitle = (TextView) findViewById(R.id.tvAnalyzeDateTitle);
+        tvAnalyzeDate = (TextView)findViewById(R.id.tvAnalyzeDate);
+
+        tvAnalyzeDateTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bindAnalyzeResult(initDate);
+                analyzeDate = initDate;
+                tvAnalyzeDate.setText("自选");
+            }
+        });
+
+        tvAnalyzeDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DateTimePickerDialog pickerDialog = new DateTimePickerDialog(analyzeDate,HexagramAnalyzer.this,false);
+                pickerDialog.show();
+                pickerDialog.setCallBack(new DateTimePickerDialog.ICallBack() {
+                    @Override
+                    public void invoke(DateExt dateExt) {
+                        bindAnalyzeResult(dateExt);
+                        analyzeDate = dateExt;
+                    }
+                });
+            }
+        });
     }
 
-    //GestureDetector gestureDetector;
+    private void bindAnalyzeResult(DateExt dateExt)
+    {
+        lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
+        int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
+        Pair<String,String> xunKong = Utility.getXunKong(HexagramAnalyzer.this, lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
+        String eraText =
+                lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
+                        lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
+        tvAnalyzeDate.setText(eraText +"     "+ dateExt.getFormatDateTime(formatDateTime));
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        String eraMonth = lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex);
+        String eraDay = lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex);
+
+        StringBuilder stringBuilder = analyzer.analyzeHexagramResult(eraMonth, eraDay, original, changed);
+        ArrayList<String> list = analyzer.orderedStringResult(stringBuilder.toString());
+
+        HexagramAutoAnalyzerFragment autoAnalyzerFragment = HexagramAutoAnalyzerFragment.newInstance(list);
+        ft.replace(R.id.fl_Hexagram_Auto_Analyzer, autoAnalyzerFragment,null);
+        ft.commit();
+    }
 
     public static final int SNAP_VELOCITY = 200;
     private int screenWidth;

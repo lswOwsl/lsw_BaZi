@@ -10,6 +10,16 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical" >
+        <LinearLayout android:orientation="horizontal" android:layout_marginLeft="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:id="@+id/tvAnalyzeDateTitle"
+                android:text="分析日期: 默认/" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:id="@+id/tvAnalyzeDate"
+                android:text="自选" />
+        </LinearLayout>
 
     <FrameLayout android:id="@+id/fl_Hexagram_Analyzer"
         android:layout_width="match_parent"
