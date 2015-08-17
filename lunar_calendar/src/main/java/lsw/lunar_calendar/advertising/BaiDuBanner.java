@@ -42,8 +42,8 @@ public class BaiDuBanner {
         // 具体获取方法请查阅《百度开发者中心交叉换量产品介绍.pdf》
 //        bannerAdView = new BDBannerAd(activity, "CRqGC0MMbzpSLT2EYgDKk58d6ymsHylt",
 //                "TRwQxo62D74ULcY9TDRCjvno");
-        bannerAdView = new BDBannerAd(activity, "3Qh1lG1mNW65Wx155M3WV48c",
-                "fNEy9eUvTdAzKzMKqFxZvh7B");
+        bannerAdView = new BDBannerAd(activity, "2O7KBhN1A9OWcK9zSIqbA8zC",
+                "Qyw2gkeKg1mKbqCeYf8oSrRF");
 
         // 设置横幅广告展示尺寸，如不设置，默认为SIZE_FLEXIBLE;
         //bannerAdView.setAdSize(BDBannerAd.SIZE_FLEXIBLE);
