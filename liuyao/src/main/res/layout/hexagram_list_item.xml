@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout android:background="#fff" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:padding="5dp">
+
+    <LinearLayout
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="back">
+
+        <Button
+            android:id="@+id/btnAnalyze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分析" />
+
+        <Button
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="编辑" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/front"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:orientation="vertical"
+        android:tag="front">
+
+        <TextView android:gravity="center"
+            android:textSize="15dp"
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2015年8月18日" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView android:textSize="18dp"
+                android:gravity="center"
+                android:id="@+id/tvOriginalName"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="主卦:乾" />
+
+            <TextView android:textSize="18dp"
+                android:gravity="center"
+                android:id="@+id/tvChangedName"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="变卦:坤" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
+

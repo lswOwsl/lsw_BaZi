@@ -30,7 +30,7 @@ import lsw.model.Line;
 /**
  * Created by swli on 8/7/2015.
  */
-public class HexagramAnalyzer extends Activity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
+public class HexagramAnalyzerActivity extends Activity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
 
     String formatDateTime = "yyyy年MM月dd日";
     LunarCalendarWrapper lunarCalendarWrapper;
@@ -108,7 +108,7 @@ public class HexagramAnalyzer extends Activity implements View.OnTouchListener, 
         tvAnalyzeDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateTimePickerDialog pickerDialog = new DateTimePickerDialog(analyzeDate,HexagramAnalyzer.this,false);
+                DateTimePickerDialog pickerDialog = new DateTimePickerDialog(analyzeDate,HexagramAnalyzerActivity.this,false);
                 pickerDialog.show();
                 pickerDialog.setCallBack(new DateTimePickerDialog.ICallBack() {
                     @Override
@@ -126,7 +126,7 @@ public class HexagramAnalyzer extends Activity implements View.OnTouchListener, 
         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
         int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
-        Pair<String,String> xunKong = Utility.getXunKong(HexagramAnalyzer.this, lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
+        Pair<String,String> xunKong = Utility.getXunKong(HexagramAnalyzerActivity.this, lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
         String eraText =
                 lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
                         lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";

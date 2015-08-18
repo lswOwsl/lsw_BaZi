@@ -27,7 +27,7 @@ import lsw.model.EnumLineSymbol;
 import lsw.model.Line;
 
 
-public class HexagramBuilder extends Activity implements LineDragListener.OnDropInteraction {
+public class HexagramBuilderActivity extends Activity implements LineDragListener.OnDropInteraction {
 
     private LinearLayout linearLayout1,linearLayout2,linearLayout3,linearLayout4,linearLayout5,linearLayout6;
     private ImageView ivYin,ivYang,ivLaoYin,ivLaoYang;
@@ -92,7 +92,7 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
         tvDateSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateTimePickerDialog dialog = new DateTimePickerDialog(initialDateExt,HexagramBuilder.this);
+                DateTimePickerDialog dialog = new DateTimePickerDialog(initialDateExt,HexagramBuilderActivity.this);
                 dialog.setCallBack(new DateTimePickerDialog.ICallBack() {
                     @Override
                     public void invoke(DateExt dateExt) {
@@ -148,7 +148,7 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
                 ImageView iv = (ImageView)view;
                 Drawable drawable = iv.getDrawable();
 
-                moveImageView = new ImageView(HexagramBuilder.this);
+                moveImageView = new ImageView(HexagramBuilderActivity.this);
                 moveImageView.setImageDrawable(drawable);
 
                 lastTouch = new Point((int) motionEvent.getX(), (int) motionEvent.getY()) ;
@@ -207,7 +207,7 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
 
     public void reload(View view)
     {
-        Intent intent = new Intent(HexagramBuilder.this, HexagramBuilder.class);
+        Intent intent = new Intent(HexagramBuilderActivity.this, HexagramBuilderActivity.class);
         startActivity(intent);
         finish();
     }
@@ -230,7 +230,7 @@ public class HexagramBuilder extends Activity implements LineDragListener.OnDrop
             lines.add(line);
         }
 
-        Intent mIntent = new Intent(this,HexagramAnalyzer.class);
+        Intent mIntent = new Intent(this,HexagramAnalyzerActivity.class);
         Bundle mBundle = new Bundle();
         mBundle.putString(IntentKeys.FormatDate, initialDateExt.getFormatDateTime());
         mBundle.putSerializable(IntentKeys.LineModelList,lines);
