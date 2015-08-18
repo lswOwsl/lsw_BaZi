@@ -2,9 +2,10 @@
 
 <FrameLayout android:background="#fff" xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" android:padding="5dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        android:background="@drawable/list_item_border"
         android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,11 +24,10 @@
             android:text="编辑" />
     </LinearLayout>
 
-    <LinearLayout
+    <LinearLayout android:background="#fff"
         android:id="@+id/front"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff"
         android:orientation="vertical"
         android:tag="front">
 

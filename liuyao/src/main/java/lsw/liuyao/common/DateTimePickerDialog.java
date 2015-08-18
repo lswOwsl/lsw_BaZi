@@ -5,7 +5,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import lsw.hexagram.Builder;
@@ -37,6 +41,8 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
     private boolean showMinute;
 
+    private TextView tvTitle;
+
     public DateTimePickerDialog(DateExt initDateExt, Activity activity, boolean showMinute)
     {
         this.initDateExt = initDateExt;
@@ -46,7 +52,7 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
     public DateTimePickerDialog(DateExt initDateExt, Activity activity) {
 
-        this(initDateExt,activity,true);
+        this(initDateExt, activity, true);
     }
 
     private void init(DatePicker datePicker, TimePicker timePicker) {
@@ -63,6 +69,7 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
         datePicker = (DatePicker) dateTimeLayout.findViewById(R.id.datepicker);
         timePicker = (TimePicker) dateTimeLayout.findViewById(R.id.timepicker);
+        tvTitle = (TextView) dateTimeLayout.findViewById(R.id.tvTitle);
 
         init(datePicker, timePicker);
 
@@ -71,7 +78,7 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.activity);
         if (!showMinute) {
-            builder.setTitle(getTitleByDate(initDateExt));
+            tvTitle.setText(getTitleByDate(initDateExt));
         }
         ad = builder.setView(dateTimeLayout).
                 setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -91,9 +98,20 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
         if (!showMinute) {
             timePicker.setVisibility(View.INVISIBLE);
+            resizeNumberPicker(timePicker);
+        }
+        else
+        {
+            tvTitle.setVisibility(View.INVISIBLE);
         }
 
         return ad;
+    }
+
+    private void resizeNumberPicker(TimePicker np){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
+        params.setMargins(10, 0, 10, 0);
+        np.setLayoutParams(params);
     }
 
     @Override
@@ -102,7 +120,7 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
                 datePicker.getDayOfMonth(), timePicker.getCurrentHour(),
                 timePicker.getCurrentMinute(),0);
         if(!showMinute) {
-            ad.setTitle(getTitleByDate(de));
+            tvTitle.setText(getTitleByDate(de));
         }
         initDateExt = de;
     }
