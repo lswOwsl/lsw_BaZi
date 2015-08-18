@@ -84,6 +84,8 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hexagram_maintain_activity);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         initControls();
 
         initialDateExt = new DateExt();
@@ -92,7 +94,7 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         tvDateSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateTimePickerDialog dialog = new DateTimePickerDialog(initialDateExt,HexagramBuilderActivity.this);
+                DateTimePickerDialog dialog = new DateTimePickerDialog(initialDateExt, HexagramBuilderActivity.this);
                 dialog.setCallBack(new DateTimePickerDialog.ICallBack() {
                     @Override
                     public void invoke(DateExt dateExt) {
@@ -197,8 +199,8 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.home) {
+            finish();
             return true;
         }
 

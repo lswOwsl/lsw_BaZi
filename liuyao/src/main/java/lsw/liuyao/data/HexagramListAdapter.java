@@ -1,6 +1,8 @@
 package lsw.liuyao.data;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import lsw.liuyao.HexagramAnalyzerActivity;
 import lsw.liuyao.R;
+import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.model.HexagramRow;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
@@ -46,7 +50,7 @@ public class HexagramListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        HexagramRow item = rows.get(i);
+        final HexagramRow item = rows.get(i);
         ViewHolder holder;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.hexagram_list_item, null);
@@ -63,9 +67,24 @@ public class HexagramListAdapter extends BaseAdapter {
         }
         ((SwipeListView)viewGroup).recycle(view, i);
 
-        holder.tvDate.setText(item.getDate().substring(0,10));
+        holder.tvDate.setText(item.getDate().substring(0, 10));
         holder.tvOriginalName.setText(item.getOriginalName());
         holder.tvChangedName.setText(item.getChangedName());
+
+        holder.btnAnalyze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent mIntent = new Intent(context,HexagramAnalyzerActivity.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putString(IntentKeys.FormatDate, item.getDate());
+                mBundle.putString(IntentKeys.OriginalName,item.getOriginalName());
+                mBundle.putString(IntentKeys.ChangedName,item.getChangedName());
+                mIntent.putExtras(mBundle);
+
+                context.startActivity(mIntent);
+            }
+        });
 
         return view;
     }

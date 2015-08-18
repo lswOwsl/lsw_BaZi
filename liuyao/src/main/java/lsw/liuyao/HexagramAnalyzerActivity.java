@@ -21,6 +21,7 @@ import lsw.hexagram.Analyzer;
 import lsw.hexagram.Builder;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
+import lsw.library.StringHelper;
 import lsw.library.Utility;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
@@ -58,8 +59,12 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         Bundle bundle = getIntent().getExtras();
         final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
 
-        ArrayList<Line> models = (ArrayList<Line>)bundle.getSerializable(IntentKeys.LineModelList);
-
+        String originalName = bundle.getString(IntentKeys.OriginalName);
+        String changedName = bundle.getString(IntentKeys.ChangedName);
+        ArrayList<Line> models = null;
+        if(StringHelper.isNullOrEmpty(originalName)) {
+            models = (ArrayList<Line>) bundle.getSerializable(IntentKeys.LineModelList);
+        }
         initDate = new DateExt(formatDate);
         analyzeDate = initDate;
 
@@ -67,8 +72,16 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         analyzer = new Analyzer(this);
 
         try {
-            original = builder.getHexagramByLines(models, true);
-            changed = builder.getChangedHexagramByOriginal(original, false);
+            if(!StringHelper.isNullOrEmpty(originalName))
+            {
+                Pair<Hexagram,Hexagram> pair = builder.getHexagramByNames(originalName, changedName);
+                original = pair.first;
+                changed = pair.second;
+            }
+            else {
+                original = builder.getHexagramByLines(models, true);
+                changed = builder.getChangedHexagramByOriginal(original, false);
+            }
 
             lunarCalendarWrapper = new LunarCalendarWrapper(initDate);
             String eraMonth = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfMonth());
@@ -82,7 +95,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
             ft.replace(R.id.fl_Hexagram_Analyzer, analyzerFragment, null);
 
             HexagramAutoAnalyzerFragment autoAnalyzerFragment = HexagramAutoAnalyzerFragment.newInstance(list);
-            ft.replace(R.id.fl_Hexagram_Auto_Analyzer, autoAnalyzerFragment,null);
+            ft.replace(R.id.fl_Hexagram_Auto_Analyzer, autoAnalyzerFragment, null);
 
             ft.commit();
         }
