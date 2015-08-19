@@ -29,7 +29,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal" android:id="@+id/front" android:layout_marginLeft="-1dp" >
+        android:orientation="horizontal"
+        android:id="@+id/front"
+        android:tag="front"
+        android:layout_marginLeft="-1dp" >
 
         <ImageView android:background="@drawable/list_item_background_r"
             android:layout_width="1dp"
@@ -39,13 +42,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:tag="front">
+            >
 
             <TextView
+                android:paddingLeft="10dp"
                 android:id="@+id/tvDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="left"
                 android:text="2015年8月18日"
                 android:textSize="15dp" />
 
@@ -54,23 +58,36 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <TextView
+                <TextView android:paddingLeft="20dp"
                     android:id="@+id/tvOriginalName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center"
+                    android:gravity="center_vertical|left"
                     android:text="主卦:乾"
                     android:textSize="18dp" />
 
-                <TextView
+                <TextView android:paddingLeft="20dp"
                     android:id="@+id/tvChangedName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center"
+                    android:gravity="center_vertical|left"
                     android:text="变卦:坤"
                     android:textSize="18dp" />
+                <TextView
+                    android:id="@+id/tvNote"
+                    android:layout_width="100px"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|left"
+                    android:text="螺纹15103232312sdfsdfsdfdsfsdfadfsasfdasfd1"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:focusableInTouchMode="true"
+                    android:scrollHorizontally="true"
+                    android:textSize="10dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -11,7 +11,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
+import lsw.library.DateExt;
+import lsw.library.StringHelper;
 import lsw.liuyao.HexagramAnalyzerActivity;
 import lsw.liuyao.R;
 import lsw.liuyao.common.IntentKeys;
@@ -67,19 +70,25 @@ public class HexagramListAdapter extends BaseAdapter {
         }
         ((SwipeListView)viewGroup).recycle(view, i);
 
-        holder.tvDate.setText(item.getDate().substring(0, 10));
-        holder.tvOriginalName.setText(item.getOriginalName());
-        holder.tvChangedName.setText(item.getChangedName());
+        holder.tvDate.setText("日期: " + new DateExt(item.getDate()).getFormatDateTime("yyyy年MM月dd日"));
+        holder.tvOriginalName.setText("主卦: "+item.getOriginalName());
+        String changedName = item.getChangedName();
+        if(!StringHelper.isNullOrEmpty(changedName)) {
+            holder.tvChangedName.setText("变卦: " + item.getChangedName());
+        }
+        else {
+            holder.tvChangedName.setText("");
+        }
 
         holder.btnAnalyze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent mIntent = new Intent(context,HexagramAnalyzerActivity.class);
+                Intent mIntent = new Intent(context, HexagramAnalyzerActivity.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putString(IntentKeys.FormatDate, item.getDate());
-                mBundle.putString(IntentKeys.OriginalName,item.getOriginalName());
-                mBundle.putString(IntentKeys.ChangedName,item.getChangedName());
+                mBundle.putString(IntentKeys.OriginalName, item.getOriginalName());
+                mBundle.putString(IntentKeys.ChangedName, item.getChangedName());
                 mIntent.putExtras(mBundle);
 
                 context.startActivity(mIntent);
