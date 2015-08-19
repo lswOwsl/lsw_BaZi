@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout android:background="#fff" xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#fff">
 
     <LinearLayout
-        android:background="@drawable/list_item_border"
         android:id="@+id/back"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/list_item_background_repeat"
         android:tag="back">
 
         <Button
@@ -24,42 +26,53 @@
             android:text="编辑" />
     </LinearLayout>
 
-    <LinearLayout android:background="#fff"
-        android:id="@+id/front"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:tag="front">
+        android:orientation="horizontal" android:id="@+id/front" android:layout_marginLeft="-1dp" >
 
-        <TextView android:gravity="center"
-            android:textSize="15dp"
-            android:id="@+id/tvDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="2015年8月18日" />
+        <ImageView android:background="@drawable/list_item_background_r"
+            android:layout_width="1dp"
+            android:layout_height="50dp" />
 
-        <LinearLayout
+        <LinearLayout android:background="#fff"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:tag="front">
 
-            <TextView android:textSize="18dp"
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:id="@+id/tvOriginalName"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="主卦:乾" />
+                android:text="2015年8月18日"
+                android:textSize="15dp" />
 
-            <TextView android:textSize="18dp"
-                android:gravity="center"
-                android:id="@+id/tvChangedName"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="变卦:坤" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvOriginalName"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="主卦:乾"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/tvChangedName"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="变卦:坤"
+                    android:textSize="18dp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
 </FrameLayout>
 
