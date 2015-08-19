@@ -64,6 +64,7 @@ public class HexagramListAdapter extends BaseAdapter {
 
             holder.btnAnalyze = (Button) view.findViewById(R.id.btnAnalyze);
             holder.btnEdit = (Button) view.findViewById(R.id.btnEdit);
+            holder.tvNote = (TextView) view.findViewById(R.id.tvNote);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -79,6 +80,8 @@ public class HexagramListAdapter extends BaseAdapter {
         else {
             holder.tvChangedName.setText("");
         }
+
+       holder.tvNote.setSelected(true);
 
         holder.btnAnalyze.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +105,7 @@ public class HexagramListAdapter extends BaseAdapter {
         TextView tvDate;
         TextView tvOriginalName;
         TextView tvChangedName;
+        TextView tvNote;
         Button btnAnalyze;
         Button btnEdit;
     }

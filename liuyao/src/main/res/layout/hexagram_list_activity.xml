@@ -17,6 +17,8 @@
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeOpenOnLongPress="false"
         swipe:swipeAnimationTime="0"
-        swipe:swipeOffsetRight="180dp" />
+        swipe:swipeOffsetRight="180dp"
+        android:focusable="true"
+        />
 
 </LinearLayout>

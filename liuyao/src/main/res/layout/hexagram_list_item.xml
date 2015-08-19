@@ -77,12 +77,12 @@
                     android:textSize="18dp" />
                 <TextView
                     android:id="@+id/tvNote"
-                    android:layout_width="100px"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical|left"
                     android:text="螺纹15103232312sdfsdfsdfdsfsdfadfsasfdasfd1"
                     android:ellipsize="marquee"
-                    android:focusable="true"
                     android:singleLine="true"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:focusableInTouchMode="true"
