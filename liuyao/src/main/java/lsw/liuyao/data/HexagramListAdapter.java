@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
 import lsw.library.StringHelper;
 import lsw.liuyao.HexagramAnalyzerActivity;
 import lsw.liuyao.R;
@@ -29,6 +30,11 @@ public class HexagramListAdapter extends BaseAdapter {
 
     ArrayList<HexagramRow> rows;
     Context context;
+
+    public void setRows(ArrayList<HexagramRow> rows)
+    {
+        this.rows = rows;
+    }
 
     public HexagramListAdapter(ArrayList<HexagramRow> rows,  Context context)
     {
@@ -71,7 +77,10 @@ public class HexagramListAdapter extends BaseAdapter {
         }
         ((SwipeListView)viewGroup).recycle(view, i);
 
-        holder.tvDate.setText("日期: " + new DateExt(item.getDate()).getFormatDateTime("yyyy年MM月dd日"));
+        DateExt tempDateExt = new DateExt(item.getDate());
+        int indexOfWeek = tempDateExt.getIndexOfWeek();
+        String weekDay = indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
+        holder.tvDate.setText(tempDateExt.getFormatDateTime("yyyy年MM月dd日") + " (星期" + weekDay+")");
         holder.tvOriginalName.setText("主卦: "+item.getOriginalName());
         String changedName = item.getChangedName();
         if(!StringHelper.isNullOrEmpty(changedName)) {
@@ -81,6 +90,7 @@ public class HexagramListAdapter extends BaseAdapter {
             holder.tvChangedName.setText("");
         }
 
+        holder.tvNote.setText(item.getNote());
        holder.tvNote.setSelected(true);
 
         holder.btnAnalyze.setOnClickListener(new View.OnClickListener() {

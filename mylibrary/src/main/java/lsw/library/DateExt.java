@@ -161,7 +161,7 @@ public class DateExt {
 
     public int getIndexOfWeek()
     {
-        //?????????? index = 1
+        //默认 index = 1 是星期日
         int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
         return dayIndex - 1;
     }

@@ -6,6 +6,16 @@ package lsw.liuyao.model;
 public class HexagramRow {
     private String originalName;
     private String changedName;
+    private String note;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     private String date;
     private int id;
 
@@ -14,12 +24,13 @@ public class HexagramRow {
 
     }
 
-    public HexagramRow(int id, String originalName, String changedName, String date)
+    public HexagramRow(int id, String originalName, String changedName, String date, String note)
     {
         this.originalName = originalName;
         this.changedName = changedName;
         this.date = date;
         this.id = id;
+        this.note = note;
     }
 
     public String getOriginalName() {

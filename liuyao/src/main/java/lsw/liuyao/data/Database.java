@@ -1,16 +1,20 @@
 package lsw.liuyao.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import lsw.library.DatabaseManager;
+import lsw.library.DateExt;
 import lsw.liuyao.R;
 import lsw.liuyao.model.HexagramRow;
+import lsw.model.Hexagram;
 
 /**
  * Created by swli on 8/18/2015.
@@ -42,14 +46,41 @@ public class Database extends DatabaseManager {
         return super.openDatabase(databaseFile,is);
     }
 
+    public void deleteHexagram(int id)
+    {
+        openDatabase();
+        String[] args = {String.valueOf(id)};
+        getDatabase().delete("Hexagram", "Id=?", args);
+        closeDatabase();
+    }
 
-    public ArrayList<HexagramRow> getHexagramList(){
+    public void insertHexagram(HexagramRow model)
+    {
+        openDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("OriginalName", model.getOriginalName());
+        cv.put("ChangedName", model.getChangedName());
+        cv.put("ShakeDate", model.getDate());
+        cv.put("Note",model.getNote());
+        getDatabase().insert("Hexagram", null, cv);
+        closeDatabase();
+    }
+
+    public ArrayList<HexagramRow> getHexagramList(String str){
         ArrayList<HexagramRow> list=new ArrayList<HexagramRow>();
 
         openDatabase();
         SQLiteDatabase database = super.getDatabase();
-        String sql = "SELECT * FROM Hexagram Order By ShakeDate DESC";
-        Cursor cur = database.rawQuery(sql,null);
+
+        String sqlCondition = " ";
+        String[] params = new String[]{};
+        if(!TextUtils.isEmpty(str)) {
+            sqlCondition = "where OriginalName = ? Or ShakeDate like ? Or Note like ?";
+            params = new String[]{ ""+str+"","%"+str+"%","%"+str+"%" };
+        }
+
+        String sql = "SELECT * FROM Hexagram " + sqlCondition +" Order By ShakeDate DESC";
+        Cursor cur = database.rawQuery(sql,params);
 
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             int idIndex = cur.getColumnIndex("Id");
@@ -57,10 +88,11 @@ public class Database extends DatabaseManager {
 
             String originalName = getColumnValue(cur, "OriginalName");
             String changedName = getColumnValue(cur,"ChangedName");
+            String note = getColumnValue(cur,"Note");
 
             String shakeDate = getColumnValue(cur, "ShakeDate");
 
-            HexagramRow hexagramRow = new HexagramRow(id,originalName,changedName,shakeDate);
+            HexagramRow hexagramRow = new HexagramRow(id,originalName,changedName,shakeDate, note);
 
             list.add(hexagramRow);
         }

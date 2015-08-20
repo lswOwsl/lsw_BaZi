@@ -7,10 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,11 +21,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lsw.hexagram.Builder;
 import lsw.library.DateExt;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.LineDragListener;
+import lsw.liuyao.data.Database;
+import lsw.liuyao.model.HexagramRow;
 import lsw.model.EnumLineSymbol;
+import lsw.model.Hexagram;
 import lsw.model.Line;
 
 
@@ -33,8 +39,13 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
     private ImageView ivYin,ivYang,ivLaoYin,ivLaoYang;
 
     private TextView tvDateSelector;
+    private EditText etNote;
+
+    private Database database;
 
     private void initControls(){
+
+        etNote = (EditText) findViewById(R.id.etNote);
 
         tvDateSelector = (TextView) findViewById(R.id.tvDateSelect);
 
@@ -87,6 +98,8 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         initControls();
+
+        database = new Database(this);
 
         initialDateExt = new DateExt();
         tvDateSelector.setText(initialDateExt.getFormatDateTime(formatDateTime));
@@ -207,6 +220,58 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         return super.onOptionsItemSelected(item);
     }
 
+    public boolean lineSymbolCountCorrect()
+    {
+        if(lineSymbolHashMap.size() != 6)
+        {
+            Toast.makeText(this,"爻位填充不全!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+
+
+    public void save(View view)
+    {
+        if(!lineSymbolCountCorrect())
+            return;
+
+        HexagramRow model = new HexagramRow();
+        model.setNote(etNote.getText().toString());
+        model.setDate(initialDateExt.getFormatDateTime());
+        Builder builder = Builder.getInstance(this);
+        try {
+            ArrayList<Line> lines = getLines();
+            Hexagram original = builder.getHexagramByLines(lines, false);
+
+            model.setOriginalName(original.getName());
+
+            boolean hasDynamicLine = false;
+            for(Line line : lines)
+            {
+                if(line.getLineSymbol() == EnumLineSymbol.LaoYang || line.getLineSymbol() == EnumLineSymbol.LaoYin) {
+                    hasDynamicLine = true;
+                    break;
+                }
+            }
+
+            if(hasDynamicLine) {
+                Hexagram changed = builder.getChangedHexagramByOriginal(original, false);
+                model.setChangedName(changed.getName());
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Log.e("Hexagram Builder", ex.getMessage());
+        }
+
+        database.insertHexagram(model);
+        Toast.makeText(this, "保存卦例成功", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
     public void reload(View view)
     {
         Intent intent = new Intent(HexagramBuilderActivity.this, HexagramBuilderActivity.class);
@@ -214,14 +279,8 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         finish();
     }
 
-    public void zhuangGua(View view)
+    ArrayList<Line> getLines()
     {
-        if(lineSymbolHashMap.size() != 6)
-        {
-            Toast.makeText(this,"爻位填充不全!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         ArrayList<Line> lines = new ArrayList<Line>();
 
         for(Integer key: lineSymbolHashMap.keySet())
@@ -231,6 +290,16 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
             line.setLineSymbol(lineSymbolHashMap.get(key));
             lines.add(line);
         }
+
+        return lines;
+    }
+
+    public void zhuangGua(View view)
+    {
+        if(!lineSymbolCountCorrect())
+            return;
+
+        ArrayList<Line> lines = getLines();
 
         Intent mIntent = new Intent(this,HexagramAnalyzerActivity.class);
         Bundle mBundle = new Bundle();

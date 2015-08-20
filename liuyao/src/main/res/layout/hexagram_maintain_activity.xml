@@ -117,7 +117,7 @@
         android:orientation="horizontal">
 
         <Button style="@style/Button" android:onClick="zhuangGua" android:text="装 卦" />
-        <Button style="@style/Button" android:text="保 存" />
+        <Button style="@style/Button" android:onClick="save" android:text="保 存"  />
         <Button style="@style/Button" android:onClick="reload" android:text="复 位"/>
     </LinearLayout>
 
@@ -144,7 +144,7 @@
                 android:id="@+id/etNote"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="占螺纹钢一周走势"
+                android:text=""
                 android:textSize="12dp" />
 
         </ScrollView>

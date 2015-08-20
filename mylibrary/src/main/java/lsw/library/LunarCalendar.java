@@ -430,10 +430,15 @@ public class LunarCalendar extends LunarSolarTerm{
         return array[x-1];
     }
 
+    static final String nStr1[] = new String[]{"一","二","三","四","五","六","七","八","九"};
+    static final String nStr2[] = new String[]{"初","十","廿","卅"};
+
+    public static String toChineseDayInWeek(int x) {
+        return nStr1[x % 10 - 1];
+    }
+
     public String toStringWithChineseDay(int x)
     {
-        String nStr1[] = new String[]{"一","二","三","四","五","六","七","八","九"};
-        String nStr2[] = new String[]{"初","十","廿","卅"};
         switch (x)
         {
             case 0:
