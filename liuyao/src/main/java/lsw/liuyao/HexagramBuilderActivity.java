@@ -212,10 +212,10 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.home) {
-            finish();
-            return true;
-        }
+//        if (id == R.id.home) {
+//            finish();
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -269,6 +269,10 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
         database.insertHexagram(model);
         Toast.makeText(this, "保存卦例成功", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+
         finish();
     }
 

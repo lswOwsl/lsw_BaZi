@@ -1,55 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#fff">
 
-    <LinearLayout
+    <RelativeLayout android:gravity="center_vertical|left"
         android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/list_item_background_repeat"
         android:tag="back">
 
-        <Button
+        <TextView
+            android:textColor="#fff"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:textSize="16dp"
+            android:background="@drawable/button_flatten"
             android:id="@+id/btnAnalyze"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="分析" />
 
-        <Button
+
+        <TextView
+            android:textColor="#fff"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:textSize="16dp"
+            android:background="@drawable/button_flatten"
             android:id="@+id/btnEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="编辑" />
-    </LinearLayout>
+            android:text="编辑"
+            android:layout_toRightOf="@+id/btnAnalyze" />
+
+        <TextView
+            android:textColor="#fff"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:textSize="16dp"
+            android:background="@drawable/button_flatten"
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="删除"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/front"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="-1dp"
         android:orientation="horizontal"
-        android:id="@+id/front"
-        android:tag="front"
-        android:layout_marginLeft="-1dp" >
+        android:tag="front">
 
-        <ImageView android:background="@drawable/list_item_background_r"
+        <ImageView
             android:layout_width="1dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:background="@drawable/list_item_background_r" />
 
-        <LinearLayout android:background="#fff"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:background="#fff"
+            android:orientation="vertical">
 
             <TextView
-                android:paddingLeft="10dp"
                 android:id="@+id/tvDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
+                android:paddingLeft="10dp"
                 android:text="2015年8月18日"
                 android:textSize="15dp" />
 
@@ -58,35 +83,38 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <TextView android:paddingLeft="20dp"
+                <TextView
                     android:id="@+id/tvOriginalName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical|left"
+                    android:paddingLeft="20dp"
                     android:text="主卦:乾"
                     android:textSize="18dp" />
 
-                <TextView android:paddingLeft="20dp"
+                <TextView
                     android:id="@+id/tvChangedName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical|left"
+                    android:paddingLeft="20dp"
                     android:text="变卦:坤"
                     android:textSize="18dp" />
+
                 <TextView
                     android:id="@+id/tvNote"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical|left"
-                    android:text="螺纹15103232312sdfsdfsdfdsfsdfadfsasfdasfd1"
+                    android:layout_weight="1"
                     android:ellipsize="marquee"
-                    android:singleLine="true"
-                    android:marqueeRepeatLimit="marquee_forever"
                     android:focusableInTouchMode="true"
+                    android:gravity="center_vertical|left"
+                    android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="螺纹15103232312sdfsdfsdfdsfsdfadfsasfdasfd1"
                     android:textSize="10dp" />
             </LinearLayout>
         </LinearLayout>

@@ -10,12 +10,15 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
+import com.fortysevendeg.swipelistview.SwipeListViewListener;
 
 import java.util.ArrayList;
 
 import lsw.library.Utility;
 import lsw.liuyao.data.Database;
+import lsw.liuyao.data.HexagramAdapter;
 import lsw.liuyao.data.HexagramListAdapter;
 import lsw.liuyao.model.HexagramRow;
 import lsw.model.Hexagram;
@@ -24,7 +27,7 @@ import lsw.model.Hexagram;
 /**
  * Created by swli on 8/18/2015.
  */
-public class HexagramListActivity extends Activity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class HexagramListActivity extends Activity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, HexagramListAdapter.OnReload {
 
     SwipeListView swipeListView;
     Database database;
@@ -36,12 +39,15 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hexagram_list_activity);
 
+        getActionBar().setDisplayHomeAsUpEnabled(false);
         getActionBar().setDisplayShowCustomEnabled(true);
 
         initControls();
         database = new Database(this);
         ArrayList<HexagramRow> hexagrams = database.getHexagramList("");
         hexagramListAdapter = new HexagramListAdapter(hexagrams,this);
+        hexagramListAdapter.setOnReload(this);
+
         swipeListView.setAdapter(hexagramListAdapter);
         swipeListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
 
@@ -102,4 +108,37 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         hexagramListAdapter.notifyDataSetChanged();
         return false;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) { //resultCode为回传的标记，我在B中回传的是RESULT_OK
+            case RESULT_OK:
+                hexagramListAdapter.setRows(database.getHexagramList(""));
+                hexagramListAdapter.notifyDataSetChanged();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void invoke(int index) {
+
+        swipeListView.closeOpenedItems();
+
+        //hexagramListAdapter.getRows().remove(index);
+        //hexagramListAdapter.notifyDataSetChanged();
+        //ArrayList<HexagramRow> hexagrams = database.getHexagramList(searchText);
+        //hexagramListAdapter = new HexagramListAdapter(hexagrams,this);
+        //hexagramListAdapter.setRows(hexagrams);
+        //hexagramListAdapter.notifyDataSetChanged();
+
+
+        //hexagramListAdapter.setOnReload(this);
+        //swipeListView.setAdapter(hexagramListAdapter);
+        //swipeListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+
+    }
+
+
 }

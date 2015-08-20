@@ -30,16 +30,35 @@ public class HexagramListAdapter extends BaseAdapter {
 
     ArrayList<HexagramRow> rows;
     Context context;
+    Database database;
+
+    public interface OnReload
+    {
+        void invoke(int index);
+    }
+
+    OnReload onReload;
+
+    public void setOnReload(OnReload onReload)
+    {
+        this.onReload = onReload;
+    }
 
     public void setRows(ArrayList<HexagramRow> rows)
     {
         this.rows = rows;
     }
 
+    public ArrayList<HexagramRow> getRows()
+    {
+        return rows;
+    }
+
     public HexagramListAdapter(ArrayList<HexagramRow> rows,  Context context)
     {
         this.rows = rows;
         this.context = context;
+        this.database = new Database(context);
     }
 
     @Override
@@ -68,30 +87,31 @@ public class HexagramListAdapter extends BaseAdapter {
             holder.tvOriginalName = (TextView) view.findViewById(R.id.tvOriginalName);
             holder.tvChangedName = (TextView) view.findViewById(R.id.tvChangedName);
 
-            holder.btnAnalyze = (Button) view.findViewById(R.id.btnAnalyze);
-            holder.btnEdit = (Button) view.findViewById(R.id.btnEdit);
+            holder.btnAnalyze = (TextView) view.findViewById(R.id.btnAnalyze);
+            holder.btnEdit = (TextView) view.findViewById(R.id.btnEdit);
+            holder.btnDelete = (TextView) view.findViewById(R.id.btnDelete);
+
             holder.tvNote = (TextView) view.findViewById(R.id.tvNote);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        ((SwipeListView)viewGroup).recycle(view, i);
+        ((SwipeListView) viewGroup).recycle(view, i);
 
         DateExt tempDateExt = new DateExt(item.getDate());
         int indexOfWeek = tempDateExt.getIndexOfWeek();
         String weekDay = indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
-        holder.tvDate.setText(tempDateExt.getFormatDateTime("yyyy年MM月dd日") + " (星期" + weekDay+")");
-        holder.tvOriginalName.setText("主卦: "+item.getOriginalName());
+        holder.tvDate.setText(tempDateExt.getFormatDateTime("yyyy年MM月dd日") + " (星期" + weekDay + ")");
+        holder.tvOriginalName.setText("主卦: " + item.getOriginalName());
         String changedName = item.getChangedName();
-        if(!StringHelper.isNullOrEmpty(changedName)) {
+        if (!StringHelper.isNullOrEmpty(changedName)) {
             holder.tvChangedName.setText("变卦: " + item.getChangedName());
-        }
-        else {
+        } else {
             holder.tvChangedName.setText("");
         }
 
         holder.tvNote.setText(item.getNote());
-       holder.tvNote.setSelected(true);
+        holder.tvNote.setSelected(true);
 
         holder.btnAnalyze.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +128,16 @@ public class HexagramListAdapter extends BaseAdapter {
             }
         });
 
+        final int index = i;
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                database.deleteHexagram(item.getId());
+                if(onReload != null)
+                    onReload.invoke(index);
+            }
+        });
+
         return view;
     }
 
@@ -116,7 +146,8 @@ public class HexagramListAdapter extends BaseAdapter {
         TextView tvOriginalName;
         TextView tvChangedName;
         TextView tvNote;
-        Button btnAnalyze;
-        Button btnEdit;
+        TextView btnAnalyze;
+        TextView btnEdit;
+        TextView btnDelete;
     }
 }
