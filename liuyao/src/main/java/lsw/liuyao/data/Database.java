@@ -61,8 +61,50 @@ public class Database extends DatabaseManager {
         cv.put("OriginalName", model.getOriginalName());
         cv.put("ChangedName", model.getChangedName());
         cv.put("ShakeDate", model.getDate());
-        cv.put("Note",model.getNote());
+        cv.put("Note", model.getNote());
         getDatabase().insert("Hexagram", null, cv);
+        closeDatabase();
+    }
+
+    HexagramRow createHexagramRowByCursor(Cursor cursor)
+    {
+        int idIndex = cursor.getColumnIndex("Id");
+        int id = cursor.getInt(idIndex);
+
+        String originalName = getColumnValue(cursor, "OriginalName");
+        String changedName = getColumnValue(cursor,"ChangedName");
+        String note = getColumnValue(cursor,"Note");
+
+        String shakeDate = getColumnValue(cursor, "ShakeDate");
+
+        HexagramRow hexagramRow = new HexagramRow(id,originalName,changedName,shakeDate, note);
+
+        return hexagramRow;
+    }
+
+    public HexagramRow getHexagramById(int paramId)
+    {
+        openDatabase();
+        String[] params = new String[]{ paramId+"" };
+        String sql = "SELECT * FROM Hexagram where Id = ?";
+        Cursor cur = database.rawQuery(sql,params);
+        HexagramRow hexagram = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            hexagram = createHexagramRowByCursor(cur);
+            break;
+        }
+        closeDatabase();
+        return hexagram;
+    }
+
+    public void updateHexagram(HexagramRow hexagramRow) {
+
+        openDatabase();
+        ContentValues values = new ContentValues();
+        values.put("Note", hexagramRow.getNote());
+        String whereClause = "id=?";
+        String[] whereArgs={String.valueOf(hexagramRow.getId())};
+        database.update("Hexagram", values, whereClause, whereArgs);
         closeDatabase();
     }
 
@@ -83,16 +125,8 @@ public class Database extends DatabaseManager {
         Cursor cur = database.rawQuery(sql,params);
 
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int idIndex = cur.getColumnIndex("Id");
-            int id = cur.getInt(idIndex);
 
-            String originalName = getColumnValue(cur, "OriginalName");
-            String changedName = getColumnValue(cur,"ChangedName");
-            String note = getColumnValue(cur,"Note");
-
-            String shakeDate = getColumnValue(cur, "ShakeDate");
-
-            HexagramRow hexagramRow = new HexagramRow(id,originalName,changedName,shakeDate, note);
+            HexagramRow hexagramRow = createHexagramRowByCursor(cur);
 
             list.add(hexagramRow);
         }

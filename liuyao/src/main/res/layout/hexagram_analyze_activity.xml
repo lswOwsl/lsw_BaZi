@@ -24,6 +24,17 @@
     <FrameLayout android:id="@+id/fl_Hexagram_Analyzer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:textColor="#fff"
+            android:padding="10dp"
+            android:text="备注记录"
+            android:id="@+id/btnNote"
+            android:background="@drawable/button_flatten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <LinearLayout android:background="#fff"

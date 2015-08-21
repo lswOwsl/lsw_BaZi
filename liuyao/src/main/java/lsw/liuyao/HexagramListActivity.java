@@ -113,8 +113,10 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) { //resultCode为回传的标记，我在B中回传的是RESULT_OK
             case RESULT_OK:
+            case RESULT_CANCELED:
                 hexagramListAdapter.setRows(database.getHexagramList(""));
                 hexagramListAdapter.notifyDataSetChanged();
+                swipeListView.closeOpenedItems();
                 break;
             default:
                 break;

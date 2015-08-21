@@ -121,6 +121,7 @@ public class HexagramListAdapter extends BaseAdapter {
                 mBundle.putString(IntentKeys.FormatDate, item.getDate());
                 mBundle.putString(IntentKeys.OriginalName, item.getOriginalName());
                 mBundle.putString(IntentKeys.ChangedName, item.getChangedName());
+                mBundle.putInt(IntentKeys.HexagramRowId,item.getId());
                 mIntent.putExtras(mBundle);
 
                 context.startActivity(mIntent);

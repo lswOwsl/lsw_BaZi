@@ -1,19 +1,25 @@
 package lsw.liuyao;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,6 +31,8 @@ import lsw.library.StringHelper;
 import lsw.library.Utility;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
+import lsw.liuyao.data.Database;
+import lsw.liuyao.model.HexagramRow;
 import lsw.model.Hexagram;
 import lsw.model.Line;
 
@@ -41,10 +49,17 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     DateExt analyzeDate, initDate;
 
     TextView tvAnalyzeDateTitle, tvAnalyzeDate;
+    TextView btnNote;
+
+    Database database;
+    HexagramRow hexagramRow;
+    int hexagramRowId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        database = new Database(this);
         // 去掉窗口标题
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -70,6 +85,39 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
 
         Builder builder = Builder.getInstance(this);
         analyzer = new Analyzer(this);
+
+        btnNote = (TextView) findViewById(R.id.btnNote);
+        int hexagramRowId = bundle.getInt(IntentKeys.HexagramRowId);
+        //如果不是从列表页 分析 跳转过来的，要隐藏存储备注按钮
+        if( hexagramRowId <= 0)
+        {
+            btnNote.setVisibility(View.GONE);
+        }
+        else
+        {
+            this.hexagramRowId = hexagramRowId;
+            hexagramRow =  database.getHexagramById(hexagramRowId);
+        }
+
+        btnNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText et = new EditText(HexagramAnalyzerActivity.this);
+                et.setText(hexagramRow.getNote());
+                new AlertDialog.Builder(HexagramAnalyzerActivity.this).setTitle("备注记录").setIcon(
+                        android.R.drawable.ic_dialog_info)
+                        .setView(et)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                hexagramRow.setNote(et.getText().toString());
+                                database.updateHexagram(hexagramRow);
+                                Toast.makeText(HexagramAnalyzerActivity.this,"更新备注记录成功",Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("取消", null).show();
+            }
+        });
 
         try {
             if(!StringHelper.isNullOrEmpty(originalName))
@@ -350,4 +398,14 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
             e.printStackTrace();
         }
     }
+
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event)
+//    {
+//        if (keyCode == KeyEvent.KEYCODE_BACK )
+//        {
+//            finish();
+//        }
+//        return false;
+//    }
 }
