@@ -96,7 +96,7 @@ public class HexagramListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        ((SwipeListView) viewGroup).recycle(view, i);
+        //((SwipeListView) viewGroup).recycle(view, i);
 
         DateExt tempDateExt = new DateExt(item.getDate());
         int indexOfWeek = tempDateExt.getIndexOfWeek();

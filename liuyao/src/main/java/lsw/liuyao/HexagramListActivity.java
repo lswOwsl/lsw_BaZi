@@ -123,21 +123,10 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
 
     @Override
     public void invoke(int index) {
-
         swipeListView.closeOpenedItems();
-
-        //hexagramListAdapter.getRows().remove(index);
-        //hexagramListAdapter.notifyDataSetChanged();
-        //ArrayList<HexagramRow> hexagrams = database.getHexagramList(searchText);
-        //hexagramListAdapter = new HexagramListAdapter(hexagrams,this);
-        //hexagramListAdapter.setRows(hexagrams);
-        //hexagramListAdapter.notifyDataSetChanged();
-
-
-        //hexagramListAdapter.setOnReload(this);
-        //swipeListView.setAdapter(hexagramListAdapter);
-        //swipeListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
-
+        ArrayList<HexagramRow> hexagrams = database.getHexagramList(searchText);
+        hexagramListAdapter.setRows(hexagrams);
+        hexagramListAdapter.notifyDataSetChanged();
     }
 
 

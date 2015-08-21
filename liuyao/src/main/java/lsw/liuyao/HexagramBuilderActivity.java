@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -43,7 +44,21 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
     private Database database;
 
+    LinearLayout linearLayout1Changed,linearLayout2Changed,linearLayout3Changed,linearLayout4Changed,linearLayout5Changed,linearLayout6Changed;
+
+    private TextView tvOriginalName, tvChangedName;
+
+    HashMap<LinearLayout,LinearLayout> lineContainerMapping = new HashMap<LinearLayout, LinearLayout>();
+
     private void initControls(){
+
+        LinearLayout hexagramChangedView = (LinearLayout)findViewById(R.id.cGuaChanged);
+        linearLayout1Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine1);
+        linearLayout2Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine2);
+        linearLayout3Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine3);
+        linearLayout4Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine4);
+        linearLayout5Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine5);
+        linearLayout6Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine6);
 
         etNote = (EditText) findViewById(R.id.etNote);
 
@@ -66,6 +81,13 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         linearLayout5 = (LinearLayout)findViewById(R.id.llLine5);
         linearLayout6 = (LinearLayout)findViewById(R.id.llLine6);
 
+        lineContainerMapping.put(linearLayout1,linearLayout1Changed);
+        lineContainerMapping.put(linearLayout2,linearLayout2Changed);
+        lineContainerMapping.put(linearLayout3,linearLayout3Changed);
+        lineContainerMapping.put(linearLayout4,linearLayout4Changed);
+        lineContainerMapping.put(linearLayout5,linearLayout5Changed);
+        lineContainerMapping.put(linearLayout6,linearLayout6Changed);
+
         LineDragListener listener1 = new LineDragListener(1);
         listener1.setOnDropInteraction(this);
         LineDragListener listener2 = new LineDragListener(2);
@@ -85,6 +107,9 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         linearLayout4.setOnDragListener(listener4);
         linearLayout5.setOnDragListener(listener5);
         linearLayout6.setOnDragListener(listener6);
+
+        tvOriginalName = (TextView)findViewById(R.id.tvOriginalName);
+        tvChangedName = (TextView)findViewById(R.id.tvChangedName);
     }
 
     DateExt initialDateExt;
@@ -130,15 +155,36 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
     private Point lastTouch;
     private ImageView moveImageView;
+    private ImageView moveImageViewChanged;
     private EnumLineSymbol enumLineSymbol;
     private HashMap<Integer,EnumLineSymbol> lineSymbolHashMap = new HashMap<Integer, EnumLineSymbol>();
 
     @Override
     public void OnDrop(View containerView, int position) {
+        //主卦的爻
         LinearLayout container = (LinearLayout) containerView;
         container.removeAllViews();
         container.addView(moveImageView);
         lineSymbolHashMap.put(position, enumLineSymbol);
+
+        //变卦装爻
+        LinearLayout containerChanged = lineContainerMapping.get(container);
+        containerChanged.removeAllViews();
+        containerChanged.addView(moveImageViewChanged);
+        containerChanged.setBackgroundResource(0);
+
+        if(lineSymbolCountCorrect())
+        {
+            Pair<Hexagram,Hexagram> pair = getHexagramsByLines();
+            String orginalText = pair.first.getUpper().getName() +"/" + pair.first.getLower().getName() + "  " + pair.first.getName();
+            tvOriginalName.setText("主卦: "+ orginalText);
+            if(pair.second != null) {
+                tvChangedName.setText("变卦: " + pair.second.getUpper().getName() + "/" + pair.second.getLower().getName() + "  " + pair.second.getName());
+            }
+            else {
+                tvChangedName.setText("变卦: " + orginalText);
+            }
+        }
     }
 
     @Override
@@ -165,6 +211,16 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
                 moveImageView = new ImageView(HexagramBuilderActivity.this);
                 moveImageView.setImageDrawable(drawable);
+
+                //老阳和老阴的变化爻
+                Drawable drawableChanged = drawable;
+                if(enumLineSymbol == EnumLineSymbol.LaoYang)
+                    drawableChanged = getResources().getDrawable(R.drawable.yin);
+                if(enumLineSymbol == EnumLineSymbol.LaoYin)
+                    drawableChanged = getResources().getDrawable(R.drawable.yang);
+
+                moveImageViewChanged = new ImageView(HexagramBuilderActivity.this);
+                moveImageViewChanged.setImageDrawable(drawableChanged);
 
                 lastTouch = new Point((int) motionEvent.getX(), (int) motionEvent.getY()) ;
 
@@ -207,16 +263,9 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
-
-//        if (id == R.id.home) {
-//            finish();
-//            return true;
-//        }
-
+        //在androidManifest.xml里写了paret所以在点击左边回退按钮时就不用在这写了
         return super.onOptionsItemSelected(item);
     }
 
@@ -224,28 +273,23 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
     {
         if(lineSymbolHashMap.size() != 6)
         {
-            Toast.makeText(this,"爻位填充不全!", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
-
-
-    public void save(View view)
+    Pair<Hexagram,Hexagram> getHexagramsByLines()
     {
         if(!lineSymbolCountCorrect())
-            return;
+            return null;
 
-        HexagramRow model = new HexagramRow();
-        model.setNote(etNote.getText().toString());
-        model.setDate(initialDateExt.getFormatDateTime());
         Builder builder = Builder.getInstance(this);
+
+        Pair<String,String> pair = null;
+        Hexagram original = null, changed = null;
         try {
             ArrayList<Line> lines = getLines();
-            Hexagram original = builder.getHexagramByLines(lines, false);
-
-            model.setOriginalName(original.getName());
+             original = builder.getHexagramByLines(lines, false);
 
             boolean hasDynamicLine = false;
             for(Line line : lines)
@@ -257,8 +301,7 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
             }
 
             if(hasDynamicLine) {
-                Hexagram changed = builder.getChangedHexagramByOriginal(original, false);
-                model.setChangedName(changed.getName());
+                changed = builder.getChangedHexagramByOriginal(original, false);
             }
 
         }
@@ -266,6 +309,27 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         {
             Log.e("Hexagram Builder", ex.getMessage());
         }
+
+        return Pair.create(original,changed);
+    }
+
+
+    public void save(View view) {
+
+        if (!lineSymbolCountCorrect()) {
+
+            Toast.makeText(this,"爻位填充不全!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        HexagramRow model = new HexagramRow();
+        model.setNote(etNote.getText().toString());
+        model.setDate(initialDateExt.getFormatDateTime());
+
+        Pair<Hexagram, Hexagram> pair = getHexagramsByLines();
+        model.setOriginalName(pair.first.getName());
+        if (pair.second != null)
+            model.setChangedName(pair.second.getName());
 
         database.insertHexagram(model);
         Toast.makeText(this, "保存卦例成功", Toast.LENGTH_SHORT).show();

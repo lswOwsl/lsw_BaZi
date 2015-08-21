@@ -15,7 +15,7 @@
         <TextView
             android:textColor="#fff"
             android:layout_marginLeft="10dp"
-            android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:padding="10dp"
             android:textSize="16dp"
             android:background="@drawable/button_flatten"
             android:id="@+id/btnAnalyze"
@@ -27,7 +27,7 @@
         <TextView
             android:textColor="#fff"
             android:layout_marginLeft="10dp"
-            android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:padding="10dp"
             android:textSize="16dp"
             android:background="@drawable/button_flatten"
             android:id="@+id/btnEdit"
@@ -39,7 +39,7 @@
         <TextView
             android:textColor="#fff"
             android:layout_marginRight="10dp"
-            android:paddingLeft="10dp" android:paddingRight="10dp"
+            android:padding="10dp"
             android:textSize="16dp"
             android:background="@drawable/button_flatten"
             android:id="@+id/btnDelete"

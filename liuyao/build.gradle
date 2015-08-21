@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
     defaultConfig {
         applicationId "lsw.liuyao"
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"
@@ -20,15 +21,25 @@ android {
     }
 }
 
+
 repositories {
+
     maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
 }
 
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:22.2.0'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':mylibrary')
-    compile ('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+
+    compile 'com.android.support:support-v4:22.2.0'
+    compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
         transitive = true
     }
 }
+
+
+
+
+
+

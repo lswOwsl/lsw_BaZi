@@ -33,7 +33,7 @@
             android:layout_weight="1">
 
             <TextView style="@style/TitleTextView"
-                android:text="主卦:" />
+                android:text="主卦:" android:id="@+id/tvOriginalName" />
 
             <include
                 android:id="@+id/cGuaMain"
@@ -47,7 +47,7 @@
             android:layout_weight="1">
 
             <TextView style="@style/TitleTextView"
-                android:text="变卦:" />
+                android:text="变卦:" android:id="@+id/tvChangedName"/>
 
             <include
                 android:id="@+id/cGuaChanged"
@@ -108,24 +108,14 @@
         </LinearLayout>
     </LinearLayout>
 
-    <View style="@style/PartLine"></View>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button style="@style/Button" android:onClick="zhuangGua" android:text="装 卦" />
-        <Button style="@style/Button" android:onClick="save" android:text="保 存"  />
-        <Button style="@style/Button" android:onClick="reload" android:text="复 位"/>
-    </LinearLayout>
 
     <View style="@style/PartLine"></View>
 
     <LinearLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical">
 
         <TextView style="@style/TitleTextView"
@@ -143,12 +133,27 @@
             <EditText
                 android:id="@+id/etNote"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="12dp" />
+                android:hint="占卦内容......"
+                android:textSize="15dp" />
 
         </ScrollView>
 
+    </LinearLayout>
+
+    <View style="@style/PartLine"></View>
+
+    <LinearLayout
+        android:layout_marginBottom="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button style="@style/Button" android:onClick="zhuangGua" android:text="装 卦" />
+        <Button style="@style/Button" android:onClick="save" android:text="保 存"  />
+        <Button style="@style/Button" android:onClick="reload" android:text="复 位"/>
     </LinearLayout>
 
 
