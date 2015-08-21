@@ -17,8 +17,8 @@
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeOpenOnLongPress="false"
         swipe:swipeAnimationTime="0"
-        swipe:swipeOffsetRight="220dp"
-        swipe:swipeOffsetLeft="280dp"
+        swipe:swipeOffsetRight="250dp"
+        swipe:swipeOffsetLeft="250dp"
         android:focusable="true"
         />
 

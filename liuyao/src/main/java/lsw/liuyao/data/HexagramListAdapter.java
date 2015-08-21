@@ -88,7 +88,6 @@ public class HexagramListAdapter extends BaseAdapter {
             holder.tvChangedName = (TextView) view.findViewById(R.id.tvChangedName);
 
             holder.btnAnalyze = (TextView) view.findViewById(R.id.btnAnalyze);
-            holder.btnEdit = (TextView) view.findViewById(R.id.btnEdit);
             holder.btnDelete = (TextView) view.findViewById(R.id.btnDelete);
 
             holder.tvNote = (TextView) view.findViewById(R.id.tvNote);
@@ -147,7 +146,6 @@ public class HexagramListAdapter extends BaseAdapter {
         TextView tvChangedName;
         TextView tvNote;
         TextView btnAnalyze;
-        TextView btnEdit;
         TextView btnDelete;
     }
 }
