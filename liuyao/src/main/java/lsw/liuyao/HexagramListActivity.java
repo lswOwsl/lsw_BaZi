@@ -130,6 +130,4 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         //close open items 必须最后调用，要不删除后不能反应到list页面上
         swipeListView.closeOpenedItems();
     }
-
-
 }

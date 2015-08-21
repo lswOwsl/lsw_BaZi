@@ -13,12 +13,11 @@
         swipe:swipeBackView="@+id/back"
         swipe:swipeActionLeft="reveal"
         swipe:swipeActionRight="reveal"
-        swipe:swipeMode="both"
+        swipe:swipeMode="left"
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeOpenOnLongPress="false"
         swipe:swipeAnimationTime="0"
-        swipe:swipeOffsetRight="250dp"
-        swipe:swipeOffsetLeft="250dp"
+        swipe:swipeOffsetLeft="220dp"
         android:focusable="true"
         />
 
