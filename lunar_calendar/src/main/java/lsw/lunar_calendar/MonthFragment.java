@@ -1,10 +1,15 @@
 package lsw.lunar_calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +18,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import lsw.library.DateExt;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
@@ -67,8 +75,10 @@ public class MonthFragment extends Fragment {
             preTextView = todayTextView = null;
     }
 
+    ResolveInfo resolveInfoForInvoke = null;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         long startTimeM = System.currentTimeMillis();
@@ -85,20 +95,63 @@ public class MonthFragment extends Fragment {
         gridView.setAdapter(calendarAdapter);
         gridView.setNumColumns(7);
 
+
+
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 try {
-                    DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
-                    ComponentName componetName = new ComponentName(
-                            "com.example.swli.myapplication20150519",
-                            "com.example.swli.myapplication20150519.MemberMaintain");
+                    final DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
+//                    ComponentName componetName = new ComponentName(
+//                            "com.example.swli.myapplication20150519",
+//                            "com.example.swli.myapplication20150519.MemberMaintain");
+//                    Intent intent = new Intent();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("lunar_calendar_dateTime", selectedDate.getFormatDateTime());
+//                    intent.putExtras(bundle);
+//                    intent.setComponent(componetName);
+//                    startActivity(intent);
+
                     Intent intent = new Intent();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("lunar_calendar_dateTime", selectedDate.getFormatDateTime());
-                    intent.putExtras(bundle);
-                    intent.setComponent(componetName);
-                    startActivity(intent);
+                    //intent.setPackage("com.example.swli.myapplication20150519");
+                    intent.setAction(Intent.ACTION_SEND);
+                    String dateExtUri = selectedDate.getFormatDateTime();
+                    intent.setData(Uri.parse("date://" + dateExtUri));
+
+                    final List<ResolveInfo> lists = getActivity().getPackageManager().queryIntentActivities(intent, 0);
+
+                    String[] strings = new String[lists.size()];
+                    for (int index = 0; index < strings.length; index++) {
+                        String name = lists.get(index).loadLabel(getActivity().getPackageManager()).toString();
+                        //info.loadIcon(getActivity().getPackageManager());
+                        strings[index] = name;
+                        Log.d("lsw package name", name);
+                    }
+                    resolveInfoForInvoke = lists.get(0);
+                    new AlertDialog.Builder(getActivity())
+                            .setSingleChoiceItems(
+                                    strings, 0,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            resolveInfoForInvoke = lists.get(which);
+                                        }
+                                    })
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    int temp = i;
+                                    Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(resolveInfoForInvoke.activityInfo.packageName);
+                                    intent.setAction(resolveInfoForInvoke.activityInfo.name);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("lunar_calendar_dateTime", selectedDate.getFormatDateTime());
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton("取消", null).show();
+
+
+
                 } catch (Exception e) {
                     Log.d("RD",e.getMessage());
                 }

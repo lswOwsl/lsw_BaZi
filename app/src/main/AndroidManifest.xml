@@ -18,6 +18,10 @@
         <activity android:name=".MemberMaintain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <data android:scheme="date"  />
             </intent-filter>
         </activity>
         <activity android:name=".MemberAnalyze">
