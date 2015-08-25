@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import lsw.hexagram.Builder;
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
+import lsw.library.StringHelper;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.LineDragListener;
@@ -126,7 +128,17 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
         database = new Database(this);
 
-        initialDateExt = new DateExt();
+        //从万年历软件跳转过来
+        Intent intent= getIntent();
+        String value=intent.getStringExtra(CrossAppKey.DateTime);
+        if(!StringHelper.isNullOrEmpty(value))
+        {
+            initialDateExt = new DateExt(StringHelper.getString(value));
+        }
+        else
+        {
+            initialDateExt = new DateExt();
+        }
         tvDateSelector.setText(initialDateExt.getFormatDateTime(formatDateTime));
 
         tvDateSelector.setOnClickListener(new View.OnClickListener() {

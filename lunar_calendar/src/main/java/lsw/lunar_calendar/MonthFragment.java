@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
@@ -19,9 +18,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
 import lsw.lunar_calendar.model.DayModel;
@@ -102,15 +101,6 @@ public class MonthFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 try {
                     final DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
-//                    ComponentName componetName = new ComponentName(
-//                            "com.example.swli.myapplication20150519",
-//                            "com.example.swli.myapplication20150519.MemberMaintain");
-//                    Intent intent = new Intent();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("lunar_calendar_dateTime", selectedDate.getFormatDateTime());
-//                    intent.putExtras(bundle);
-//                    intent.setComponent(componetName);
-//                    startActivity(intent);
 
                     Intent intent = new Intent();
                     //intent.setPackage("com.example.swli.myapplication20150519");
@@ -139,11 +129,11 @@ public class MonthFragment extends Fragment {
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    int temp = i;
-                                    Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(resolveInfoForInvoke.activityInfo.packageName);
-                                    intent.setAction(resolveInfoForInvoke.activityInfo.name);
+                                    Intent intent = new Intent();
+                                    ComponentName componetName = new ComponentName(resolveInfoForInvoke.activityInfo.packageName,resolveInfoForInvoke.activityInfo.name);
+                                    intent.setComponent(componetName);
                                     Bundle bundle = new Bundle();
-                                    bundle.putString("lunar_calendar_dateTime", selectedDate.getFormatDateTime());
+                                    bundle.putString(CrossAppKey.DateTime, selectedDate.getFormatDateTime());
                                     intent.putExtras(bundle);
                                     startActivity(intent);
                                 }

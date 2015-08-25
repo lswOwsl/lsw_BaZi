@@ -23,6 +23,7 @@ import com.example.swli.myapplication20150519.phone.base.Contact;
 
 import java.util.HashMap;
 
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
@@ -121,7 +122,7 @@ public class MemberMaintain extends Activity {
         DateExt now = DateExt.getCurrentTime();
 
         Intent intent= getIntent();
-        String value=intent.getStringExtra("lunar_calendar_dateTime");
+        String value=intent.getStringExtra(CrossAppKey.DateTime);
         if(!StringHelper.isNullOrEmpty(value))
         {
             now = new DateExt(StringHelper.getString(value));
