@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import lsw.ContactAuthor;
 import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;

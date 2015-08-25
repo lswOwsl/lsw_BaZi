@@ -40,7 +40,7 @@ public class Database extends DatabaseManager {
 
     private SQLiteDatabase openDatabase(String databaseFile) {
 
-        int resourceId = R.raw.database_structure;
+        int resourceId = R.raw.database_structure_empty;
         InputStream is = this.context.getResources().openRawResource(
                 resourceId);
         return super.openDatabase(databaseFile,is);

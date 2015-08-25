@@ -29,6 +29,7 @@ import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.StringHelper;
 import lsw.library.Utility;
+import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.data.Database;
@@ -55,6 +56,8 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     HexagramRow hexagramRow;
     int hexagramRowId;
 
+    BaiDuInterstitial baiDuInterstitial;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,9 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         // WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.hexagram_analyze_activity);
+
+        baiDuInterstitial = new BaiDuInterstitial(this);
+        baiDuInterstitial.create();
 
         Bundle bundle = getIntent().getExtras();
         final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
@@ -316,11 +322,15 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
 
     private void scrollToMenu() {
         new ScrollTask().execute(30);
+
+        baiDuInterstitial.loadInterstitialAdOnButton();
     }
 
 
     private void scrollToContent() {
         new ScrollTask().execute(-30);
+
+        baiDuInterstitial.loadInterstitialAdOnButton();
     }
 
     private void createVelocityTracker(MotionEvent event) {

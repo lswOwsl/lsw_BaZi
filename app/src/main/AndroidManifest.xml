@@ -8,6 +8,9 @@
         android:label="@string/ApplicationName"
         android:theme="@style/AppTheme"
         android:name=".common.MyApplication">
+        <activity android:name="lsw.ContactAuthor">
+
+        </activity>
         <activity android:name=".SlideNote">
 
         </activity>
@@ -25,8 +28,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".MemberAnalyze">
-        </activity>
-        <activity android:name=".ContactAuthor">
         </activity>
         <activity android:name=".MemberHome">
             <intent-filter>

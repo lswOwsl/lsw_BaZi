@@ -16,7 +16,10 @@ import com.fortysevendeg.swipelistview.SwipeListViewListener;
 
 import java.util.ArrayList;
 
+import lsw.ContactAuthor;
 import lsw.library.Utility;
+import lsw.liuyao.advertising.BaiDuBanner;
+import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.HexagramAdapter;
 import lsw.liuyao.data.HexagramListAdapter;
@@ -38,6 +41,9 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hexagram_list_activity);
+
+        BaiDuBanner baiDuBanner = new BaiDuBanner(this);
+        baiDuBanner.create();
 
         getActionBar().setDisplayHomeAsUpEnabled(false);
         getActionBar().setDisplayShowCustomEnabled(true);
@@ -79,6 +85,13 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             Intent intent = new Intent();
             intent.setClass(HexagramListActivity.this, HexagramBuilderActivity.class);
             startActivityForResult(intent, 0);
+            return true;
+        }
+        if(id == R.id.menuContact)
+        {
+            Intent intentContact = new Intent();
+            intentContact.setClass(HexagramListActivity.this, ContactAuthor.class);
+            startActivityForResult(intentContact, 0);
             return true;
         }
 
