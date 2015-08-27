@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'lsw'
+            keyPassword '88216240'
+            storeFile file('../lsw20150711.jks')
+            storePassword '88216240'
+        }
+    }
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
     defaultConfig {
@@ -15,6 +23,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.config
+        }
+        debug{
+            debuggable true
         }
     }
     productFlavors {
