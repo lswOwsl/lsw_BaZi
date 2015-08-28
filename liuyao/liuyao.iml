@@ -90,6 +90,7 @@
     <orderEntry type="library" exported="" name="baidu_cuid" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.volley-2015.05.28" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.1" level="project" />
     <orderEntry type="library" exported="" name="swipelistview-1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="baidu_appx_android_2.0.0" level="project" />
