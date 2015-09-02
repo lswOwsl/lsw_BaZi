@@ -2,40 +2,24 @@ package lsw.liuyao;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.fortysevendeg.swipelistview.SwipeListViewListener;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXImageObject;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.util.ArrayList;
 
 import lsw.ContactAuthor;
-import lsw.Util;
-import lsw.library.Utility;
 import lsw.liuyao.advertising.BaiDuBanner;
-import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.data.Database;
-import lsw.liuyao.data.HexagramAdapter;
 import lsw.liuyao.data.HexagramListAdapter;
-import lsw.liuyao.data.future.DailyData;
-import lsw.liuyao.data.future.SinaData;
 import lsw.liuyao.model.HexagramRow;
-import lsw.model.Hexagram;
+import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
 
 
 /**
@@ -115,30 +99,9 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             String appId = "wx4c9850d2ade4b2e9";
             IWXAPI iwxapi = WXAPIFactory.createWXAPI(this, appId);
             iwxapi.registerApp(appId);
-            //
-
-            WXTextObject textObject = new WXTextObject();
-            textObject.text = "哈哈,发现个刷朋友圈新方式!";
 
 
-
-//            Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-//            WXImageObject imgObj = new WXImageObject(bmp);
-//            Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
-//            bmp.recycle();
-
-            WXMediaMessage mediaMessage = new WXMediaMessage();
-            mediaMessage.mediaObject = textObject;
-            mediaMessage.description = "哈哈,发现个刷朋友圈新方式!";
-
-            //mediaMessage.thumbData = Util.bmpToByteArray(thumbBmp, true);
-
-            SendMessageToWX.Req req = new SendMessageToWX.Req();
-            req.transaction = String.valueOf(System.currentTimeMillis());
-            req.message = mediaMessage;
-            //req.scene = SendMessageToWX.Req.WXSceneSession;
-            req.scene = SendMessageToWX.Req.WXSceneTimeline;
-            iwxapi.sendReq(req);
+            WeiXinSendMessageHelper.sendAppMessage(this,iwxapi);
 
 //            Intent intent = new Intent();
 //            intent.setClass(HexagramListActivity.this, HexagramBuilderActivity.class);
