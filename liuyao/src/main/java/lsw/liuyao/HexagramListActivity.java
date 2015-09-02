@@ -94,18 +94,16 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         //noinspection SimplifiableIfStatement
         if (id == R.id.menuAdd) {
 
-            final int THUMB_SIZE = 150;
+//            String appId = "wx4c9850d2ade4b2e9";
+//            IWXAPI iwxapi = WXAPIFactory.createWXAPI(this, appId);
+//            iwxapi.registerApp(appId);
+//
+//
+//            WeiXinSendMessageHelper.sendAppMessage(this,iwxapi);
 
-            String appId = "wx4c9850d2ade4b2e9";
-            IWXAPI iwxapi = WXAPIFactory.createWXAPI(this, appId);
-            iwxapi.registerApp(appId);
-
-
-            WeiXinSendMessageHelper.sendAppMessage(this,iwxapi);
-
-//            Intent intent = new Intent();
-//            intent.setClass(HexagramListActivity.this, HexagramBuilderActivity.class);
-//            startActivityForResult(intent, 0);
+            Intent intent = new Intent();
+            intent.setClass(HexagramListActivity.this, HexagramBuilderActivity.class);
+            startActivityForResult(intent, 0);
             return true;
         }
         if(id == R.id.menuContact)

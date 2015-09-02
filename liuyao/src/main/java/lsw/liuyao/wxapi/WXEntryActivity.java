@@ -12,6 +12,10 @@ import android.widget.Toast;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.modelmsg.GetMessageFromWX;
+import com.tencent.mm.sdk.modelmsg.ShowMessageFromWX;
+import com.tencent.mm.sdk.modelmsg.WXAppExtendObject;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -30,20 +34,31 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
         api = WXAPIFactory.createWXAPI(this, "wx4c9850d2ade4b2e9");
         api.handleIntent(getIntent(), this);
+
     }
 
     @Override
     public void onReq(BaseReq req) {
-
         switch (req.getType()) {
             case ConstantsAPI.COMMAND_GETMESSAGE_FROM_WX:
 //                goToGetMsg();
                 Toast.makeText(this,"test go from weixin", Toast.LENGTH_SHORT);
                 break;
             case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
+
+                WXMediaMessage mediaMessage = ((ShowMessageFromWX.Req) req).message;
+                if(mediaMessage.mediaObject instanceof WXAppExtendObject)
+                {
+                    WXAppExtendObject extendObject = (WXAppExtendObject)mediaMessage.mediaObject;
+                    String extInfo = extendObject.extInfo;
+
+                }
+
+
                 Intent intent = new Intent();
                 intent.setClass(WXEntryActivity.this, HexagramBuilderActivity.class);
                 startActivityForResult(intent, 0);
+
                 Toast.makeText(this,"test show from weixin", Toast.LENGTH_SHORT);
                 break;
             default:
