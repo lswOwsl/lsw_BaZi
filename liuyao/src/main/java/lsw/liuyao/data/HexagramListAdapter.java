@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
+import lsw.Util;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendar;
 import lsw.library.StringHelper;
@@ -21,8 +23,12 @@ import lsw.liuyao.HexagramAnalyzerActivity;
 import lsw.liuyao.R;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.model.HexagramRow;
+import lsw.liuyao.wxapi.WXEntryActivity;
+import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 /**
  * Created by swli on 8/18/2015.

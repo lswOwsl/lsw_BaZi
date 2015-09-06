@@ -16,8 +16,8 @@ android {
         applicationId "lsw.liuyao"
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
     }
     buildTypes {
         release {
@@ -52,6 +52,7 @@ dependencies {
     compile project(':baidu_appx_android_2.0.0')
     compile project(':baidu_cuid')
     compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    compile project(':BDAutoUpdateSDK_20150605_V1.2.0')
 }
 
 

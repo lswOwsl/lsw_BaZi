@@ -1,7 +1,11 @@
 package lsw.liuyao;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -19,9 +23,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lsw.Util;
 import lsw.hexagram.Builder;
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
@@ -32,6 +40,7 @@ import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.LineDragListener;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
+import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
 import lsw.model.EnumLineSymbol;
 import lsw.model.Hexagram;
 import lsw.model.Line;
@@ -53,7 +62,11 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
     HashMap<LinearLayout,LinearLayout> lineContainerMapping = new HashMap<LinearLayout, LinearLayout>();
 
+    private Context context;
+
     private void initControls(){
+
+        context = this;
 
         LinearLayout hexagramChangedView = (LinearLayout)findViewById(R.id.cGuaChanged);
         linearLayout1Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine1);
@@ -382,19 +395,67 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         return lines;
     }
 
+    boolean isWeiXinFenxiang = false;
+
     public void zhuangGua(View view)
     {
         if(!lineSymbolCountCorrect())
             return;
 
-        ArrayList<Line> lines = getLines();
+        final String[] strings = new String[]{"个人分析","微信分享"};
 
-        Intent mIntent = new Intent(this,HexagramAnalyzerActivity.class);
-        Bundle mBundle = new Bundle();
-        mBundle.putString(IntentKeys.FormatDate, initialDateExt.getFormatDateTime());
-        mBundle.putSerializable(IntentKeys.LineModelList,lines);
-        mIntent.putExtras(mBundle);
+        new AlertDialog.Builder(this)
+                .setSingleChoiceItems(
+                        strings, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(strings[which].equals("微信分享"))
+                                {
+                                    isWeiXinFenxiang = true;
+                                }
+                                else
+                                {
+                                    isWeiXinFenxiang = false;
+                                }
+                            }
+                        })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent();
 
-        startActivity(mIntent);
+                        if(isWeiXinFenxiang)
+                        {
+                            try {
+
+                                String appId = "wx4c9850d2ade4b2e9";
+                                IWXAPI iwxapi = WXAPIFactory.createWXAPI(context, appId);
+                                iwxapi.registerApp(appId);
+
+                                Pair<Hexagram,Hexagram> hexagramPair = getHexagramsByLines();
+                                String description = hexagramPair.first.getName();
+                                if(hexagramPair != null)
+                                    description = description + "-" + hexagramPair.second.getName();
+
+                                WeiXinSendMessageHelper.sendAppMessage(context, iwxapi, initialDateExt.getFormatDateTime(), description);
+
+                            } catch (Exception ex) {
+                                Log.e("convert object to byte", ex.getMessage());
+                            }
+                        }
+                        else {
+                            ArrayList<Line> lines = getLines();
+
+                            Intent mIntent = new Intent(context,HexagramAnalyzerActivity.class);
+                            Bundle mBundle = new Bundle();
+                            mBundle.putString(IntentKeys.FormatDate, initialDateExt.getFormatDateTime());
+                            mBundle.putSerializable(IntentKeys.LineModelList, lines);
+                            mIntent.putExtras(mBundle);
+
+                            startActivity(mIntent);
+                        }
+                    }
+                })
+                .setNegativeButton("取消", null).show();
     }
 }

@@ -1,6 +1,7 @@
 package lsw.liuyao;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +9,8 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
+import com.baidu.autoupdatesdk.UICheckUpdateCallback;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -31,6 +34,9 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
     Database database;
     HexagramListAdapter hexagramListAdapter;
     private String searchText;
+
+    private ProgressDialog dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,21 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
 //                String rr = "";
 //            }
 //        });
+
+        dialog = new ProgressDialog(this);
+        dialog.setIndeterminate(true);
+
+        dialog.show();
+        BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
+    }
+
+    private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
+
+        @Override
+        public void onCheckComplete() {
+            dialog.dismiss();
+        }
+
     }
 
     @Override
