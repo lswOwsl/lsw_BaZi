@@ -936,7 +936,7 @@ public class Analyzer  {
         getLineStatus(listStatus, Default.Twelve_Grow_Tai,EnumLineStatus.HuaTai,oLine,tLine);
         getLineStatus(listStatus, Default.Twelve_Grow_Yang,EnumLineStatus.HuaYang,oLine,tLine);
         getLineStatus(listStatus, Default.Twelve_Grow_Bing,EnumLineStatus.HuaBing,oLine,tLine);
-        getLineStatus(listStatus, Default.Twelve_Grow_MuYu,EnumLineStatus.HuaMuKu,oLine,tLine);
+        getLineStatus(listStatus, Default.Twelve_Grow_MuYu,EnumLineStatus.HuaMuYu,oLine,tLine);
 
         EnumLingRelation rMonth = analyzeLineLingRelation(monthEarthlyBranch, tLine, false);
         EnumLingRelation rDay = analyzeLineLingRelation(dayEarthlyBranch, tLine, false);
