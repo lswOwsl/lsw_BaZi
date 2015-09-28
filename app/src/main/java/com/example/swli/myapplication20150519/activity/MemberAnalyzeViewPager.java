@@ -578,6 +578,19 @@ public class MemberAnalyzeViewPager {
         }
 
         cur.close();
+
+        String sqlTip = "SELECT * FROM TiRuoDuoBing_MuNa where RiZhu=? and YueFen=?";
+        Cursor curTip = dbManager.execute(sqlTip, new String[]
+                {riZhu, yuFen});
+        for (curTip.moveToFirst(); !curTip.isAfterLast(); curTip.moveToNext()) {
+            String xingGeMuNa = dbManager.getColumnValue(curTip,"TiRuoDuoBing");
+            String tiRuoDuoBing = dbManager.getColumnValue(curTip,"XingGeMuNa");
+            if(!StringHelper.isNullOrEmpty(xingGeMuNa))
+                resultNote ="\n" +"格局:"+xingGeMuNa+ "-性格木讷";
+            if(!StringHelper.isNullOrEmpty(tiRuoDuoBing))
+                resultNote ="\n" +"格局:"+tiRuoDuoBing+ "-体弱多病";
+        }
+        curTip.close();
         dbManager.closeDatabase();
 
         tv_jinbuhuan_title.setText(resultJinBuHuanTitle);
