@@ -17,6 +17,8 @@ import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
 import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.EnumPart;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,8 @@ public class MemberAnalyzeViewPager {
     private List<String> titleList;
     private TextView tv_column_l1 ,tv_column_l3,tv_column_l5,tv_column_l7,tv_column_l9,
             tv_column_d1 ,tv_column_d3,tv_column_d5,tv_column_d7,tv_column_d9;
+
+    private TextView tvFlowYearBad;
 
     TextView tvYearContent;
     TextView tvMonthContent;
@@ -412,6 +416,8 @@ public class MemberAnalyzeViewPager {
         tv_column_d5=(TextView) activity.findViewById(R.id.tv_column_d5);
         tv_column_d7=(TextView) activity.findViewById(R.id.tv_column_d7);
         tv_column_d9=(TextView) activity.findViewById(R.id.tv_column_d9);
+
+        tvFlowYearBad = (TextView) activity.findViewById(R.id.tv_flowYear_Bad);
     }
 
     private void loadJiaGongView(Integer flowYearEraIndex, int daYunEraIndex)
@@ -426,7 +432,100 @@ public class MemberAnalyzeViewPager {
         baZiActivityWrapper.setJiaGong(this.tv_column_d3, Pair.create(EnumPart.DaYun, EnumPart.Year),daYunEraIndex);
         baZiActivityWrapper.setJiaGong(this.tv_column_d5, Pair.create(EnumPart.DaYun, EnumPart.Month),daYunEraIndex);
         baZiActivityWrapper.setJiaGong(this.tv_column_d7, Pair.create(EnumPart.DaYun, EnumPart.Day),daYunEraIndex);
-        baZiActivityWrapper.setJiaGong(this.tv_column_d9, Pair.create(EnumPart.DaYun, EnumPart.Hour),daYunEraIndex);
+        baZiActivityWrapper.setJiaGong(this.tv_column_d9, Pair.create(EnumPart.DaYun, EnumPart.Hour), daYunEraIndex);
+
+        loadFlowYearBad(flowYearEraIndex, daYunEraIndex);
+    }
+
+    private void loadFlowYearBad(Integer flowYearEraIndex, int daYunEraIndex)
+    {
+        String content = "流年提示:";
+        dbManager.openDatabase();
+        String riZhu = baZiActivityWrapper.getC(baZiActivityWrapper.getDayEraIndex());
+
+        String sql = "SELECT * FROM FlowYearTips_Bad where RiZhu=?";
+        Cursor cur = dbManager.execute(sql, new String[]
+                {riZhu});
+
+        String[] baZiExistedArray = new String[4];
+        baZiExistedArray[0] = baZiActivityWrapper.getT(baZiActivityWrapper.getYearEraIndex());
+        baZiExistedArray[1] = baZiActivityWrapper.getT(baZiActivityWrapper.getMonthEraIndex());
+        baZiExistedArray[2] = baZiActivityWrapper.getT(baZiActivityWrapper.getDayEraIndex());
+        baZiExistedArray[3] = baZiActivityWrapper.getT(baZiActivityWrapper.getHourEraIndex());
+
+        String[] flowYearAndDaYunArray = new String[2];
+        flowYearAndDaYunArray[0] = baZiActivityWrapper.getT(daYunEraIndex);
+        if(flowYearEraIndex != null) {
+            flowYearAndDaYunArray[1] = baZiActivityWrapper.getT(flowYearEraIndex);
+        }
+        else
+        {
+            flowYearAndDaYunArray[1] = "";
+        }
+
+
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+
+            int countHits = 0;
+
+            String category = dbManager.getColumnValue(cur,"Category");
+            String riZhuStr = dbManager.getColumnValue(cur,"RiZhu");
+            String basicCondition = dbManager.getColumnValue(cur,"BasicCondition");
+            String meetCondition = dbManager.getColumnValue(cur,"MeetCondition");
+            String[] basicConditionArray = basicCondition.split(",");
+            String[] meetCondtionArray = meetCondition.split(",");
+
+            for (String temp: baZiExistedArray)
+            {
+                for (String compare : basicConditionArray)
+                {
+                    if(temp.compareTo(compare) ==0 ) {
+                        countHits++;
+                        break;
+                    }
+                }
+            }
+
+            if(countHits == 2)
+            {
+                for(String temp: flowYearAndDaYunArray)
+                {
+                    for(String compare: meetCondtionArray)
+                    {
+                        if(compare.indexOf("|") > 0)
+                        {
+                            String[] strArrays = compare.split("|");
+                            for(String str: strArrays)
+                            {
+                                if(!StringHelper.isNullOrEmpty(str) && str.compareTo(temp) == 0) {
+                                    countHits++;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(compare.compareTo(temp) == 0)
+                            {
+                                countHits ++;
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            if(countHits >= 4)
+            {
+                content += " | "+category;
+            }
+        }
+
+        cur.close();
+        dbManager.closeDatabase();
+
+        tvFlowYearBad.setText(content);
     }
 
     private void loadTiaoHouControls()
