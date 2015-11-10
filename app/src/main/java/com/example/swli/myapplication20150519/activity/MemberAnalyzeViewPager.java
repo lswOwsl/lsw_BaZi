@@ -250,7 +250,7 @@ public class MemberAnalyzeViewPager {
             yearContent += " 大耗-"+daHao1+"/"+daHao2;
             tvYearContent.setText(yearContent);
 
-            names.add(guaSu);
+            names.add(guChen);
             names.add(guaSu);
             names.add(daHao1);
             names.add(daHao2);
