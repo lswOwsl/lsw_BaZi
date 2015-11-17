@@ -380,7 +380,7 @@ public class MemberAnalyzeViewPager {
             contentDay += buildShenShaContent(baZiActivityWrapper.getDayEraIndex(),"日",pair.first.get(i),pair.second.get(i));
             contentHour += buildShenShaContent(baZiActivityWrapper.getHourEraIndex(),"时",pair.first.get(i),pair.second.get(i));
         }
-        String content = contentFlowYear + contentDaYun + contentYear + contentMonth + contentDay + contentHour;
+        String content = contentFlowYear + contentDaYun +"\n"+ contentYear + contentMonth + contentDay + contentHour;
 
         tvShenShaContent.setText(content);
     }
