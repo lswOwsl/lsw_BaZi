@@ -26,7 +26,13 @@ public class BaZiHelper {
     public static int getDaYunByFlowYear(int currentAge, int beginYunAge, ArrayList<Integer> daYuns)
     {
         //求出当前年龄和起运年龄的差，例如4岁起运，那么按10岁1运的话就是4/10上0
-        int indexYun = (currentAge - beginYunAge)/10;
+        int temp = currentAge - beginYunAge;
+
+        if(temp < 0)
+            temp = 0;
+
+        int indexYun = (temp)/10;
+
         return daYuns.get(indexYun);
     }
 
