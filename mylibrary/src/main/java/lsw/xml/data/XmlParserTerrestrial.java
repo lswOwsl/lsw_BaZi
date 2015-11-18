@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lsw.library.StringHelper;
 import lsw.xml.XmlParser;
 import lsw.xml.model.XmlModelExtProperty;
 import lsw.xml.model.XmlModelTerrestrial;
@@ -30,6 +31,7 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
     String name3 = null;
     String name4 = null;
     ArrayList<Pair<String,String>> hiddenList = null;
+    String specialName = null;
 
     @Override
     public void startDocument(XmlPullParser parser) {
@@ -43,7 +45,7 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
         xmlModelTerrestrial.setPunishment(new ArrayList<Pair<String, String>>());
         xmlModelTerrestrial.setThreePunishment(new ArrayList<ArrayList<String>>());
         xmlModelTerrestrial.setFourPunishment(new ArrayList<ArrayList<String>>());
-
+        xmlModelTerrestrial.setSpecial(new HashMap<String, ArrayList<String>>());
     }
 
     @Override
@@ -83,6 +85,10 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
                 name3 = parser.nextText();
             else if(name4 == null)
                 name4 = parser.nextText();
+        }
+        else if(nodeName.equals("Special"))
+        {
+            specialName = parser.getAttributeValue("", "name");
         }
     }
 
@@ -147,6 +153,17 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
             strings.add(name4);
             xmlModelTerrestrial.getFourPunishment().add(strings);
             name1 = name2 = name3 = name4 = null;
+        }
+
+        else if(nodeName.equals("Special"))
+        {
+            ArrayList<String> strings = new ArrayList<String>();
+            strings.add(name1);
+            strings.add(name2);
+            strings.add(name3);
+            strings.add(name4);
+            xmlModelTerrestrial.getSpecial().put(specialName,strings);
+            specialName = name1 = name2 = name3 = name4 = null;
         }
     }
 

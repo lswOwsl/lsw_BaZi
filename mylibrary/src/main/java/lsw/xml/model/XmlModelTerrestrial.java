@@ -47,6 +47,10 @@ public class XmlModelTerrestrial {
         return fourPunishment;
     }
 
+    public HashMap<String, ArrayList<String>> getSpecial() {
+        return special;
+    }
+
     private HashMap<String, XmlModelExtProperty> terrestrials;
     private HashMap<String, ArrayList<Pair<String,String>>> terrestrialHiddens;
     private HashMap<Pair<String, String>, String> sixSuits;
@@ -56,6 +60,7 @@ public class XmlModelTerrestrial {
     private ArrayList<Pair<String,String>> punishment;
     private ArrayList<ArrayList<String>> threePunishment;
     private ArrayList<ArrayList<String>> fourPunishment;
+    private HashMap<String,ArrayList<String>> special;
 
     public void setPunishment(ArrayList<Pair<String, String>> punishment) {
         this.punishment = punishment;
@@ -91,6 +96,10 @@ public class XmlModelTerrestrial {
 
     public void setThreeConverge(HashMap<String, ArrayList<String>> threeConverge) {
         this.threeConverge = threeConverge;
+    }
+
+    public void setSpecial(HashMap<String, ArrayList<String>> special) {
+        this.special = special;
     }
 
     public String getFiveElementBy(String text)

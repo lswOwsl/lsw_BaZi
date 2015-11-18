@@ -336,6 +336,7 @@ public class MemberAnalyzeViewPager_XCHH {
                         }
                     }
 
+                    //四角刑
                     for(int n=m+1; n<arrayList.size(); n++)
                     {
                         for(ArrayList<String> array: xmlTerrestrial.getFourPunishment())
@@ -363,6 +364,24 @@ public class MemberAnalyzeViewPager_XCHH {
                             {
                                 linearLayout.addView(createRowView(arrayList.get(i),arrayList.get(j),arrayList.get(m),arrayList.get(n), "四角刑",i,j,m,n));
                             }
+                        }
+
+                        //生,旺,库
+                        for(String key: xmlTerrestrial.getSpecial().keySet()) {
+                            ArrayList<String> array = xmlTerrestrial.getSpecial().get(key);
+
+                            int index1 = array.indexOf(arrayList.get(i));
+                            int index2 = array.indexOf(arrayList.get(j));
+                            int index3 = array.indexOf(arrayList.get(m));
+                            int index4 = array.indexOf(arrayList.get(n));
+                            if(index1 != -1 && index2 !=-1 && index3 !=-1 && index4 != -1 &&
+                                    ((index1 != index2) && (index1!=index3) && (index1!=index4) &&
+                                            (index2 !=index3) && (index2!=index4) &&
+                                            (index3 != index4)))
+                            {
+                                linearLayout.addView(createRowView(arrayList.get(i),arrayList.get(j),arrayList.get(m),arrayList.get(n), key,i,j,m,n));
+                            }
+
                         }
                     }
                 }
