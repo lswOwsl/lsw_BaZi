@@ -28,19 +28,21 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
     String name1 = null;
     String name2 = null;
     String name3 = null;
+    String name4 = null;
     ArrayList<Pair<String,String>> hiddenList = null;
 
     @Override
     public void startDocument(XmlPullParser parser) {
         xmlModelTerrestrial = new XmlModelTerrestrial();
         xmlModelTerrestrial.setTerrestrials(new HashMap<String, XmlModelExtProperty>());
-        xmlModelTerrestrial.setTerrestrialHiddens(new HashMap<String, ArrayList<Pair<String,String>>>());
+        xmlModelTerrestrial.setTerrestrialHiddens(new HashMap<String, ArrayList<Pair<String, String>>>());
         xmlModelTerrestrial.setSixSuits(new HashMap<Pair<String, String>, String>());
         xmlModelTerrestrial.setSixInverses(new ArrayList<Pair<String, String>>());
-        xmlModelTerrestrial.setThreeSuits(new HashMap<String,ArrayList<String>>());
-        xmlModelTerrestrial.setThreeConverge(new HashMap<String,ArrayList<String>>());
-        xmlModelTerrestrial.setPunishment(new ArrayList<Pair<String,String>>());
+        xmlModelTerrestrial.setThreeSuits(new HashMap<String, ArrayList<String>>());
+        xmlModelTerrestrial.setThreeConverge(new HashMap<String, ArrayList<String>>());
+        xmlModelTerrestrial.setPunishment(new ArrayList<Pair<String, String>>());
         xmlModelTerrestrial.setThreePunishment(new ArrayList<ArrayList<String>>());
+        xmlModelTerrestrial.setFourPunishment(new ArrayList<ArrayList<String>>());
 
     }
 
@@ -79,6 +81,8 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
                 name2 = parser.nextText();
             else if(name3 == null)
                 name3 = parser.nextText();
+            else if(name4 == null)
+                name4 = parser.nextText();
         }
     }
 
@@ -133,6 +137,16 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
             strings.add(name3);
             xmlModelTerrestrial.getThreePunishment().add(strings);
             name1 = name2 = name3 = null;
+        }
+        else if(nodeName.equals("FourPunishment"))
+        {
+            ArrayList<String> strings = new ArrayList<String>();
+            strings.add(name1);
+            strings.add(name2);
+            strings.add(name3);
+            strings.add(name4);
+            xmlModelTerrestrial.getFourPunishment().add(strings);
+            name1 = name2 = name3 = name4 = null;
         }
     }
 

@@ -335,13 +335,76 @@ public class MemberAnalyzeViewPager_XCHH {
                             linearLayout.addView(createRowView(arrayList.get(i),arrayList.get(j),arrayList.get(m),"三刑","",i,j,m));
                         }
                     }
+
+                    for(int n=m+1; n<arrayList.size(); n++)
+                    {
+                        for(ArrayList<String> array: xmlTerrestrial.getFourPunishment())
+                        {
+                            ArrayList<String> tempArray = new ArrayList<String>();
+                            for(String str: array)
+                            {
+                                tempArray.add(str);
+                            }
+
+                            int index1 = tempArray.indexOf(arrayList.get(i));
+                            if(index1 != -1)
+                                tempArray.remove(index1);
+                            int index2 = tempArray.indexOf(arrayList.get(j));
+                            if(index2 != -1)
+                                tempArray.remove(index2);
+                            int index3 = tempArray.indexOf(arrayList.get(m));
+                            if(index3 != -1)
+                                tempArray.remove(index3);
+                            int index4 = tempArray.indexOf(arrayList.get(n));
+                            if(index4 != -1)
+                                tempArray.remove(index4);
+
+                            if(tempArray.size() == 0)
+                            {
+                                linearLayout.addView(createRowView(arrayList.get(i),arrayList.get(j),arrayList.get(m),arrayList.get(n), "四角刑",i,j,m,n));
+                            }
+                        }
+                    }
                 }
-
-
             }
         }
 
     }
+
+    private LinearLayout createRowView(String text1, String text2, String text3, String text4,
+                                       String tipText, int beginIndex, int secondIndex, int thirdIndex, int endIndex)
+    {
+        LinearLayout linearLayout = createHolder();
+
+        float beginWeight = beginIndex*2f;
+        if(beginWeight != 0f) {
+            linearLayout.addView(createSpace(beginWeight));
+        }
+        linearLayout.addView(createTextView(text1, 1f, Gravity.CENTER, true));
+
+        float range1 = (secondIndex - beginIndex)*1f + (secondIndex-beginIndex-1)*1f;
+        linearLayout.addView(createWrapper(tipText, "", range1));
+
+        linearLayout.addView(createTextView(text2, 1f, Gravity.CENTER,true));
+
+        float range2 = (thirdIndex - secondIndex)*1f + (thirdIndex-secondIndex - 1)*1f;
+        linearLayout.addView(createWrapper(tipText, "", range2));
+
+        linearLayout.addView(createTextView(text3, 1f, Gravity.CENTER, true));
+
+        float rang3 = (endIndex - thirdIndex)*1f + (endIndex - thirdIndex -1)*1f;
+        linearLayout.addView(createWrapper(tipText, "", rang3));
+
+        linearLayout.addView(createTextView(text4,1f,Gravity.CENTER,true));
+
+        float endWeight = 11 - beginWeight - range1- range2 - rang3 - 1f*4;
+        if(endWeight != 0f) {
+            linearLayout.addView(createSpace(endWeight));
+        }
+
+        return linearLayout;
+    }
+
 
     private LinearLayout createRowView(String textBegin, String textMiddle, String textEnd, String preTipText, String tipFiveElement, int beginIndex, int middleIndex, int endIndex)
     {

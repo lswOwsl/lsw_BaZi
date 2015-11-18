@@ -1,54 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Root>
-  <Terrestrial yinYang="Yang" wuXing="water" name="子" id="1">
+  <Terrestrial name="子" id="1" wuXing="water" yinYang="Yang">
     <CelestrialStem name="癸" priority="Main"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yin" wuXing="earth" name="丑" id="2">
+  <Terrestrial name="丑" id="2" wuXing="earth" yinYang="Yin">
     <CelestrialStem name="己" priority="Main"/>
     <CelestrialStem name="癸" priority="Middle"/>
     <CelestrialStem name="辛" priority="Remain"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yang" wuXing="wood" name="寅" id="3">
+  <Terrestrial name="寅" id="3" wuXing="wood" yinYang="Yang">
     <CelestrialStem name="甲" priority="Main"/>
     <CelestrialStem name="丙" priority="Middle"/>
     <CelestrialStem name="戊" priority="Remain"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yin" wuXing="wood" name="卯" id="4">
+  <Terrestrial name="卯" id="4" wuXing="wood" yinYang="Yin">
     <CelestrialStem name="乙" priority="Main"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yang" wuXing="earth" name="辰" id="5">
+  <Terrestrial name="辰" id="5" wuXing="earth" yinYang="Yang">
     <CelestrialStem name="戊" priority="Main"/>
     <CelestrialStem name="乙" priority="Middle"/>
     <CelestrialStem name="癸" priority="Remain"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yin" wuXing="fire" name="巳" id="6">
+  <Terrestrial name="巳" id="6" wuXing="fire" yinYang="Yin">
     <CelestrialStem name="丙" priority="Main"/>
     <CelestrialStem name="戊" priority="Middle"/>
     <CelestrialStem name="庚" priority="Remain"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yang" wuXing="fire" name="午" id="7">
+  <Terrestrial name="午" id="7" wuXing="fire" yinYang="Yang">
     <CelestrialStem name="丁" priority="Main"/>
     <CelestrialStem name="己" priority="Middle"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yin" wuXing="earth" name="未" id="8">
+  <Terrestrial name="未" id="8" wuXing="earth" yinYang="Yin">
     <CelestrialStem name="己" priority="Main"/>
     <CelestrialStem name="丁" priority="Middle"/>
     <CelestrialStem name="乙" priority="Remain"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yang" wuXing="metal" name="申" id="9">
+  <Terrestrial name="申" id="9" wuXing="metal" yinYang="Yang">
     <CelestrialStem name="庚" priority="Main"/>
     <CelestrialStem name="壬" priority="Middle"/>
     <CelestrialStem name="戊" priority="Remain"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yin" wuXing="metal" name="酉" id="10">
+  <Terrestrial name="酉" id="10" wuXing="metal" yinYang="Yin">
     <CelestrialStem name="辛" priority="Main"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yang" wuXing="earth" name="戌" id="11">
+  <Terrestrial name="戌" id="11" wuXing="earth" yinYang="Yang">
     <CelestrialStem name="戊" priority="Main"/>
     <CelestrialStem name="辛" priority="Middle"/>
     <CelestrialStem name="丁" priority="Remain"/>
   </Terrestrial>
-  <Terrestrial yinYang="Yin" wuXing="water" name="亥" id="12">
+  <Terrestrial name="亥" id="12" wuXing="water" yinYang="Yin">
     <CelestrialStem name="壬" priority="Main"/>
     <CelestrialStem name="甲" priority="Middle"/>
   </Terrestrial>
@@ -196,4 +196,20 @@
     <Name>巳</Name>
     <Name>申</Name>
   </ThreePunishment>
+
+  <FourPunishment><Name>亥</Name><Name>巳</Name><Name>申</Name><Name>申</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>巳</Name><Name>寅</Name><Name>寅</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>巳</Name><Name>寅</Name><Name>申</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>寅</Name><Name>巳</Name><Name>巳</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>寅</Name><Name>申</Name><Name>申</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>亥</Name><Name>申</Name><Name>寅</Name></FourPunishment>
+  <FourPunishment><Name>申</Name><Name>寅</Name><Name>巳</Name><Name>巳</Name></FourPunishment>
+  <FourPunishment><Name>子</Name><Name>子</Name><Name>卯</Name><Name>卯</Name></FourPunishment>
+  <FourPunishment><Name>子</Name><Name>子</Name><Name>午</Name><Name>午</Name></FourPunishment>
+  <FourPunishment><Name>丑</Name><Name>丑</Name><Name>未</Name><Name>戌</Name></FourPunishment>
+  <FourPunishment><Name>丑</Name><Name>未</Name><Name>辰</Name><Name>辰</Name></FourPunishment>
+  <FourPunishment><Name>丑</Name><Name>未</Name><Name>辰</Name><Name>戌</Name></FourPunishment>
+  <FourPunishment><Name>未</Name><Name>未</Name><Name>辰</Name><Name>戌</Name></FourPunishment>
+  <FourPunishment><Name>未</Name><Name>辰</Name><Name>辰</Name><Name>戌</Name></FourPunishment>
+
 </Root>
