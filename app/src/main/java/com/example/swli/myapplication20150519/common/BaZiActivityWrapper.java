@@ -190,7 +190,7 @@ public class BaZiActivityWrapper {
                 return converge;
 
             String suit = getJiaGongByList(xmlTerrestrial.getThreeSuits(), Pair.create(t1, t2));
-            if(suit != null)
+            if(suit != null && xmlTerrestrial.getSpecial().get("四旺").contains(suit))
                 return suit;
 
             HashMap<Integer,String> map = xmlTerrestrial.getTerrestrialMaps();
