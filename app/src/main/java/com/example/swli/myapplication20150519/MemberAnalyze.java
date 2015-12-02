@@ -17,6 +17,7 @@ import com.example.swli.myapplication20150519.common.EnumPart;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import lsw.library.DateExt;
 import lsw.library.LunarSolarTerm;
@@ -262,10 +263,11 @@ public class MemberAnalyze extends MemberBase {
             tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+currentAge+"岁"+"\n"+loadXunByEraIndex(eraFlowYearIndex));
         }
 
-        tv_year_title.setText(""+birthdayYear + "年" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getYearEraIndex()));
-        tv_month_title.setText(""+month + "月" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
-        tv_day_title.setText("" + day + "日" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
-        tv_hour_title.setText("" + hour + "时" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
+
+        tv_year_title.setText(""+birthdayYear + "年" +"\n"+getKuiGang(yearC.getText().toString(),yearT.getText().toString())+ "\n" + loadXunByEraIndex(baZiActivityWrapper.getYearEraIndex()));
+        tv_month_title.setText(""+month + "月" +"\n"+ getKuiGang(monthC.getText().toString(),monthT.getText().toString())  +"\n" +loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
+        tv_day_title.setText("" + day + "日" +"\n"+ getKuiGang(dayC.getText().toString(),dayT.getText().toString())  +"\n" +loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
+        tv_hour_title.setText("" + hour + "时" +"\n"+ getKuiGang(hourC.getText().toString(),hourT.getText().toString()) +"\n" +loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
         tv_dayun_title.setText("大运\n\n" + loadXunByEraIndex(eraDaYunIndex));
 
         setStemBottom(flowYearC.getText().toString(), flowYearT.getText().toString(), tv_flowYear_bottom);
@@ -274,6 +276,14 @@ public class MemberAnalyze extends MemberBase {
         setStemBottom(monthC.getText().toString(), monthT.getText().toString(), tv_month_bottom);
         setStemBottom(hourC.getText().toString(), hourT.getText().toString(), tv_hour_bottom);
         setStemBottom(dayC.getText().toString(),dayT.getText().toString(),tv_day_bottom);
+    }
+
+    private String getKuiGang(String c, String t)
+    {
+        String kuiGang = "魁罡";
+        String[] array = new String[]{"壬辰","庚戌","庚辰", "戊戌"};
+        ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(array));
+        return arrayList.contains(c+t) ? kuiGang : "";
     }
 
     private void loadTitle(int currentAge, DateExt birthdate, Integer eraDaYunIndex, Integer eraFlowYearIndex)
