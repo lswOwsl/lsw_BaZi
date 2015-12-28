@@ -56,6 +56,11 @@ public class Builder
 
     public ArrayList<Pair<Hexagram,Hexagram>> getAllHexagrams() throws Exception
     {
+        return getAllHexagrams(null);
+    }
+
+    public ArrayList<Pair<Hexagram,Hexagram>> getAllHexagrams(EnumFuShenType enumFuShenType) throws Exception
+    {
         ArrayList<Pair<Hexagram,Hexagram>> list = new ArrayList<Pair<Hexagram,Hexagram>>();
 
         ArrayList<Hexagram> sixtyFourOriginal = hexagramDefaultSixtyFour;
@@ -65,7 +70,7 @@ public class Builder
         {
             for (Hexagram t : sixtyFourTarget)
             {
-                list.add(getHexagramByNames(o.getName(), t.getName()));
+                list.add(getHexagramByNames(o.getName(), t.getName(), enumFuShenType));
             }
         }
 
@@ -93,19 +98,35 @@ public class Builder
 
     public Hexagram getHexagramByName(String originalName) throws Exception
     {
-        return getHexagramByNames(originalName, "").first;
+        return getHexagramByNames(originalName, "", null).first;
+    }
+
+    public Hexagram getHexagramByName(String originalName, EnumFuShenType enumFuShenType) throws Exception
+    {
+        return getHexagramByNames(originalName, "", enumFuShenType).first;
     }
 
     public Pair<Hexagram, Hexagram> getHexagramByNames(String originalName, String resultName) throws Exception
+    {
+        return getHexagramByNames(originalName,resultName,null);
+    }
+
+    public Pair<Hexagram, Hexagram> getHexagramByNames(String originalName, String resultName, EnumFuShenType enumFuShenType) throws Exception
     {
         Hexagram originalHexagram = getCloneHexagram(originalName);
 
         if (originalHexagram == null)
             throw new Exception("Hexagram not found!");
 
-        if(!StringHelper.isNullOrEmpty(resultName)) {
-            setFuShenOnHexagram(originalHexagram, null);
+        if(enumFuShenType == null)
+        {
+            setFuShenOnHexagram(originalHexagram);
         }
+        else
+        {
+            setFuShenOnHexagram(originalHexagram, enumFuShenType);
+        }
+
 
         if (!StringHelper.isNullOrEmpty(resultName))
         {
@@ -238,16 +259,17 @@ public class Builder
     //易林补遗
     public void SetFuShenByYiLinBuYi(Hexagram hexagram)
     {
-        TrigramDefault upperTrigram = getTrigramDefaultByName(hexagram.getUpper().getName());
-        TrigramDefault lowerTrigram = getTrigramDefaultByName(hexagram.getLower().getName());
+        //伏神斗本宫的按纯卦的起，所以直接用getPlace来查纯卦是哪一个卦
+        TrigramDefault trigramDefault = getTrigramDefaultByName(hexagram.getPlace());
 
-        createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
-        createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
+        createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), trigramDefault, 4);
+        createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), trigramDefault, 1);
     }
 
     //易冒
     public void SetFuShenByYiMao(Hexagram hexagram)
     {
+        //游魂卦也就是本宫的第7卦，伏神取第六卦的上卦本卦和第六卦下卦的综卦
         if (hexagram.getId() % 8 == 7)
         {
             HexagramDefault preHexagram = getHexagramDefaultById(hexagram.getId() - 1);
@@ -266,9 +288,14 @@ public class Builder
     //易隐
     public void SetFuShenByYiYin(Hexagram hexagram)
     {
+        //每宫的2.3.4卦，都用上卦的综卦，下卦的本卦
         int remainder = hexagram.getId() % 8;
-        int[] array = new int[]{2,3,4};
-        if (Arrays.asList(array).contains(remainder))
+        List<Integer> array = new ArrayList<Integer>();
+        array.add(2);
+        array.add(3);
+        array.add(4);
+
+        if (array.contains(remainder))
         {
             String lowerPart = getHexagramDefaultByName(hexagram.getPlace()).getLowerPart();
             TrigramDefault upperTrigram = getTrigramDefaultByName(Default.getTrigramReverseByName(hexagram.getUpper().getName()));
@@ -286,9 +313,10 @@ public class Builder
 
     public void setFuShenOnHexagram(Hexagram hexagram, EnumFuShenType type)
     {
-        //归魂卦
+        //归魂卦  本宫最后一卦
         if (hexagram.getId() % 8 == 0)
         {
+            //上本卦，下综卦
             HexagramDefault attachedGua =getHexagramDefaultById(hexagram.getId() - 4);
             TrigramDefault upperTrigram = getTrigramDefaultByName(attachedGua.getUpperPart());
             TrigramDefault lowerTrigram = getTrigramDefaultByName(attachedGua.getLowerPart());
@@ -296,11 +324,12 @@ public class Builder
             createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
             createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
         }
-        //纯卦
+        //纯卦 本宫第一卦
         else if (hexagram.getId() % 8 == 1)
         {
-            TrigramDefault upperTrigram = getTrigramDefaultByName(hexagram.getUpper().getName());
-            TrigramDefault lowerTrigram = getTrigramDefaultByName(hexagram.getLower().getName());
+            //综卦
+            TrigramDefault upperTrigram = getTrigramDefaultByName(Default.getTrigramReverseByName(hexagram.getUpper().getName()));
+            TrigramDefault lowerTrigram = getTrigramDefaultByName(Default.getTrigramReverseByName(hexagram.getLower().getName()));
 
             createLineFuShen(hexagram.getPlace(), hexagram.getUpper().getLines(), upperTrigram, 4);
             createLineFuShen(hexagram.getPlace(), hexagram.getLower().getLines(), lowerTrigram, 1);
@@ -356,6 +385,7 @@ public class Builder
     public void setFuShenOnHexagram(Hexagram gua) throws Exception {
         try {
 
+            //得到本卦中已有的六亲
             ArrayList<EnumSixRelation> sixRelations = new ArrayList<EnumSixRelation>();
             for (Line line : gua.getLines()) {
                 if (!sixRelations.contains(line.getSixRelation())) {
@@ -372,6 +402,7 @@ public class Builder
                     sixRelationNotExisted.add(esrAll);
             }
 
+            //得卦所在默认宫位的头一个卦，也就是8纯卦
             TrigramDefault trigramDefault = null;
             for (TrigramDefault td : Default.getTrigrams()) {
                 if (td.getPlace().equals(gua.getPlace())) {
@@ -578,7 +609,7 @@ public class Builder
 
                 lines.get(i).setEarthlyBranchAttached(tempEarthlyBranch);
                 lines.get(i).setSixRelationAttached(sixRelation);
-                lines.get(i).setFiveElement(fiveElement);
+                lines.get(i).setFiveElementAttached(fiveElement);
             }
         }
         catch(Exception e) {
