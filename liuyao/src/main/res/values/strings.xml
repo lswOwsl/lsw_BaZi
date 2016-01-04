@@ -2,5 +2,5 @@
     <string name="app_name">六爻排盘</string>
 
     <string name="action_settings">Settings</string>
-    <bool name="includeAD">true</bool>
+    <bool name="includeAD">false</bool>
 </resources>

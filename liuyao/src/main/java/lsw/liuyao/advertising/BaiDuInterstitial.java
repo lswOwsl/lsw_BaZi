@@ -78,11 +78,13 @@ public class BaiDuInterstitial {
 
     public void loadInterstitialAdOnButton()
     {
-        if (appxInterstitialAdView.isLoaded()) {
-            appxInterstitialAdView.showAd();
-        } else {
-            Log.i(TAG, "AppX BaiDuInterstitial Ad is not ready");
-            appxInterstitialAdView.loadAd();
+        if(isActive()) {
+            if (appxInterstitialAdView.isLoaded()) {
+                appxInterstitialAdView.showAd();
+            } else {
+                Log.i(TAG, "AppX BaiDuInterstitial Ad is not ready");
+                appxInterstitialAdView.loadAd();
+            }
         }
     }
 }
