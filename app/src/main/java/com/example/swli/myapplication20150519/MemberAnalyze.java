@@ -18,7 +18,9 @@ import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
+import lsw.library.BaZiHelper;
 import lsw.library.DateExt;
 import lsw.library.LunarSolarTerm;
 import lsw.library.SolarTerm;
@@ -255,20 +257,33 @@ public class MemberAnalyze extends MemberBase {
 
         if(flowMonth != null)
         {
-
-            tv_flowYear_title.setText("" + flowMonth.getSolarTermDate().getFormatDateTime("yyyy") + "\n"+flowMonth.getSolarTermDate().getFormatDateTime("M月")+"\n"+loadXunByEraIndex(eraFlowMonthIndex));
+            tv_flowYear_title.setText("" + flowMonth.getSolarTermDate().getFormatDateTime("yyyy") + "\n"+flowMonth.getSolarTermDate().getFormatDateTime("M月")+"\n"+
+                            BaZiHelper.getNaYinFiveElement(flowYearC.getText().toString()+flowYearT.getText().toString()) + "\n" +
+                    loadXunByEraIndex(eraFlowMonthIndex));
         }
         else
         {
-            tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+currentAge+"岁"+"\n"+loadXunByEraIndex(eraFlowYearIndex));
+            tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+currentAge+"岁"+"\n"+
+                    BaZiHelper.getNaYinFiveElement(flowYearC.getText().toString()+flowYearT.getText().toString()) + "\n" +
+                    loadXunByEraIndex(eraFlowYearIndex));
         }
 
 
-        tv_year_title.setText(""+birthdayYear + "年" +"\n"+getKuiGang(yearC.getText().toString(),yearT.getText().toString())+ "\n" + loadXunByEraIndex(baZiActivityWrapper.getYearEraIndex()));
-        tv_month_title.setText(""+month + "月" +"\n"+ getKuiGang(monthC.getText().toString(),monthT.getText().toString())  +"\n" +loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
-        tv_day_title.setText("" + day + "日" +"\n"+ getKuiGang(dayC.getText().toString(),dayT.getText().toString())  +"\n" +loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
-        tv_hour_title.setText("" + hour + "时" +"\n"+ getKuiGang(hourC.getText().toString(),hourT.getText().toString()) +"\n" +loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
-        tv_dayun_title.setText("大运\n\n" + loadXunByEraIndex(eraDaYunIndex));
+        tv_year_title.setText(""+birthdayYear + "年" +"\n"+getKuiGang(yearC.getText().toString(),yearT.getText().toString())+ "\n" +
+                BaZiHelper.getNaYinFiveElement(yearC.getText().toString() + yearT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getYearEraIndex()));
+        tv_month_title.setText(""+month + "月" +"\n"+ getKuiGang(monthC.getText().toString(),monthT.getText().toString())  +"\n" +
+                BaZiHelper.getNaYinFiveElement(monthC.getText().toString() + monthT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
+        tv_day_title.setText("" + day + "日" +"\n"+ getKuiGang(dayC.getText().toString(),dayT.getText().toString())  +"\n" +
+                BaZiHelper.getNaYinFiveElement(dayC.getText().toString() + dayT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
+        tv_hour_title.setText("" + hour + "时" +"\n"+ getKuiGang(hourC.getText().toString(),hourT.getText().toString()) +"\n" +
+                BaZiHelper.getNaYinFiveElement(hourC.getText().toString() + hourT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
+        tv_dayun_title.setText("大运\n\n" +
+                BaZiHelper.getNaYinFiveElement(daYunC.getText().toString() + daYunT.getText().toString()) + "\n" +
+                loadXunByEraIndex(eraDaYunIndex));
 
         setStemBottom(flowYearC.getText().toString(), flowYearT.getText().toString(), tv_flowYear_bottom);
         setStemBottom(daYunC.getText().toString(), daYunT.getText().toString(), tv_dayun_bottom);

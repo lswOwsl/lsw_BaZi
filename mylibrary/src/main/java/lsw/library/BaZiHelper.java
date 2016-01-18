@@ -1,11 +1,10 @@
 package lsw.library;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Created by swli on 8/3/2015.
@@ -157,5 +156,79 @@ public class BaZiHelper {
         }
 
         return false;
+    }
+
+    static HashMap<String,String> hashMapNaYinFiveElements;
+
+    public static String getNaYinFiveElement(String key)
+    {
+        if(hashMapNaYinFiveElements == null) {
+            hashMapNaYinFiveElements = new HashMap<String, String>();
+            hashMapNaYinFiveElements.put("甲子", "海中金");
+            hashMapNaYinFiveElements.put("乙丑", "海中金");
+            hashMapNaYinFiveElements.put("丙寅", "炉中火");
+            hashMapNaYinFiveElements.put("丁卯", "炉中火");
+            hashMapNaYinFiveElements.put("戊辰", "大林木");
+            hashMapNaYinFiveElements.put("己巳", "大林木");
+            hashMapNaYinFiveElements.put("庚午", "路旁土");
+            hashMapNaYinFiveElements.put("辛未", "路旁土");
+            hashMapNaYinFiveElements.put("壬申", "剑锋金");
+            hashMapNaYinFiveElements.put("癸酉", "剑锋金");
+            hashMapNaYinFiveElements.put("甲戌", "山头火");
+            hashMapNaYinFiveElements.put("乙亥", "山头火");
+            hashMapNaYinFiveElements.put("丙子", "涧下水");
+            hashMapNaYinFiveElements.put("丁丑", "涧下水");
+            hashMapNaYinFiveElements.put("戊寅", "城头土");
+            hashMapNaYinFiveElements.put("己卯", "城头土");
+            hashMapNaYinFiveElements.put("庚辰", "白蜡金");
+            hashMapNaYinFiveElements.put("辛巳", "白蜡金");
+            hashMapNaYinFiveElements.put("壬午", "杨柳木");
+            hashMapNaYinFiveElements.put("癸未", "杨柳木");
+            hashMapNaYinFiveElements.put("甲申", "泉中水");
+            hashMapNaYinFiveElements.put("乙酉", "泉中水");
+            hashMapNaYinFiveElements.put("丙戌", "屋上土");
+            hashMapNaYinFiveElements.put("丁亥", "屋上土");
+            hashMapNaYinFiveElements.put("戊子", "霹雳火");
+            hashMapNaYinFiveElements.put("己丑", "霹雳火");
+            hashMapNaYinFiveElements.put("庚寅", "松柏木");
+            hashMapNaYinFiveElements.put("辛卯", "松柏木");
+            hashMapNaYinFiveElements.put("壬辰", "长流水");
+            hashMapNaYinFiveElements.put("癸巳", "长流水");
+            hashMapNaYinFiveElements.put("甲午", "砂石金");
+            hashMapNaYinFiveElements.put("乙未", "砂石金");
+            hashMapNaYinFiveElements.put("丙申", "山下火");
+            hashMapNaYinFiveElements.put("丁酉", "山下火");
+            hashMapNaYinFiveElements.put("戊戌", "平地木");
+            hashMapNaYinFiveElements.put("己亥", "平地木");
+            hashMapNaYinFiveElements.put("庚子", "壁上土");
+            hashMapNaYinFiveElements.put("辛丑", "壁上土");
+            hashMapNaYinFiveElements.put("壬寅", "金箔金");
+            hashMapNaYinFiveElements.put("癸卯", "金箔金");
+            hashMapNaYinFiveElements.put("甲辰", "灯头火");
+            hashMapNaYinFiveElements.put("乙巳", "灯头火");
+            hashMapNaYinFiveElements.put("丙午", "天河水");
+            hashMapNaYinFiveElements.put("丁未", "天河水");
+            hashMapNaYinFiveElements.put("戊申", "大驿土");
+            hashMapNaYinFiveElements.put("己酉", "大驿土");
+            hashMapNaYinFiveElements.put("庚戌", "钗钏金");
+            hashMapNaYinFiveElements.put("辛亥", "钗钏金");
+            hashMapNaYinFiveElements.put("壬子", "桑柘木");
+            hashMapNaYinFiveElements.put("癸丑", "桑柘木");
+            hashMapNaYinFiveElements.put("甲寅", "大溪水");
+            hashMapNaYinFiveElements.put("乙卯", "大溪水");
+            hashMapNaYinFiveElements.put("丙辰", "沙中土");
+            hashMapNaYinFiveElements.put("丁巳", "沙中土");
+            hashMapNaYinFiveElements.put("戊午", "天上火");
+            hashMapNaYinFiveElements.put("己未", "天上火");
+            hashMapNaYinFiveElements.put("庚申", "石榴木");
+            hashMapNaYinFiveElements.put("辛酉", "石榴木");
+            hashMapNaYinFiveElements.put("壬戌", "大海水");
+            hashMapNaYinFiveElements.put("癸亥", "大海水");
+        }
+        if(hashMapNaYinFiveElements.containsKey(key))
+        {
+             return hashMapNaYinFiveElements.get(key);
+        }
+        return null;
     }
 }
