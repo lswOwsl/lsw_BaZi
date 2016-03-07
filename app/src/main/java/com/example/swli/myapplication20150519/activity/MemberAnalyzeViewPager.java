@@ -104,7 +104,7 @@ public class MemberAnalyzeViewPager {
         viewPager.setAdapter(getPagerAdapter(flowYearEraIndex, daYunEraIndex, flowMonthEraIndex));
         dbManager = new DBManager(activity);
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
