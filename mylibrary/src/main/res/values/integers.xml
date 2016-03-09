@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="common_datetime_picker_min_year"  >1620</integer>
+</resources>

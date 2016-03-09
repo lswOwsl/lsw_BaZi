@@ -23,7 +23,7 @@ public class Contact {
     }
 
     public String getContactInfo() {
-        // »ñµÃÍ¨Ñ¶Â¼ĞÅÏ¢ £¬URIÊÇContactsContract.Contacts.CONTENT_URI
+        // è·å¾—é€šè®¯å½•ä¿¡æ¯ ï¼ŒURIæ˜¯ContactsContract.Contacts.CONTENT_URI
         ArrayList<ContactsContract.Contacts> list = new ArrayList<ContactsContract.Contacts>();
 //        // jsonObject contactData = new // jsonObject();
 //        // jsonObject // jsonObject = null;
@@ -41,10 +41,10 @@ public class Contact {
                 oldrid = contactId;
             }
 
-            // È¡µÃmimetypeÀàĞÍ
+            // å–å¾—mimetypeç±»å‹
             mimetype = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.Data.MIMETYPE));
-            // »ñµÃÍ¨Ñ¶Â¼ÖĞÃ¿¸öÁªÏµÈËµÄID
-            // »ñµÃÍ¨Ñ¶Â¼ÖĞÁªÏµÈËµÄÃû×Ö
+            // è·å¾—é€šè®¯å½•ä¸­æ¯ä¸ªè”ç³»äººçš„ID
+            // è·å¾—é€šè®¯å½•ä¸­è”ç³»äººçš„åå­—
             if (ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE.equals(mimetype)) {
 //    String display_name = cursor.getString(cursor.getColumnIndex(StructuredName.DISPLAY_NAME));
                 String prefix = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.PREFIX));
@@ -64,51 +64,51 @@ public class Contact {
                 String phoneticLastName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.PHONETIC_GIVEN_NAME));
                 // jsonObject.put("phoneticLastName", phoneticLastName);
             }
-            // »ñÈ¡µç»°ĞÅÏ¢
+            // è·å–ç”µè¯ä¿¡æ¯
             if (ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.equals(mimetype)) {
-                // È¡³öµç»°ÀàĞÍ
+                // å–å‡ºç”µè¯ç±»å‹
                 int phoneType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                // ÊÖ»ú
+                // æ‰‹æœº
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
                     String mobile = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("mobile", mobile);
                 }
-                // ×¡Õ¬µç»°
+                // ä½å®…ç”µè¯
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_HOME) {
                     String homeNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("homeNum", homeNum);
                 }
-                // µ¥Î»µç»°
+                // å•ä½ç”µè¯
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_WORK) {
                     String jobNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("jobNum", jobNum);
                 }
-                // µ¥Î»´«Õæ
+                // å•ä½ä¼ çœŸ
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_FAX_WORK) {
                     String workFax = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("workFax", workFax);
                 }
-                // ×¡Õ¬´«Õæ
+                // ä½å®…ä¼ çœŸ
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_FAX_HOME) {
                     String homeFax = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("homeFax", homeFax);
                 }
-                // Ñ°ºô»ú
+                // å¯»å‘¼æœº
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_PAGER) {
                     String pager = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("pager", pager);
                 }
-                // »Ø²¦ºÅÂë
+                // å›æ‹¨å·ç 
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_CALLBACK) {
                     String quickNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("quickNum", quickNum);
                 }
-                // ¹«Ë¾×Ü»ú
+                // å…¬å¸æ€»æœº
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_COMPANY_MAIN) {
                     String jobTel = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("jobTel", jobTel);
                 }
-                // ³µÔØµç»°
+                // è½¦è½½ç”µè¯
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_CAR) {
                     String carNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("carNum", carNum);
@@ -118,17 +118,17 @@ public class Contact {
                     String isdn = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("isdn", isdn);
                 }
-                // ×Ü»ú
+                // æ€»æœº
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MAIN) {
                     String tel = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("tel", tel);
                 }
-                // ÎŞÏß×°ÖÃ
+                // æ— çº¿è£…ç½®
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_RADIO) {
                     String wirelessDev = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("wirelessDev", wirelessDev);
                 }
-                // µç±¨
+                // ç”µæŠ¥
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_TELEX) {
                     String telegram = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("telegram", telegram);
@@ -138,85 +138,85 @@ public class Contact {
                     String tty_tdd = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("tty_tdd", tty_tdd);
                 }
-                // µ¥Î»ÊÖ»ú
+                // å•ä½æ‰‹æœº
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE) {
                     String jobMobile = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("jobMobile", jobMobile);
                 }
-                // µ¥Î»Ñ°ºô»ú
+                // å•ä½å¯»å‘¼æœº
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_WORK_PAGER) {
                     String jobPager = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("jobPager", jobPager);
                 }
-                // ÖúÀí
+                // åŠ©ç†
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_ASSISTANT) {
                     String assistantNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("assistantNum", assistantNum);
                 }
-                // ²ÊĞÅ
+                // å½©ä¿¡
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MMS) {
                     String mms = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     // jsonObject.put("mms", mms);
                 }
             }
             // }
-            // ²éÕÒemailµØÖ·
+            // æŸ¥æ‰¾emailåœ°å€
             if (ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equals(mimetype)) {
-                // È¡³öÓÊ¼şÀàĞÍ
+                // å–å‡ºé‚®ä»¶ç±»å‹
                 int emailType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
 
-                // ×¡Õ¬ÓÊ¼şµØÖ·
+                // ä½å®…é‚®ä»¶åœ°å€
                 if (emailType == ContactsContract.CommonDataKinds.Email.TYPE_CUSTOM) {
                     String homeEmail = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     // jsonObject.put("homeEmail", homeEmail);
                 }
 
-                // ×¡Õ¬ÓÊ¼şµØÖ·
+                // ä½å®…é‚®ä»¶åœ°å€
                 else if (emailType == ContactsContract.CommonDataKinds.Email.TYPE_HOME) {
                     String homeEmail = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     // jsonObject.put("homeEmail", homeEmail);
                 }
-                // µ¥Î»ÓÊ¼şµØÖ·
+                // å•ä½é‚®ä»¶åœ°å€
                 if (emailType == ContactsContract.CommonDataKinds.Email.TYPE_CUSTOM) {
                     String jobEmail = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     // jsonObject.put("jobEmail", jobEmail);
                 }
 
-                // µ¥Î»ÓÊ¼şµØÖ·
+                // å•ä½é‚®ä»¶åœ°å€
                 else if (emailType == ContactsContract.CommonDataKinds.Email.TYPE_WORK) {
                     String jobEmail = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     // jsonObject.put("jobEmail", jobEmail);
                 }
-                // ÊÖ»úÓÊ¼şµØÖ·
+                // æ‰‹æœºé‚®ä»¶åœ°å€
                 if (emailType == ContactsContract.CommonDataKinds.Email.TYPE_CUSTOM) {
                     String mobileEmail = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     // jsonObject.put("mobileEmail", mobileEmail);
                 }
 
-                // ÊÖ»úÓÊ¼şµØÖ·
+                // æ‰‹æœºé‚®ä»¶åœ°å€
                 else if (emailType == ContactsContract.CommonDataKinds.Email.TYPE_MOBILE) {
                     String mobileEmail = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     // jsonObject.put("mobileEmail", mobileEmail);
                 }
             }
-            // ²éÕÒeventµØÖ·
+            // æŸ¥æ‰¾eventåœ°å€
             if (ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE.equals(mimetype)) {
-                // È¡³öÊ±¼äÀàĞÍ
+                // å–å‡ºæ—¶é—´ç±»å‹
                 int eventType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.TYPE));
-                // ÉúÈÕ
+                // ç”Ÿæ—¥
                 if (eventType == ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY) {
                     String birthday = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
                     // jsonObject.put("birthday", birthday);
                 }
-                // ÖÜÄê¼ÍÄîÈÕ
+                // å‘¨å¹´çºªå¿µæ—¥
                 if (eventType == ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY) {
                     String anniversary = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
                     // jsonObject.put("anniversary", anniversary);
                 }
             }
-            // ¼´Ê±ÏûÏ¢
+            // å³æ—¶æ¶ˆæ¯
             if (ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE.equals(mimetype)) {
-                // È¡³ö¼´Ê±ÏûÏ¢ÀàĞÍ
+                // å–å‡ºå³æ—¶æ¶ˆæ¯ç±»å‹
                 int protocal = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
                 if (ContactsContract.CommonDataKinds.Im.TYPE_CUSTOM == protocal) {
                     String workMsg = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
@@ -230,21 +230,21 @@ public class Contact {
                     // jsonObject.put("instantsMsg", instantsMsg);
                 }
             }
-            // »ñÈ¡±¸×¢ĞÅÏ¢
+            // è·å–å¤‡æ³¨ä¿¡æ¯
             if (ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE.equals(mimetype)) {
                 String remark = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
                 // jsonObject.put("remark", remark);
             }
-            // »ñÈ¡êÇ³ÆĞÅÏ¢
+            // è·å–æ˜µç§°ä¿¡æ¯
             if (ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE.equals(mimetype)) {
                 String nickName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME));
                 // jsonObject.put("nickName", nickName);
             }
-            // »ñÈ¡×éÖ¯ĞÅÏ¢
+            // è·å–ç»„ç»‡ä¿¡æ¯
             if (ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE.equals(mimetype)) {
-                // È¡³ö×éÖ¯ÀàĞÍ
+                // å–å‡ºç»„ç»‡ç±»å‹
                 int orgType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TYPE));
-                // µ¥Î»
+                // å•ä½
                 if (orgType == ContactsContract.CommonDataKinds.Organization.TYPE_CUSTOM) {
 //     if (orgType == Organization.TYPE_WORK) {
                     String company = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Organization.COMPANY));
@@ -255,37 +255,37 @@ public class Contact {
                     // jsonObject.put("department", department);
                 }
             }
-            // »ñÈ¡ÍøÕ¾ĞÅÏ¢
+            // è·å–ç½‘ç«™ä¿¡æ¯
             if (ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE.equals(mimetype)) {
-                // È¡³ö×éÖ¯ÀàĞÍ
+                // å–å‡ºç»„ç»‡ç±»å‹
                 int webType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.TYPE));
-                // Ö÷Ò³
+                // ä¸»é¡µ
                 if (webType == ContactsContract.CommonDataKinds.Website.TYPE_CUSTOM) {
                     String home = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL));
                     // jsonObject.put("home", home);
                 }
-                // Ö÷Ò³
+                // ä¸»é¡µ
                 else if (webType == ContactsContract.CommonDataKinds.Website.TYPE_HOME) {
                     String home = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL));
                     // jsonObject.put("home", home);
                 }
 
-                // ¸öÈËÖ÷Ò³
+                // ä¸ªäººä¸»é¡µ
                 if (webType == ContactsContract.CommonDataKinds.Website.TYPE_HOMEPAGE) {
                     String homePage = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL));
                     // jsonObject.put("homePage", homePage);
                 }
-                // ¹¤×÷Ö÷Ò³
+                // å·¥ä½œä¸»é¡µ
                 if (webType == ContactsContract.CommonDataKinds.Website.TYPE_WORK) {
                     String workPage = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL));
                     // jsonObject.put("workPage", workPage);
                 }
             }
-            // ²éÕÒÍ¨Ñ¶µØÖ·
+            // æŸ¥æ‰¾é€šè®¯åœ°å€
             if (ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE.equals(mimetype)) {
-                // È¡³öÓÊ¼şÀàĞÍ
+                // å–å‡ºé‚®ä»¶ç±»å‹
                 int postalType = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
-                // µ¥Î»Í¨Ñ¶µØÖ·
+                // å•ä½é€šè®¯åœ°å€
                 if (postalType == ContactsContract.CommonDataKinds.StructuredPostal.TYPE_WORK) {
                     String street = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
                     // jsonObject.put("street", street);
@@ -302,7 +302,7 @@ public class Contact {
                     String country = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
                     // jsonObject.put("country", country);
                 }
-                // ×¡Õ¬Í¨Ñ¶µØÖ·
+                // ä½å®…é€šè®¯åœ°å€
                 if (postalType == ContactsContract.CommonDataKinds.StructuredPostal.TYPE_HOME) {
                     String homeStreet = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
                     // jsonObject.put("homeStreet", homeStreet);
@@ -319,7 +319,7 @@ public class Contact {
                     String homeCountry = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
                     // jsonObject.put("homeCountry", homeCountry);
                 }
-                // ÆäËûÍ¨Ñ¶µØÖ·
+                // å…¶ä»–é€šè®¯åœ°å€
                 if (postalType == ContactsContract.CommonDataKinds.StructuredPostal.TYPE_OTHER) {
                     String otherStreet = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
                     // jsonObject.put("otherStreet", otherStreet);

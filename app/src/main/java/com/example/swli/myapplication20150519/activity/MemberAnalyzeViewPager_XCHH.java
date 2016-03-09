@@ -12,38 +12,50 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.ColorHelper;
 import com.example.swli.myapplication20150519.common.EnumPart;
-import com.example.swli.myapplication20150519.model.XmlCelestialStem;
-import com.example.swli.myapplication20150519.model.XmlTerrestrial;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import lsw.library.ColorHelper;
+import lsw.xml.XmlModelCache;
+import lsw.xml.model.XmlModelCelestialStem;
+import lsw.xml.model.XmlModelTerrestrial;
+
 public class MemberAnalyzeViewPager_XCHH {
 
     private MemberAnalyzeViewPager viewPager;
     private LinearLayout linearLayout;
     private Activity activity;
-    private XmlTerrestrial xmlTerrestrial;
-    private XmlCelestialStem xmlCelestialStem;
+    private XmlModelTerrestrial xmlTerrestrial;
+    private XmlModelCelestialStem xmlCelestialStem;
     private LinearLayout linearLayoutC;
     private View cChongHe;
     private boolean haveFlowMonth;
+    private XmlModelCache xmlModelCache;
+    private ColorHelper colorHelper;
 
     public MemberAnalyzeViewPager_XCHH(MemberAnalyzeViewPager viewPager)
     {
         this.viewPager = viewPager;
         this.activity = viewPager.getActivity();
         this.linearLayout = (LinearLayout)viewPager.getActivity().findViewById(R.id.ll_container);
-
-        xmlTerrestrial = XmlTerrestrial.getInstance(activity);
-        xmlCelestialStem = XmlCelestialStem.getInstance(activity);
+        xmlModelCache = XmlModelCache.getInstance(activity);
+        colorHelper = ColorHelper.getInstance(activity);
+        xmlTerrestrial = xmlModelCache.getTerrestrial();
+        xmlCelestialStem = xmlModelCache.getCelestialStem();
 
         cChongHe = activity.findViewById(R.id.cChongHe);
         this.linearLayoutC = (LinearLayout)cChongHe.findViewById(R.id.ll_containerC);
+    }
+
+    public void clearTopScrollHeight()
+    {
+        ViewGroup.LayoutParams lp = cChongHe.getLayoutParams();
+        lp.height = 0;
+        cChongHe.setLayoutParams(lp);
     }
 
     public void init(Integer daYunEraIndex, Integer flowYearEraIndex, Integer flowMonthEraIndex)
@@ -118,12 +130,12 @@ public class MemberAnalyzeViewPager_XCHH {
         arraysC.add(tList.get(EnumPart.Day).second);
         arraysC.add(tList.get(EnumPart.Hour).second);
 
-        buildControls(arrays);
-        buildControlsC(arraysC);
+        buildControls(arrays,arraysC);
+        buildControlsC(arraysC,arrays);
     }
 
     //天干
-    private void buildControlsC(ArrayList<String> arrayList)
+    private void buildControlsC(ArrayList<String> arrayList, ArrayList<String> arrayListT)
     {
         linearLayoutC.removeAllViews();
         List<View> list = new ArrayList<View>();
@@ -137,21 +149,41 @@ public class MemberAnalyzeViewPager_XCHH {
 
                 for(Pair<String,String> key: xmlCelestialStem.getPairSuits().keySet())
                 {
+                    String tip = "合";
                     boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
                     if(option1 || option2)
                     {
-                        list.add(createRowView(arrayList.get(i), arrayList.get(j), "合", xmlCelestialStem.getPairSuits().get(key), i, j,false));
+                        for(Pair<String,String> keyT: xmlTerrestrial.getSixSuits().keySet()) {
+                            boolean option1T = arrayListT.get(i).equals(keyT.first) && arrayListT.get(j).equals(keyT.second);
+                            boolean option2T = arrayListT.get(i).equals(keyT.second) && arrayListT.get(j).equals(keyT.first);
+                            //地支合
+                            if (option1T || option2T) {
+                                tip = "双" + tip;
+                            }
+                        }
+                        list.add(createRowView(arrayList.get(i), arrayList.get(j), tip, xmlCelestialStem.getPairSuits().get(key), i, j,false));
                     }
                 }
 
                 for(Pair<String,String> key: xmlCelestialStem.getPairInverses())
                 {
+                    String tip = "冲";
+
                     boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
                     if(option1 || option2)
                     {
-                        list.add(createRowView(arrayList.get(i), arrayList.get(j), "冲", "", i, j,false));
+                        for(Pair<String,String> keyT: xmlTerrestrial.getSixInverses())
+                        {
+                            boolean option1T = arrayListT.get(i).equals(keyT.first) && arrayListT.get(j).equals(keyT.second);
+                            boolean option2T = arrayListT.get(i).equals(keyT.second) && arrayListT.get(j).equals(keyT.first);
+                            if(option1T || option2T)
+                            {
+                                tip = "双" + tip;
+                            }
+                        }
+                        list.add(createRowView(arrayList.get(i), arrayList.get(j), tip, "", i, j,false));
                     }
                 }
             }
@@ -184,7 +216,7 @@ public class MemberAnalyzeViewPager_XCHH {
     }
 
     //地支
-    private void buildControls(ArrayList<String> arrayList)
+    private void buildControls(ArrayList<String> arrayList, ArrayList<String> arrayListC)
     {
         linearLayout.removeAllViews();
         for (int i=0; i<arrayList.size();i++)
@@ -200,9 +232,22 @@ public class MemberAnalyzeViewPager_XCHH {
                 {
                     boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
+                    //地支合
                     if(option1 || option2)
                     {
-                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), "合", xmlTerrestrial.getSixSuits().get(key), i, j));
+                        String tip = "合";
+                        //天干是不是也合
+                        for(Pair<String,String> keyC: xmlCelestialStem.getPairSuits().keySet())
+                        {
+                            boolean option1C = arrayListC.get(i).equals(keyC.first) && arrayListC.get(j).equals(keyC.second);
+                            boolean option2C = arrayListC.get(i).equals(keyC.second) && arrayListC.get(j).equals(keyC.first);
+                            if(option1C || option2C)
+                            {
+                                tip = "双" + tip;
+                            }
+                        }
+
+                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), tip, xmlTerrestrial.getSixSuits().get(key), i, j));
                     }
                 }
                 //六冲
@@ -212,7 +257,19 @@ public class MemberAnalyzeViewPager_XCHH {
                     boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
                     if(option1 || option2)
                     {
-                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), "冲", "", i, j));
+                        String tip = "冲";
+
+                        for(Pair<String,String> keyC: xmlCelestialStem.getPairInverses())
+                        {
+                            boolean option1C = arrayListC.get(i).equals(keyC.first) && arrayListC.get(j).equals(keyC.second);
+                            boolean option2C = arrayListC.get(i).equals(keyC.second) && arrayListC.get(j).equals(keyC.first);
+                            if(option1C || option2C)
+                            {
+                                tip = "双" + tip;
+                            }
+                        }
+
+                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), tip, "", i, j));
                     }
                 }
                 //刑
@@ -278,13 +335,95 @@ public class MemberAnalyzeViewPager_XCHH {
                             linearLayout.addView(createRowView(arrayList.get(i),arrayList.get(j),arrayList.get(m),"三刑","",i,j,m));
                         }
                     }
+
+                    //四角刑
+                    for(int n=m+1; n<arrayList.size(); n++)
+                    {
+                        for(ArrayList<String> array: xmlTerrestrial.getFourPunishment())
+                        {
+                            ArrayList<String> tempArray = new ArrayList<String>();
+                            for(String str: array)
+                            {
+                                tempArray.add(str);
+                            }
+
+                            int index1 = tempArray.indexOf(arrayList.get(i));
+                            if(index1 != -1)
+                                tempArray.remove(index1);
+                            int index2 = tempArray.indexOf(arrayList.get(j));
+                            if(index2 != -1)
+                                tempArray.remove(index2);
+                            int index3 = tempArray.indexOf(arrayList.get(m));
+                            if(index3 != -1)
+                                tempArray.remove(index3);
+                            int index4 = tempArray.indexOf(arrayList.get(n));
+                            if(index4 != -1)
+                                tempArray.remove(index4);
+
+                            if(tempArray.size() == 0)
+                            {
+                                linearLayout.addView(createRowView(arrayList.get(i),arrayList.get(j),arrayList.get(m),arrayList.get(n), "四角刑",i,j,m,n));
+                            }
+                        }
+
+                        //生,旺,库
+                        for(String key: xmlTerrestrial.getSpecial().keySet()) {
+                            ArrayList<String> array = xmlTerrestrial.getSpecial().get(key);
+
+                            int index1 = array.indexOf(arrayList.get(i));
+                            int index2 = array.indexOf(arrayList.get(j));
+                            int index3 = array.indexOf(arrayList.get(m));
+                            int index4 = array.indexOf(arrayList.get(n));
+                            if(index1 != -1 && index2 !=-1 && index3 !=-1 && index4 != -1 &&
+                                    ((index1 != index2) && (index1!=index3) && (index1!=index4) &&
+                                            (index2 !=index3) && (index2!=index4) &&
+                                            (index3 != index4)))
+                            {
+                                linearLayout.addView(createRowView(arrayList.get(i),arrayList.get(j),arrayList.get(m),arrayList.get(n), key,i,j,m,n));
+                            }
+
+                        }
+                    }
                 }
-
-
             }
         }
 
     }
+
+    private LinearLayout createRowView(String text1, String text2, String text3, String text4,
+                                       String tipText, int beginIndex, int secondIndex, int thirdIndex, int endIndex)
+    {
+        LinearLayout linearLayout = createHolder();
+
+        float beginWeight = beginIndex*2f;
+        if(beginWeight != 0f) {
+            linearLayout.addView(createSpace(beginWeight));
+        }
+        linearLayout.addView(createTextView(text1, 1f, Gravity.CENTER, true));
+
+        float range1 = (secondIndex - beginIndex)*1f + (secondIndex-beginIndex-1)*1f;
+        linearLayout.addView(createWrapper(tipText, "", range1));
+
+        linearLayout.addView(createTextView(text2, 1f, Gravity.CENTER,true));
+
+        float range2 = (thirdIndex - secondIndex)*1f + (thirdIndex-secondIndex - 1)*1f;
+        linearLayout.addView(createWrapper(tipText, "", range2));
+
+        linearLayout.addView(createTextView(text3, 1f, Gravity.CENTER, true));
+
+        float rang3 = (endIndex - thirdIndex)*1f + (endIndex - thirdIndex -1)*1f;
+        linearLayout.addView(createWrapper(tipText, "", rang3));
+
+        linearLayout.addView(createTextView(text4,1f,Gravity.CENTER,true));
+
+        float endWeight = 11 - beginWeight - range1- range2 - rang3 - 1f*4;
+        if(endWeight != 0f) {
+            linearLayout.addView(createSpace(endWeight));
+        }
+
+        return linearLayout;
+    }
+
 
     private LinearLayout createRowView(String textBegin, String textMiddle, String textEnd, String preTipText, String tipFiveElement, int beginIndex, int middleIndex, int endIndex)
     {
@@ -355,10 +494,10 @@ public class MemberAnalyzeViewPager_XCHH {
 
         SpannableString str;
         if(isTerrestrial) {
-           str =ColorHelper.getColorTerrestrial(activity, text);
+           str =colorHelper.getColorTerrestrial(text);
         }
         else {
-            str = ColorHelper.getColorCelestialStem(activity,text);
+            str = colorHelper.getColorCelestialStem(text);
         }
         textView.setText(str);
         textView.setTextAppearance(activity, R.style.Style_CXHH_Text);

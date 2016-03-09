@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+    <Grows>
+        <Grow id="1"  value="长生"></Grow>
+        <Grow id="2" value="沐浴"></Grow>
+        <Grow id="3" value="冠带"></Grow>
+        <Grow id="4" value="临官"></Grow>
+        <Grow id="5" value="帝旺"></Grow>
+        <Grow id="6" value="衰"></Grow>
+        <Grow id="7" value="病"></Grow>
+        <Grow id="8" value="死"></Grow>
+        <Grow id="9" value="墓"></Grow>
+        <Grow id="10" value="绝"></Grow>
+        <Grow id="11" value="胎"></Grow>
+        <Grow id="12" value="养"></Grow>
+    </Grows>
+    <FiveElements>
+        <FiveElement name="earth" terrestialIndex="9"></FiveElement>
+        <FiveElement name="wood" terrestialIndex="12"></FiveElement>
+        <FiveElement name="fire" terrestialIndex="3"></FiveElement>
+        <FiveElement name="metal" terrestialIndex="6"></FiveElement>
+        <FiveElement name="water" terrestialIndex="9"></FiveElement>
+    </FiveElements>
+</Root>

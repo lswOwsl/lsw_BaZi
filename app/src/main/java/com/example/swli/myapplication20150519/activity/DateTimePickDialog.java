@@ -12,7 +12,9 @@ import android.widget.TimePicker.OnTimeChangedListener;
 
 import com.example.swli.myapplication20150519.MemberMaintain;
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.DateExt;
+
+import lsw.library.DateExt;
+import lsw.library.LunarCalendarWrapper;
 
 /**
  * Created by swli on 5/26/2015.
@@ -26,6 +28,8 @@ public class DateTimePickDialog implements OnDateChangedListener, OnTimeChangedL
     private DateExt initDateExt;
     private Activity activity;
     private EditText etDateTimeOfBirth;
+
+    private LunarCalendarWrapper lunarCalendarWrapper;
 
     public DateTimePickDialog(Activity activity) {
         this.activity = activity;
@@ -83,7 +87,9 @@ public class DateTimePickDialog implements OnDateChangedListener, OnTimeChangedL
 
         //dateExt = de;
         initDateExt = de;
-        ad.setTitle(de.getFormatDateTime());
+        lunarCalendarWrapper = new LunarCalendarWrapper(initDateExt);
+        String lunarHour = lunarCalendarWrapper.toStringWithTerrestrialBranch(lunarCalendarWrapper.getChineseEraOfHour());
+        ad.setTitle("阳历:"+de.getFormatDateTime() + "\n阴历:" +lunarCalendarWrapper.toStringLunarDate(initDateExt)+" "+lunarHour+"时");
     }
 
     @Override

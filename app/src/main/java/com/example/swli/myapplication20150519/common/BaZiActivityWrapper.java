@@ -4,14 +4,19 @@ import android.content.Context;
 import android.util.Pair;
 import android.widget.TextView;
 
-import com.example.swli.myapplication20150519.model.XmlCelestialStem;
-import com.example.swli.myapplication20150519.model.XmlExtProperty;
-import com.example.swli.myapplication20150519.model.XmlFiveElement;
-import com.example.swli.myapplication20150519.model.XmlSixRelation;
-import com.example.swli.myapplication20150519.model.XmlTerrestrial;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import lsw.library.ColorHelper;
+import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
+import lsw.library.LunarCalendarWrapper;
+import lsw.xml.XmlModelCache;
+import lsw.xml.model.XmlModelCelestialStem;
+import lsw.xml.model.XmlModelExtProperty;
+import lsw.xml.model.XmlModelFiveElement;
+import lsw.xml.model.XmlModelSixRelation;
+import lsw.xml.model.XmlModelTerrestrial;
 
 public class BaZiActivityWrapper {
     DateExt birthday;
@@ -24,6 +29,8 @@ public class BaZiActivityWrapper {
     boolean isMale;
     Pair<Integer,Integer> beginYunAgeAndMonth;
     int beginYunAge;
+    XmlModelCache xmlModelCache;
+    ColorHelper colorHelper;
 
     public BaZiActivityWrapper(DateExt birthday, Context context, boolean isMale)
     {
@@ -36,6 +43,8 @@ public class BaZiActivityWrapper {
         this.indexEraYear = calendarWrapper.getChineseEraOfYear();
         this.isMale = isMale;
         this.beginYunAgeAndMonth = getBeginYunAgeMonth();
+        xmlModelCache = XmlModelCache.getInstance(context);
+        colorHelper = ColorHelper.getInstance(context);
     }
     public Pair<Integer,Integer> getBeginYunAge_Month()
     {
@@ -91,24 +100,24 @@ public class BaZiActivityWrapper {
     {
         String dayC = calendarWrapper.toStringWithCelestialStem(indexEraDay);
 
-        tvC.setText(ColorHelper.getColorCelestialStem(tvC.getContext(), getC(eraIndex)));
-        tvT.setText(ColorHelper.getColorTerrestrial(tvT.getContext(), getT(eraIndex)));
+        tvC.setText(colorHelper.getColorCelestialStem(getC(eraIndex)));
+        tvT.setText(colorHelper.getColorTerrestrial(getT(eraIndex)));
         setSixRelationByRiZhu(tvSixR, dayC, getC(eraIndex));
         setHiddenCelestialControl(tvH, dayC, getT(eraIndex));
     }
 
     public String getSixRelationByRiZhu(String riZhu,String celestialStem)
     {
-        XmlCelestialStem xmlCelestialStem = XmlCelestialStem.getInstance(context);
-        XmlExtProperty riZhuEP = xmlCelestialStem.getCelestialStems().get(riZhu);
-        XmlExtProperty celestialStemEP = xmlCelestialStem.getCelestialStems().get(celestialStem);
+        XmlModelCelestialStem xmlCelestialStem = xmlModelCache.getCelestialStem();
+        XmlModelExtProperty riZhuEP = xmlCelestialStem.getCelestialStems().get(riZhu);
+        XmlModelExtProperty celestialStemEP = xmlCelestialStem.getCelestialStems().get(celestialStem);
 
-        XmlFiveElement xmlFiveElement = XmlFiveElement.getInstance(context);
+        XmlModelFiveElement xmlFiveElement = xmlModelCache.getFiveElement();
         String riZhuEhance = xmlFiveElement.getEnhance().get(riZhuEP.getWuXing());
         String riZhuConsume = xmlFiveElement.getEnhance().get(riZhuEhance);
         String riZhuControled = xmlFiveElement.getControl().get(riZhuEhance);
 
-        XmlSixRelation xmlSixRelation = XmlSixRelation.getInstance(context);
+        XmlModelSixRelation xmlSixRelation = xmlModelCache.getSixRelation();
 
         boolean flag = riZhuEP.getYinYang().equals(celestialStemEP.getYinYang());
 
@@ -133,7 +142,7 @@ public class BaZiActivityWrapper {
     public void setHiddenCelestialControl(TextView textView, String riZhu, String terrestrial)
     {
         textView.setText("");
-        XmlTerrestrial xmlTerrestrial = XmlTerrestrial.getInstance(textView.getContext());
+        XmlModelTerrestrial xmlTerrestrial = xmlModelCache.getTerrestrial();
         ArrayList<Pair<String,String>> arrayList =  xmlTerrestrial.getHiddenCelestialStem(terrestrial);
         int size = arrayList.size();
         //判断size是为了让文字居中排列
@@ -142,7 +151,7 @@ public class BaZiActivityWrapper {
                 textView.append("\n");
 
             Pair<String, String> pair = arrayList.get(i);
-            textView.append(ColorHelper.getColorCelestialStem(textView.getContext(), pair.first));
+            textView.append(colorHelper.getColorCelestialStem( pair.first));
             textView.append(":");
             textView.append(getSixRelationByRiZhu(riZhu, pair.first));
 
@@ -174,14 +183,14 @@ public class BaZiActivityWrapper {
     public String getJiaGong(String cs1, String cs2, String t1,String t2)
     {
         if(cs1.equals(cs2) && !t1.equals(t2)) {
-            XmlTerrestrial xmlTerrestrial = XmlTerrestrial.getInstance(context);
+            XmlModelTerrestrial xmlTerrestrial = xmlModelCache.getTerrestrial();
 
              String converge = getJiaGongByList(xmlTerrestrial.getThreeConverge(), Pair.create(t1, t2));
             if(converge != null)
                 return converge;
 
             String suit = getJiaGongByList(xmlTerrestrial.getThreeSuits(), Pair.create(t1, t2));
-            if(suit != null)
+            if(suit != null && xmlTerrestrial.getSpecial().get("四旺").contains(suit))
                 return suit;
 
             HashMap<Integer,String> map = xmlTerrestrial.getTerrestrialMaps();
@@ -211,7 +220,7 @@ public class BaZiActivityWrapper {
         if(list.containsKey(pair))
         {
             String str = list.get(pair);
-            textView.setText(ColorHelper.getColorTerrestrial(context,str));
+            textView.setText(colorHelper.getColorTerrestrial(str));
         }
     }
 
@@ -284,12 +293,12 @@ public class BaZiActivityWrapper {
 
     public ArrayList<Integer> getDaYuns(int count)
     {
-        return BaZiHelper.getDaYunsByNum(getYearEraIndex(), getMonthEraIndex(), count, isMale);
+        return BaZiHelperExtender.getDaYunsByNum(getYearEraIndex(), getMonthEraIndex(), count, isMale);
     }
 
     private Pair<Integer,Integer> getBeginYunAgeMonth() {
         //起运年龄
-        int hoursQiYun = Math.abs(BaZiHelper.getBeginYunHours(birthday, isMale, getYearEraIndex()));
+        int hoursQiYun = Math.abs(BaZiHelperExtender.getBeginYunHours(birthday, isMale, getYearEraIndex()));
         //三天一岁，1天4个月，1个时辰10天
         int ageQiYun = (int) ((double) hoursQiYun / 24) / 3;
         int tempAge = ageQiYun;
@@ -310,7 +319,7 @@ public class BaZiActivityWrapper {
         int currentAge = flowYear - birthday.getYear();
         ArrayList<Integer> daYuns = getDaYuns(currentAge/10+1);
         //因为有的人是0岁几个月起运，所以不能按0岁起运看，应该按1岁起运看
-        return BaZiHelper.getDaYunByFlowYear(currentAge, beginYunAge, daYuns);
+        return BaZiHelperExtender.getDaYunByFlowYear(currentAge, beginYunAge, daYuns);
     }
 }
 

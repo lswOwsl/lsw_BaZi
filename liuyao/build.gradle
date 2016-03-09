@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'lsw'
+            keyPassword '88216240'
+            storeFile file('../lsw20150711.jks')
+            storePassword '88216240'
+        }
+    }
+    compileSdkVersion 19
+    buildToolsVersion '19.1.0'
+    defaultConfig {
+        applicationId "lsw.liuyao"
+        minSdkVersion 15
+        targetSdkVersion 19
+        versionCode 2
+        versionName "1.1"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.config
+        }
+        debug{
+            debuggable true
+            signingConfig signingConfigs.config
+        }
+    }
+    productFlavors {
+    }
+}
+
+
+repositories {
+    jcenter()
+    maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
+}
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':mylibrary')
+    compile project(':baidu_appx_android_2.0.0')
+    compile project(':baidu_cuid')
+    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    compile project(':BDAutoUpdateSDK_20150605_V1.2.0')
+    compile 'com.android.support:support-v4:19+'
+    //    compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+    //        transitive = true
+    //    }
+    compile project(':swipelistview')
+}
+
+
+
+
+
+

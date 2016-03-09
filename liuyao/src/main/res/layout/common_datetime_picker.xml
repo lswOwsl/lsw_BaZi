@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:gravity="center" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView android:id="@+id/tvTitle"
+        android:paddingTop="10dp"
+        android:textSize="16dp"
+        android:text="甲子月 甲子日"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+    <View style="@style/PartLine"></View>
+    <DatePicker android:layout_gravity="center_horizontal"
+        android:id="@+id/datepicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false"
+        android:startYear="@integer/common_datetime_picker_min_year" />
+
+    <TimePicker android:layout_gravity="center_horizontal"
+        android:id="@+id/timepicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

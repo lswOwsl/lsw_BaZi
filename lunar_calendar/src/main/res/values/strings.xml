@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">干支历</string>
+
+    <string name="action_settings">Settings</string>
+
+    <bool name="includeAD">true</bool>
+</resources>

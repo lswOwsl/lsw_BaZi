@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <View android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#CCC" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="已有备份文件:"
+        android:textStyle="bold"
+        android:id="@+id/tvBackUpFileFolder"
+        android:layout_gravity="left"
+        android:paddingLeft="10dp"
+        android:textSize="18dp"
+        android:textColor="#fff"
+        android:background="#f6aa3e"
+        android:paddingTop="8dp" android:paddingBottom="8dp"/>
+    <View android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#CCC" />
+    <ListView
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvFiles"
+        android:layout_gravity="center_horizontal" />
+    <View android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#CCC" />
+    <Button
+        android:minHeight="35dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_flatten"
+        android:text="导入记录"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
+        android:textSize="15dp"
+        android:textColor="#fff"
+        android:id="@+id/btnImport"
+        android:layout_marginTop="5dp" android:layout_marginBottom="5dp"
+        android:layout_gravity="center" />
+    <View android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:background="#CCC" />
+</LinearLayout>

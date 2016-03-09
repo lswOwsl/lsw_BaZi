@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DayTextView">
+        <attr name="IsCurrentMonth" format="boolean"/>
+        <attr name="IsCurrentSelected" format="boolean"/>
+        <attr name="IsToday" format="boolean"/>
+    </declare-styleable>
+</resources>

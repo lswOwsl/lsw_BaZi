@@ -1,0 +1,56 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+    <style name="GuaContainer">
+        <item name="android:layout_height">150dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="YaoContainerStyle" >
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:background">@drawable/yao_container</item>
+    </style>
+    <style name="YaoTipStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="PartLine">
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#ccc</item>
+    </style>
+    <style name="PartLineVertical">
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:layout_marginRight">3dp</item>
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">#ccc</item>
+    </style>
+    <style name="TitleTextViewBig" parent="TitleTextView">
+        <item name="android:textSize">18dp</item>
+    </style>
+    <style name="TitleTextView">
+        <item name="android:textSize">15dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="Button">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+    <style name="TextNavigation">
+        <item name="android:background">#ccc</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+</resources>

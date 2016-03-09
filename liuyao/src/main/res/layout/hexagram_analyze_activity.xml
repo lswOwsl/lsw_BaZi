@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="#fff">
+
+
+
+    <LinearLayout android:gravity="center"
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+        <LinearLayout android:orientation="horizontal" android:layout_marginLeft="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:id="@+id/tvAnalyzeDateTitle"
+                android:text="分析日期: 默认/" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:id="@+id/tvAnalyzeDate"
+                android:text="自选" />
+        </LinearLayout>
+
+    <FrameLayout android:id="@+id/fl_Hexagram_Analyzer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:textColor="#fff"
+            android:padding="10dp"
+            android:text="备注记录"
+            android:id="@+id/btnNote"
+            android:background="@drawable/button_flatten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout android:background="#fff"
+        android:id="@+id/menu"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        <FrameLayout android:id="@+id/fl_Hexagram_Auto_Analyzer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</LinearLayout>

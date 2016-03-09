@@ -17,11 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.R;
-import com.example.swli.myapplication20150519.common.ColorHelper;
-import com.example.swli.myapplication20150519.common.LunarSolarTerm;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
+
+import lsw.library.ColorHelper;
+import lsw.library.LunarSolarTerm;
 
 /**
  * Created by swli on 6/10/2015.
@@ -34,6 +35,7 @@ public class DaYunPickDialog {
     private ArrayList<Integer> source;
     private int beginYunAge;
     private int selectedEraIndex;
+    ColorHelper colorHelper;
 
     private ICallBackDialog<CallBackArgs> callBackDialog;
 
@@ -46,6 +48,7 @@ public class DaYunPickDialog {
         this.source = daYunsIndex;
         this.beginYunAge = beginYunAge;
         this.selectedEraIndex = selectedEraIndex;
+        colorHelper = ColorHelper.getInstance(activity);
         init();
     }
 
@@ -138,9 +141,9 @@ public class DaYunPickDialog {
                 String age = beginYunAge + i * 10 + "岁";
 
                 controls.tvText.setText("");
-                controls.tvText.append(ColorHelper.getColorCelestialStem(activity,c));
+                controls.tvText.append(colorHelper.getColorCelestialStem(c));
                 controls.tvText.append("\n");
-                controls.tvText.append(ColorHelper.getColorTerrestrial(activity,t));
+                controls.tvText.append(colorHelper.getColorTerrestrial(t));
                 controls.tvAge.setText(age);
 
                 if(selectedEraIndex == source.get(i))

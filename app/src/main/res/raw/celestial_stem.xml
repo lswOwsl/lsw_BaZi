@@ -35,23 +35,39 @@
     <Name>庚</Name>
   </PairInverse>
   <PairInverse>
+    <Name>甲</Name>
+    <Name>戊</Name>
+  </PairInverse>
+  <PairInverse>
     <Name>乙</Name>
     <Name>辛</Name>
+  </PairInverse>
+  <PairInverse>
+    <Name>乙</Name>
+    <Name>己</Name>
   </PairInverse>
   <PairInverse>
     <Name>丙</Name>
     <Name>壬</Name>
   </PairInverse>
   <PairInverse>
+    <Name>丙</Name>
+    <Name>庚</Name>
+  </PairInverse>
+  <PairInverse>
     <Name>丁</Name>
     <Name>癸</Name>
   </PairInverse>
   <PairInverse>
+    <Name>丁</Name>
+    <Name>辛</Name>
+  </PairInverse>
+  <PairInverse>
     <Name>戊</Name>
-    <Name>甲</Name>
+    <Name>壬</Name>
   </PairInverse>
   <PairInverse>
     <Name>己</Name>
-    <Name>乙</Name>
+    <Name>癸</Name>
   </PairInverse>
 </Root>

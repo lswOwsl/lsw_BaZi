@@ -1,26 +1,31 @@
 package com.example.swli.myapplication20150519;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.baidu.appx.BDBannerAd;
 import com.example.swli.myapplication20150519.activity.DaYunPickDialog;
 import com.example.swli.myapplication20150519.activity.FlowYearPickDialog;
 import com.example.swli.myapplication20150519.activity.ICallBackDialog;
 import com.example.swli.myapplication20150519.activity.MemberAnalyzeViewPager;
+import com.example.swli.myapplication20150519.advertising.BaiDuBanner;
 import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
-import com.example.swli.myapplication20150519.common.BaZiHelper;
-import com.example.swli.myapplication20150519.common.DateExt;
+import com.example.swli.myapplication20150519.common.BaZiHelperExtender;
 import com.example.swli.myapplication20150519.common.EnumPart;
-import com.example.swli.myapplication20150519.common.LunarSolarTerm;
-import com.example.swli.myapplication20150519.common.SolarTerm;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import lsw.library.BaZiHelper;
+import lsw.library.DateExt;
+import lsw.library.LunarSolarTerm;
+import lsw.library.SolarTerm;
+import lsw.library.StringHelper;
+import lsw.library.Utility;
 
 public class MemberAnalyze extends MemberBase {
 
@@ -43,9 +48,6 @@ public class MemberAnalyze extends MemberBase {
 
     MemberAnalyzeViewPager viewPagerHandler;
 
-    private RelativeLayout appxBannerContainer;
-    private static BDBannerAd bannerAdView;
-    private static String TAG = "AppX_BannerAd";
 
 
     @Override
@@ -56,53 +58,8 @@ public class MemberAnalyze extends MemberBase {
         loadControl();
         initContent();
 
-        // 创建广告视图
-        // 发布时请使用正确的ApiKey和广告位ID
-        // 此处ApiKey和推广位ID均是测试用的
-        // 您在正式提交应用的时候，请确认代码中已经更换为您应用对应的Key和ID
-        // 具体获取方法请查阅《百度开发者中心交叉换量产品介绍.pdf》
-//        bannerAdView = new BDBannerAd(this, "CRqGC0MMbzpSLT2EYgDKk58d6ymsHylt",
-//                "TRwQxo62D74ULcY9TDRCjvno");
-        bannerAdView = new BDBannerAd(this, "3Qh1lG1mNW65Wx155M3WV48c",
-                "fNEy9eUvTdAzKzMKqFxZvh7B");
-
-        // 设置横幅广告展示尺寸，如不设置，默认为SIZE_FLEXIBLE;
-        //bannerAdView.setAdSize(BDBannerAd.SIZE_FLEXIBLE);
-
-        // 设置横幅广告行为监听器
-        bannerAdView.setAdListener(new BDBannerAd.BannerAdListener() {
-
-            @Override
-            public void onAdvertisementDataDidLoadFailure() {
-                Log.e(TAG, "load failure");
-            }
-
-            @Override
-            public void onAdvertisementDataDidLoadSuccess() {
-                Log.e(TAG, "load success");
-            }
-
-            @Override
-            public void onAdvertisementViewDidClick() {
-                Log.e(TAG, "on click");
-            }
-
-            @Override
-            public void onAdvertisementViewDidShow() {
-                Log.e(TAG, "on show");
-            }
-
-            @Override
-            public void onAdvertisementViewWillStartNewIntent() {
-                Log.e(TAG, "leave app");
-            }
-        });
-
-        // 创建广告容器
-        appxBannerContainer = (RelativeLayout) findViewById(R.id.appx_banner_container);
-
-        // 显示广告视图
-        appxBannerContainer.addView(bannerAdView);
+        BaiDuBanner banner = new BaiDuBanner(this);
+        banner.create();
     }
 
     private void loadControl() {
@@ -300,19 +257,33 @@ public class MemberAnalyze extends MemberBase {
 
         if(flowMonth != null)
         {
-
-            tv_flowYear_title.setText("" + flowMonth.getSolarTermDate().getFormatDateTime("yyyy") + "\n"+flowMonth.getSolarTermDate().getFormatDateTime("M月")+"\n"+loadXunByEraIndex(eraFlowMonthIndex));
+            tv_flowYear_title.setText("" + flowMonth.getSolarTermDate().getFormatDateTime("yyyy") + "\n"+flowMonth.getSolarTermDate().getFormatDateTime("M月")+"\n"+
+                            BaZiHelper.getNaYinFiveElement(flowYearC.getText().toString()+flowYearT.getText().toString()) + "\n" +
+                    loadXunByEraIndex(eraFlowMonthIndex));
         }
         else
         {
-            tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+currentAge+"岁"+"\n"+loadXunByEraIndex(eraFlowYearIndex));
+            tv_flowYear_title.setText("" + (birthdayYear + currentAge) + "年"+"\n"+currentAge+"岁"+"\n"+
+                    BaZiHelper.getNaYinFiveElement(flowYearC.getText().toString()+flowYearT.getText().toString()) + "\n" +
+                    loadXunByEraIndex(eraFlowYearIndex));
         }
 
-        tv_year_title.setText(""+birthdayYear + "年" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getYearEraIndex()));
-        tv_month_title.setText(""+month + "月" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
-        tv_day_title.setText("" + day + "日" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
-        tv_hour_title.setText("" + hour + "时" +"\n\n"+ loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
-        tv_dayun_title.setText("大运\n\n" + loadXunByEraIndex(eraDaYunIndex));
+
+        tv_year_title.setText(""+birthdayYear + "年" +"\n"+getKuiGang(yearC.getText().toString(),yearT.getText().toString())+ "\n" +
+                BaZiHelper.getNaYinFiveElement(yearC.getText().toString() + yearT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getYearEraIndex()));
+        tv_month_title.setText(""+month + "月" +"\n"+ getKuiGang(monthC.getText().toString(),monthT.getText().toString())  +"\n" +
+                BaZiHelper.getNaYinFiveElement(monthC.getText().toString() + monthT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getMonthEraIndex()));
+        tv_day_title.setText("" + day + "日" +"\n"+ getKuiGang(dayC.getText().toString(),dayT.getText().toString())  +"\n" +
+                BaZiHelper.getNaYinFiveElement(dayC.getText().toString() + dayT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getDayEraIndex()));
+        tv_hour_title.setText("" + hour + "时" +"\n"+ getKuiGang(hourC.getText().toString(),hourT.getText().toString()) +"\n" +
+                BaZiHelper.getNaYinFiveElement(hourC.getText().toString() + hourT.getText().toString()) + "\n" +
+                loadXunByEraIndex(baZiActivityWrapper.getHourEraIndex()));
+        tv_dayun_title.setText("大运\n\n" +
+                BaZiHelper.getNaYinFiveElement(daYunC.getText().toString() + daYunT.getText().toString()) + "\n" +
+                loadXunByEraIndex(eraDaYunIndex));
 
         setStemBottom(flowYearC.getText().toString(), flowYearT.getText().toString(), tv_flowYear_bottom);
         setStemBottom(daYunC.getText().toString(), daYunT.getText().toString(), tv_dayun_bottom);
@@ -320,6 +291,14 @@ public class MemberAnalyze extends MemberBase {
         setStemBottom(monthC.getText().toString(), monthT.getText().toString(), tv_month_bottom);
         setStemBottom(hourC.getText().toString(), hourT.getText().toString(), tv_hour_bottom);
         setStemBottom(dayC.getText().toString(),dayT.getText().toString(),tv_day_bottom);
+    }
+
+    private String getKuiGang(String c, String t)
+    {
+        String kuiGang = "魁罡";
+        String[] array = new String[]{"壬辰","庚戌","庚辰", "戊戌"};
+        ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(array));
+        return arrayList.contains(c+t) ? kuiGang : "";
     }
 
     private void loadTitle(int currentAge, DateExt birthdate, Integer eraDaYunIndex, Integer eraFlowYearIndex)
@@ -396,7 +375,7 @@ public class MemberAnalyze extends MemberBase {
 
     private void setStemBottom(String celestrialStem, String terrestrial, TextView tv)
     {
-        String result = BaZiHelper.getGrowTrick(this, celestrialStem, terrestrial);
+        String result = BaZiHelperExtender.getGrowTrick(this, celestrialStem, terrestrial);
         boolean isXunKong = isXunKongText(terrestrial);
         if(isXunKong)
         {
@@ -407,7 +386,7 @@ public class MemberAnalyze extends MemberBase {
 
     private boolean isXunKongText(String terrestrialText)
     {
-        Pair<String,String> kong = BaZiHelper.getXunKong(this,
+        Pair<String,String> kong = Utility.getXunKong(this,
                 baZiActivityWrapper.getC(baZiActivityWrapper.getDayEraIndex()),
                 baZiActivityWrapper.getT(baZiActivityWrapper.getDayEraIndex()));
 

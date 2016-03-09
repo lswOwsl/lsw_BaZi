@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <CelestrialStem yinYang="Yang" wuXing="wood" name="甲"></CelestrialStem>
+  <CelestrialStem yinYang="Yin" wuXing="wood" name="乙"></CelestrialStem>
+  <CelestrialStem yinYang="Yang" wuXing="fire" name="丙"></CelestrialStem>
+  <CelestrialStem yinYang="Yin" wuXing="fire" name="丁"></CelestrialStem>
+  <CelestrialStem yinYang="Yang" wuXing="earth" name="戊"></CelestrialStem>
+  <CelestrialStem yinYang="Yin" wuXing="earth" name="己"></CelestrialStem>
+  <CelestrialStem yinYang="Yang" wuXing="metal" name="庚"></CelestrialStem>
+  <CelestrialStem yinYang="Yin" wuXing="metal" name="辛"></CelestrialStem>
+  <CelestrialStem yinYang="Yang" wuXing="water" name="壬"></CelestrialStem>
+  <CelestrialStem yinYang="Yin" wuXing="water" name="癸"></CelestrialStem>
+  <PairSuit wuXing="earth">
+    <Name>甲</Name>
+    <Name>己</Name>
+  </PairSuit>
+  <PairSuit wuXing="metal">
+    <Name>乙</Name>
+    <Name>庚</Name>
+  </PairSuit>
+  <PairSuit wuXing="water">
+    <Name>丙</Name>
+    <Name>辛</Name>
+  </PairSuit>
+  <PairSuit wuXing="wood">
+    <Name>丁</Name>
+    <Name>壬</Name>
+  </PairSuit>
+  <PairSuit wuXing="fire">
+    <Name>戊</Name>
+    <Name>癸</Name>
+  </PairSuit>
+  <PairInverse>
+    <Name>甲</Name>
+    <Name>庚</Name>
+  </PairInverse>
+  <PairInverse>
+    <Name>乙</Name>
+    <Name>辛</Name>
+  </PairInverse>
+  <PairInverse>
+    <Name>丙</Name>
+    <Name>壬</Name>
+  </PairInverse>
+  <PairInverse>
+    <Name>丁</Name>
+    <Name>癸</Name>
+  </PairInverse>
+  <PairInverse>
+    <Name>戊</Name>
+    <Name>甲</Name>
+  </PairInverse>
+  <PairInverse>
+    <Name>己</Name>
+    <Name>乙</Name>
+  </PairInverse>
+</Root>

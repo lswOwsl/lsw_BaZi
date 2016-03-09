@@ -10,9 +10,10 @@ import android.widget.TextView;
 
 import com.example.swli.myapplication20150519.common.ButtonHelper;
 import com.example.swli.myapplication20150519.common.DBManager;
-import com.example.swli.myapplication20150519.common.DateExt;
-import com.example.swli.myapplication20150519.common.LunarCalendarWrapper;
 import com.example.swli.myapplication20150519.common.SpinnerHelper;
+
+import lsw.library.DateExt;
+import lsw.library.LunarCalendarWrapper;
 
 /**
  * Created by swli on 5/21/2015.

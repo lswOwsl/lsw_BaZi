@@ -17,8 +17,9 @@ import android.widget.TextView;
 import com.example.swli.myapplication20150519.common.ButtonHelper;
 import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.SpinnerHelper;
-import com.example.swli.myapplication20150519.common.StringHelper;
 import com.example.swli.myapplication20150519.phone.base.Contact;
+
+import lsw.library.StringHelper;
 
 
 public class MainActivity extends Activity {
@@ -118,9 +119,9 @@ public class MainActivity extends Activity {
             String jiShen = cur.getString(jiShenIndex);
             String shiYongZhouqi = cur.getString(shiYongZhouQiIndex);
 
-            result += "用神:" + StringHelper.getText(yongShen1) + " " + StringHelper.getText(yongShen2) + "\n";
-            result += "忌神:" + StringHelper.getText(jiShen) + "\n";
-            result += "适用周期:" + StringHelper.getText(shiYongZhouqi) + "\n";
+            result += "用神:" + StringHelper.getString(yongShen1) + " " + StringHelper.getString(yongShen2) + "\n";
+            result += "忌神:" + StringHelper.getString(jiShen) + "\n";
+            result += "适用周期:" + StringHelper.getString(shiYongZhouqi) + "\n";
             result += "说明:" + comment + "\n";
         }
 

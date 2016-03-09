@@ -4,8 +4,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollViewC"
-        android:layout_gravity="center_horizontal" >
-        <LinearLayout android:orientation="vertical" android:paddingTop="5dp"
+        android:layout_gravity="center_horizontal">
+        <LinearLayout android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:id="@+id/ll_containerC">
         </LinearLayout>

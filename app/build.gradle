@@ -1,14 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        lsw {
+            keyAlias 'li shi wei'
+            keyPassword '88216240'
+            storeFile file('/Users/lsw_wsl/Desktop/lsw20150711.jks')
+            storePassword '88216240'
+        }
+    }
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
     defaultConfig {
         applicationId "com.example.swli.myapplication20150519"
-        minSdkVersion 19
-        targetSdkVersion 15
-        versionCode 2
-        versionName "2.0"
+        minSdkVersion 15
+        targetSdkVersion 19
+        versionCode 3
+        versionName "3.0"
     }
     buildTypes {
         release {
@@ -18,11 +26,13 @@ android {
     }
     productFlavors {
     }
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:22.2.0'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:support-v4:19+'
     compile project(':baidu_appx_android_2.0.0')
     compile project(':baidu_cuid')
+    compile project(':mylibrary')
 }
