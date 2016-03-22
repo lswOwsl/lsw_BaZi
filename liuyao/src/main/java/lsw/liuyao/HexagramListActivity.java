@@ -1,9 +1,12 @@
 package lsw.liuyao;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -16,9 +19,11 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lsw.ContactAuthor;
 import lsw.liuyao.advertising.BaiDuBanner;
+import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.HexagramListAdapter;
 import lsw.liuyao.model.HexagramRow;
@@ -133,6 +138,24 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             intentContact.setClass(HexagramListActivity.this, ContactAuthor.class);
             startActivityForResult(intentContact, 0);
             return true;
+        }
+        if(id == R.id.menuExportHexagram) {
+
+            List<HexagramRow> hexagramList = database.getHexagramList("");
+            String path = Environment.getExternalStorageDirectory() +"/"+
+                    MyApplication.getInstance().getResources().getString(R.string.externalSavingFolder)+"/";
+            database.saveHexagramsToXML(hexagramList, path);
+
+            AlertDialog.Builder dialog = new AlertDialog.Builder(HexagramListActivity.this);
+            dialog.setTitle("倒出记录成功!")
+                    .setMessage("文件位于目录"+path)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).create().show();
+
         }
 
         return super.onOptionsItemSelected(item);

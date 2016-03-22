@@ -4,15 +4,25 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.Xml;
 
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import lsw.library.DatabaseManager;
 import lsw.library.DateExt;
 import lsw.liuyao.R;
+import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.model.HexagramRow;
 import lsw.model.Hexagram;
 
@@ -87,7 +97,7 @@ public class Database extends DatabaseManager {
         openDatabase();
         String[] params = new String[]{ paramId+"" };
         String sql = "SELECT * FROM Hexagram where Id = ?";
-        Cursor cur = database.rawQuery(sql,params);
+        Cursor cur = database.rawQuery(sql, params);
         HexagramRow hexagram = null;
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             hexagram = createHexagramRowByCursor(cur);
@@ -134,5 +144,61 @@ public class Database extends DatabaseManager {
         cur.close();
         database.close();
         return list;
+    }
+
+    public void saveHexagramsToXML(List<HexagramRow> rows,  String localDir)
+    {
+        File file = new File(localDir);
+        if (!file.exists()) {
+            try {
+                file.mkdirs();
+            } catch (Exception e) {
+                Log.d("XML saving folder", e.getMessage());
+            }
+        }
+
+        boolean bFlag;
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+        String strTmpName = sDateFormat.format(new java.util.Date()) + ".xml";
+        FileOutputStream fileos = null;
+
+        File newXmlFile = new File(localDir + strTmpName);
+        try {
+            if (newXmlFile.exists()) {
+                bFlag = newXmlFile.delete();
+            } else {
+                bFlag = true;
+            }
+
+            if (bFlag) {
+
+                if (newXmlFile.createNewFile()) {
+
+                    fileos = new FileOutputStream(newXmlFile);
+                    XmlSerializer serializer = Xml.newSerializer();
+                    serializer.setOutput(fileos, "UTF-8");
+                    serializer.startDocument("UTF-8", null);
+
+                    // start a tag called
+                    serializer.startTag(null, "Hexagrams");
+                    for (HexagramRow row : rows) {
+                        serializer.startTag(null, "Hexagram");
+                        serializer.attribute(null, "OriginalName", row.getOriginalName());
+                        serializer.attribute(null, "ChangedName", row.getChangedName());
+                        serializer.attribute(null, "ShakeDate", row.getDate());
+                        serializer.attribute(null, "Note", row.getNote());
+                        serializer.endTag(null, "Hexagram");
+                    }
+                    serializer.endTag(null, "Hexagrams");
+                    serializer.endDocument();
+                    serializer.flush();
+                    fileos.close();
+                    MediaScannerConnection.scanFile(MyApplication.getInstance(), new String[]{newXmlFile.getAbsolutePath()}, null, null);
+                }
+            }
+        } catch (Exception e) {
+            Log.d("member saving",e.getMessage());
+        }
+        //return bFlag;
     }
 }
