@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import lsw.model.EnumFiveElement;
@@ -18,6 +19,38 @@ import lsw.xml.model.XmlModelExtProperty;
  * Created by swli on 8/10/2015.
  */
 public class Default {
+
+    private static String[] sixSuitHexagrams;
+
+    public static String[] getSixSuitHexagrams()
+    {
+        if(sixSuitHexagrams == null)
+        {
+            sixSuitHexagrams = new String[]{"豫","复","贲","旅","节","困","否","泰"};
+        }
+        return sixSuitHexagrams;
+    }
+
+    public static boolean  isSixSuitHexagram(String hexagramName)
+    {
+        return Arrays.asList(getSixSuitHexagrams()).contains(hexagramName);
+    }
+
+    private static String[] sixInverseHexagrams;
+
+    private static String[] getSixInverseHexagrams()
+    {
+        if(sixInverseHexagrams == null)
+        {
+            sixInverseHexagrams = new String[]{"乾","兑","离","震","巽","坎","艮","坤","无妄","大壮"};
+        }
+        return sixInverseHexagrams;
+    }
+
+    public static boolean isSixInverseHexagram(String hexagramName)
+    {
+        return Arrays.asList(getSixInverseHexagrams()).contains(hexagramName);
+    }
 
     private static ArrayList<HexagramDefault> hexagrams;
 

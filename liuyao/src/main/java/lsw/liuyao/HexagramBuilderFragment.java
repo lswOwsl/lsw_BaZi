@@ -20,6 +20,7 @@ import lsw.library.LunarCalendarWrapper;
 import lsw.library.Utility;
 import lsw.liuyao.data.HexagramAdapter;
 import lsw.model.Hexagram;
+import lsw.value.Default;
 
 /**
  * Created by swli on 8/11/2015.
@@ -87,11 +88,12 @@ public class HexagramBuilderFragment extends Fragment {
 
         if(changedHexagram != null)
         {
-            tvChangedTitle.setText("变卦:"+ changedHexagram.getName() + "  宫:" + changedHexagram.getPlace()+ "  位置:"+getPlacePostion(changedHexagram.getId()));
+            String sixSuitOrInverse = Default.isSixInverseHexagram(changedHexagram.getName()) ? " (六冲)" : (Default.isSixSuitHexagram(changedHexagram.getName())? " (六合)" : "");
+            tvChangedTitle.setText("变卦:"+ changedHexagram.getName() + sixSuitOrInverse +"  宫:" + changedHexagram.getPlace()+ "  位置:"+getPlacePostion(changedHexagram.getId()));
             lvHexagramChanged.setAdapter(new HexagramAdapter(changedHexagram, getActivity(), true));
         }
-
-        tvMainTitle.setText("主卦:" + mainHexagram.getName() + "  宫:" + mainHexagram.getPlace() + "  位置:" + getPlacePostion(mainHexagram.getId()));
+        String sixSuitOrInverse = Default.isSixInverseHexagram(mainHexagram.getName()) ? " (六冲)" : (Default.isSixSuitHexagram(mainHexagram.getName())? " (六合)" : "");
+        tvMainTitle.setText("主卦:" + mainHexagram.getName() + sixSuitOrInverse + "  宫:" + mainHexagram.getPlace() + "  位置:" + getPlacePostion(mainHexagram.getId()));
 
 
         tvDate.setText(dateExt.getFormatDateTime(formatDateTime));
