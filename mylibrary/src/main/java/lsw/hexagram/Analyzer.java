@@ -534,7 +534,7 @@ public class Analyzer  {
             if (withFirstResultLine)
             {
                 //means AnDong Line
-                if (linePairOne.first == null)
+                if (linePairOne.second == null)
                     return null;
                 return createThreeSuitByDynamicLines(linePairOne.first, linePairOne.second, linePairTwo.first, hexagram);
             }
