@@ -20,17 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lsw.library.DatabaseManager;
-import lsw.library.DateExt;
 import lsw.liuyao.R;
 import lsw.liuyao.common.MyApplication;
+import lsw.liuyao.model.HexagramLineNote;
 import lsw.liuyao.model.HexagramRow;
-import lsw.model.Hexagram;
 
 /**
  * Created by swli on 8/18/2015.
  */
 public class Database extends DatabaseManager {
 
+    public static final String DB_NAME_HEXAGRAM_NOTE = "liuYaoHexagramNote.db";
     public static final String DB_NAME = "liuYao.db";
     public static final String PACKAGE_NAME = "lsw.liuyao";
     public static final String DB_PATH = "/data"
@@ -39,6 +39,8 @@ public class Database extends DatabaseManager {
 
 
     private Context context;
+
+    private SQLiteDatabase databaseHexagramNote;
 
     public Database(Context context) {
         this.context = context;
@@ -53,6 +55,12 @@ public class Database extends DatabaseManager {
         int resourceId = R.raw.database_structure_empty;
         InputStream is = this.context.getResources().openRawResource(
                 resourceId);
+
+        //加载64卦数据库
+        int resourceIdHexagramNote = R.raw.sixty_four_hexagrams_note;
+        InputStream isNote = this.context.getResources().openRawResource(resourceIdHexagramNote);
+        databaseHexagramNote = super.openDatabase(DB_PATH + "/" + DB_NAME_HEXAGRAM_NOTE, isNote);
+
         return super.openDatabase(databaseFile,is);
     }
 
@@ -83,7 +91,7 @@ public class Database extends DatabaseManager {
 
         String originalName = getColumnValue(cursor, "OriginalName");
         String changedName = getColumnValue(cursor,"ChangedName");
-        String note = getColumnValue(cursor,"Note");
+        String note = getColumnValue(cursor, "Note");
 
         String shakeDate = getColumnValue(cursor, "ShakeDate");
 
@@ -106,6 +114,43 @@ public class Database extends DatabaseManager {
         closeDatabase();
         return hexagram;
     }
+
+    public List<HexagramLineNote> getHexagramByNameAndLinePosition(String name)
+    {
+        openDatabase();
+        String[] params = new String[]{ name };
+        String sql = "SELECT * FROM HexagramsNote where Name = ?";
+        Cursor cursor = databaseHexagramNote.rawQuery(sql, params);
+        List<HexagramLineNote> hexagramLineNotes = new ArrayList<HexagramLineNote>();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+
+            HexagramLineNote hexagramLineNote = new HexagramLineNote();
+
+            String hexagramName = getColumnValue(cursor, "Name");
+            String linePosition = getColumnValue(cursor, "LinePosition");
+            String noteType = getColumnValue(cursor, "NoteType");
+
+            String originalNote = getColumnValue(cursor, "OriginalNote");
+            String decoratedNote = getColumnValue(cursor, "DecoratedNote");
+
+            hexagramLineNote.setName(hexagramName.trim());
+            if(TextUtils.isEmpty(linePosition.trim()))
+                hexagramLineNote.setPosition(8);
+            else
+                hexagramLineNote.setPosition(Integer.valueOf(linePosition));
+
+            hexagramLineNote.setNoteType(noteType.trim());
+            hexagramLineNote.setOriginalNote(originalNote.trim());
+            hexagramLineNote.setDecoratedNote(decoratedNote.trim());
+
+            hexagramLineNotes.add(hexagramLineNote);
+        }
+        closeDatabase();
+        databaseHexagramNote.close();
+        return hexagramLineNotes;
+    }
+
 
     public void updateHexagram(HexagramRow hexagramRow) {
 

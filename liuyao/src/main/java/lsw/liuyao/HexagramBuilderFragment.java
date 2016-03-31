@@ -13,12 +13,16 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import lsw.hexagram.Builder;
 import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.Utility;
+import lsw.liuyao.data.Database;
 import lsw.liuyao.data.HexagramAdapter;
+import lsw.liuyao.model.HexagramLineNote;
 import lsw.model.Hexagram;
 import lsw.value.Default;
 
@@ -41,11 +45,12 @@ public class HexagramBuilderFragment extends Fragment {
     private TextView tvMainTitle, tvChangedTitle, tvEraDate, tvDate;
 
     public static HexagramBuilderFragment newInstance(Hexagram mainHexagram, Hexagram changedHexagram, String formatDate) {
+
         HexagramBuilderFragment fragment = new HexagramBuilderFragment();
         Bundle args = new Bundle();
         args.putSerializable(Param_Hexagram_Main, mainHexagram);
         args.putSerializable(Param_Hexagram_Changed, changedHexagram);
-        args.putString(Param_FormatDate,formatDate);
+        args.putString(Param_FormatDate, formatDate);
         fragment.setArguments(args);
         return fragment;
     }

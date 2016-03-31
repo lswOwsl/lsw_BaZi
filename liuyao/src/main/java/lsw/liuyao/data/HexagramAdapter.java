@@ -1,6 +1,8 @@
 package lsw.liuyao.data;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
@@ -11,15 +13,19 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import lsw.hexagram.LineComparator;
 import lsw.library.ColorHelper;
+import lsw.liuyao.HexagramAnalyzerActivity;
 import lsw.liuyao.R;
+import lsw.liuyao.model.HexagramLineNote;
 import lsw.model.EnumLineSymbol;
 import lsw.model.Hexagram;
 import lsw.model.Line;
@@ -46,6 +52,9 @@ public class HexagramAdapter extends BaseAdapter {
         return this.sixAnimals;
     }
 
+    private List<HexagramLineNote> lineNotes;
+    private Database database;
+
     public HexagramAdapter(Hexagram hexagram, Context context)
     {
         this(hexagram,context,false);
@@ -60,6 +69,9 @@ public class HexagramAdapter extends BaseAdapter {
         this.layoutInflater = LayoutInflater.from(context);
         this.isChangedHexagram = isChangedHexagram;
         colorHelper = ColorHelper.getInstance(context);
+
+        database = new Database(context);
+        lineNotes = database.getHexagramByNameAndLinePosition(hexagram.getName());
     }
 
     @Override
@@ -107,6 +119,20 @@ public class HexagramAdapter extends BaseAdapter {
         controls.tvLine.append(ssName);
         controls.tvLine.append(" ");
         controls.tvLine.append(ssFiveElement);
+
+        controls.tvLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(context).setTitle("test").setIcon(
+                        android.R.drawable.ic_dialog_info)
+                        .setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+            }
+        });
 
         if(!isChangedHexagram) {
 
