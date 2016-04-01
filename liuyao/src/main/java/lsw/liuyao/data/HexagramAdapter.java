@@ -1,18 +1,26 @@
 package lsw.liuyao.data;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
+import android.util.DisplayMetrics;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -176,17 +184,22 @@ public class HexagramAdapter extends BaseAdapter {
 
                 String noteTuanCi = "";
                 String noteXiangCi = "";
+                String noteTuanCiD = "";
+                String noteXiangCiD = "";
+
                 for(HexagramLineNote lineNote : lineNotes )
                 {
                     if(lineNote.getPosition() == linePosition)
                     {
                         if(lineNote.getNoteType().trim().equals("彖"))
                         {
-                            noteTuanCi = "彖词--------------------\n原文: " + lineNote.getOriginalNote() + "\n译文: "+ lineNote.getDecoratedNote();
+                            noteTuanCi = lineNote.getOriginalNote();
+                            noteTuanCiD = lineNote.getDecoratedNote();
                         }
                         else
                         {
-                            noteXiangCi = "象词--------------------\n原文: " + lineNote.getOriginalNote() + "\n译文: " + lineNote.getDecoratedNote();
+                            noteXiangCi = lineNote.getOriginalNote();
+                            noteXiangCiD = lineNote.getDecoratedNote();
                         }
                     }
                 }
@@ -206,10 +219,34 @@ public class HexagramAdapter extends BaseAdapter {
                 {
                     title = title + mappingPosition.get(linePosition);
                 }
-                    new AlertDialog.Builder(context)
-                            .setTitle(title)
-                            .setMessage(noteTuanCi + "\n" + noteXiangCi)
-                            .show();
+
+                LayoutInflater inflater = LayoutInflater.from(context);
+                View lineNoteView = inflater.inflate(R.layout.common_hexagram_description, null);
+                TextView tvTitle = (TextView)lineNoteView.findViewById(R.id.tvTitle);
+                TextView tvTuanCiNote = (TextView)lineNoteView.findViewById(R.id.tvTuanCiNote);
+                TextView tvTuanCiNoteDecorated = (TextView)lineNoteView.findViewById(R.id.tvTuanCiNoteDecorated);
+
+                TextView tvXiangCiNote = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNote);
+                TextView tvXiangCiNoteDecorated = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNoteDecorated);
+
+                tvTitle.setText(title);
+                tvTuanCiNote.setText(noteTuanCi);
+                tvTuanCiNoteDecorated.setText(noteTuanCiD);
+                tvXiangCiNote.setText(noteXiangCi);
+                tvXiangCiNoteDecorated.setText(noteXiangCiD);
+
+                Dialog dialog = new Dialog(context,R.style.CustomDialog);
+                dialog.setContentView(lineNoteView);
+                dialog.show();
+
+                WindowManager windowManager = ((Activity)context).getWindowManager();
+
+                Display display = windowManager.getDefaultDisplay();
+                Window win = dialog.getWindow();
+                DisplayMetrics dm = new DisplayMetrics();
+                display.getMetrics(dm);
+                win.setLayout(dm.widthPixels/3*2, dm.heightPixels /3*2);
+
             }
         });
 

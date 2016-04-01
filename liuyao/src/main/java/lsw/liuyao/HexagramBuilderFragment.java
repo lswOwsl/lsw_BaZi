@@ -2,16 +2,21 @@ package lsw.liuyao;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Pair;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -141,10 +146,7 @@ public class HexagramBuilderFragment extends Fragment {
         tvMainTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = getHexagramNote(lineNotesMain);
-                new AlertDialog.Builder(getActivity())
-                        .setMessage(message)
-                        .show();
+                showHexagramNote(lineNotesMain);
             }
         });
 
@@ -155,10 +157,8 @@ public class HexagramBuilderFragment extends Fragment {
             tvChangedTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String message = getHexagramNote(lineNotesChanged);
-                    new AlertDialog.Builder(getActivity())
-                            .setMessage(message)
-                            .show();
+                    showHexagramNote(lineNotesChanged);
+
                 }
             });
         }
@@ -166,21 +166,58 @@ public class HexagramBuilderFragment extends Fragment {
         return view;
     }
 
-    private String getHexagramNote(List<HexagramLineNote> noteList)
+    private void showHexagramNote(List<HexagramLineNote> noteList)
     {
-        String result = "";
+        String noteTuanCi = "";
+        String noteXiangCi = "";
+        String noteTuanCiD = "";
+        String noteXiangCiD = "";
+
         for (HexagramLineNote lineNote : noteList)
         {
-            if(lineNote.getPosition() == 8 || lineNote.getPosition() == 0)
+            //lineNote.getPosition() == 8 ||
+            if(lineNote.getPosition() == 0)
             {
-                if(!TextUtils.isEmpty(result)) {
-                    result += "\n";
+                if(lineNote.getNoteType().trim().equals("彖"))
+                {
+                    noteTuanCi = lineNote.getOriginalNote();
+                    noteTuanCiD = lineNote.getDecoratedNote();
                 }
-                result = result + lineNote.getNoteType() + "词------------\n原文 : " + lineNote.getOriginalNote() + "\n译文 :" + lineNote.getDecoratedNote();
+                else
+                {
+                    noteXiangCi = lineNote.getOriginalNote();
+                    noteXiangCiD = lineNote.getDecoratedNote();
+                }
+                //差用九用六的没有显示也就是等于8时
             }
         }
 
-        return result;
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View lineNoteView = inflater.inflate(R.layout.common_hexagram_description, null);
+        TextView tvTitle = (TextView)lineNoteView.findViewById(R.id.tvTitle);
+        TextView tvTuanCiNote = (TextView)lineNoteView.findViewById(R.id.tvTuanCiNote);
+        TextView tvTuanCiNoteDecorated = (TextView)lineNoteView.findViewById(R.id.tvTuanCiNoteDecorated);
+
+        TextView tvXiangCiNote = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNote);
+        TextView tvXiangCiNoteDecorated = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNoteDecorated);
+
+        tvTitle.setText(mainHexagram.getName());
+        tvTuanCiNote.setText(noteTuanCi);
+        tvTuanCiNoteDecorated.setText(noteTuanCiD);
+        tvXiangCiNote.setText(noteXiangCi);
+        tvXiangCiNoteDecorated.setText(noteXiangCiD);
+
+        Dialog dialog = new Dialog(getActivity(),R.style.CustomDialog);
+        dialog.setContentView(lineNoteView);
+        dialog.show();
+
+        WindowManager windowManager = getActivity().getWindowManager();
+
+        Display display = windowManager.getDefaultDisplay();
+        Window win = dialog.getWindow();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        win.setLayout(dm.widthPixels/3*2, dm.heightPixels /3*2);
     }
 
     private String getPlacePostion(int id)
