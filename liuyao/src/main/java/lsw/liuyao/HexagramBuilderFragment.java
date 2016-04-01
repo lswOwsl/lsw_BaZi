@@ -1,11 +1,13 @@
 package lsw.liuyao;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +46,8 @@ public class HexagramBuilderFragment extends Fragment {
 
     private TextView tvMainTitle, tvChangedTitle, tvEraDate, tvDate;
 
+    private Database database;
+
     public static HexagramBuilderFragment newInstance(Hexagram mainHexagram, Hexagram changedHexagram, String formatDate) {
 
         HexagramBuilderFragment fragment = new HexagramBuilderFragment();
@@ -56,6 +60,7 @@ public class HexagramBuilderFragment extends Fragment {
     }
 
     public HexagramBuilderFragment() {
+
     }
 
     @Override
@@ -131,7 +136,51 @@ public class HexagramBuilderFragment extends Fragment {
         tvEraDate.append(ColorHelper.getTextByColor(")", Color.GRAY));
         tvEraDate.append(ColorHelper.getTextByColor("空",Color.GRAY));
 
+        database = new Database(getActivity());
+        final List<HexagramLineNote> lineNotesMain = database.getHexagramByNameAndLinePosition(mainHexagram.getName());
+        tvMainTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String message = getHexagramNote(lineNotesMain);
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(message)
+                        .show();
+            }
+        });
+
+        if(changedHexagram != null) {
+
+            final List<HexagramLineNote> lineNotesChanged = database.getHexagramByNameAndLinePosition(changedHexagram.getName());
+
+            tvChangedTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String message = getHexagramNote(lineNotesChanged);
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage(message)
+                            .show();
+                }
+            });
+        }
+
         return view;
+    }
+
+    private String getHexagramNote(List<HexagramLineNote> noteList)
+    {
+        String result = "";
+        for (HexagramLineNote lineNote : noteList)
+        {
+            if(lineNote.getPosition() == 8 || lineNote.getPosition() == 0)
+            {
+                if(!TextUtils.isEmpty(result)) {
+                    result += "\n";
+                }
+                result = result + lineNote.getNoteType() + "词------------\n原文 : " + lineNote.getOriginalNote() + "\n译文 :" + lineNote.getDecoratedNote();
+            }
+        }
+
+        return result;
     }
 
     private String getPlacePostion(int id)

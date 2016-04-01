@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +108,7 @@ public class HexagramAdapter extends BaseAdapter {
         } else {
             controls = (Controls) view.getTag();
         }
-        Line line = lines.get(i);
+        final Line line = lines.get(i);
         //String lineText= line.getSixRelation().toString() +" " + line.getEarthlyBranch().getName() + " " + line.getEarthlyBranch().getFiveElement().toString();
         //controls.tvLine.setText(lineText);
         controls.tvLine.setText("");
@@ -120,20 +121,6 @@ public class HexagramAdapter extends BaseAdapter {
         controls.tvLine.append(" ");
         controls.tvLine.append(ssFiveElement);
 
-        controls.tvLine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(context).setTitle("test").setIcon(
-                        android.R.drawable.ic_dialog_info)
-                        .setPositiveButton("关闭", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-            }
-        });
-
         if(!isChangedHexagram) {
 
             String self = hexagram.getSelf() == line.getPosition() ? "世" : "";
@@ -141,10 +128,6 @@ public class HexagramAdapter extends BaseAdapter {
             controls.tvSelfTarget.setText(self+target);
 
             if (line.getEarthlyBranchAttached() != null) {
-//                String attachedLineText = line.getSixRelationAttached().toString() + " "
-//                        + line.getEarthlyBranchAttached().getName() + " "
-//                        + line.getEarthlyBranchAttached().getFiveElement().toString();
-//                controls.tvAttachedLine.setText(attachedLineText);
                 controls.tvAttachedLine.setText("");
                 SpannableString ssSixRelationAttached = ColorHelper.getTextByColor(line.getSixRelationAttached().toString(), Color.GRAY);
                 SpannableString ssNameAttached = colorHelper.getColorTerrestrial(line.getEarthlyBranchAttached().getName());
@@ -171,7 +154,7 @@ public class HexagramAdapter extends BaseAdapter {
         }
 
         int resourceId = R.drawable.yang;
-        EnumLineSymbol lineSymbol = line.getLineSymbol();
+        final EnumLineSymbol lineSymbol = line.getLineSymbol();
         if(lineSymbol.equals(EnumLineSymbol.LaoYang))
             resourceId = R.drawable.laoyang;
         else if(lineSymbol.equals(EnumLineSymbol.LaoYin))
@@ -179,6 +162,57 @@ public class HexagramAdapter extends BaseAdapter {
         else if(lineSymbol.equals(EnumLineSymbol.Yin))
             resourceId = R.drawable.yin;
         controls.ivLineSymbol.setImageResource(resourceId);
+
+        final HashMap<Integer,String> mappingPosition = new HashMap<Integer, String>();
+        mappingPosition.put(2,"二");
+        mappingPosition.put(3,"三");
+        mappingPosition.put(4,"四");
+        mappingPosition.put(5,"五");
+
+        final int linePosition = 6 - i;
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String noteTuanCi = "";
+                String noteXiangCi = "";
+                for(HexagramLineNote lineNote : lineNotes )
+                {
+                    if(lineNote.getPosition() == linePosition)
+                    {
+                        if(lineNote.getNoteType().trim().equals("彖"))
+                        {
+                            noteTuanCi = "彖词--------------------\n原文: " + lineNote.getOriginalNote() + "\n译文: "+ lineNote.getDecoratedNote();
+                        }
+                        else
+                        {
+                            noteXiangCi = "象词--------------------\n原文: " + lineNote.getOriginalNote() + "\n译文: " + lineNote.getDecoratedNote();
+                        }
+                    }
+                }
+
+                String title = linePosition + "";
+
+                if (lineSymbol == EnumLineSymbol.LaoYang || lineSymbol == EnumLineSymbol.Yang)
+                    title = "九";
+                else
+                    title = "六";
+
+                if(linePosition == 1)
+                    title = "初" + title;
+                else if(linePosition == 6)
+                    title = "上" + title;
+                else
+                {
+                    title = title + mappingPosition.get(linePosition);
+                }
+                    new AlertDialog.Builder(context)
+                            .setTitle(title)
+                            .setMessage(noteTuanCi + "\n" + noteXiangCi)
+                            .show();
+            }
+        });
+
         return view;
     }
 
