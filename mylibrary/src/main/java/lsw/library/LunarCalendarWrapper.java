@@ -53,6 +53,17 @@ public class LunarCalendarWrapper extends LunarCalendar {
         return v + 1;
     }
 
+    public int getChineseEraOfMonth(boolean checkWithHourMins) {
+
+        int v = (year * 12 + month + 12) % 60;
+        if (checkWithHourMins && dateExt.compareTo(solarTerms[0].getSolarTermDate()) == DateExt.EnumDateCompareResult.Earlier) {
+                v -= 1;
+            return v + 1;
+        } else {
+            return getChineseEraOfMonth();
+        }
+    }
+
 
     public int getChineseEraOfDay()
     {

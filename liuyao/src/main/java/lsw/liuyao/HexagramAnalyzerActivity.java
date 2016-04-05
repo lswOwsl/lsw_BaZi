@@ -191,7 +191,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     private void bindAnalyzeResult(DateExt dateExt)
     {
         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
-        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
+        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth(true);
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
         Pair<String,String> xunKong = Utility.getXunKong(HexagramAnalyzerActivity.this, lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
         String eraText =

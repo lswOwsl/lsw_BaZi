@@ -94,7 +94,7 @@ public class HexagramBuilderFragment extends Fragment {
         lvHexagramChanged = (ListView) view.findViewById(R.id.lvHexagramChanged);
 
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
-        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
+        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth(true);
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
 
         HexagramAdapter mainAdapter = new HexagramAdapter(mainHexagram,getActivity());
@@ -201,7 +201,7 @@ public class HexagramBuilderFragment extends Fragment {
         TextView tvXiangCiNote = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNote);
         TextView tvXiangCiNoteDecorated = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNoteDecorated);
 
-        tvTitle.setText(mainHexagram.getName());
+        tvTitle.setText(noteList.get(0).getName());
         tvTuanCiNote.setText(noteTuanCi);
         tvTuanCiNoteDecorated.setText(noteTuanCiD);
         tvXiangCiNote.setText(noteXiangCi);
