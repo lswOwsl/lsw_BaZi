@@ -2,6 +2,7 @@ package lsw.liuyao;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +11,9 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -105,23 +108,45 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
             hexagramRow =  database.getHexagramById(hexagramRowId);
         }
 
+        final Activity currentActivity = this;
         btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditText et = new EditText(HexagramAnalyzerActivity.this);
-                et.setText(hexagramRow.getNote());
-                new AlertDialog.Builder(HexagramAnalyzerActivity.this).setTitle("备注记录").setIcon(
-                        android.R.drawable.ic_dialog_info)
-                        .setView(et)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                hexagramRow.setNote(et.getText().toString());
+
+                LayoutInflater inflater = LayoutInflater.from(currentActivity);
+                View noteView = inflater.inflate(R.layout.common_hexagram_note, null);
+                final EditText etNote = (EditText)noteView.findViewById(R.id.editText);
+
+                TextView tvSave = (TextView)noteView.findViewById(R.id.btnSaveNote);
+
+                etNote.setText(hexagramRow.getNote());
+
+                final Dialog dialog = new Dialog(currentActivity,R.style.CustomDialog);
+                dialog.setContentView(noteView);
+                dialog.show();
+
+                WindowManager windowManager = currentActivity.getWindowManager();
+
+                Display display = windowManager.getDefaultDisplay();
+                Window win = dialog.getWindow();
+                DisplayMetrics dm = new DisplayMetrics();
+                display.getMetrics(dm);
+                win.setLayout(dm.widthPixels / 3 * 2, dm.heightPixels / 3 * 2);
+
+                tvSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        hexagramRow.setNote(etNote.getText().toString());
                                 database.updateHexagram(hexagramRow);
+                                dialog.hide();
                                 Toast.makeText(HexagramAnalyzerActivity.this,"更新备注记录成功",Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("取消", null).show();
+                    }
+                });
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                PhotoAlbumsFragment photoAlbumsFragment = PhotoAlbumsFragment.createFragment();
+                ft.replace(R.id.fl_Image_Select, photoAlbumsFragment, null);
+                ft.commit();
             }
         });
 

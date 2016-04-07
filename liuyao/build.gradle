@@ -54,6 +54,7 @@ dependencies {
     //        transitive = true
     //    }
     compile project(':swipelistview')
+    //compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
 
