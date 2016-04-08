@@ -34,7 +34,7 @@ import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.StringHelper;
 import lsw.library.Utility;
-import lsw.liuyao.advertising.BaiDuInterstitial;
+//import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.NoteFragmentDialog;
@@ -62,7 +62,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     HexagramRow hexagramRow;
     int hexagramRowId;
 
-    BaiDuInterstitial baiDuInterstitial;
+    //BaiDuInterstitial baiDuInterstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +80,8 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         // WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.hexagram_analyze_activity);
 
-        baiDuInterstitial = new BaiDuInterstitial(this);
-        baiDuInterstitial.create();
+//        baiDuInterstitial = new BaiDuInterstitial(this);
+//        baiDuInterstitial.create();
 
         Bundle bundle = getIntent().getExtras();
         final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
@@ -125,7 +125,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
 //                etNote.setText(hexagramRow.getNote());
 
 
-                final NoteFragmentDialog dialog = new NoteFragmentDialog();
+                NoteFragmentDialog dialog = NoteFragmentDialog.newInstance(hexagramRow);
                 //dialog.setContentView(noteView);
                 dialog.show(getFragmentManager(),"");
 
@@ -349,14 +349,14 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     private void scrollToMenu() {
         new ScrollTask().execute(30);
 
-        baiDuInterstitial.loadInterstitialAdOnButton();
+        //baiDuInterstitial.loadInterstitialAdOnButton();
     }
 
 
     private void scrollToContent() {
         new ScrollTask().execute(-30);
 
-        baiDuInterstitial.loadInterstitialAdOnButton();
+        //baiDuInterstitial.loadInterstitialAdOnButton();
     }
 
     private void createVelocityTracker(MotionEvent event) {

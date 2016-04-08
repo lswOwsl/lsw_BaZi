@@ -12,8 +12,8 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
-import com.baidu.autoupdatesdk.UICheckUpdateCallback;
+//import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
+//import com.baidu.autoupdatesdk.UICheckUpdateCallback;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lsw.ContactAuthor;
-import lsw.liuyao.advertising.BaiDuBanner;
+//import lsw.liuyao.advertising.BaiDuBanner;
 import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.HexagramListAdapter;
@@ -48,8 +48,8 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hexagram_list_activity);
 
-        BaiDuBanner baiDuBanner = new BaiDuBanner(this);
-        baiDuBanner.create();
+        //BaiDuBanner baiDuBanner = new BaiDuBanner(this);
+        //baiDuBanner.create();
 
         getActionBar().setDisplayHomeAsUpEnabled(false);
         getActionBar().setDisplayShowCustomEnabled(true);
@@ -84,17 +84,17 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         dialog.setIndeterminate(true);
 
         dialog.show();
-        BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
+        //BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
     }
 
-    private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
-
-        @Override
-        public void onCheckComplete() {
-            dialog.dismiss();
-        }
-
-    }
+//    private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
+//
+//        @Override
+//        public void onCheckComplete() {
+//            dialog.dismiss();
+//        }
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

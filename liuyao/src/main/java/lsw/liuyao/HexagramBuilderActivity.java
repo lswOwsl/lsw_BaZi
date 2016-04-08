@@ -34,7 +34,7 @@ import lsw.hexagram.Builder;
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.StringHelper;
-import lsw.liuyao.advertising.BaiDuInterstitial;
+//import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.LineDragListener;
@@ -131,15 +131,15 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
     DateExt initialDateExt;
     String formatDateTime = "yyyy年MM月dd日 HH:mm";
 
-    BaiDuInterstitial baiDuInterstitial;
+    //BaiDuInterstitial baiDuInterstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hexagram_maintain_activity);
 
-        baiDuInterstitial = new BaiDuInterstitial(this);
-        baiDuInterstitial.create();
+//        baiDuInterstitial = new BaiDuInterstitial(this);
+//        baiDuInterstitial.create();
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -169,7 +169,7 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
                     public void invoke(DateExt dateExt) {
                         tvDateSelector.setText(dateExt.getFormatDateTime(formatDateTime));
                         initialDateExt = dateExt;
-                        baiDuInterstitial.loadInterstitialAdOnButton();
+                        //baiDuInterstitial.loadInterstitialAdOnButton();
                     }
                 });
                 dialog.show();

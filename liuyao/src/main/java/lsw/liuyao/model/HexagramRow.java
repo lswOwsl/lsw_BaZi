@@ -1,9 +1,11 @@
 package lsw.liuyao.model;
 
+import java.io.Serializable;
+
 /**
  * Created by swli on 8/18/2015.
  */
-public class HexagramRow {
+public class HexagramRow implements Serializable {
     private String originalName;
     private String changedName;
     private String note;

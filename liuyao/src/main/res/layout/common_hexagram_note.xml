@@ -28,39 +28,40 @@
             android:layout_marginBottom="0dp"></View>
         </LinearLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/lltop"
-        android:layout_above="@+id/llend">
 
 
-        <LinearLayout android:layout_marginLeft="20dp"
+
+        <LinearLayout
+            android:layout_below="@+id/lltop"
+            android:layout_above="@+id/llend"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <EditText  android:textSize="15dp"
-                    android:text="测试文字大小"
-                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:ems="10"
+                    android:maxLines="2"
+                    android:scrollbars="vertical"
                     android:id="@+id/editText"
                     android:layout_weight="1" />
+
             </LinearLayout>
 
-        <LinearLayout android:gravity="center"
+            <LinearLayout android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" android:padding="5dp">
+            android:orientation="vertical" android:padding="5dp">
 
             <TextView
                 android:textColor="#fff"
@@ -75,15 +76,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
+                <View android:layout_marginTop="6dp"
+                    style="@style/PartLine"
+                    android:layout_marginBottom="0dp"></View>
             </LinearLayout>
 
             <FrameLayout android:id="@+id/fl_Image_Select"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
-    </ScrollView>
+
 
     <LinearLayout android:id="@+id/llend" android:gravity="center"
         android:orientation="vertical"
