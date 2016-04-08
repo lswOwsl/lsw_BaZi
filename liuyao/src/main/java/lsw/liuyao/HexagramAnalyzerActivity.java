@@ -3,6 +3,8 @@ package lsw.liuyao;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +37,7 @@ import lsw.library.Utility;
 import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
+import lsw.liuyao.common.NoteFragmentDialog;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
 import lsw.model.Hexagram;
@@ -113,40 +116,38 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
             @Override
             public void onClick(View view) {
 
-                LayoutInflater inflater = LayoutInflater.from(currentActivity);
-                View noteView = inflater.inflate(R.layout.common_hexagram_note, null);
-                final EditText etNote = (EditText)noteView.findViewById(R.id.editText);
+//                LayoutInflater inflater = LayoutInflater.from(currentActivity);
+//                View noteView = inflater.inflate(R.layout.common_hexagram_note, null);
+//                final EditText etNote = (EditText)noteView.findViewById(R.id.editText);
+//
+//                TextView tvSave = (TextView)noteView.findViewById(R.id.btnSaveNote);
+//
+//                etNote.setText(hexagramRow.getNote());
 
-                TextView tvSave = (TextView)noteView.findViewById(R.id.btnSaveNote);
 
-                etNote.setText(hexagramRow.getNote());
+                final NoteFragmentDialog dialog = new NoteFragmentDialog();
+                //dialog.setContentView(noteView);
+                dialog.show(getFragmentManager(),"");
 
-                final Dialog dialog = new Dialog(currentActivity,R.style.CustomDialog);
-                dialog.setContentView(noteView);
-                dialog.show();
+//                WindowManager windowManager = currentActivity.getWindowManager();
+//
+//                Display display = windowManager.getDefaultDisplay();
+//                Window win = dialog.getDialog().getWindow();
+//                DisplayMetrics dm = new DisplayMetrics();
+//                display.getMetrics(dm);
+//                win.setLayout(dm.widthPixels / 3 * 2, dm.heightPixels / 3 * 2);
+//
+//                tvSave.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        hexagramRow.setNote(etNote.getText().toString());
+//                        database.updateHexagram(hexagramRow);
+//                        dialog.hide();
+//                        Toast.makeText(HexagramAnalyzerActivity.this, "更新备注记录成功", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
-                WindowManager windowManager = currentActivity.getWindowManager();
 
-                Display display = windowManager.getDefaultDisplay();
-                Window win = dialog.getWindow();
-                DisplayMetrics dm = new DisplayMetrics();
-                display.getMetrics(dm);
-                win.setLayout(dm.widthPixels / 3 * 2, dm.heightPixels / 3 * 2);
-
-                tvSave.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        hexagramRow.setNote(etNote.getText().toString());
-                                database.updateHexagram(hexagramRow);
-                                dialog.hide();
-                                Toast.makeText(HexagramAnalyzerActivity.this,"更新备注记录成功",Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                PhotoAlbumsFragment photoAlbumsFragment = PhotoAlbumsFragment.createFragment();
-                ft.replace(R.id.fl_Image_Select, photoAlbumsFragment, null);
-                ft.commit();
             }
         });
 

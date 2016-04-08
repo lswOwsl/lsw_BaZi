@@ -54,8 +54,6 @@ public class PhotoAlbumsFragment extends Fragment {
 
         configureView();
 
-        setRetainInstance(true);
-
         return v;
     }
 
