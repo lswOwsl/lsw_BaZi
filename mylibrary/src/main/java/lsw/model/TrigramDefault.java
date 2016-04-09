@@ -1,5 +1,7 @@
 package lsw.model;
 
+import java.util.List;
+
 /**
  * Created by swli on 8/10/2015.
  */
@@ -95,4 +97,30 @@ public class TrigramDefault {
     private String c4;
     private String c5;
     private String c6;
+
+    private int line1,line2,line3;
+
+    public int getLine1() {
+        return line1;
+    }
+
+    public void setLine1(int line1) {
+        this.line1 = line1;
+    }
+
+    public int getLine2() {
+        return line2;
+    }
+
+    public void setLine2(int line2) {
+        this.line2 = line2;
+    }
+
+    public int getLine3() {
+        return line3;
+    }
+
+    public void setLine3(int line3) {
+        this.line3 = line3;
+    }
 }

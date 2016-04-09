@@ -32,9 +32,8 @@
             android:layout_width="0dp"
             android:layout_weight="1">
 
-            <TextView style="@style/TitleTextView"
-                android:text="主卦:" android:id="@+id/tvOriginalName" />
-
+    <TextView style="@style/TitleTextView"
+        android:text="主卦:" android:id="@+id/tvOriginalName" />
             <include
                 android:id="@+id/cGuaMain"
                 layout="@layout/hexagram_drag_container" />

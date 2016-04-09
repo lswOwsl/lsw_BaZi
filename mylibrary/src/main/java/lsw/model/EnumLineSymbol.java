@@ -34,4 +34,24 @@ public enum EnumLineSymbol {
     public int value() {
         return this.value;
     }
+
+    public int convertedValue()
+    {
+        if(this.value == 9)
+            return 7;
+        else if(this.value == 6)
+            return 8;
+        else
+            return this.value;
+    }
+
+    public int changedValue()
+    {
+        if(this.value == 9)
+            return 8;
+        else if(this.value == 6)
+            return 7;
+        else
+            return this.value;
+    }
 }
