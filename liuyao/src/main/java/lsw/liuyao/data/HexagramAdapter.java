@@ -64,6 +64,8 @@ public class HexagramAdapter extends BaseAdapter {
     private List<HexagramLineNote> lineNotes;
     private Database database;
 
+    private int easyChangedLineIndex = 0;
+
     public HexagramAdapter(Hexagram hexagram, Context context)
     {
         this(hexagram,context,false);
@@ -81,6 +83,23 @@ public class HexagramAdapter extends BaseAdapter {
 
         database = new Database(context);
         lineNotes = database.getHexagramByNameAndLinePosition(hexagram.getName());
+
+        if(!isChangedHexagram) {
+            int totalLineCount = 55;
+            for (Line line : this.lines) {
+                totalLineCount -= line.getLineSymbol().value();
+            }
+
+            //先用总数除于6，例如7就是从上爻开始数（除6后肯定是奇数），如果是15（除6后余的是偶数）从初爻开始数
+            int totalMod = totalLineCount % 6;
+            totalMod = totalMod == 0 ? 1 : totalMod;
+            //如果不是偶数从上爻开始数
+            if ((totalLineCount / 6) % 2 != 0) {
+                easyChangedLineIndex = 7 - totalMod;
+            } else {
+                easyChangedLineIndex = totalMod;
+            }
+        }
     }
 
     @Override
@@ -131,8 +150,16 @@ public class HexagramAdapter extends BaseAdapter {
 
         if(!isChangedHexagram) {
 
+            if(line.getPosition() == easyChangedLineIndex)
+            {
+                controls.tvSixAnimal.setBackgroundColor(Color.YELLOW);
+            }
+            else
+                controls.tvSixAnimal.setBackgroundColor(Color.WHITE);
+
             String self = hexagram.getSelf() == line.getPosition() ? "世" : "";
             String target = hexagram.getTarget() == line.getPosition() ? "应" : "";
+
             controls.tvSelfTarget.setText(self+target);
 
             if (line.getEarthlyBranchAttached() != null) {
@@ -170,6 +197,8 @@ public class HexagramAdapter extends BaseAdapter {
         else if(lineSymbol.equals(EnumLineSymbol.Yin))
             resourceId = R.drawable.yin;
         controls.ivLineSymbol.setImageResource(resourceId);
+
+
 
         final HashMap<Integer,String> mappingPosition = new HashMap<Integer, String>();
         mappingPosition.put(2,"二");
