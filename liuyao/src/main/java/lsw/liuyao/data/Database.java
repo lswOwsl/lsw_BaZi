@@ -246,4 +246,20 @@ public class Database extends DatabaseManager {
         }
         //return bFlag;
     }
+
+    public void importHexagramsToDb(List<HexagramRow> hexagramRows) {
+        openDatabase();
+
+        database.execSQL("delete from Hexagram");
+
+        for (HexagramRow row: hexagramRows) {
+            ContentValues cv = new ContentValues();
+            cv.put("OriginalName", row.getOriginalName());
+            cv.put("ChangedName",row.getChangedName());
+            cv.put("ShakeDate", row.getDate());
+            cv.put("Note", row.getNote());
+            database.insert("Hexagram", null, cv);
+        }
+        database.close();
+    }
 }

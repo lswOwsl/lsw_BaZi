@@ -80,10 +80,10 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
 //            }
 //        });
 
-        dialog = new ProgressDialog(this);
-        dialog.setIndeterminate(true);
+        //dialog = new ProgressDialog(this);
+        //dialog.setIndeterminate(true);
 
-        dialog.show();
+        //dialog.show();
         //BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
     }
 
