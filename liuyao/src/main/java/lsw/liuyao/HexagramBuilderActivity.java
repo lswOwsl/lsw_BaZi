@@ -142,12 +142,19 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
     DateExt initialDateExt;
     String formatDateTime = "yyyy年MM月dd日 HH:mm";
 
+    String[] trigramNames = new String[8];
+
     //BaiDuInterstitial baiDuInterstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hexagram_maintain_activity);
+
+        for(int i=0; i< trigramNames.length; i++)
+        {
+            trigramNames[i] = Default.getTrigrams().get(i).getName();
+        }
 
 //        baiDuInterstitial = new BaiDuInterstitial(this);
 //        baiDuInterstitial.create();
@@ -184,6 +191,26 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
                     }
                 });
                 dialog.show();
+            }
+        });
+
+        setTrigramSelector(tvLowerTrigram);
+        setTrigramSelector(tvUpperTrigram);
+        setTrigramSelector(tvLowerTrigramChanged);
+        setTrigramSelector(tvUpperTrigramChanged);
+    }
+
+    void setTrigramSelector(final TextView tvTrigram)
+    {
+        tvTrigram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(HexagramBuilderActivity.this).setItems(trigramNames, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        tvTrigram.setText(trigramNames[i] + "\n");
+                    }
+                }).show();
             }
         });
     }
@@ -225,24 +252,24 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
                     if (trigramDefault.getLine1() == lineSymbolHashMap.get(1).convertedValue() &&
                             trigramDefault.getLine2() == lineSymbolHashMap.get(2).convertedValue() &&
                             trigramDefault.getLine3() == lineSymbolHashMap.get(3).convertedValue()) {
-                        tvLowerTrigram.setText(trigramDefault.getName());
+                        tvLowerTrigram.setText(trigramDefault.getName()+ "\n");
                     }
                     if (trigramDefault.getLine1() == lineSymbolHashMap.get(1).changedValue() &&
                             trigramDefault.getLine2() == lineSymbolHashMap.get(2).changedValue() &&
                             trigramDefault.getLine3() == lineSymbolHashMap.get(3).changedValue()) {
-                        tvLowerTrigramChanged.setText(trigramDefault.getName());
+                        tvLowerTrigramChanged.setText(trigramDefault.getName()+ "\n");
                     }
                 }
                 if (lineSymbolHashMap.containsKey(4) && lineSymbolHashMap.containsKey(5) && lineSymbolHashMap.containsKey(6)) {
                     if (trigramDefault.getLine1() == lineSymbolHashMap.get(4).convertedValue() &&
                             trigramDefault.getLine2() == lineSymbolHashMap.get(5).convertedValue() &&
                             trigramDefault.getLine3() == lineSymbolHashMap.get(6).convertedValue()) {
-                        tvUpperTrigram.setText(trigramDefault.getName());
+                        tvUpperTrigram.setText(trigramDefault.getName()+ "\n");
                     }
                     if (trigramDefault.getLine1() == lineSymbolHashMap.get(4).changedValue() &&
                             trigramDefault.getLine2() == lineSymbolHashMap.get(5).changedValue() &&
                             trigramDefault.getLine3() == lineSymbolHashMap.get(6).changedValue()) {
-                        tvUpperTrigramChanged.setText(trigramDefault.getName());
+                        tvUpperTrigramChanged.setText(trigramDefault.getName()+ "\n");
                     }
                 }
             }
