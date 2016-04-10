@@ -15,8 +15,6 @@ import android.widget.SearchView;
 //import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
 //import com.baidu.autoupdatesdk.UICheckUpdateCallback;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,6 @@ import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.HexagramListAdapter;
 import lsw.liuyao.model.HexagramRow;
-import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
 
 
 /**
@@ -156,6 +153,12 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
                         }
                     }).create().show();
 
+        }
+        if(id == R.id.menuImportHexagram){
+            Intent intentImport = new Intent();
+            intentImport.setClass(HexagramListActivity.this, HexagramImportActivity.class);
+            startActivityForResult(intentImport,0);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

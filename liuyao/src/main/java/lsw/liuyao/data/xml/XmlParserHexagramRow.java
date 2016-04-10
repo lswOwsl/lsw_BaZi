@@ -47,12 +47,13 @@ public class XmlParserHexagramRow extends XmlParser<List<HexagramRow>> {
     @Override
     public void endTag(XmlPullParser parser) {
 
-        if(parser.getName().equals("Member")){
+        if(parser.getName().equals("Hexagram")){
             HexagramRow row = new HexagramRow();
             row.setDate(shakeDate);
             row.setOriginalName(originalName);
             row.setChangedName(changedName);
             row.setNote(note);
+            hexagramRowList.add(row);
             shakeDate = originalName = changedName = note = "";
         }
 
