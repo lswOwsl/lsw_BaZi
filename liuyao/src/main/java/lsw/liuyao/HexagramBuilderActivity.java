@@ -3,7 +3,6 @@ package lsw.liuyao;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,10 +26,8 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
-import lsw.Util;
 import lsw.hexagram.Builder;
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
@@ -68,6 +65,8 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
     HashMap<LinearLayout,LinearLayout> lineContainerMapping = new HashMap<LinearLayout, LinearLayout>();
 
     private Context context;
+
+    private HashMap<EnumLineSymbol,ImageView> hashLineSymbolImageView = new HashMap<EnumLineSymbol, ImageView>();
 
     private void initControls(){
 
@@ -137,6 +136,11 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
         tvOriginalName = (TextView)findViewById(R.id.tvOriginalName);
         tvChangedName = (TextView)findViewById(R.id.tvChangedName);
+
+        hashLineSymbolImageView.put(EnumLineSymbol.LaoYang, ivLaoYang);
+        hashLineSymbolImageView.put(EnumLineSymbol.LaoYin, ivLaoYin);
+        hashLineSymbolImageView.put(EnumLineSymbol.Yang,ivYang);
+        hashLineSymbolImageView.put(EnumLineSymbol.Yin, ivYin);
     }
 
     DateExt initialDateExt;
@@ -194,13 +198,18 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
             }
         });
 
-        setTrigramSelector(tvLowerTrigram);
-        setTrigramSelector(tvUpperTrigram);
-        setTrigramSelector(tvLowerTrigramChanged);
-        setTrigramSelector(tvUpperTrigramChanged);
+        setTrigramSelector(tvLowerTrigram , EnumFourTrigram.OriginalLower);
+        setTrigramSelector(tvUpperTrigram , EnumFourTrigram.OriginalUpper);
+        setTrigramSelector(tvLowerTrigramChanged, EnumFourTrigram.ChangedLower);
+        setTrigramSelector(tvUpperTrigramChanged, EnumFourTrigram.ChangedUpper);
     }
 
-    void setTrigramSelector(final TextView tvTrigram)
+    enum EnumFourTrigram
+    {
+        OriginalLower, OriginalUpper, ChangedLower, ChangedUpper;
+    }
+
+    void setTrigramSelector(final TextView tvTrigram, final EnumFourTrigram enumFourTrigram)
     {
         tvTrigram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,10 +218,83 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         tvTrigram.setText(trigramNames[i] + "\n");
+
+                        for(TrigramDefault trigramDefault : Default.getTrigrams())
+                        {
+                            if(trigramDefault.getName().equals(trigramNames[i]))
+                            {
+                                setTrigrimView(enumFourTrigram, trigramDefault);
+                                break;
+                            }
+                        }
+
+                        setHexagramTitle();
                     }
                 }).show();
             }
         });
+    }
+
+    private void setTrigrimView(EnumFourTrigram enumFourTrigram, TrigramDefault trigramDefault) {
+        LinearLayout ll1 = linearLayout1;
+        LinearLayout ll2 = linearLayout2;
+        LinearLayout ll3 = linearLayout3;
+
+        LinearLayout ll1Changed = linearLayout1Changed;
+        LinearLayout ll2Changed = linearLayout2Changed;
+        LinearLayout ll3Changed = linearLayout3Changed;
+
+        int beginIndex = 1;
+        if (enumFourTrigram == EnumFourTrigram.ChangedUpper || enumFourTrigram == EnumFourTrigram.OriginalUpper) {
+            beginIndex = 4;
+
+            ll1 = linearLayout4;
+            ll2 = linearLayout5;
+            ll3 = linearLayout6;
+
+            ll1Changed = linearLayout4Changed;
+            ll2Changed = linearLayout5Changed;
+            ll3Changed = linearLayout6Changed;
+        }
+        if(enumFourTrigram == EnumFourTrigram.ChangedLower || enumFourTrigram == EnumFourTrigram.ChangedUpper)
+        {
+            tvLowerTrigram.setText(tvLowerTrigramChanged.getText());
+            tvUpperTrigram.setText(tvUpperTrigramChanged.getText());
+        }
+        else
+        {
+            tvLowerTrigramChanged.setText(tvLowerTrigram.getText());
+            tvUpperTrigramChanged.setText(tvUpperTrigram.getText());
+        }
+
+        EnumLineSymbol line1 = EnumLineSymbol.valueOf(trigramDefault.getLine1());
+        EnumLineSymbol line2 = EnumLineSymbol.valueOf(trigramDefault.getLine2());
+        EnumLineSymbol line3 = EnumLineSymbol.valueOf(trigramDefault.getLine3());
+
+        setTrigramImageView(line1,ll1,ll1Changed);
+        setTrigramImageView(line2,ll2,ll2Changed);
+        setTrigramImageView(line3,ll3,ll3Changed);
+
+        lineSymbolHashMap.put(beginIndex, line1);
+        lineSymbolHashMap.put(beginIndex + 1, line2);
+        lineSymbolHashMap.put(beginIndex + 2, line3);
+    }
+
+    private void setTrigramImageView(EnumLineSymbol line, LinearLayout ll, LinearLayout llChanged)
+    {
+        ImageView ivLine = hashLineSymbolImageView.get(line);
+        Drawable drawable = ivLine.getDrawable();
+        ivLine = new ImageView(HexagramBuilderActivity.this);
+        ivLine.setImageDrawable(drawable);
+        ll.setBackgroundResource(0);
+        ll.removeAllViews();
+        ll.addView(ivLine);
+
+        ImageView ivLineChanged = new ImageView(HexagramBuilderActivity.this);
+        ivLineChanged.setImageDrawable(drawable);
+        llChanged.setBackgroundResource(0);
+        llChanged.removeAllViews();
+        llChanged.addView(ivLineChanged);
     }
 
     @Override
@@ -248,33 +330,16 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
             ArrayList<TrigramDefault> trigramDefaults =  Default.getTrigrams();
             for(TrigramDefault trigramDefault : trigramDefaults)
             {
-                if(lineSymbolHashMap.containsKey(1) && lineSymbolHashMap.containsKey(2) && lineSymbolHashMap.containsKey(3)) {
-                    if (trigramDefault.getLine1() == lineSymbolHashMap.get(1).convertedValue() &&
-                            trigramDefault.getLine2() == lineSymbolHashMap.get(2).convertedValue() &&
-                            trigramDefault.getLine3() == lineSymbolHashMap.get(3).convertedValue()) {
-                        tvLowerTrigram.setText(trigramDefault.getName()+ "\n");
-                    }
-                    if (trigramDefault.getLine1() == lineSymbolHashMap.get(1).changedValue() &&
-                            trigramDefault.getLine2() == lineSymbolHashMap.get(2).changedValue() &&
-                            trigramDefault.getLine3() == lineSymbolHashMap.get(3).changedValue()) {
-                        tvLowerTrigramChanged.setText(trigramDefault.getName()+ "\n");
-                    }
-                }
-                if (lineSymbolHashMap.containsKey(4) && lineSymbolHashMap.containsKey(5) && lineSymbolHashMap.containsKey(6)) {
-                    if (trigramDefault.getLine1() == lineSymbolHashMap.get(4).convertedValue() &&
-                            trigramDefault.getLine2() == lineSymbolHashMap.get(5).convertedValue() &&
-                            trigramDefault.getLine3() == lineSymbolHashMap.get(6).convertedValue()) {
-                        tvUpperTrigram.setText(trigramDefault.getName()+ "\n");
-                    }
-                    if (trigramDefault.getLine1() == lineSymbolHashMap.get(4).changedValue() &&
-                            trigramDefault.getLine2() == lineSymbolHashMap.get(5).changedValue() &&
-                            trigramDefault.getLine3() == lineSymbolHashMap.get(6).changedValue()) {
-                        tvUpperTrigramChanged.setText(trigramDefault.getName()+ "\n");
-                    }
-                }
+                setTrigramTextView(trigramDefault,1,tvLowerTrigram,tvLowerTrigramChanged);
+                setTrigramTextView(trigramDefault,4,tvUpperTrigram,tvUpperTrigramChanged);
             }
         }
 
+        setHexagramTitle();
+    }
+
+    private void setHexagramTitle()
+    {
         if(lineSymbolCountCorrect())
         {
             Pair<Hexagram,Hexagram> pair = getHexagramsByLines();
@@ -286,6 +351,24 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
             }
             else {
                 tvChangedName.setText("变卦: " + orginalText);
+            }
+        }
+    }
+
+    private void setTrigramTextView(TrigramDefault trigramDefault, int beginLineIndex, TextView tvTrigram, TextView tvTrigramChanged)
+    {
+        if(lineSymbolHashMap.containsKey(beginLineIndex) &&
+                lineSymbolHashMap.containsKey(beginLineIndex+1) &&
+                lineSymbolHashMap.containsKey(beginLineIndex+2)) {
+            if (trigramDefault.getLine1() == lineSymbolHashMap.get(beginLineIndex).convertedValue() &&
+                    trigramDefault.getLine2() == lineSymbolHashMap.get(beginLineIndex+1).convertedValue() &&
+                    trigramDefault.getLine3() == lineSymbolHashMap.get(beginLineIndex+2).convertedValue()) {
+                tvTrigram.setText(trigramDefault.getName() + "\n");
+            }
+            if (trigramDefault.getLine1() == lineSymbolHashMap.get(beginLineIndex).changedValue() &&
+                    trigramDefault.getLine2() == lineSymbolHashMap.get(beginLineIndex+1).changedValue() &&
+                    trigramDefault.getLine3() == lineSymbolHashMap.get(beginLineIndex+2).changedValue()) {
+                tvTrigramChanged.setText(trigramDefault.getName()+ "\n");
             }
         }
     }
