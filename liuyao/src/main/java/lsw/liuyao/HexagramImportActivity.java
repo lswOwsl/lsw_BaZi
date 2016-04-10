@@ -25,6 +25,7 @@ import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.xml.XmlParserHexagramRow;
 import lsw.liuyao.model.HexagramRow;
+import lsw.xml.XmlLoader;
 import lsw.xml.XmlParser;
 
 /**
@@ -36,6 +37,9 @@ public class HexagramImportActivity extends Activity {
     String[] source;
     Database database;
 
+    String path = Environment.getExternalStorageDirectory() +"/"+
+            MyApplication.getInstance().getResources().getString(R.string.externalSavingFolder)+"/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +50,7 @@ public class HexagramImportActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        source = loadFilesFromFolder(path).toArray(new String[]{});
+        source = XmlLoader.loadFilesFromFolder(path).toArray(new String[]{});
 
         ListView lv = (ListView) findViewById(R.id.lvImportList);
         lv.setAdapter(new ArrayAdapter<String>(this,
@@ -62,7 +66,6 @@ public class HexagramImportActivity extends Activity {
                 dialog.setMessage("导入当前文件？" + selectedFile).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         List<HexagramRow> rows = loadHexagramRowFromXml(path + selectedFile);
                         database.importHexagramsToDb(rows);
                         Toast.makeText(HexagramImportActivity.this, "导入记录成功", Toast.LENGTH_SHORT).show();
@@ -92,32 +95,5 @@ public class HexagramImportActivity extends Activity {
             Log.d("import member xml", ex.getMessage());
         }
         return null;
-    }
-
-    String path = Environment.getExternalStorageDirectory() +"/"+
-            MyApplication.getInstance().getResources().getString(R.string.externalSavingFolder)+"/";
-
-    public static List<String> loadFilesFromFolder(String folder)
-    {
-        List<String> fileNames= new ArrayList<String>();
-
-        File[] files = new File(folder).listFiles();
-        if(files !=null) {
-            for (File file : files) {
-                if (getFileExtension(file).toLowerCase().equals("xml")) {
-                    fileNames.add(file.getName());
-                }
-            }
-        }
-        return fileNames;
-    }
-
-    public static String getFileExtension(File file) {
-        String fileName = file.getName();
-        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
-        } else {
-            return "";
-        }
     }
 }
