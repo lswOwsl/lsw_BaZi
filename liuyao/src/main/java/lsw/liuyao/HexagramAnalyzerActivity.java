@@ -435,17 +435,17 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if (keyCode == KeyEvent.KEYCODE_BACK )
-        {
-            Intent intent = new Intent(this,HexagramListActivity.class);
-            setResult(RESULT_OK, intent);
-            startActivity(intent);
-            finish();
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event)
+//    {
+//        if (keyCode == KeyEvent.KEYCODE_BACK )
+//        {
+//            Intent intent = new Intent(this,HexagramListActivity.class);
+//            setResult(RESULT_OK, intent);
+//            startActivity(intent);
+//            finish();
+//        }
+//        return false;
+//    }
 
 }

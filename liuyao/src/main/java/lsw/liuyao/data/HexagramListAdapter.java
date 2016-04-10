@@ -132,7 +132,7 @@ public class HexagramListAdapter extends BaseAdapter {
                 mIntent.putExtras(mBundle);
 
                 context.startActivity(mIntent);
-                context.finish();
+                //context.finish();
             }
         });
 
