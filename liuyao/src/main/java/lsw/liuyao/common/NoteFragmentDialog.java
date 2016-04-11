@@ -17,10 +17,13 @@ import android.widget.Toast;
 
 import lsw.library.DateExt;
 import lsw.liuyao.PhotoAlbumsFragment;
+import lsw.liuyao.PhotoImagesFragment;
 import lsw.liuyao.R;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
 import lsw.model.Hexagram;
+import lsw.utility.Image.DeviceImageSource;
+import lsw.utility.Image.SourceFolder;
 
 /**
  * Created by swli on 4/8/2016.
@@ -43,7 +46,6 @@ public class NoteFragmentDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             hexagramRow = (HexagramRow)getArguments().getSerializable(Param_Hexagram_Row);
         }
@@ -82,8 +84,20 @@ public class NoteFragmentDialog extends DialogFragment {
 
                 FragmentTransaction ft = getChildFragmentManager().beginTransaction();
                 PhotoAlbumsFragment photoAlbumsFragment = PhotoAlbumsFragment.createFragment();
+
+                photoAlbumsFragment.setPushFragmentInterface(new PhotoAlbumsFragment.PushFragmentInterface() {
+                    @Override
+                    public void invoke(DeviceImageSource imageSource, SourceFolder sourceFolder) {
+                        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                        PhotoImagesFragment f = PhotoImagesFragment.createFragment(imageSource, sourceFolder);
+                        ft.replace(R.id.fl_Image_Select, f);
+                        ft.commit();
+                    }
+                });
+
                 ft.replace(R.id.fl_Image_Select, photoAlbumsFragment, null);
                 ft.commit();
+
             }
         });
 

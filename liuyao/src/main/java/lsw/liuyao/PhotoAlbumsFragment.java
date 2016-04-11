@@ -2,6 +2,8 @@ package lsw.liuyao;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +34,18 @@ public class PhotoAlbumsFragment extends Fragment {
     private ProgressBar mProgressBar;
 
     private Activity mActivity;
+
+    public interface PushFragmentInterface
+    {
+        void invoke(DeviceImageSource imageSource, SourceFolder sourceFolder);
+    }
+
+    private PushFragmentInterface pushFragmentInterface;
+
+    public void setPushFragmentInterface(PushFragmentInterface pushFragmentInterface)
+    {
+        this.pushFragmentInterface = pushFragmentInterface;
+    }
 
     public static PhotoAlbumsFragment createFragment() {
         PhotoAlbumsFragment f = new PhotoAlbumsFragment();
@@ -91,10 +105,16 @@ public class PhotoAlbumsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if (mPhotoAlbumsAdapter.getItemViewType(position) == 0) {
                     SourceFolder folder = (SourceFolder) mPhotoAlbumsAdapter.getItem(position);
-//                    OrderActivity activity = (OrderActivity) mActivity;
-//
+
+                    if(pushFragmentInterface != null)
+                    {
+                        pushFragmentInterface.invoke(imageSource,folder);
+                    }
 //                    PhotoImagesFragment f = PhotoImagesFragment.createFragment(imageSource, folder);
-//                    activity.pushFragment(f);
+//                    FragmentTransaction ft = fragmentManager.beginTransaction();
+//                    ft.replace(R.id.fl_Image_Select, f);
+//                    ft.commit();
+
                 } else {
                     // more
                     if (imageSource != null) {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <lsw.liuyao.SquareImageView
+        android:id="@+id/lp_img_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop" />
+
+    <RelativeLayout
+        android:id="@+id/lp_layout_check"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_alignBottom="@id/lp_img_photo"
+        android:layout_alignRight="@id/lp_img_photo">
+
+        <ImageView
+            android:id="@+id/lp_img_check_mask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/image_select"
+            android:scaleType="fitXY"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/lp_image_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:background="@android:color/holo_green_light"
+        android:textColor="@color/white"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

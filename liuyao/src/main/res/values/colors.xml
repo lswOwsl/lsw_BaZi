@@ -8,4 +8,6 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
 
+    <color name="color_for_draw">#3bb021</color>
+
 </resources>
