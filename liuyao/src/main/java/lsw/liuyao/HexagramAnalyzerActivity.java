@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -46,7 +47,7 @@ import lsw.model.Line;
 /**
  * Created by swli on 8/7/2015.
  */
-public class HexagramAnalyzerActivity extends Activity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
+public class HexagramAnalyzerActivity extends FragmentActivity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
 
     String formatDateTime = "yyyy年MM月dd日";
     LunarCalendarWrapper lunarCalendarWrapper;
@@ -127,7 +128,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
 
                 NoteFragmentDialog dialog = NoteFragmentDialog.newInstance(hexagramRow);
                 //dialog.setContentView(noteView);
-                dialog.show(getFragmentManager(),"");
+                dialog.show(getSupportFragmentManager(),"");
 
 //                WindowManager windowManager = currentActivity.getWindowManager();
 //
@@ -171,7 +172,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
             ArrayList<String> list = analyzer.orderedStringResult(stringBuilder.toString());
 
             HexagramBuilderFragment analyzerFragment = HexagramBuilderFragment.newInstance(original, changed, formatDate);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fl_Hexagram_Analyzer, analyzerFragment, null);
 
             HexagramAutoAnalyzerFragment autoAnalyzerFragment = HexagramAutoAnalyzerFragment.newInstance(list);
@@ -225,7 +226,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
                         lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
         tvAnalyzeDate.setText(eraText +"     "+ dateExt.getFormatDateTime(formatDateTime));
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         String eraMonth = lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex);
         String eraDay = lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex);

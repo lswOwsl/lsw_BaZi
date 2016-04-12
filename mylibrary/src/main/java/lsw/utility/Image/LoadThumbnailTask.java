@@ -59,6 +59,11 @@ public class LoadThumbnailTask extends AsyncTask<String, Void, Drawable> {
                 bitmap = MediaStore.Images.Thumbnails.getThumbnail(mContext.getContentResolver(), id, MediaStore.Images.Thumbnails.MINI_KIND, null);
             }
 
+            //Purpose: Repair does not display the image.
+            if (bitmap == null) {
+                bitmap = MediaStore.Images.Thumbnails.getThumbnail(mContext.getContentResolver(), id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+            }
+
         } else {
             //.replace("file://", "")
             Bitmap fullSizeImage = BitmapFactory.decodeFile(mImage.getFullUrl());

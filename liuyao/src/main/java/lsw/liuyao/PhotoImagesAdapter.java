@@ -5,13 +5,11 @@ import android.graphics.AvoidXfermode;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +21,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import lsw.utility.Image.DeviceImageSource;
-import lsw.utility.Image.SourceFolder;
 import lsw.utility.Image.SourceImage;
 
 /**
@@ -76,7 +73,7 @@ public class PhotoImagesAdapter extends ArrayAdapter<SourceImage> {
             final ViewHolder viewHolder;
 
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.common_photo_image_item, null);
+                convertView = mInflater.inflate(R.layout.common_photo_images_item, null);
 
                 viewHolder = new ViewHolder();
                 viewHolder.iconImageView = (ImageView) convertView.findViewById(R.id.lp_img_photo);
@@ -93,7 +90,7 @@ public class PhotoImagesAdapter extends ArrayAdapter<SourceImage> {
 
             if (viewHolder.iconImageView.getTag() == null || !viewHolder.iconImageView.getTag().equals(image.getImageId())) {
                 viewHolder.iconImageView.setTag(image.getImageId());
-                viewHolder.iconImageMaskView.setImageDrawable(getDrawableSelect( viewHolder.resourceId, R.color.color_for_draw));
+                //viewHolder.iconImageMaskView.setImageDrawable(getDrawableSelect( viewHolder.resourceId, R.color.color_for_draw));
 
 
                 if (image.getThumbnailUrl() != null && !image.getThumbnailUrl().isEmpty()) {

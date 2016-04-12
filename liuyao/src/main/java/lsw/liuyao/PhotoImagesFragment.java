@@ -1,9 +1,9 @@
 package lsw.liuyao;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +36,19 @@ public class PhotoImagesFragment extends Fragment {
 
     private Activity mActivity;
 
+
+    public interface PushFragmentInterface
+    {
+        void invoke(ArrayList<SourceImage> sourceImages, int index);
+    }
+
+    private PushFragmentInterface pushFragmentInterface;
+
+    public void setPushFragmentInterface(PushFragmentInterface pushFragmentInterface)
+    {
+        this.pushFragmentInterface = pushFragmentInterface;
+    }
+
     public static PhotoImagesFragment createFragment(DeviceImageSource imageSource, SourceFolder folder) {
         PhotoImagesFragment f = new PhotoImagesFragment();
         Bundle args = new Bundle();
@@ -63,7 +76,7 @@ public class PhotoImagesFragment extends Fragment {
     }
 
     private void configureView() {
-        final DeviceImageSource imageSource = new DeviceImageSource();
+        final DeviceImageSource imageSource = DeviceImageSource.getInstance();
 
         mPhotoImagesAdapter = new PhotoImagesAdapter(mActivity, imageSource, new ArrayList<SourceImage>());
         mGridView.setAdapter(mPhotoImagesAdapter);
@@ -93,8 +106,7 @@ public class PhotoImagesFragment extends Fragment {
                 if (mPhotoImagesAdapter.getItemViewType(position) == 0) {
                     SourceImage image = mPhotoImagesAdapter.getItem(position);
 
-                    // quantify
-                    //FullSizePhotoImagesFragment f = FullSizePhotoImagesFragment.createFragment((ArrayList<SourceImage>) mPhotoImagesAdapter.getSourceImages(), position);
+
 
                     return true;
                 }
@@ -110,7 +122,12 @@ public class PhotoImagesFragment extends Fragment {
 
                     SourceImage image = mPhotoImagesAdapter.getItem(position);
 
-                    mPhotoImagesAdapter.notifyDataSetChanged();
+                    if(pushFragmentInterface != null)
+                    {
+                        pushFragmentInterface.invoke((ArrayList<SourceImage>)mPhotoImagesAdapter.getSourceImages(), position);
+                    }
+
+                    //mPhotoImagesAdapter.notifyDataSetChanged();
                 }
                 else {
                     // more

@@ -1,9 +1,9 @@
 package lsw.liuyao.common;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -15,15 +15,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import lsw.library.DateExt;
 import lsw.liuyao.PhotoAlbumsFragment;
 import lsw.liuyao.PhotoImagesFragment;
+import lsw.liuyao.PhotoImagesFullSizeFragment;
 import lsw.liuyao.R;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
 import lsw.model.Hexagram;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.SourceFolder;
+import lsw.utility.Image.SourceImage;
 
 /**
  * Created by swli on 4/8/2016.
@@ -90,10 +94,32 @@ public class NoteFragmentDialog extends DialogFragment {
                     public void invoke(DeviceImageSource imageSource, SourceFolder sourceFolder) {
                         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
                         PhotoImagesFragment f = PhotoImagesFragment.createFragment(imageSource, sourceFolder);
+
+                        f.setPushFragmentInterface(new PhotoImagesFragment.PushFragmentInterface() {
+                            @Override
+                            public void invoke(ArrayList<SourceImage> sourceImages, int index) {
+
+                                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                                PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
+                                f.setCurrentFragmentManager(getChildFragmentManager());
+
+                                ft.replace(R.id.fl_Image_Select, f);
+                                ft.commit();
+                            }
+                        });
+
                         ft.replace(R.id.fl_Image_Select, f);
                         ft.commit();
                     }
                 });
+
+                // quantify
+//                FullSizePhotoImagesFragment f = FullSizePhotoImagesFragment.createFragment((ArrayList<SourceImage>) mPhotoImagesAdapter.getSourceImages(), position);
+//                ((OrderActivity) mActivity).pushFragment(f);
+//                ((OrderActivity) mActivity).showActionBar(false);
+
+
+
 
                 ft.replace(R.id.fl_Image_Select, photoAlbumsFragment, null);
                 ft.commit();

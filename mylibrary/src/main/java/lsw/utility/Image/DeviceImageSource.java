@@ -29,6 +29,16 @@ public class DeviceImageSource {
     private HashMap<ImageView, LoadThumbnailTask> mThumbnailTasks;
     private LruCache<String,Bitmap> mMemoryCache;
 
+    private static DeviceImageSource sInstance = null;
+
+    public static synchronized DeviceImageSource getInstance() {
+        if (sInstance == null) {
+            sInstance = new DeviceImageSource();
+        }
+
+        return sInstance;
+    }
+
     public DeviceImageSource() {
 
         mThumbnailTasks = new HashMap<ImageView, LoadThumbnailTask>();

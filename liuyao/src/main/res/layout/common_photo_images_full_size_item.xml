@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+<ScrollView
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:id="@+id/scrollView">
+
+    <lsw.liuyao.SquareImageView android:layout_gravity="top|center_horizontal"
+        android:id="@+id/lp_img_image"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+</ScrollView>
+    <RelativeLayout
+        android:id="@+id/lp_layout_check"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_alignTop="@id/scrollView"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/lp_img_check_mask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:background="@color/gray_light"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/image_select"
+            android:scaleType="fitXY"/>
+
+    </RelativeLayout>
+    </RelativeLayout>
