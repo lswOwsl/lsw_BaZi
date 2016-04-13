@@ -8,10 +8,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
 import lsw.library.R;
+import lsw.utility.Image.Common;
 import lsw.utility.Image.SourceImage;
 
 /**
@@ -52,11 +54,23 @@ public class PhotoImagesFullSizeFragment extends Fragment {
         this.currentFragmentManager = currentFragmentManager;
     }
 
+    public interface OnImageClickListener
+    {
+        void onClick(View view, SourceImage image);
+    }
+
+    public void setImageClickListener(OnImageClickListener listener)
+    {
+        onClickListener = listener;
+    }
+
+    private OnImageClickListener onClickListener;
+
     private FragmentManager currentFragmentManager;
 
     private void configureView() {
         ArrayList<SourceImage> images = (ArrayList<SourceImage>)getArguments().getSerializable(ARG_SOURCE_IMAGES);
-        int startIndex = getArguments().getInt(ARG_START_INDEX);
+        final int startIndex = getArguments().getInt(ARG_START_INDEX);
 
         mViewPageAdapter = new PhotoImagesFullSizeAdapter(currentFragmentManager, images);
         mViewPager.setAdapter(mViewPageAdapter);
@@ -78,6 +92,7 @@ public class PhotoImagesFullSizeFragment extends Fragment {
             }
         });
 
+        mViewPageAdapter.setImageClickListener(onClickListener);
     }
 
 }

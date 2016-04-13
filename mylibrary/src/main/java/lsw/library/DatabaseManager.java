@@ -77,4 +77,10 @@ public class DatabaseManager {
         int commentIndex = cursor.getColumnIndex(columnName);
         return StringHelper.getString(cursor.getString(commentIndex));
     }
+
+    public int getColumnIntValue(Cursor cursor,String columnName)
+    {
+        int commentIndex = cursor.getColumnIndex(columnName);
+        return cursor.getInt(commentIndex);
+    }
 }

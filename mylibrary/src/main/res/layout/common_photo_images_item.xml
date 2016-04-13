@@ -33,19 +33,5 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/lp_image_quantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1"
-        android:textSize="16sp"
-        android:visibility="gone"
-        android:background="@android:color/holo_green_light"
-        android:textColor="@color/white"
-        android:layout_alignWithParentIfMissing="false"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
 
 </RelativeLayout>

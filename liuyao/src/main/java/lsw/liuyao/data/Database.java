@@ -24,6 +24,8 @@ import lsw.liuyao.R;
 import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.model.HexagramLineNote;
 import lsw.liuyao.model.HexagramRow;
+import lsw.liuyao.model.ImageAttachment;
+import lsw.utility.FileHelper;
 
 /**
  * Created by swli on 8/18/2015.
@@ -33,10 +35,11 @@ public class Database extends DatabaseManager {
     public static final String DB_NAME_HEXAGRAM_NOTE = "liuYaoHexagramNote.db";
     public static final String DB_NAME = "liuYao.db";
     public static final String PACKAGE_NAME = "lsw.liuyao";
-    public static final String DB_PATH = "/data"
-            + Environment.getDataDirectory().getAbsolutePath() + "/"
-            + PACKAGE_NAME;
+//    public static final String DB_PATH = "/data"
+//            + Environment.getDataDirectory().getAbsolutePath() + "/"
+//            + PACKAGE_NAME;
 
+    public static final String DB_PATH = Environment.getExternalStorageDirectory() + "/" + PACKAGE_NAME;
 
     private Context context;
 
@@ -47,6 +50,7 @@ public class Database extends DatabaseManager {
     }
 
     public void openDatabase() {
+        FileHelper.createFolder(DB_PATH);
         super.database = this.openDatabase(DB_PATH + "/" + DB_NAME);
     }
 
@@ -203,7 +207,7 @@ public class Database extends DatabaseManager {
         }
 
         boolean bFlag;
-        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd<HH:mm:ss>");
         String strTmpName = sDateFormat.format(new java.util.Date()) + ".xml";
         FileOutputStream fileos = null;
 
@@ -261,5 +265,61 @@ public class Database extends DatabaseManager {
             database.insert("Hexagram", null, cv);
         }
         database.close();
+    }
+
+    public void insertImageAttachment(List<ImageAttachment> models)
+    {
+        openDatabase();
+
+        getDatabase().delete("ImageAttachment", "HexagramId ='" +models.get(0).getHexagramId() + "'", null);
+
+        for(ImageAttachment imageAttachment : models) {
+            ContentValues cv = new ContentValues();
+            cv.put("HexagramId", imageAttachment.getHexagramId());
+            cv.put("URL", imageAttachment.getUrl());
+            getDatabase().insert("ImageAttachment", null, cv);
+        }
+        closeDatabase();
+    }
+
+    public List<ImageAttachment> getImageAttachmentByHexagramId(int hexagramId)
+    {
+        openDatabase();
+        String[] params = new String[]{ hexagramId+"" };
+        String sql = "SELECT * FROM ImageAttachment where HexagramId = ?";
+        Cursor cur = database.rawQuery(sql, params);
+        List<ImageAttachment> list = new ArrayList<ImageAttachment>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            ImageAttachment imageAttachment = createImageAttachmentByCursor(cur);
+            //break;
+            list.add(imageAttachment);
+        }
+        closeDatabase();
+        return list;
+    }
+
+    ImageAttachment createImageAttachmentByCursor(Cursor cursor)
+    {
+        int id = getColumnIntValue(cursor,"Id");
+        int hexagramId = getColumnIntValue(cursor, "HexagramId");
+        String url = getColumnValue(cursor, "URL");
+
+        ImageAttachment imageAttachment = new ImageAttachment();
+        imageAttachment.setId(id);
+        imageAttachment.setHexagramId(hexagramId);
+        imageAttachment.setUrl(url);
+
+        return imageAttachment;
+    }
+
+    public void deleteImageAttachmentByIds(int[] ids)
+    {
+        openDatabase();
+
+        for(int i = 0 ; i < ids.length; i++) {
+            getDatabase().delete("ImageAttachment", "Id ='" + ids[i] + "'", null);
+        }
+
+        closeDatabase();
     }
 }

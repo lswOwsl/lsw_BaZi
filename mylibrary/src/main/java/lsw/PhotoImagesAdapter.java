@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import lsw.library.R;
+import lsw.utility.Image.Common;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.SourceImage;
 
@@ -91,7 +92,7 @@ public class PhotoImagesAdapter extends ArrayAdapter<SourceImage> {
 
             if (viewHolder.iconImageView.getTag() == null || !viewHolder.iconImageView.getTag().equals(image.getImageId())) {
                 viewHolder.iconImageView.setTag(image.getImageId());
-                //viewHolder.iconImageMaskView.setImageDrawable(getDrawableSelect( viewHolder.resourceId, R.color.color_for_draw));
+                //viewHolder.iconImageMaskView.setImageDrawable(Common.getDrawableSelect(getContext(),viewHolder.resourceId, R.color.color_for_draw));
 
 
                 if (image.getThumbnailUrl() != null && !image.getThumbnailUrl().isEmpty()) {
@@ -117,42 +118,6 @@ public class PhotoImagesAdapter extends ArrayAdapter<SourceImage> {
         ImageView iconImageMaskView;
         ViewGroup checkLayout;
         int resourceId;
-    }
-
-    public Drawable getDrawableSelect(int drawableId, int overlayColorId)
-    {
-        return new BitmapDrawable(getContext().getResources(), getBitmapWithOverlayColorId(getContext(),drawableId,overlayColorId));
-    }
-
-    public static Bitmap getBitmapWithOverlayColorId(Context context, int drawableId, int overlayColorId) {
-        final Paint paint = new Paint();
-        Canvas c;
-
-        int overlayColor = context.getResources().getColor(overlayColorId);
-
-        final Bitmap src = BitmapFactory.decodeResource(context.getResources(), drawableId);
-
-        final Bitmap bm1 = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
-        c = new Canvas(bm1);
-
-        paint.setColorFilter(new PorterDuffColorFilter(overlayColor, PorterDuff.Mode.OVERLAY));
-
-        c.drawBitmap(src, 0, 0, paint);
-
-        paint.setColor(overlayColor);
-        paint.setStyle(Paint.Style.FILL);
-        c.drawRect(0, 0, src.getWidth(), src.getHeight(), paint);
-
-        final Bitmap bm2 = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
-        c = new Canvas(bm2);
-        paint.setColorFilter(new PorterDuffColorFilter(overlayColor, PorterDuff.Mode.SRC_ATOP));
-        c.drawBitmap(src, 0, 0, paint);
-
-        paint.setColorFilter(null);
-        paint.setXfermode(new AvoidXfermode(overlayColor, 0, AvoidXfermode.Mode.TARGET));
-        c.drawBitmap(bm1, 0, 0, paint);
-
-        return bm2;
     }
 
 }

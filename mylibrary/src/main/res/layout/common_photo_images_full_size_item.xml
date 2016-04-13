@@ -31,6 +31,7 @@
             android:scaleType="fitXY"/>
 
         <ImageView
+            android:id="@+id/lp_img_check_default"
             android:background="@color/gray_light"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
