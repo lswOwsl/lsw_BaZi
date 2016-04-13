@@ -1,4 +1,4 @@
-package lsw.liuyao;
+package lsw;
 
 import android.support.v4.app.Fragment;
 import android.graphics.drawable.Drawable;
@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
+import lsw.library.R;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.ImageSourceImageListener;
 import lsw.utility.Image.SourceImage;
+import lsw.utility.Image.SquareImageView;
 
 /**
  * Created by swli on 4/12/2016.

@@ -17,14 +17,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import lsw.library.DateExt;
-import lsw.liuyao.PhotoAlbumsFragment;
-import lsw.liuyao.PhotoImagesFragment;
-import lsw.liuyao.PhotoImagesFullSizeFragment;
+import lsw.PhotoAlbumsFragment;
+import lsw.PhotoImagesFragment;
+import lsw.PhotoImagesFullSizeFragment;
 import lsw.liuyao.R;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
-import lsw.model.Hexagram;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.SourceFolder;
 import lsw.utility.Image.SourceImage;

@@ -1,11 +1,8 @@
-package lsw.liuyao;
+package lsw;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +13,7 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import lsw.library.R;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.ImageSourceFoldersListener;
 import lsw.utility.Image.SourceFolder;

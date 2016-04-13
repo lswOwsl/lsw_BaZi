@@ -1,4 +1,4 @@
-package lsw.liuyao;
+package lsw;
 
 import android.content.Context;
 import android.graphics.AvoidXfermode;
@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import lsw.library.R;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.SourceImage;
 

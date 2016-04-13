@@ -1,4 +1,4 @@
-package lsw.liuyao;
+package lsw;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,11 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import java.util.List;
 
+import lsw.library.R;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.SourceFolder;
-import lsw.utility.Image.SourceImage;
 
 /**
  * Created by swli on 4/7/2016.
