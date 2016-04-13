@@ -82,8 +82,12 @@ public class DeviceImageSource {
             mThumbnailTasks.get(imageView).cancel(true);
         }
 
+        Bitmap cachedBitmap = null;
         String id = image.getImageId();
-        Bitmap cachedBitmap = mMemoryCache.get(id);
+
+        if(id != null) {
+            cachedBitmap = mMemoryCache.get(id);
+        }
 
         if (cachedBitmap != null) {
             // cached

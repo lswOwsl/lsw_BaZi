@@ -16,6 +16,7 @@ import java.util.List;
 import lsw.library.R;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.ImageSourceImagesListener;
+import lsw.utility.Image.PushFragmentInterface;
 import lsw.utility.Image.SourceFolder;
 import lsw.utility.Image.SourceImage;
 
@@ -34,12 +35,6 @@ public class PhotoImagesFragment extends Fragment {
     private ProgressBar mProgressBar;
 
     private Activity mActivity;
-
-
-    public interface PushFragmentInterface
-    {
-        void invoke(ArrayList<SourceImage> sourceImages, int index);
-    }
 
     private PushFragmentInterface pushFragmentInterface;
 
@@ -121,14 +116,12 @@ public class PhotoImagesFragment extends Fragment {
 
                     SourceImage image = mPhotoImagesAdapter.getItem(position);
 
-                    if(pushFragmentInterface != null)
-                    {
-                        pushFragmentInterface.invoke((ArrayList<SourceImage>)mPhotoImagesAdapter.getSourceImages(), position);
+                    if (pushFragmentInterface != null) {
+                        pushFragmentInterface.invoke((ArrayList<SourceImage>) mPhotoImagesAdapter.getSourceImages(), position);
                     }
 
                     //mPhotoImagesAdapter.notifyDataSetChanged();
-                }
-                else {
+                } else {
                     // more
                     if (imageSource != null) {
                         imageSource.fetchNextImagesForFolder(mActivity, mSourceFolder, false, new ImageSourceImagesListener() {

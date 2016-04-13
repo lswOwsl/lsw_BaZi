@@ -35,7 +35,7 @@ public class LoadThumbnailTask extends AsyncTask<String, Void, Drawable> {
     @Override
     protected Drawable doInBackground(String... params) {
         String idString = params[0];
-        boolean isLongType = TextUtils.isDigitsOnly(params[0]);
+        boolean isLongType = params[0] != null && TextUtils.isDigitsOnly(params[0]);
         Bitmap bitmap = null;
         // check cache before load
         Cursor cursor = null;
@@ -73,7 +73,9 @@ public class LoadThumbnailTask extends AsyncTask<String, Void, Drawable> {
         }
         // add to cache
         try {
-            mMemoryCache.put(idString, bitmap);
+            if(idString != null) {
+                mMemoryCache.put(idString, bitmap);
+            }
         } catch (Exception e) {
             Log.e("LP", "Could not load image cache", e);
         }
@@ -87,7 +89,8 @@ public class LoadThumbnailTask extends AsyncTask<String, Void, Drawable> {
     protected void onPostExecute(Drawable drawable) {
         super.onPostExecute(drawable);
 
-        if (mImage.getImageId().equals(mImageView.getTag())) {
+        //mImage.getImageId() == null , 是menu现实的图片不是从folder那边过来的
+        if (mImage.getImageId() == null || mImage.getImageId().equals(mImageView.getTag())) {
             mImageView.setImageDrawable(drawable);
         }
     }

@@ -10,7 +10,7 @@
     <lsw.utility.Image.SquareImageView
         android:layout_gravity="top|center_horizontal"
         android:id="@+id/lp_img_image"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 

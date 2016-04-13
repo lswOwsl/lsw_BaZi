@@ -1,5 +1,6 @@
 package lsw.liuyao;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,15 +21,21 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import lsw.PhotoAlbumsFragment;
+import lsw.PhotoImagesFragment;
+import lsw.PhotoImagesFullSizeFragment;
 import lsw.hexagram.Analyzer;
 import lsw.hexagram.Builder;
 import lsw.library.DateExt;
@@ -41,8 +48,15 @@ import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.NoteFragmentDialog;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
+import lsw.liuyao.model.ImageAttachment;
 import lsw.model.Hexagram;
 import lsw.model.Line;
+import lsw.utility.Image.Common;
+import lsw.utility.Image.PushFragmentInterface;
+import lsw.utility.Image.SourceImage;
+import lsw.utility.Image.SquareImageView;
+
+import net.simonvt.menudrawer.MenuDrawer;
 
 /**
  * Created by swli on 8/7/2015.
@@ -63,11 +77,20 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
     HexagramRow hexagramRow;
     int hexagramRowId;
 
+    protected MenuDrawer mDrawer;
+
     //BaiDuInterstitial baiDuInterstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle bundle = getIntent().getExtras();
+        final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
+
+        String originalName = bundle.getString(IntentKeys.OriginalName);
+        String changedName = bundle.getString(IntentKeys.ChangedName);
+        final int hexagramRowId = bundle.getInt(IntentKeys.HexagramRowId);
 
         database = new Database(this);
         // 去掉窗口标题
@@ -79,16 +102,65 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         // 第二种：（两种方法效果一样）
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         // WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.hexagram_analyze_activity);
+        mDrawer = MenuDrawer.attach(this);
+        mDrawer.setMenuView(R.layout.menu_left);
+
+        mDrawer.setContentView(R.layout.hexagram_analyze_activity);
+
+        final ArrayList<SourceImage> listImages = new ArrayList<SourceImage>();
+
+        mDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
+            @Override
+            public void onDrawerStateChange(int oldState, int newState) {
+
+            }
+
+            @Override
+            public void onDrawerSlide(float openRatio, int offsetPixels) {
+
+            }
+        });
+        mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+
+        //侧边栏宽度，占整窗体的3/2
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        final int menuWidth = dm.widthPixels / 3 * 2;
+        mDrawer.setMenuSize(menuWidth);
+
+        List<ImageAttachment> imageAttachments = database.getImageAttachmentByHexagramId(hexagramRowId);
+        for(ImageAttachment attachment: imageAttachments)
+        {
+            SourceImage sourceImage = new SourceImage();
+            sourceImage.setFullUrl(attachment.getUrl());
+            listImages.add(sourceImage);
+        }
+
+        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+        MenuPhotoImagesFragment menuPhotoImagesFragment = MenuPhotoImagesFragment.createFragment(listImages);
+        menuPhotoImagesFragment.setPushFragmentInterface(new PushFragmentInterface() {
+            @Override
+            public void invoke(ArrayList<SourceImage> sourceImages, int index) {
+                //full image view
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
+                f.setCurrentFragmentManager(getSupportFragmentManager());
+                ft.replace(R.id.fl_Image_Select, f);
+                ft.commit();
+            }
+        });
+        ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
+        ftt.commit();
+
+
+
+        //mDrawer.getMenuView().findViewById(R.id)
 
 //        baiDuInterstitial = new BaiDuInterstitial(this);
 //        baiDuInterstitial.create();
 
-        Bundle bundle = getIntent().getExtras();
-        final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
-
-        String originalName = bundle.getString(IntentKeys.OriginalName);
-        String changedName = bundle.getString(IntentKeys.ChangedName);
         ArrayList<Line> models = null;
         if(StringHelper.isNullOrEmpty(originalName)) {
             models = (ArrayList<Line>) bundle.getSerializable(IntentKeys.LineModelList);
@@ -100,7 +172,6 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         analyzer = new Analyzer(this);
 
         btnNote = (TextView) findViewById(R.id.btnNote);
-        int hexagramRowId = bundle.getInt(IntentKeys.HexagramRowId);
         //如果不是从列表页 分析 跳转过来的，要隐藏存储备注按钮
         if( hexagramRowId <= 0)
         {
@@ -112,42 +183,12 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
             hexagramRow =  database.getHexagramById(hexagramRowId);
         }
 
-        final Activity currentActivity = this;
         btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-//                LayoutInflater inflater = LayoutInflater.from(currentActivity);
-//                View noteView = inflater.inflate(R.layout.common_hexagram_note, null);
-//                final EditText etNote = (EditText)noteView.findViewById(R.id.editText);
-//
-//                TextView tvSave = (TextView)noteView.findViewById(R.id.btnSaveNote);
-//
-//                etNote.setText(hexagramRow.getNote());
-
-
                 NoteFragmentDialog dialog = NoteFragmentDialog.newInstance(hexagramRow);
-                //dialog.setContentView(noteView);
                 dialog.show(getSupportFragmentManager(),"");
-
-//                WindowManager windowManager = currentActivity.getWindowManager();
-//
-//                Display display = windowManager.getDefaultDisplay();
-//                Window win = dialog.getDialog().getWindow();
-//                DisplayMetrics dm = new DisplayMetrics();
-//                display.getMetrics(dm);
-//                win.setLayout(dm.widthPixels / 3 * 2, dm.heightPixels / 3 * 2);
-//
-//                tvSave.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        hexagramRow.setNote(etNote.getText().toString());
-//                        database.updateHexagram(hexagramRow);
-//                        dialog.hide();
-//                        Toast.makeText(HexagramAnalyzerActivity.this, "更新备注记录成功", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-
 
             }
         });

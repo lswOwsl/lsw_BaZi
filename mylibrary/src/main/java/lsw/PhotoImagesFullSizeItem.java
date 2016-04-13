@@ -57,13 +57,14 @@ public class PhotoImagesFullSizeItem extends Fragment{
         imageView = (ImageView)v.findViewById(R.id.lp_img_check_mask);
         imageViewDefault = (ImageView)v.findViewById(R.id.lp_img_check_default);
 
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickListener.onClick(v,image);
-            }
-        });
-
+        if(onClickListener != null) {
+            mImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickListener.onClick(v, image);
+                }
+            });
+        }
         configureView();
 
         return v;

@@ -37,6 +37,7 @@ import lsw.liuyao.model.ImageAttachment;
 import lsw.utility.FileHelper;
 import lsw.utility.Image.Common;
 import lsw.utility.Image.DeviceImageSource;
+import lsw.utility.Image.PushFragmentInterface;
 import lsw.utility.Image.SourceFolder;
 import lsw.utility.Image.SourceImage;
 
@@ -131,7 +132,7 @@ public class NoteFragmentDialog extends DialogFragment {
                         //image gridview
                         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
                         PhotoImagesFragment f = PhotoImagesFragment.createFragment(imageSource, sourceFolder);
-                        f.setPushFragmentInterface(new PhotoImagesFragment.PushFragmentInterface() {
+                        f.setPushFragmentInterface(new PushFragmentInterface() {
                             @Override
                             public void invoke(ArrayList<SourceImage> sourceImages, int index) {
                                 //full image view
