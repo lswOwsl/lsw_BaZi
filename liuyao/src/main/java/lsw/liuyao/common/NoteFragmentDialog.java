@@ -29,15 +29,15 @@ import java.util.List;
 import lsw.PhotoAlbumsFragment;
 import lsw.PhotoImagesFragment;
 import lsw.PhotoImagesFullSizeFragment;
-import lsw.Util;
 import lsw.liuyao.R;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
 import lsw.liuyao.model.ImageAttachment;
 import lsw.utility.FileHelper;
+import lsw.utility.Image.AlbumSelectListener;
 import lsw.utility.Image.Common;
 import lsw.utility.Image.DeviceImageSource;
-import lsw.utility.Image.PushFragmentInterface;
+import lsw.utility.Image.ImageSelectListener;
 import lsw.utility.Image.SourceFolder;
 import lsw.utility.Image.SourceImage;
 
@@ -49,6 +49,18 @@ public class NoteFragmentDialog extends DialogFragment {
     private static final String Param_Hexagram_Row = "param1";
     HexagramRow hexagramRow;
     private Database database;
+
+    public interface OnSaveListener
+    {
+        void afterSave();
+    }
+
+    private OnSaveListener onSaveListener;
+
+    public void setOnSaveListener(OnSaveListener saveListener)
+    {
+        onSaveListener = saveListener;
+    }
 
     public static NoteFragmentDialog newInstance(HexagramRow hexagramRow) {
 
@@ -113,6 +125,10 @@ public class NoteFragmentDialog extends DialogFragment {
                 }
 
                 currentFragment.dismiss();
+
+                if(onSaveListener !=null)
+                    onSaveListener.afterSave();
+
                 Toast.makeText(getActivity(), "更新备注记录成功", Toast.LENGTH_SHORT).show();
             }
         });
@@ -126,13 +142,13 @@ public class NoteFragmentDialog extends DialogFragment {
                 //album list
                 FragmentTransaction ft = getChildFragmentManager().beginTransaction();
                 PhotoAlbumsFragment photoAlbumsFragment = PhotoAlbumsFragment.createFragment();
-                photoAlbumsFragment.setPushFragmentInterface(new PhotoAlbumsFragment.PushFragmentInterface() {
+                photoAlbumsFragment.setPushFragmentInterface(new AlbumSelectListener() {
                     @Override
                     public void invoke(DeviceImageSource imageSource, SourceFolder sourceFolder) {
                         //image gridview
                         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
                         PhotoImagesFragment f = PhotoImagesFragment.createFragment(imageSource, sourceFolder);
-                        f.setPushFragmentInterface(new PushFragmentInterface() {
+                        f.setImageSelectListener(new ImageSelectListener() {
                             @Override
                             public void invoke(ArrayList<SourceImage> sourceImages, int index) {
                                 //full image view
@@ -142,16 +158,13 @@ public class NoteFragmentDialog extends DialogFragment {
                                 f.setImageClickListener(new PhotoImagesFullSizeFragment.OnImageClickListener() {
                                     @Override
                                     public void onClick(View view, SourceImage image) {
-                                        ImageView imageView = (ImageView)view.findViewById(lsw.library.R.id.lp_img_check_mask);
-                                        ImageView imageViewDefault = (ImageView)view.findViewById(lsw.library.R.id.lp_img_check_default);
+                                        ImageView imageView = (ImageView) view.findViewById(lsw.library.R.id.lp_img_check_mask);
+                                        ImageView imageViewDefault = (ImageView) view.findViewById(lsw.library.R.id.lp_img_check_default);
 
-                                        if(selectedImages.contains(image))
-                                        {
+                                        if (selectedImages.contains(image)) {
                                             selectedImages.remove(image);
                                             imageViewDefault.setBackgroundColor(getResources().getColor(lsw.library.R.color.gray_light));
-                                        }
-                                       else
-                                        {
+                                        } else {
                                             selectedImages.add(image);
                                             imageView.setImageDrawable(Common.getDrawableSelect(getActivity(), lsw.library.R.drawable.image_select_mask, lsw.library.R.color.color_for_draw));
                                             imageViewDefault.setBackgroundColor(getResources().getColor(lsw.library.R.color.transparent));

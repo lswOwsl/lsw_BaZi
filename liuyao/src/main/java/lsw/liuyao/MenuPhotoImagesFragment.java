@@ -11,14 +11,10 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import lsw.PhotoImagesAdapter;
-import lsw.liuyao.model.ImageAttachment;
 import lsw.utility.Image.DeviceImageSource;
-import lsw.utility.Image.ImageSourceImagesListener;
-import lsw.utility.Image.PushFragmentInterface;
-import lsw.utility.Image.SourceFolder;
+import lsw.utility.Image.ImageSelectListener;
 import lsw.utility.Image.SourceImage;
 
 /**
@@ -34,11 +30,11 @@ public class MenuPhotoImagesFragment extends Fragment {
 
     private ProgressBar mProgressBar;
 
-    private PushFragmentInterface pushFragmentInterface;
+    private ImageSelectListener imageSelectListener;
 
-    public void setPushFragmentInterface(PushFragmentInterface pushFragmentInterface)
+    public void setImageSelectListener(ImageSelectListener imageSelectListener)
     {
-        this.pushFragmentInterface = pushFragmentInterface;
+        this.imageSelectListener = imageSelectListener;
     }
 
     public static MenuPhotoImagesFragment createFragment(ArrayList<SourceImage> images) {
@@ -75,8 +71,8 @@ public class MenuPhotoImagesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                if (pushFragmentInterface != null) {
-                    pushFragmentInterface.invoke((ArrayList<SourceImage>) mPhotoImagesAdapter.getSourceImages(), position);
+                if (imageSelectListener != null) {
+                    imageSelectListener.invoke((ArrayList<SourceImage>) mPhotoImagesAdapter.getSourceImages(), position);
                 }
             }
         });

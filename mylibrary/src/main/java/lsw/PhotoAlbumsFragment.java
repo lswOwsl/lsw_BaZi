@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lsw.library.R;
+import lsw.utility.Image.AlbumSelectListener;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.ImageSourceFoldersListener;
 import lsw.utility.Image.SourceFolder;
@@ -33,16 +34,11 @@ public class PhotoAlbumsFragment extends Fragment {
 
     private Activity mActivity;
 
-    public interface PushFragmentInterface
-    {
-        void invoke(DeviceImageSource imageSource, SourceFolder sourceFolder);
-    }
+    private AlbumSelectListener albumSelectListener;
 
-    private PushFragmentInterface pushFragmentInterface;
-
-    public void setPushFragmentInterface(PushFragmentInterface pushFragmentInterface)
+    public void setPushFragmentInterface(AlbumSelectListener albumSelectListener)
     {
-        this.pushFragmentInterface = pushFragmentInterface;
+        this.albumSelectListener = albumSelectListener;
     }
 
     public static PhotoAlbumsFragment createFragment() {
@@ -104,14 +100,10 @@ public class PhotoAlbumsFragment extends Fragment {
                 if (mPhotoAlbumsAdapter.getItemViewType(position) == 0) {
                     SourceFolder folder = (SourceFolder) mPhotoAlbumsAdapter.getItem(position);
 
-                    if(pushFragmentInterface != null)
+                    if(albumSelectListener != null)
                     {
-                        pushFragmentInterface.invoke(imageSource,folder);
+                        albumSelectListener.invoke(imageSource,folder);
                     }
-//                    PhotoImagesFragment f = PhotoImagesFragment.createFragment(imageSource, folder);
-//                    FragmentTransaction ft = fragmentManager.beginTransaction();
-//                    ft.replace(R.id.fl_Image_Select, f);
-//                    ft.commit();
 
                 } else {
                     // more

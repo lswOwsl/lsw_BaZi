@@ -1,13 +1,5 @@
 package lsw.liuyao;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -16,25 +8,17 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lsw.PhotoAlbumsFragment;
-import lsw.PhotoImagesFragment;
 import lsw.PhotoImagesFullSizeFragment;
 import lsw.hexagram.Analyzer;
 import lsw.hexagram.Builder;
@@ -51,10 +35,8 @@ import lsw.liuyao.model.HexagramRow;
 import lsw.liuyao.model.ImageAttachment;
 import lsw.model.Hexagram;
 import lsw.model.Line;
-import lsw.utility.Image.Common;
-import lsw.utility.Image.PushFragmentInterface;
+import lsw.utility.Image.ImageSelectListener;
 import lsw.utility.Image.SourceImage;
-import lsw.utility.Image.SquareImageView;
 
 import net.simonvt.menudrawer.MenuDrawer;
 
@@ -80,6 +62,37 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
     protected MenuDrawer mDrawer;
 
     //BaiDuInterstitial baiDuInterstitial;
+
+    ArrayList<SourceImage> listImages = new ArrayList<SourceImage>();
+
+    private void loadMenuFragment(int hexagramRowId)
+    {
+        listImages.clear();
+
+        List<ImageAttachment> imageAttachments = database.getImageAttachmentByHexagramId(hexagramRowId);
+        for(ImageAttachment attachment: imageAttachments)
+        {
+            SourceImage sourceImage = new SourceImage();
+            sourceImage.setFullUrl(attachment.getUrl());
+            listImages.add(sourceImage);
+        }
+
+        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+        MenuPhotoImagesFragment menuPhotoImagesFragment = MenuPhotoImagesFragment.createFragment(listImages);
+        menuPhotoImagesFragment.setImageSelectListener(new ImageSelectListener() {
+            @Override
+            public void invoke(ArrayList<SourceImage> sourceImages, int index) {
+                //full image view
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
+                f.setCurrentFragmentManager(getSupportFragmentManager());
+                ft.replace(R.id.fl_Image_Select, f);
+                ft.commit();
+            }
+        });
+        ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
+        ftt.commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +120,6 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
 
         mDrawer.setContentView(R.layout.hexagram_analyze_activity);
 
-        final ArrayList<SourceImage> listImages = new ArrayList<SourceImage>();
-
         mDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
             @Override
             public void onDrawerStateChange(int oldState, int newState) {
@@ -122,6 +133,8 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         });
         mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
 
+        loadMenuFragment(hexagramRowId);
+
         //侧边栏宽度，占整窗体的3/2
         WindowManager windowManager = getWindowManager();
         Display display = windowManager.getDefaultDisplay();
@@ -129,32 +142,6 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         display.getMetrics(dm);
         final int menuWidth = dm.widthPixels / 3 * 2;
         mDrawer.setMenuSize(menuWidth);
-
-        List<ImageAttachment> imageAttachments = database.getImageAttachmentByHexagramId(hexagramRowId);
-        for(ImageAttachment attachment: imageAttachments)
-        {
-            SourceImage sourceImage = new SourceImage();
-            sourceImage.setFullUrl(attachment.getUrl());
-            listImages.add(sourceImage);
-        }
-
-        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
-        MenuPhotoImagesFragment menuPhotoImagesFragment = MenuPhotoImagesFragment.createFragment(listImages);
-        menuPhotoImagesFragment.setPushFragmentInterface(new PushFragmentInterface() {
-            @Override
-            public void invoke(ArrayList<SourceImage> sourceImages, int index) {
-                //full image view
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
-                f.setCurrentFragmentManager(getSupportFragmentManager());
-                ft.replace(R.id.fl_Image_Select, f);
-                ft.commit();
-            }
-        });
-        ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
-        ftt.commit();
-
-
 
         //mDrawer.getMenuView().findViewById(R.id)
 
@@ -188,7 +175,14 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
             public void onClick(View view) {
 
                 NoteFragmentDialog dialog = NoteFragmentDialog.newInstance(hexagramRow);
-                dialog.show(getSupportFragmentManager(),"");
+                dialog.setOnSaveListener(new NoteFragmentDialog.OnSaveListener() {
+                    @Override
+                    public void afterSave() {
+                        loadMenuFragment(hexagramRowId);
+                    }
+                });
+
+                dialog.show(getSupportFragmentManager(), "");
 
             }
         });

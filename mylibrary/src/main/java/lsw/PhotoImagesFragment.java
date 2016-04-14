@@ -16,7 +16,7 @@ import java.util.List;
 import lsw.library.R;
 import lsw.utility.Image.DeviceImageSource;
 import lsw.utility.Image.ImageSourceImagesListener;
-import lsw.utility.Image.PushFragmentInterface;
+import lsw.utility.Image.ImageSelectListener;
 import lsw.utility.Image.SourceFolder;
 import lsw.utility.Image.SourceImage;
 
@@ -36,11 +36,11 @@ public class PhotoImagesFragment extends Fragment {
 
     private Activity mActivity;
 
-    private PushFragmentInterface pushFragmentInterface;
+    private ImageSelectListener imageSelectListener;
 
-    public void setPushFragmentInterface(PushFragmentInterface pushFragmentInterface)
+    public void setImageSelectListener(ImageSelectListener imageSelectListener)
     {
-        this.pushFragmentInterface = pushFragmentInterface;
+        this.imageSelectListener = imageSelectListener;
     }
 
     public static PhotoImagesFragment createFragment(DeviceImageSource imageSource, SourceFolder folder) {
@@ -116,8 +116,8 @@ public class PhotoImagesFragment extends Fragment {
 
                     SourceImage image = mPhotoImagesAdapter.getItem(position);
 
-                    if (pushFragmentInterface != null) {
-                        pushFragmentInterface.invoke((ArrayList<SourceImage>) mPhotoImagesAdapter.getSourceImages(), position);
+                    if (imageSelectListener != null) {
+                        imageSelectListener.invoke((ArrayList<SourceImage>) mPhotoImagesAdapter.getSourceImages(), position);
                     }
 
                     //mPhotoImagesAdapter.notifyDataSetChanged();
