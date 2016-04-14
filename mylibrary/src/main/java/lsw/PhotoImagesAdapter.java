@@ -83,6 +83,7 @@ public class PhotoImagesAdapter extends ArrayAdapter<SourceImage> {
                 viewHolder.checkLayout = (ViewGroup) convertView.findViewById(R.id.lp_layout_check);
                 viewHolder.resourceId = R.drawable.image_select_mask;
 
+
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -103,7 +104,7 @@ public class PhotoImagesAdapter extends ArrayAdapter<SourceImage> {
             }
 
 
-            //viewHolder.checkLayout.setVisibility( View.GONE );
+            viewHolder.checkLayout.setVisibility( View.GONE );
         }
 
         return  convertView;

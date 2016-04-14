@@ -63,22 +63,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" android:padding="5dp">
 
-            <TextView
-                android:textColor="#fff"
-                android:paddingLeft="7dp"
-                android:paddingRight="7dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:textSize="10dp"
-                android:text="选择图片"
-                android:id="@+id/btnImageNote"
-                android:background="@drawable/button_flatten"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
-                <View android:layout_marginTop="6dp"
-                    style="@style/PartLine"
-                    android:layout_marginBottom="0dp"></View>
             </LinearLayout>
 
             <FrameLayout android:id="@+id/fl_Image_Select"
@@ -95,6 +80,24 @@
         android:layout_height="wrap_content" android:paddingBottom="5dp">
         <View style="@style/PartLine"
             android:layout_marginTop="5dp"></View>
+<LinearLayout
+    android:layout_width="match_parent" android:gravity="center"
+    android:layout_height="wrap_content" android:orientation="horizontal">
+        <TextView
+            android:textColor="#fff"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textSize="10dp"
+            android:text="选择图片"
+            android:id="@+id/btnImageNote"
+            android:background="@drawable/button_flatten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
         <TextView
             android:textColor="#fff"
             android:paddingLeft="7dp"
@@ -107,6 +110,6 @@
             android:background="@drawable/button_flatten"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"  />
-
+</LinearLayout>
     </LinearLayout>
 </RelativeLayout>

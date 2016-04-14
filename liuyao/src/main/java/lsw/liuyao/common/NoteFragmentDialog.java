@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.simonvt.menudrawer.MenuDrawer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,6 +31,8 @@ import java.util.List;
 import lsw.PhotoAlbumsFragment;
 import lsw.PhotoImagesFragment;
 import lsw.PhotoImagesFullSizeFragment;
+import lsw.liuyao.HexagramAnalyzerActivity;
+import lsw.liuyao.MenuPhotoImagesFragment;
 import lsw.liuyao.R;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
@@ -79,6 +83,38 @@ public class NoteFragmentDialog extends DialogFragment {
         }
 
         database = new Database(getActivity());
+
+        loadSelectedImages(hexagramRow.getId());
+    }
+
+    private void loadSelectedImages(final int hexagramRowId) {
+
+        ArrayList<SourceImage> listImages = new ArrayList<SourceImage>();
+
+        List<ImageAttachment> imageAttachments = database.getImageAttachmentByHexagramId(hexagramRowId);
+        for (ImageAttachment attachment : imageAttachments) {
+            SourceImage sourceImage = new SourceImage();
+            sourceImage.setFullUrl(attachment.getUrl());
+            listImages.add(sourceImage);
+        }
+
+        if (imageAttachments.size() > 0) {
+            FragmentTransaction ftt = getChildFragmentManager().beginTransaction();
+            MenuPhotoImagesFragment menuPhotoImagesFragment = MenuPhotoImagesFragment.createFragment(listImages,false);
+            menuPhotoImagesFragment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    database.deleteImageAttachmentByHexagramRowId(hexagramRowId);
+                    Toast.makeText(getActivity(), "删除图片成功", Toast.LENGTH_SHORT).show();
+                    if(getActivity() instanceof HexagramAnalyzerActivity)
+                    {
+                        ((HexagramAnalyzerActivity)getActivity()).loadMenuFragment(hexagramRowId);
+                    }
+                }
+            });
+            ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
+            ftt.commit();
+        }
     }
 
     final List<SourceImage> selectedImages = new ArrayList<SourceImage>();
@@ -94,6 +130,8 @@ public class NoteFragmentDialog extends DialogFragment {
         TextView btnImageNote = (TextView)noteView.findViewById(R.id.btnImageNote);
 
         etNote.setText(hexagramRow.getNote());
+
+
 
         final DialogFragment currentFragment = this;
 

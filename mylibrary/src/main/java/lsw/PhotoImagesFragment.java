@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,8 @@ public class PhotoImagesFragment extends Fragment {
 
     private Activity mActivity;
 
+    TextView tvRemoveAll;
+
     private ImageSelectListener imageSelectListener;
 
     public void setImageSelectListener(ImageSelectListener imageSelectListener)
@@ -58,6 +61,11 @@ public class PhotoImagesFragment extends Fragment {
         View v = inflater.inflate(R.layout.common_photo_images, null);
 
         mGridView = (GridView)v.findViewById(R.id.gvImages);
+
+        //TextView tvTitle = (TextView)v.findViewById(R.id.tvTitle);
+        tvRemoveAll = (TextView)v.findViewById(R.id.tvRemoveAll);
+        tvRemoveAll.setVisibility(View.GONE);
+
         mSourceFolder = (SourceFolder)getArguments().getSerializable(ARG_FOLDER);
 
         mProgressBar = (ProgressBar)v.findViewById(R.id.lp_progress_bar);

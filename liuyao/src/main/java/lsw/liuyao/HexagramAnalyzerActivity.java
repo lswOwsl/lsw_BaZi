@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.fortysevendeg.swipelistview.SwipeListView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,13 +61,14 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
     HexagramRow hexagramRow;
     int hexagramRowId;
 
-    protected MenuDrawer mDrawer;
+    private MenuDrawer mDrawer;
+    private SwipeListView swipeListView;
 
     //BaiDuInterstitial baiDuInterstitial;
 
     ArrayList<SourceImage> listImages = new ArrayList<SourceImage>();
 
-    private void loadMenuFragment(int hexagramRowId)
+    public void loadMenuFragment(int hexagramRowId)
     {
         listImages.clear();
 
@@ -77,21 +80,30 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
             listImages.add(sourceImage);
         }
 
-        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
-        MenuPhotoImagesFragment menuPhotoImagesFragment = MenuPhotoImagesFragment.createFragment(listImages);
-        menuPhotoImagesFragment.setImageSelectListener(new ImageSelectListener() {
-            @Override
-            public void invoke(ArrayList<SourceImage> sourceImages, int index) {
-                //full image view
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
-                f.setCurrentFragmentManager(getSupportFragmentManager());
-                ft.replace(R.id.fl_Image_Select, f);
-                ft.commit();
-            }
-        });
-        ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
-        ftt.commit();
+        if(imageAttachments.size() > 0)
+        {
+            mDrawer.getMenuView().setEnabled(true);
+            mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+            FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+            MenuPhotoImagesFragment menuPhotoImagesFragment = MenuPhotoImagesFragment.createFragment(listImages,true);
+            menuPhotoImagesFragment.setImageSelectListener(new ImageSelectListener() {
+                @Override
+                public void invoke(ArrayList<SourceImage> sourceImages, int index) {
+                    //full image view
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
+                    f.setCurrentFragmentManager(getSupportFragmentManager());
+                    ft.replace(R.id.fl_Image_Select, f);
+                    ft.commit();
+                }
+            });
+            ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
+            ftt.commit();
+        }
+        else {
+            mDrawer.getMenuView().setEnabled(false);
+            mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
+        }
     }
 
     @Override
@@ -131,7 +143,6 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
 
             }
         });
-        mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
 
         loadMenuFragment(hexagramRowId);
 

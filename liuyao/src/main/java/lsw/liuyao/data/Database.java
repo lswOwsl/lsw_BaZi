@@ -271,7 +271,7 @@ public class Database extends DatabaseManager {
     {
         openDatabase();
 
-        getDatabase().delete("ImageAttachment", "HexagramId ='" +models.get(0).getHexagramId() + "'", null);
+        getDatabase().delete("ImageAttachment", "HexagramId ='" + models.get(0).getHexagramId() + "'", null);
 
         for(ImageAttachment imageAttachment : models) {
             ContentValues cv = new ContentValues();
@@ -320,6 +320,12 @@ public class Database extends DatabaseManager {
             getDatabase().delete("ImageAttachment", "Id ='" + ids[i] + "'", null);
         }
 
+        closeDatabase();
+    }
+    public void deleteImageAttachmentByHexagramRowId(int id)
+    {
+        openDatabase();
+        getDatabase().delete("ImageAttachment", "HexagramId ='" + id + "'", null);
         closeDatabase();
     }
 }
