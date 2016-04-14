@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.fortysevendeg.swipelistview.SwipeListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,7 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
     int hexagramRowId;
 
     private MenuDrawer mDrawer;
-    private SwipeListView swipeListView;
+    //private SwipeListView swipeListView;
 
     //BaiDuInterstitial baiDuInterstitial;
 

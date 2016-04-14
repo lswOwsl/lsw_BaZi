@@ -26,14 +26,15 @@ import lsw.liuyao.model.HexagramRow;
 import lsw.liuyao.wxapi.WXEntryActivity;
 import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
 
-import com.fortysevendeg.swipelistview.SwipeListView;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 /**
  * Created by swli on 8/18/2015.
  */
-public class HexagramListAdapter extends BaseAdapter {
+public class HexagramListAdapter extends BaseSwipeAdapter {
 
     ArrayList<HexagramRow> rows;
     Activity context;
@@ -84,11 +85,24 @@ public class HexagramListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public int getSwipeLayoutResourceId(int i) {
+        return R.id.swipe;
+    }
+
+    @Override
+    public View generateView(int i, ViewGroup viewGroup) {
+        return LayoutInflater.from(context).inflate(R.layout.hexagram_list_item, null);
+    }
+
+    @Override
+    public void fillValues(int i, View view) {
+        SwipeLayout swipeLayout = ((SwipeLayout) view);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Right, swipeLayout.findViewById(R.id.back));
+
         final HexagramRow item = rows.get(i);
         ViewHolder holder;
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.hexagram_list_item, null);
+//       if (view == null) {
             holder = new ViewHolder();
             holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
             holder.tvOriginalName = (TextView) view.findViewById(R.id.tvOriginalName);
@@ -98,11 +112,10 @@ public class HexagramListAdapter extends BaseAdapter {
             holder.btnDelete = (TextView) view.findViewById(R.id.btnDelete);
 
             holder.tvNote = (TextView) view.findViewById(R.id.tvNote);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-        //((SwipeListView) viewGroup).recycle(view, i);
+//            view.setTag(holder);
+//        } else {
+//            holder = (ViewHolder) view.getTag();
+//        }
 
         DateExt tempDateExt = new DateExt(item.getDate());
         int indexOfWeek = tempDateExt.getIndexOfWeek();
@@ -146,7 +159,6 @@ public class HexagramListAdapter extends BaseAdapter {
             }
         });
 
-        return view;
     }
 
     static class ViewHolder {

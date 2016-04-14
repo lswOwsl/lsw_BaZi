@@ -14,8 +14,7 @@ import android.widget.SearchView;
 
 //import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
 //import com.baidu.autoupdatesdk.UICheckUpdateCallback;
-import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
-import com.fortysevendeg.swipelistview.SwipeListView;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ import lsw.liuyao.model.HexagramRow;
  */
 public class HexagramListActivity extends Activity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, HexagramListAdapter.OnReload {
 
-    SwipeListView swipeListView;
+    ListView swipeListView;
     Database database;
     HexagramListAdapter hexagramListAdapter;
     private String searchText;
@@ -60,27 +59,6 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
 
         swipeListView.setAdapter(hexagramListAdapter);
         swipeListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
-
-        swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-            int openItem = -1;
-            int lastOpenedItem = -1;
-            int lastClosedItem = -1;
-
-            @Override
-            public void onOpened(int position, boolean toRight) {
-                lastOpenedItem = position;
-                if (openItem > -1 && lastOpenedItem != lastClosedItem) {
-                    swipeListView.closeAnimate(openItem);
-                }
-                openItem = position;
-            }
-
-            @Override
-            public void onStartClose(int position, boolean right) {
-                //Log.d("swipe", String.format("onStartClose %d", position));
-                lastClosedItem = position;
-            }
-        });
 
         //SinaData sinaData = new SinaData(this);
 //        sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_Day_Method + "RB1601", new SinaData.IResult<String>() {
@@ -187,7 +165,7 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
 
     private void initControls()
     {
-        swipeListView = (SwipeListView) findViewById(R.id.slv_Hexagram);
+        swipeListView = (ListView) findViewById(R.id.slv_Hexagram);
     }
 
     @Override
@@ -216,7 +194,7 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             case RESULT_CANCELED:
                 hexagramListAdapter.setRows(database.getHexagramList(""));
                 hexagramListAdapter.notifyDataSetChanged();
-                swipeListView.closeOpenedItems();
+                //swipeListView.closeOpenedItems();
                 break;
             default:
                 break;
@@ -228,6 +206,6 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         hexagramListAdapter.setRows(database.getHexagramList(searchText));
         hexagramListAdapter.notifyDataSetChanged();
         //close open items 必须最后调用，要不删除后不能反应到list页面上
-        swipeListView.closeOpenedItems();
+        //swipeListView.closeOpenedItems();
     }
 }
