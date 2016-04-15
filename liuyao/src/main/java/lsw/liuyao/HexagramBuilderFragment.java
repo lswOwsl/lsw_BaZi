@@ -25,6 +25,7 @@ import java.util.List;
 import lsw.hexagram.Builder;
 import lsw.library.ColorHelper;
 import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.Utility;
 import lsw.liuyao.data.Database;
@@ -110,8 +111,11 @@ public class HexagramBuilderFragment extends Fragment {
         String sixSuitOrInverse = Default.isSixInverseHexagram(mainHexagram.getName()) ? " (六冲)" : (Default.isSixSuitHexagram(mainHexagram.getName())? " (六合)" : "");
         tvMainTitle.setText("主卦:" + mainHexagram.getName() + sixSuitOrInverse + "  宫:" + mainHexagram.getPlace() + "  位置:" + getPlacePostion(mainHexagram.getId()));
 
+        DateExt tempDateExt = new DateExt(dateExt.getDate());
+        int indexOfWeek = tempDateExt.getIndexOfWeek();
+        String weekDay = indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
 
-        tvDate.setText(dateExt.getFormatDateTime(formatDateTime));
+        tvDate.setText(dateExt.getFormatDateTime(formatDateTime) +" (星期"+ weekDay +")");
 
         Pair<String,String> xunKong = Utility.getXunKong(getActivity(), lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
 //        String eraText =

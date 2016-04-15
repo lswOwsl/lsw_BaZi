@@ -24,6 +24,7 @@ import lsw.PhotoImagesFullSizeFragment;
 import lsw.hexagram.Analyzer;
 import lsw.hexagram.Builder;
 import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.StringHelper;
 import lsw.library.Utility;
@@ -269,7 +270,12 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         String eraText =
                 lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
                         lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
-        tvAnalyzeDate.setText(eraText +"     "+ dateExt.getFormatDateTime(formatDateTime));
+
+        DateExt tempDateExt = new DateExt(dateExt.getDate());
+        int indexOfWeek = tempDateExt.getIndexOfWeek();
+        String weekDay = indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
+
+        tvAnalyzeDate.setText(eraText +"     "+ dateExt.getFormatDateTime(formatDateTime) + " (星期"+weekDay+")");
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
