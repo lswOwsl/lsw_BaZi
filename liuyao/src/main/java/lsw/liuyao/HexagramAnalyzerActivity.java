@@ -154,7 +154,13 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         final int menuWidth = dm.widthPixels / 3 * 2;
         mDrawer.setMenuSize(menuWidth);
 
-        //mDrawer.getMenuView().findViewById(R.id)
+        TextView tvResetImages =  (TextView)mDrawer.getMenuView().findViewById(R.id.tvResetImages);
+        tvResetImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMenuFragment(hexagramRowId);
+            }
+        });
 
 //        baiDuInterstitial = new BaiDuInterstitial(this);
 //        baiDuInterstitial.create();

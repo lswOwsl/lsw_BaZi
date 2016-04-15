@@ -205,6 +205,7 @@ public class NoteFragmentDialog extends DialogFragment {
                                         } else {
                                             selectedImages.add(image);
                                             imageView.setImageDrawable(Common.getDrawableSelect(getActivity(), lsw.library.R.drawable.image_select_mask, lsw.library.R.color.color_for_draw));
+                                            imageViewDefault.setVisibility(View.VISIBLE);
                                             imageViewDefault.setBackgroundColor(getResources().getColor(lsw.library.R.color.transparent));
                                         }
                                     }
