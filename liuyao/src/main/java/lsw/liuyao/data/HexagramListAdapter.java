@@ -1,7 +1,9 @@
 package lsw.liuyao.data;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -153,9 +155,22 @@ public class HexagramListAdapter extends BaseSwipeAdapter {
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database.deleteHexagram(item.getId());
-                if(onReload != null)
-                    onReload.invoke(index);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setMessage("删除当前记录？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        database.deleteHexagram(item.getId());
+                        if(onReload != null)
+                            onReload.invoke(index);
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create().show();
+
+
             }
         });
 
