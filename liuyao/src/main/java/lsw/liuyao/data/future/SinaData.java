@@ -110,6 +110,8 @@ public class SinaData {
 
     String ReBuildPropertyString(String p)
     {
+        if(p.indexOf("\"") != 0)
+            p = p.substring(1);
         return ReBuildPropertyString(p,1);
     }
 

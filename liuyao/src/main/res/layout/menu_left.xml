@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@color/gray_light">
-    <LinearLayout
+    android:layout_height="match_parent" android:background="@color/white">
+    <LinearLayout android:id="@+id/topFunctions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:orientation="horizontal">
         <TextView android:text="复 位" android:id="@+id/tvResetImages"
@@ -12,11 +12,15 @@
     </LinearLayout>
     <FrameLayout android:id="@+id/fl_Image_Select"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/bottomFunctions"
+        android:layout_below="@+id/topFunctions" />
+    <LinearLayout android:id="@+id/bottomFunctions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:layout_alignParentBottom="true">
         <TextView
+            android:id="@+id/tvPrice"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_margin="3dp"

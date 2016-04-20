@@ -60,21 +60,6 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         swipeListView.setAdapter(hexagramListAdapter);
         swipeListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
 
-        //SinaData sinaData = new SinaData(this);
-//        sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_Day_Method + "RB1601", new SinaData.IResult<String>() {
-//            @Override
-//            public void invoke(String s) {
-//                String rr = s;
-//                ArrayList<DailyData> dailyDatas = SinaData.parseDataByString(s);
-//            }
-//        });
-
-//        sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_OneHour_Method + "RB1601", new SinaData.IResult< ArrayList<DailyData>>() {
-//            @Override
-//            public void invoke( ArrayList<DailyData> s) {
-//                String rr = "";
-//            }
-//        });
 
         //dialog = new ProgressDialog(this);
         //dialog.setIndeterminate(true);

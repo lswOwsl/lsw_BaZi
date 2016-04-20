@@ -162,6 +162,17 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
             }
         });
 
+        TextView tvPrice = (TextView) mDrawer.getMenuView().findViewById(R.id.tvPrice);
+        tvPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+                FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime());
+                ftt.replace(R.id.fl_Image_Select, futurePriceFragment, null);
+                ftt.commit();
+            }
+        });
+
 //        baiDuInterstitial = new BaiDuInterstitial(this);
 //        baiDuInterstitial.create();
 
