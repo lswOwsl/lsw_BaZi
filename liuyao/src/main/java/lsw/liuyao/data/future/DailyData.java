@@ -7,16 +7,14 @@ import lsw.library.DateExt;
  */
 public class DailyData {
 
-    public int ID ;
+    public int Id ;
     public String FutureCode ;
-    public String DeliveryPeriod ;
     public String DateTime ;
     public Double OpeningPrice ;
     public Double HighestPrice ;
     public Double LowestPrice ;
     public Double ClosingPrice;
     public Integer Volume ;
-    public String GroupDate;
     public String Circle;
-
+    public int HexagramId;
 }

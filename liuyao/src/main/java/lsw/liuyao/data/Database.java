@@ -22,6 +22,7 @@ import java.util.List;
 import lsw.library.DatabaseManager;
 import lsw.liuyao.R;
 import lsw.liuyao.common.MyApplication;
+import lsw.liuyao.data.future.DailyData;
 import lsw.liuyao.model.HexagramLineNote;
 import lsw.liuyao.model.HexagramRow;
 import lsw.liuyao.model.ImageAttachment;
@@ -327,5 +328,74 @@ public class Database extends DatabaseManager {
         openDatabase();
         getDatabase().delete("ImageAttachment", "HexagramId ='" + id + "'", null);
         closeDatabase();
+    }
+
+    public void deleteFutureDataByHexagramRowId(int id)
+    {
+        openDatabase();
+        getDatabase().delete("FutureData", "HexagramId ='" + id + "'", null);
+        closeDatabase();
+    }
+
+    public void insertFutureData(List<DailyData> models)
+    {
+        openDatabase();
+
+        getDatabase().delete("FutureData", "HexagramId ='" + models.get(0).HexagramId + "'", null);
+
+        for(DailyData dailyData : models) {
+            ContentValues cv = new ContentValues();
+            cv.put("HexagramId", dailyData.HexagramId);
+            cv.put("FutureCode", dailyData.FutureCode);
+            cv.put("Date", dailyData.DateTime);
+            cv.put("OpeningPrice", dailyData.OpeningPrice);
+            cv.put("ClosingPrice", dailyData.ClosingPrice);
+            cv.put("HighestPrice", dailyData.HighestPrice);
+            cv.put("LowestPrice", dailyData.LowestPrice);
+            cv.put("Volume", dailyData.Volume);
+            getDatabase().insert("FutureData", null, cv);
+        }
+        closeDatabase();
+    }
+
+    public List<DailyData> getDailyDataByHexagramId(int hexagramId)
+    {
+        openDatabase();
+        String[] params = new String[]{ hexagramId+"" };
+        String sql = "SELECT * FROM FutureData where HexagramId = ?";
+        Cursor cur = database.rawQuery(sql, params);
+        List<DailyData> list = new ArrayList<DailyData>();
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            DailyData dailyData = createDailyDataByCursor(cur);
+            //break;
+            list.add(dailyData);
+        }
+        closeDatabase();
+        return list;
+    }
+
+    DailyData createDailyDataByCursor(Cursor cursor)
+    {
+        int id = getColumnIntValue(cursor,"Id");
+        int hexagramId = getColumnIntValue(cursor, "HexagramId");
+        String futureCode = getColumnValue(cursor, "FutureCode");
+        String date = getColumnValue(cursor, "Date");
+        double openingPrice = getColumnDoubleValue(cursor, "OpeningPrice");
+        double highestPrice = getColumnDoubleValue(cursor, "HighestPrice");
+        double lowestPrice = getColumnDoubleValue(cursor, "LowestPrice");
+        double closingPrice = getColumnDoubleValue(cursor, "ClosingPrice");
+        int volume = getColumnIntValue(cursor, "Volume");
+
+        DailyData dailyData = new DailyData();
+        dailyData.Id = id;
+        dailyData.HexagramId = hexagramId;
+        dailyData.FutureCode = futureCode;
+        dailyData.DateTime = date;
+        dailyData.OpeningPrice = openingPrice;
+        dailyData.ClosingPrice =closingPrice;
+        dailyData.HighestPrice = highestPrice;
+        dailyData.LowestPrice = lowestPrice;
+
+        return dailyData;
     }
 }

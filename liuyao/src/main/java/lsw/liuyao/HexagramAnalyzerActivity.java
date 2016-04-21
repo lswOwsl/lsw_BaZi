@@ -1,5 +1,6 @@
 package lsw.liuyao;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -37,6 +38,7 @@ import lsw.liuyao.model.HexagramRow;
 import lsw.liuyao.model.ImageAttachment;
 import lsw.model.Hexagram;
 import lsw.model.Line;
+import lsw.utility.CaptureImage;
 import lsw.utility.Image.ImageSelectListener;
 import lsw.utility.Image.SourceImage;
 
@@ -167,7 +169,7 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
             @Override
             public void onClick(View view) {
                 FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
-                FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime());
+                FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime(), hexagramRowId);
                 ftt.replace(R.id.fl_Image_Select, futurePriceFragment, null);
                 ftt.commit();
             }
@@ -201,6 +203,10 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+//                Bitmap b1 = CaptureImage.captureViewToImage(mDrawer.getContentContainer());
+//                Bitmap b2 = CaptureImage.captureViewToImage(mDrawer.getMenuView());
+//                Bitmap b3 = CaptureImage.combineImages(b2, b1);
 
                 NoteFragmentDialog dialog = NoteFragmentDialog.newInstance(hexagramRow);
                 dialog.setOnSaveListener(new NoteFragmentDialog.OnSaveListener() {

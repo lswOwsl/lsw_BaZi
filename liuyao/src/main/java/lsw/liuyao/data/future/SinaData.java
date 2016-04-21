@@ -36,13 +36,15 @@ public class SinaData {
     public void  getResponeFromURL(String url, final IResult<ArrayList<DailyData>> result)
     {
         this.url = url;
-        StringRequest request = new StringRequest(url,
+        final StringRequest request = new StringRequest(url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("TAG", response);
-                        ArrayList<DailyData> dailyDatas = parseDataByString(response);
-                        result.invoke(dailyDatas);
+                        if(response != null && !response.isEmpty() && !response.equals("null")) {
+                            ArrayList<DailyData> dailyDatas = parseDataByString(response);
+                            result.invoke(dailyDatas);
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override

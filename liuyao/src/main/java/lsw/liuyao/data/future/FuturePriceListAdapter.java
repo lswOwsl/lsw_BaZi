@@ -9,7 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import lsw.library.DateExt;
 import lsw.liuyao.R;
 
 /**
@@ -17,10 +19,10 @@ import lsw.liuyao.R;
  */
 public class FuturePriceListAdapter extends BaseAdapter {
 
-    ArrayList<DailyData> dailyDatas;
+    List<DailyData> dailyDatas;
     private LayoutInflater layoutInflater;
 
-    public FuturePriceListAdapter(Context context, ArrayList<DailyData> dailyDatas)
+    public FuturePriceListAdapter(Context context, List<DailyData> dailyDatas)
     {
         this.layoutInflater = LayoutInflater.from(context);
         this.dailyDatas = dailyDatas;
@@ -58,7 +60,8 @@ public class FuturePriceListAdapter extends BaseAdapter {
 
             DailyData dailyData = dailyDatas.get(i);
 
-            controls.tvDate.setText(dailyData.DateTime);
+            DateExt dateExt = new DateExt(dailyData.DateTime,"yyyy-MM-dd");
+            controls.tvDate.setText(dailyData.DateTime + " 星期"+dateExt.getChineseDayOfWeek());
 
             controls.tvOpenPrice.setText("开:" + String.format("%.2f",dailyData.OpeningPrice));
             controls.tvClosePrice.setText("收:" +String.format("%.2f", dailyData.ClosingPrice));

@@ -7,11 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lsw.library.DateExt;
 import lsw.liuyao.common.DateTimePickerDialog;
+import lsw.liuyao.data.Database;
 import lsw.liuyao.data.future.DailyData;
 import lsw.liuyao.data.future.FutureCodeSelectorDialog;
 import lsw.liuyao.data.future.FuturePriceListAdapter;
@@ -24,18 +27,23 @@ public class FuturePriceFragment extends Fragment {
 
     private static String StringDateFormat = "yyyy-MM-dd";
     private static final String ARG_SHAKE_DATE = "ARG_SHAKE_DATE";
+    private static final String ARG_HEXAGRAM_ID = "ARG_HEXAGRAM_ID";
     private String shakeDate;
 
-    private TextView tvBeginDate, tvEndDate, tvFutureCode, tvBtnSearch, tvSummary;
+    private TextView tvBeginDate, tvEndDate, tvFutureCode, tvBtnSearch, tvSummary, tvBtnImporData;
     private ListView listView;
     private SinaData sinaData;
+    private Database database;
 
-    public static FuturePriceFragment createFragment(String shakeDate) {
+    int hexagramId;
+
+    public static FuturePriceFragment createFragment(String shakeDate, int hexagramRowId) {
 
         FuturePriceFragment f = new FuturePriceFragment();
         Bundle args = new Bundle();
 
         args.putSerializable(ARG_SHAKE_DATE, shakeDate);
+        args.putInt(ARG_HEXAGRAM_ID,hexagramRowId);
         f.setArguments(args);
         return f;
     }
@@ -48,6 +56,7 @@ public class FuturePriceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        database = new Database(getActivity());
         sinaData = new SinaData(getActivity());
 
         View v = inflater.inflate(R.layout.future_price_fragment, null);
@@ -59,12 +68,14 @@ public class FuturePriceFragment extends Fragment {
 
     private void initialControls(View v)
     {
+        hexagramId = getArguments().getInt(ARG_HEXAGRAM_ID);
         shakeDate = getArguments().getString(ARG_SHAKE_DATE);
 
         tvBeginDate = (TextView) v.findViewById(R.id.tvBeginDate);
         tvEndDate = (TextView) v.findViewById(R.id.tvEndDate);
         tvFutureCode = (TextView) v.findViewById(R.id.tvFutureCode);
         tvBtnSearch = (TextView)v.findViewById(R.id.tvBtnSearch);
+        tvBtnImporData = (TextView)v.findViewById(R.id.tvBtnImportData);
 
         tvSummary = (TextView)v.findViewById(R.id.tvSummary);
 
@@ -76,9 +87,43 @@ public class FuturePriceFragment extends Fragment {
         tvEndDate.setText(dateForShow);
 
         bindActions();
+
+        bindContent();
+    }
+
+    private void bindContent()
+    {
+        List<DailyData> source = database.getDailyDataByHexagramId(hexagramId);
+        if(source != null && source.size() >0) {
+            tvFutureCode.setText(source.get(0).FutureCode);
+            tvBeginDate.setText(source.get(0).DateTime);
+            tvEndDate.setText(source.get(source.size() - 1).DateTime);
+            DateExt bd = new DateExt(tvBeginDate.getText().toString(), StringDateFormat);
+            DateExt ed = new DateExt(tvEndDate.getText().toString(), StringDateFormat);
+            source = filterByDate(bd,ed,source);
+            FuturePriceListAdapter adapter = new FuturePriceListAdapter(getActivity(), source);
+            listView.setAdapter(adapter);
+
+            setSummary(source);
+        }
     }
 
     double highestPrice = 0, lowestPrice = 0, openPrice = 0, closePrice =0;
+
+    List<DailyData> dailyDatas;
+
+    private void setSummary(List<DailyData> dailyDatas)
+    {
+        openPrice = dailyDatas.get(0).OpeningPrice;
+        closePrice = dailyDatas.get(dailyDatas.size() - 1).ClosingPrice;
+        String summary = "开:" + String.format("%.2f", openPrice) +
+                "收:" + String.format("%.2f", closePrice) +
+                "-----开/收:" + String.format("%.2f", closePrice - openPrice) + "\n" +
+                "高:" + String.format("%.2f", highestPrice) +
+                "低:" + String.format("%.2f", lowestPrice) +
+                "-----高/低:" + String.format("%.2f", highestPrice - lowestPrice);
+        tvSummary.setText(summary);
+    }
 
     private void bindActions()
     {
@@ -88,8 +133,7 @@ public class FuturePriceFragment extends Fragment {
                 sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_Day_Method + tvFutureCode.getText().toString(), new SinaData.IResult<ArrayList<DailyData>>() {
                     @Override
                     public void invoke(ArrayList<DailyData> s) {
-                        ArrayList<DailyData> dailyDatas = s;
-
+                        dailyDatas = s;
                         DateExt bd = new DateExt(tvBeginDate.getText().toString(), StringDateFormat);
                         DateExt ed = new DateExt(tvEndDate.getText().toString(), StringDateFormat);
 
@@ -98,15 +142,7 @@ public class FuturePriceFragment extends Fragment {
                         listView.setAdapter(adapter);
 
                         if(dailyDatas.size() > 0) {
-                            openPrice = dailyDatas.get(0).OpeningPrice;
-                            closePrice = dailyDatas.get(dailyDatas.size() - 1).ClosingPrice;
-                            String summary = "开:" + String.format("%.2f", openPrice) +
-                                    "收:" + String.format("%.2f", closePrice) +
-                                    "-----开/收:" + String.format("%.2f", closePrice - openPrice) + "\n" +
-                                    "高:" + String.format("%.2f", highestPrice) +
-                                    "低:" + String.format("%.2f", lowestPrice) +
-                                    "-----高/低:" + String.format("%.2f", highestPrice - lowestPrice);
-                            tvSummary.setText(summary);
+                            setSummary(dailyDatas);
                         }
                         else
                         {
@@ -167,9 +203,21 @@ public class FuturePriceFragment extends Fragment {
                 selectorDialog.show();
             }
         });
+
+        tvBtnImporData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dailyDatas!= null && dailyDatas.size() > 0)
+                {
+                    database.insertFutureData(dailyDatas);
+                    Toast.makeText(getActivity(),"导入价格数据成功!",Toast.LENGTH_SHORT).show();
+                    //tvBtnImporData.setEnabled(false);
+                }
+            }
+        });
     }
 
-    private ArrayList<DailyData> filterByDate(DateExt beginDate, DateExt endDate, ArrayList<DailyData> dailyDatas)
+    private List<DailyData> filterByDate(DateExt beginDate, DateExt endDate, List<DailyData> dailyDatas)
     {
         ArrayList<DailyData> result = new ArrayList<DailyData>();
         for(DailyData dailyData : dailyDatas)
@@ -185,7 +233,8 @@ public class FuturePriceFragment extends Fragment {
                     highestPrice = dailyData.HighestPrice;
                 if(dailyData.LowestPrice < lowestPrice)
                     lowestPrice = dailyData.LowestPrice;
-
+                dailyData.HexagramId = hexagramId;
+                dailyData.FutureCode = tvFutureCode.getText().toString();
                 result.add(dailyData);
             }
         }

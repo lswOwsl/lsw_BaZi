@@ -37,7 +37,7 @@ public class FutureCodeSelectorDialog {
     private AlertDialog ad;
     private Activity activity;
 
-    private int initFutureName, initCircle;
+    private int initFutureName =1, initCircle=0;
 
     static List<String> futureCirlecList = new ArrayList<String>();
 
@@ -46,27 +46,23 @@ public class FutureCodeSelectorDialog {
     public FutureCodeSelectorDialog(String futureCode, Activity activity)
     {
         getFutureNameList();
-
-        for(Integer integer :  futureNameMapping.keySet())
-        {
-            if(futureNameMapping.get(integer).equals(futureCode.trim().substring(0,2)))
-            {
-                initFutureName = integer;
-                break;
-            }
-        }
-
         getFutureCirclList();
 
-        for(int i=0; i<futureCirlecList.size(); i++)
-        {
-            if(futureCode.trim().substring(2).equals(futureCirlecList.get(i)))
-            {
-                initCircle = i;
-                break;
+        if(!futureCode.isEmpty()) {
+            for (Integer integer : futureNameMapping.keySet()) {
+                if (futureNameMapping.get(integer).equals(futureCode.trim().substring(0, 2))) {
+                    initFutureName = integer;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < futureCirlecList.size(); i++) {
+                if (futureCode.trim().substring(2).equals(futureCirlecList.get(i))) {
+                    initCircle = i;
+                    break;
+                }
             }
         }
-
 
         this.futureCode = futureCode;
         this.activity = activity;

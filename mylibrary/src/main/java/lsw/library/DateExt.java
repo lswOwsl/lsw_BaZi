@@ -211,4 +211,10 @@ public class DateExt {
             return this.value;
         }
     }
+
+    public String getChineseDayOfWeek()
+    {
+        int indexOfWeek = this.getIndexOfWeek();
+        return indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
+    }
 }

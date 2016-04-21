@@ -136,6 +136,6 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
         String monthEar = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfMonth(true));
         String dayEra = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfDay());
 
-        return monthEar+"月"+"   "+dayEra+"日";
+        return monthEar+"月"+"   "+dayEra+"日 (星期" + dateExt.getChineseDayOfWeek()+")";
     }
 }
