@@ -19,6 +19,7 @@ public class XmlParserHexagramRow extends XmlParser<List<HexagramRow>> {
     private String changedName;
     private String shakeDate;
     private String note;
+    private String id;
 
     private List<HexagramRow> hexagramRowList;
 
@@ -36,6 +37,7 @@ public class XmlParserHexagramRow extends XmlParser<List<HexagramRow>> {
     public void startTag(XmlPullParser parser) throws Exception {
 
         if(parser.getName().equals("Hexagram")){
+            id = parser.getAttributeValue("","Id");
             originalName = parser.getAttributeValue("", "OriginalName");
             changedName = parser.getAttributeValue("", "ChangedName");
             shakeDate = parser.getAttributeValue("", "ShakeDate");
@@ -49,6 +51,7 @@ public class XmlParserHexagramRow extends XmlParser<List<HexagramRow>> {
 
         if(parser.getName().equals("Hexagram")){
             HexagramRow row = new HexagramRow();
+            row.setId(Integer.valueOf(id));
             row.setDate(shakeDate);
             row.setOriginalName(originalName);
             row.setChangedName(changedName);

@@ -233,6 +233,7 @@ public class Database extends DatabaseManager {
                     serializer.startTag(null, "Hexagrams");
                     for (HexagramRow row : rows) {
                         serializer.startTag(null, "Hexagram");
+                        serializer.attribute(null,"Id",String.valueOf(row.getId()));
                         serializer.attribute(null, "OriginalName", row.getOriginalName());
                         serializer.attribute(null, "ChangedName", row.getChangedName());
                         serializer.attribute(null, "ShakeDate", row.getDate());
@@ -259,6 +260,7 @@ public class Database extends DatabaseManager {
 
         for (HexagramRow row: hexagramRows) {
             ContentValues cv = new ContentValues();
+            cv.put("Id",row.getId());
             cv.put("OriginalName", row.getOriginalName());
             cv.put("ChangedName",row.getChangedName());
             cv.put("ShakeDate", row.getDate());
