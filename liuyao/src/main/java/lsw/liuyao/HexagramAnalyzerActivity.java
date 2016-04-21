@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -175,6 +176,21 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
             }
         });
 
+        TextView tvCapture = (TextView)mDrawer.getMenuView().findViewById(R.id.tvCapture);
+        tvCapture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap b1 = CaptureImage.captureViewToImage(mDrawer.getContentContainer());
+                Bitmap b2 = CaptureImage.captureViewToImage(mDrawer.getMenuView());
+                Bitmap b3 = CaptureImage.combineImages(b2, b1);
+                CaptureImage.saveBitmap(b3, "/" + Database.PACKAGE_NAME + "/"
+                                + analyzeDate.getFormatDateTime("yyyy-MM-dd") +
+                        hexagramRow.getOriginalName() + "-" + hexagramRow.getChangedName() +
+                        "(" + new DateExt().getFormatDateTime("yyyy-MM-dd<HH:mm:ss>") + ")"+ ".jpg");
+                        Toast.makeText(getApplicationContext(), "图片保存成功.文件位于" + Database.PACKAGE_NAME, Toast.LENGTH_SHORT).show();
+            }
+        });
+
 //        baiDuInterstitial = new BaiDuInterstitial(this);
 //        baiDuInterstitial.create();
 
@@ -203,10 +219,6 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                Bitmap b1 = CaptureImage.captureViewToImage(mDrawer.getContentContainer());
-//                Bitmap b2 = CaptureImage.captureViewToImage(mDrawer.getMenuView());
-//                Bitmap b3 = CaptureImage.combineImages(b2, b1);
 
                 NoteFragmentDialog dialog = NoteFragmentDialog.newInstance(hexagramRow);
                 dialog.setOnSaveListener(new NoteFragmentDialog.OnSaveListener() {

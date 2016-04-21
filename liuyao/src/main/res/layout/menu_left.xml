@@ -16,16 +16,27 @@
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/bottomFunctions"
         android:layout_below="@+id/topFunctions" />
-    <LinearLayout android:id="@+id/bottomFunctions"
+    <LinearLayout android:id="@+id/bottomFunctions" android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:layout_alignParentBottom="true">
         <TextView
+            android:layout_weight="1"
             android:id="@+id/tvPrice"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_margin="3dp"
             android:layout_height="wrap_content"
-            android:text="价 格"
+            android:text="价格查询"
+            android:textColor="@color/white"
+            android:background="@drawable/button_flatten"/>
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/tvCapture"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="wrap_content"
+            android:text="导出当前卦例图片"
             android:textColor="@color/white"
             android:background="@drawable/button_flatten"/>
     </LinearLayout>

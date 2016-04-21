@@ -15,14 +15,7 @@ import java.io.FileOutputStream;
  */
 public class CaptureImage {
 
-    public static void captureView(View view,String filename){
-        //Create a Bitmap with the same dimensions
-        Bitmap image = Bitmap.createBitmap(view.getWidth(),
-                view.getHeight(),
-                Bitmap.Config.RGB_565);
-        //Draw the view inside the Bitmap
-        view.draw(new Canvas(image));
-
+    public static void saveBitmap(Bitmap image, String filename){
         //Store to sdcard
         try {
             String path = Environment.getExternalStorageDirectory().toString();
