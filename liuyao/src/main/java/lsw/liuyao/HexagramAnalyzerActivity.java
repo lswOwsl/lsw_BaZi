@@ -12,9 +12,12 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +76,7 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
 
     public void loadMenuFragment(int hexagramRowId)
     {
+        final int hexagramId = hexagramRowId;
         listImages.clear();
 
         List<ImageAttachment> imageAttachments = database.getImageAttachmentByHexagramId(hexagramRowId);
@@ -97,7 +101,14 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
                     PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
                     f.setCurrentFragmentManager(getSupportFragmentManager());
                     ft.replace(R.id.fl_Image_Select, f);
+
+                    FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime(), hexagramId);
+                    futurePriceFragment.setShowCondtion(false);
+                    ft.replace(R.id.fl_Price_List, futurePriceFragment);
                     ft.commit();
+
+                    flPriceList.setVisibility(View.VISIBLE);
+
                 }
             });
             ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
@@ -109,6 +120,9 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         }
     }
 
+    private int menuWidth;
+
+    FrameLayout flImageSelect, flPriceList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,14 +168,22 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
         Display display = windowManager.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
-        final int menuWidth = dm.widthPixels / 3 * 2;
+        menuWidth = dm.widthPixels / 3 * 2;
         mDrawer.setMenuSize(menuWidth);
+
+        flImageSelect = (FrameLayout) mDrawer.getMenuView().findViewById(R.id.fl_Image_Select);
+        flImageSelect.setLayoutParams(new LinearLayout.LayoutParams(menuWidth, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        flPriceList = (FrameLayout) mDrawer.getMenuView().findViewById(R.id.fl_Price_List);
+        flPriceList.setLayoutParams(new LinearLayout.LayoutParams(menuWidth, ViewGroup.LayoutParams.MATCH_PARENT));
 
         TextView tvResetImages =  (TextView)mDrawer.getMenuView().findViewById(R.id.tvResetImages);
         tvResetImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loadMenuFragment(hexagramRowId);
+
+                flPriceList.setVisibility(View.GONE);
             }
         });
 
@@ -173,6 +195,8 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
                 FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime(), hexagramRowId);
                 ftt.replace(R.id.fl_Image_Select, futurePriceFragment, null);
                 ftt.commit();
+
+                flPriceList.setVisibility(View.GONE);
             }
         });
 
@@ -183,6 +207,11 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
                 Bitmap b1 = CaptureImage.captureViewToImage(mDrawer.getContentContainer());
                 Bitmap b2 = CaptureImage.captureViewToImage(mDrawer.getMenuView());
                 Bitmap b3 = CaptureImage.combineImages(b2, b1);
+                ListView lvPrice = (ListView)mDrawer.getMenuView().findViewById(R.id.lvPrice);
+                if(lvPrice != null) {
+                    Bitmap b4 = CaptureImage.getWholeListViewItemsToBitmap(lvPrice);
+                    b3 = CaptureImage.combineImages(b4, b3);
+                }
                 CaptureImage.saveBitmap(b3, "/" + Database.PACKAGE_NAME + "/"
                                 + analyzeDate.getFormatDateTime("yyyy-MM-dd") +
                         hexagramRow.getOriginalName() + "-" + hexagramRow.getChangedName() +

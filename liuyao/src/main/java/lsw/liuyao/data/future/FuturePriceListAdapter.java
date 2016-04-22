@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lsw.library.DateExt;
+import lsw.library.LunarCalendarWrapper;
 import lsw.liuyao.R;
 
 /**
@@ -61,7 +62,8 @@ public class FuturePriceListAdapter extends BaseAdapter {
             DailyData dailyData = dailyDatas.get(i);
 
             DateExt dateExt = new DateExt(dailyData.DateTime,"yyyy-MM-dd");
-            controls.tvDate.setText(dailyData.DateTime + " 星期"+dateExt.getChineseDayOfWeek());
+
+            controls.tvDate.setText(dailyData.DateTime + "   "+ getTitleByDate(dateExt));
 
             controls.tvOpenPrice.setText("开:" + String.format("%.2f",dailyData.OpeningPrice));
             controls.tvClosePrice.setText("收:" +String.format("%.2f", dailyData.ClosingPrice));
@@ -83,5 +85,14 @@ public class FuturePriceListAdapter extends BaseAdapter {
     public final class Controls
     {
         public TextView tvDate, tvOpenPrice, tvClosePrice,tvResultOpenClose, tvHighestPrice, tvLowestPrice, tvResultHighestLowest;
+    }
+
+    private String getTitleByDate(DateExt dateExt)
+    {
+        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+        String monthEar = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfMonth(true));
+        String dayEra = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfDay());
+
+        return monthEar+"月"+"   "+dayEra+"日 (星期" + dateExt.getChineseDayOfWeek()+")";
     }
 }

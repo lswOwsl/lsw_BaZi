@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,16 @@ public class FuturePriceFragment extends Fragment {
     private SinaData sinaData;
     private Database database;
 
+    private LinearLayout llCondtion;
+
     int hexagramId;
+
+    private boolean isShowCondtion = true;
+
+    public void setShowCondtion(boolean isShowing)
+    {
+        isShowCondtion = isShowing;
+    }
 
     public static FuturePriceFragment createFragment(String shakeDate, int hexagramRowId) {
 
@@ -71,6 +81,7 @@ public class FuturePriceFragment extends Fragment {
         hexagramId = getArguments().getInt(ARG_HEXAGRAM_ID);
         shakeDate = getArguments().getString(ARG_SHAKE_DATE);
 
+        llCondtion = (LinearLayout) v.findViewById(R.id.llcondtion);
         tvBeginDate = (TextView) v.findViewById(R.id.tvBeginDate);
         tvEndDate = (TextView) v.findViewById(R.id.tvEndDate);
         tvFutureCode = (TextView) v.findViewById(R.id.tvFutureCode);
@@ -105,6 +116,11 @@ public class FuturePriceFragment extends Fragment {
             listView.setAdapter(adapter);
 
             setSummary(source);
+        }
+
+        if(!isShowCondtion)
+        {
+            llCondtion.setVisibility(View.GONE);
         }
     }
 
