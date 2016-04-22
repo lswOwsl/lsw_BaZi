@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -31,9 +32,11 @@ import java.util.HashMap;
 import lsw.hexagram.Builder;
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
+import lsw.library.ShakeListener;
 import lsw.library.StringHelper;
 //import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.common.DateTimePickerDialog;
+import lsw.liuyao.common.HexagramTools;
 import lsw.liuyao.common.IntentKeys;
 import lsw.liuyao.common.LineDragListener;
 import lsw.liuyao.data.Database;
@@ -68,51 +71,64 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
     private HashMap<EnumLineSymbol,ImageView> hashLineSymbolImageView = new HashMap<EnumLineSymbol, ImageView>();
 
-    private void initControls(){
+    private void onVibrator() {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator == null) {
+            Vibrator localVibrator = (Vibrator) context.getApplicationContext()
+                    .getSystemService(VIBRATOR_SERVICE);
+            vibrator = localVibrator;
+        }
+        vibrator.vibrate(100L);
+    }{}
+
+    int shakeTimes = 1;
+    HashMap<Integer,LinearLayout> hashMapLineIndex = new HashMap<Integer, LinearLayout>();
+
+    private void initControls() {
 
         context = this;
 
-        tvUpperTrigram = (TextView)findViewById(R.id.tvUpperTrigram);
-        tvLowerTrigram = (TextView)findViewById(R.id.tvLowerTrigram);
+        tvUpperTrigram = (TextView) findViewById(R.id.tvUpperTrigram);
+        tvLowerTrigram = (TextView) findViewById(R.id.tvLowerTrigram);
 
-        LinearLayout hexagramChangedView = (LinearLayout)findViewById(R.id.cGuaChanged);
-        linearLayout1Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine1);
-        linearLayout2Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine2);
-        linearLayout3Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine3);
-        linearLayout4Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine4);
-        linearLayout5Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine5);
-        linearLayout6Changed = (LinearLayout)hexagramChangedView.findViewById(R.id.llLine6);
+        LinearLayout hexagramChangedView = (LinearLayout) findViewById(R.id.cGuaChanged);
+        linearLayout1Changed = (LinearLayout) hexagramChangedView.findViewById(R.id.llLine1);
+        linearLayout2Changed = (LinearLayout) hexagramChangedView.findViewById(R.id.llLine2);
+        linearLayout3Changed = (LinearLayout) hexagramChangedView.findViewById(R.id.llLine3);
+        linearLayout4Changed = (LinearLayout) hexagramChangedView.findViewById(R.id.llLine4);
+        linearLayout5Changed = (LinearLayout) hexagramChangedView.findViewById(R.id.llLine5);
+        linearLayout6Changed = (LinearLayout) hexagramChangedView.findViewById(R.id.llLine6);
 
-        tvUpperTrigramChanged = (TextView)hexagramChangedView.findViewById(R.id.tvUpperTrigram);
-        tvLowerTrigramChanged = (TextView)hexagramChangedView.findViewById(R.id.tvLowerTrigram);
+        tvUpperTrigramChanged = (TextView) hexagramChangedView.findViewById(R.id.tvUpperTrigram);
+        tvLowerTrigramChanged = (TextView) hexagramChangedView.findViewById(R.id.tvLowerTrigram);
 
         etNote = (EditText) findViewById(R.id.etNote);
 
         tvDateSelector = (TextView) findViewById(R.id.tvDateSelect);
 
-        ivYin = (ImageView)findViewById(R.id.ivYin);
-        ivLaoYin = (ImageView)findViewById(R.id.ivLaoYin);
-        ivYang = (ImageView)findViewById(R.id.ivYang);
-        ivLaoYang = (ImageView)findViewById(R.id.ivLaoYang);
+        ivYin = (ImageView) findViewById(R.id.ivYin);
+        ivLaoYin = (ImageView) findViewById(R.id.ivLaoYin);
+        ivYang = (ImageView) findViewById(R.id.ivYang);
+        ivLaoYang = (ImageView) findViewById(R.id.ivLaoYang);
 
         ivYang.setOnTouchListener(new MyTouchListener(EnumLineSymbol.Yang));
         ivYin.setOnTouchListener(new MyTouchListener(EnumLineSymbol.Yin));
         ivLaoYang.setOnTouchListener(new MyTouchListener(EnumLineSymbol.LaoYang));
         ivLaoYin.setOnTouchListener(new MyTouchListener(EnumLineSymbol.LaoYin));
 
-        linearLayout1 = (LinearLayout)findViewById(R.id.llLine1);
-        linearLayout2 = (LinearLayout)findViewById(R.id.llLine2);
-        linearLayout3 = (LinearLayout)findViewById(R.id.llLine3);
-        linearLayout4 = (LinearLayout)findViewById(R.id.llLine4);
-        linearLayout5 = (LinearLayout)findViewById(R.id.llLine5);
-        linearLayout6 = (LinearLayout)findViewById(R.id.llLine6);
+        linearLayout1 = (LinearLayout) findViewById(R.id.llLine1);
+        linearLayout2 = (LinearLayout) findViewById(R.id.llLine2);
+        linearLayout3 = (LinearLayout) findViewById(R.id.llLine3);
+        linearLayout4 = (LinearLayout) findViewById(R.id.llLine4);
+        linearLayout5 = (LinearLayout) findViewById(R.id.llLine5);
+        linearLayout6 = (LinearLayout) findViewById(R.id.llLine6);
 
-        lineContainerMapping.put(linearLayout1,linearLayout1Changed);
-        lineContainerMapping.put(linearLayout2,linearLayout2Changed);
-        lineContainerMapping.put(linearLayout3,linearLayout3Changed);
-        lineContainerMapping.put(linearLayout4,linearLayout4Changed);
-        lineContainerMapping.put(linearLayout5,linearLayout5Changed);
-        lineContainerMapping.put(linearLayout6,linearLayout6Changed);
+        lineContainerMapping.put(linearLayout1, linearLayout1Changed);
+        lineContainerMapping.put(linearLayout2, linearLayout2Changed);
+        lineContainerMapping.put(linearLayout3, linearLayout3Changed);
+        lineContainerMapping.put(linearLayout4, linearLayout4Changed);
+        lineContainerMapping.put(linearLayout5, linearLayout5Changed);
+        lineContainerMapping.put(linearLayout6, linearLayout6Changed);
 
         LineDragListener listener1 = new LineDragListener(1);
         listener1.setOnDropInteraction(this);
@@ -134,13 +150,36 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         linearLayout5.setOnDragListener(listener5);
         linearLayout6.setOnDragListener(listener6);
 
-        tvOriginalName = (TextView)findViewById(R.id.tvOriginalName);
-        tvChangedName = (TextView)findViewById(R.id.tvChangedName);
+        tvOriginalName = (TextView) findViewById(R.id.tvOriginalName);
+        tvChangedName = (TextView) findViewById(R.id.tvChangedName);
 
         hashLineSymbolImageView.put(EnumLineSymbol.LaoYang, ivLaoYang);
         hashLineSymbolImageView.put(EnumLineSymbol.LaoYin, ivLaoYin);
-        hashLineSymbolImageView.put(EnumLineSymbol.Yang,ivYang);
+        hashLineSymbolImageView.put(EnumLineSymbol.Yang, ivYang);
         hashLineSymbolImageView.put(EnumLineSymbol.Yin, ivYin);
+
+        hashMapLineIndex.put(1, linearLayout1);
+        hashMapLineIndex.put(2,linearLayout2);
+        hashMapLineIndex.put(3,linearLayout3);
+        hashMapLineIndex.put(4,linearLayout4);
+        hashMapLineIndex.put(5,linearLayout5);
+        hashMapLineIndex.put(6,linearLayout6);
+
+        ShakeListener shakeListener = new ShakeListener(this);//创建一个对象
+        shakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {//调用setOnShakeListener方法进行监听
+
+            public void onShake() {
+                if (shakeTimes < 7) {
+                    EnumLineSymbol enumLineSymbol = setLineImageView(hashMapLineIndex.get(shakeTimes));
+                    lineSymbolHashMap.put(shakeTimes, enumLineSymbol);
+                    onVibrator();
+                    shakeTimes++;
+
+                    setTrigramTitle();
+                    setHexagramTitle();
+                }
+            }
+        });
     }
 
     DateExt initialDateExt;
@@ -280,6 +319,34 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         lineSymbolHashMap.put(beginIndex + 2, line3);
     }
 
+    HexagramTools hexagramTools = new HexagramTools();
+    private EnumLineSymbol setLineImageView(LinearLayout ll)
+    {
+        EnumLineSymbol enumLineSymbol = EnumLineSymbol.valueOf(hexagramTools.createOneLine());
+
+        ImageView ivLine = hashLineSymbolImageView.get(enumLineSymbol);
+        Drawable drawable = ivLine.getDrawable();
+        ivLine = new ImageView(HexagramBuilderActivity.this);
+        ivLine.setImageDrawable(drawable);
+        ll.setBackgroundResource(0);
+        ll.removeAllViews();
+        ll.addView(ivLine);
+
+        LinearLayout llChanged = lineContainerMapping.get(ll);
+        if(enumLineSymbol == EnumLineSymbol.LaoYang)
+            drawable = getResources().getDrawable(R.drawable.yin);
+        if(enumLineSymbol == EnumLineSymbol.LaoYin)
+            drawable = getResources().getDrawable(R.drawable.yang);
+
+        ImageView ivLineChanged = new ImageView(HexagramBuilderActivity.this);
+        ivLineChanged.setImageDrawable(drawable);
+        llChanged.setBackgroundResource(0);
+        llChanged.removeAllViews();
+        llChanged.addView(ivLineChanged);
+
+        return enumLineSymbol;
+    }
+
     private void setTrigramImageView(EnumLineSymbol line, LinearLayout ll, LinearLayout llChanged)
     {
         ImageView ivLine = hashLineSymbolImageView.get(line);
@@ -325,6 +392,13 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         containerChanged.addView(moveImageViewChanged);
         containerChanged.setBackgroundResource(0);
 
+       setTrigramTitle();
+
+        setHexagramTitle();
+    }
+
+    private void setTrigramTitle()
+    {
         if(lineSymbolHashMap.size() >= 3 )
         {
             ArrayList<TrigramDefault> trigramDefaults =  Default.getTrigrams();
@@ -334,8 +408,6 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
                 setTrigramTextView(trigramDefault,4,tvUpperTrigram,tvUpperTrigramChanged);
             }
         }
-
-        setHexagramTitle();
     }
 
     private void setHexagramTitle()
