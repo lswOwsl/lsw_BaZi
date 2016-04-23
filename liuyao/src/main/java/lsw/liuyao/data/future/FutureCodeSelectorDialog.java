@@ -78,11 +78,18 @@ public class FutureCodeSelectorDialog {
 
             futureNameTextList.add("鸡蛋");
             futureNameTextList.add("菜粕");
+            futureNameTextList.add("豆粕");
             futureNameTextList.add("螺纹");
+            futureNameTextList.add("玉米");
+            futureNameTextList.add("郑煤");
+
 
             futureNameMapping.put(1, "JD");
             futureNameMapping.put(2, "RM");
-            futureNameMapping.put(3, "RB");
+            futureNameMapping.put(3, "M");
+            futureNameMapping.put(4, "RB");
+            futureNameMapping.put(5, "C");
+            futureNameMapping.put(6, "ZC");
 
         }
         return futureNameTextList;
