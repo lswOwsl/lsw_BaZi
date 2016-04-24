@@ -16,6 +16,8 @@ import android.widget.SearchView;
 //import com.baidu.autoupdatesdk.UICheckUpdateCallback;
 
 
+import net.simonvt.menudrawer.MenuDrawer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +41,18 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
 
     private ProgressDialog dialog;
 
+    private MenuDrawer mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hexagram_list_activity);
+
+        //setContentView(R.layout.hexagram_list_activity);
+        mDrawer = MenuDrawer.attach(this);
+        mDrawer.setMenuView(R.layout.hexagram_list_menu);
+        mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+        mDrawer.setContentView(R.layout.hexagram_list_activity);
+
 
         //BaiDuBanner baiDuBanner = new BaiDuBanner(this);
         //baiDuBanner.create();
@@ -51,7 +60,8 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         getActionBar().setDisplayHomeAsUpEnabled(false);
         getActionBar().setDisplayShowCustomEnabled(true);
 
-        initControls();
+        swipeListView = (ListView) findViewById(R.id.slv_Hexagram);
+
         database = new Database(this);
         ArrayList<HexagramRow> hexagrams = database.getHexagramList("");
         hexagramListAdapter = new HexagramListAdapter(hexagrams,this);
@@ -146,11 +156,6 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void initControls()
-    {
-        swipeListView = (ListView) findViewById(R.id.slv_Hexagram);
     }
 
     @Override

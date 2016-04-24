@@ -1,0 +1,6 @@
+<Menu>
+	<Item Name="本周卦例" Condition="ShakeDate > '{lastWeek}'"/>
+	<Item Name="期货卦例">
+		
+	</Item>
+</Menu>
