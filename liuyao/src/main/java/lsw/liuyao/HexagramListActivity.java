@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -26,6 +27,9 @@ import lsw.ContactAuthor;
 import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.HexagramListAdapter;
+import lsw.liuyao.data.HexagramListMenuExpandableAdapter;
+import lsw.liuyao.data.xml.XmlInitialData;
+import lsw.liuyao.model.HexagramMenuData;
 import lsw.liuyao.model.HexagramRow;
 
 
@@ -53,6 +57,10 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
         mDrawer.setContentView(R.layout.hexagram_list_activity);
 
+        List<HexagramMenuData> menuData = XmlInitialData.getInstance().getMenuData();
+
+        ExpandableListView expandableListView = (ExpandableListView) findViewById(R.id.lvMenu);
+        expandableListView.setAdapter(new HexagramListMenuExpandableAdapter(this,menuData));
 
         //BaiDuBanner baiDuBanner = new BaiDuBanner(this);
         //baiDuBanner.create();
