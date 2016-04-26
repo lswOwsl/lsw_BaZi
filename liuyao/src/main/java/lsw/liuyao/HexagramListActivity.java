@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 //import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
 //import com.baidu.autoupdatesdk.UICheckUpdateCallback;
@@ -60,7 +62,15 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         List<HexagramMenuData> menuData = XmlInitialData.getInstance().getMenuData();
 
         ExpandableListView expandableListView = (ExpandableListView) findViewById(R.id.lvMenu);
-        expandableListView.setAdapter(new HexagramListMenuExpandableAdapter(this,menuData));
+        expandableListView.setAdapter(new HexagramListMenuExpandableAdapter(this, menuData));
+
+        TextView tvPriceSearch = (TextView) findViewById(R.id.tvFuturePriceSearch);
+        tvPriceSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         //BaiDuBanner baiDuBanner = new BaiDuBanner(this);
         //baiDuBanner.create();
