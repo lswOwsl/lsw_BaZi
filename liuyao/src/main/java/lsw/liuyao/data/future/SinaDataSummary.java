@@ -22,7 +22,45 @@ public class SinaDataSummary extends SinaData {
         super(context);
     }
 
-    public void getDailyDataBySolarTerm(final String futureCode, final IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>> complete) {
+    public String getFutureCodeNumber(String futureCode)
+    {
+        final String regEx = "[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(futureCode);
+        return m.replaceAll("");
+    }
+
+    public void getWeeklyDailyDataByMonth(final String futureCode, final int month, final IResult<HashMap<Pair<DateExt, DateExt>, DailyDataSummary>> complete)
+    {
+        final int year = Integer.valueOf("20" + getFutureCodeNumber(futureCode).substring(0,2));
+        final HashMap<Pair<DateExt, DateExt>, DailyDataSummary> result = new HashMap<Pair<DateExt, DateExt>, DailyDataSummary>();
+
+        getResponeFromURL(Sina_Url + Sina_Day_Method + futureCode, new IResult<ArrayList<DailyData>>() {
+            @Override
+            public void invoke(ArrayList<DailyData> dailyDatas) {
+
+                DateExt initialDate = new DateExt(year,month,1,0,0,0).getFirstMondayInMonth();
+
+                for(int i=0; i<4; i++)
+                {
+                    DateExt beginDate = new DateExt(initialDate.getDate()).addDays(i*7);
+
+                    DateExt endDate = new DateExt(initialDate.getDate()).addDays((i+1)*7-3);
+
+                    DailyDataSummary filterDate = filterByDate(beginDate, endDate, dailyDatas, futureCode);
+
+                    result.put(new Pair<DateExt, DateExt>(beginDate,endDate), filterDate);
+                }
+
+                if(complete != null)
+                    complete.invoke(result);
+
+            }
+        });
+
+    }
+
+    public void getMonthlyDailyDataBySolarTerm(final String futureCode, final IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>> complete) {
         final HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary> result = new HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>();
         final ArrayList<SolarTerm> solarTerms;
         int year = new DateExt().getYear();

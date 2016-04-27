@@ -119,6 +119,17 @@ public class DateExt {
         return beginTime-endTime;
     }
 
+    public DateExt getFirstMondayInMonth()
+    {
+        int i = 1;
+
+        while(calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY){
+            calendar.set(Calendar.DAY_OF_MONTH, i++);//设置这个月的星期1 为几号
+        }
+
+        return new DateExt(calendar.getTime());
+    }
+
     public DateExt addDays(int days)
     {
         calendar.add(Calendar.DAY_OF_YEAR,days);
