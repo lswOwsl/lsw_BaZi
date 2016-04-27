@@ -1,5 +1,7 @@
 package lsw.liuyao;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
@@ -12,13 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import lsw.PhotoAlbumsAdapter;
 import lsw.library.DateExt;
 import lsw.library.SolarTerm;
 import lsw.liuyao.common.DateTimePickerDialog;
@@ -29,6 +29,8 @@ import lsw.liuyao.data.future.FutureCodeSelectorDialog;
 import lsw.liuyao.data.future.FuturePriceListAdapter;
 import lsw.liuyao.data.future.SinaData;
 import lsw.liuyao.data.future.SinaDataSummary;
+import lsw.model.TrigramDefault;
+import lsw.value.Default;
 
 /**
  * Created by swli on 4/19/2016.
@@ -128,6 +130,7 @@ public class FuturePriceFragment extends Fragment {
         else
         {
             llDateRange.setVisibility(View.GONE);
+            tvBtnImporData.setVisibility(View.GONE);
         }
     }
 
@@ -176,15 +179,62 @@ public class FuturePriceFragment extends Fragment {
         tvSummary.setText(summary);
     }
 
+    String [] searhMethodArray = new String[]{"阴历按节气月查询","阳历按周查询"};
+
     private void bindActions()
     {
+
         tvBtnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 lowestPrice = highestPrice = openPrice = closePrice = 0;
 
-                if(!summaryByMonth) {
+                if (summaryByMonth) {
+                    new AlertDialog.Builder(getActivity()).setItems(searhMethodArray, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            sinaData.getDailyDataBySolarTerm(tvFutureCode.getText().toString(), new SinaData.IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>>() {
+                                @Override
+                                public void invoke(HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary> pairDailyDataSummaryHashMap) {
+
+                                    if (pairDailyDataSummaryHashMap != null && pairDailyDataSummaryHashMap.size() > 0) {
+                                        List<DailyData> datas = new ArrayList<DailyData>();
+                                        for (Pair<SolarTerm, SolarTerm> pair : pairDailyDataSummaryHashMap.keySet()) {
+                                            DailyData dailyData = new DailyData();
+                                            dailyData.BeginDate = pair.first.getSolarTermDate();
+                                            dailyData.EndDate = pair.second.getSolarTermDate();
+
+                                            dailyData.OpeningPrice = pairDailyDataSummaryHashMap.get(pair).getOpenPrice();
+                                            dailyData.ClosingPrice = pairDailyDataSummaryHashMap.get(pair).getClosePrice();
+                                            dailyData.HighestPrice = pairDailyDataSummaryHashMap.get(pair).getHighestPrice();
+                                            dailyData.LowestPrice = pairDailyDataSummaryHashMap.get(pair).getLowestPrice();
+                                            datas.add(dailyData);
+                                        }
+
+                                        Collections.sort(datas, new Comparator<DailyData>() {
+                                            @Override
+                                            public int compare(DailyData d1, DailyData d2) {
+                                                return d1.BeginDate.compareTo(d2.BeginDate).value();
+                                            }
+                                        });
+
+                                        DateExt beginDate = datas.get(0).BeginDate;
+                                        DateExt endDate = datas.get(datas.size() - 1).BeginDate;
+                                        datas = filterByDate(beginDate, endDate, datas);
+
+                                        FuturePriceListAdapter adapter = new FuturePriceListAdapter(getActivity(), datas);
+                                        listView.setAdapter(adapter);
+
+                                        setSummary(datas);
+                                    }
+                                }
+                            });
+                        }
+                    }).show();
+                } else {
+
                     sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_Day_Method + tvFutureCode.getText().toString(), new SinaData.IResult<ArrayList<DailyData>>() {
                         @Override
                         public void invoke(ArrayList<DailyData> s) {
@@ -203,45 +253,6 @@ public class FuturePriceFragment extends Fragment {
                             }
                         }
                     });
-                }
-                else
-                {
-                    sinaData.getDailyDataBySolarTerm(tvFutureCode.getText().toString(), new SinaData.IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>>() {
-                        @Override
-                        public void invoke(HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary> pairDailyDataSummaryHashMap) {
-
-                            List<DailyData> datas = new ArrayList<DailyData>();
-                            for(Pair<SolarTerm,SolarTerm> pair: pairDailyDataSummaryHashMap.keySet())
-                            {
-                                DailyData dailyData = new DailyData();
-                                dailyData.BeginDate = pair.first.getSolarTermDate();
-                                dailyData.EndDate = pair.second.getSolarTermDate();
-
-                                dailyData.OpeningPrice = pairDailyDataSummaryHashMap.get(pair).getOpenPrice();
-                                dailyData.ClosingPrice = pairDailyDataSummaryHashMap.get(pair).getClosePrice();
-                                dailyData.HighestPrice = pairDailyDataSummaryHashMap.get(pair).getHighestPrice();
-                                dailyData.LowestPrice = pairDailyDataSummaryHashMap.get(pair).getLowestPrice();
-                                datas.add(dailyData);
-                            }
-
-                            Collections.sort(datas, new Comparator<DailyData>() {
-                                @Override
-                                public int compare(DailyData d1, DailyData d2) {
-                                    return d1.BeginDate.compareTo(d2.BeginDate).value();
-                                }
-                            });
-
-                            DateExt beginDate = datas.get(0).BeginDate;
-                            DateExt endDate = datas.get(datas.size()-1).BeginDate;
-                            datas = filterByDate(beginDate,endDate,datas);
-
-                            FuturePriceListAdapter adapter = new FuturePriceListAdapter(getActivity(), datas);
-                            listView.setAdapter(adapter);
-
-                            setSummary(datas);
-                        }
-                    });
-
                 }
             }
         });
