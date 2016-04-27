@@ -18,8 +18,9 @@ public class FuturePriceSearchListActivity extends FragmentActivity {
         setContentView(R.layout.future_price_search_list);
 
         FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
-        FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(new DateExt().getFormatDateTime(), 1);
-        ftt.replace(R.id.fl_Image_Select, futurePriceFragment, null);
+        FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment();
+        futurePriceFragment.setSummaryByMonth(true);
+        ftt.replace(R.id.fl_Price_List, futurePriceFragment, null);
         ftt.commit();
 
     }

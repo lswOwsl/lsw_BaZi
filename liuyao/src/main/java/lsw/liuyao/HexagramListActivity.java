@@ -68,7 +68,9 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         tvPriceSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent();
+                intent.setClass(HexagramListActivity.this, FuturePriceSearchListActivity.class);
+                startActivityForResult(intent, 0);
             }
         });
 

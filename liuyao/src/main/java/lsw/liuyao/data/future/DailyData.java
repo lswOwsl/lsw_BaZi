@@ -10,6 +10,8 @@ public class DailyData {
     public int Id ;
     public String FutureCode ;
     public String DateTime ;
+    public DateExt BeginDate;
+    public DateExt EndDate;
     public Double OpeningPrice ;
     public Double HighestPrice ;
     public Double LowestPrice ;

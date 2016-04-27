@@ -16,7 +16,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
 
-
+        <activity android:name=".FuturePriceSearchListActivity"></activity>
         <activity android:name="lsw.ContactAuthor"></activity>
 
         <activity android:windowSoftInputMode="adjustPan"

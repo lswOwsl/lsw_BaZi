@@ -2,6 +2,7 @@ package lsw.liuyao;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
+import lsw.PhotoAlbumsAdapter;
 import lsw.library.DateExt;
+import lsw.library.SolarTerm;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.future.DailyData;
+import lsw.liuyao.data.future.DailyDataSummary;
 import lsw.liuyao.data.future.FutureCodeSelectorDialog;
 import lsw.liuyao.data.future.FuturePriceListAdapter;
 import lsw.liuyao.data.future.SinaData;
+import lsw.liuyao.data.future.SinaDataSummary;
 
 /**
  * Created by swli on 4/19/2016.
@@ -29,22 +38,35 @@ public class FuturePriceFragment extends Fragment {
     private static String StringDateFormat = "yyyy-MM-dd";
     private static final String ARG_SHAKE_DATE = "ARG_SHAKE_DATE";
     private static final String ARG_HEXAGRAM_ID = "ARG_HEXAGRAM_ID";
+    private static final String ARG_SUM_BY_MONTH = "ARG_SUM_BY_MONTH";
     private String shakeDate;
 
     private TextView tvBeginDate, tvEndDate, tvFutureCode, tvBtnSearch, tvSummary, tvBtnImporData;
     private ListView listView;
-    private SinaData sinaData;
+    private SinaDataSummary sinaData;
     private Database database;
 
     private LinearLayout llCondtion;
+    private LinearLayout llDateRange;
 
     int hexagramId;
 
-    private boolean isShowCondtion = true;
+    private boolean isShowCondition = true;
+    private boolean summaryByMonth = false;
 
-    public void setShowCondtion(boolean isShowing)
+    public void setShowCondition(boolean isShowing)
     {
-        isShowCondtion = isShowing;
+        isShowCondition = isShowing;
+    }
+
+    public void setSummaryByMonth(boolean summaryByMonth)
+    {
+        this.summaryByMonth = summaryByMonth;
+    }
+
+    public static FuturePriceFragment createFragment()
+    {
+        return createFragment(new DateExt().getFormatDateTime(), 0);
     }
 
     public static FuturePriceFragment createFragment(String shakeDate, int hexagramRowId) {
@@ -67,7 +89,7 @@ public class FuturePriceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         database = new Database(getActivity());
-        sinaData = new SinaData(getActivity());
+        sinaData = new SinaDataSummary(getActivity());
 
         View v = inflater.inflate(R.layout.future_price_fragment, null);
 
@@ -81,6 +103,7 @@ public class FuturePriceFragment extends Fragment {
         hexagramId = getArguments().getInt(ARG_HEXAGRAM_ID);
         shakeDate = getArguments().getString(ARG_SHAKE_DATE);
 
+        llDateRange = (LinearLayout) v.findViewById(R.id.llDateRange);
         llCondtion = (LinearLayout) v.findViewById(R.id.llcondtion);
         tvBeginDate = (TextView) v.findViewById(R.id.tvBeginDate);
         tvEndDate = (TextView) v.findViewById(R.id.tvEndDate);
@@ -99,7 +122,18 @@ public class FuturePriceFragment extends Fragment {
 
         bindActions();
 
-        bindContent();
+        if(!this.summaryByMonth) {
+            bindContent();
+        }
+        else
+        {
+            llDateRange.setVisibility(View.GONE);
+        }
+    }
+
+    private void bindContentByLunarMonth()
+    {
+
     }
 
     private void bindContent()
@@ -118,7 +152,7 @@ public class FuturePriceFragment extends Fragment {
             setSummary(source);
         }
 
-        if(!isShowCondtion)
+        if(!isShowCondition)
         {
             llCondtion.setVisibility(View.GONE);
         }
@@ -146,26 +180,68 @@ public class FuturePriceFragment extends Fragment {
         tvBtnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_Day_Method + tvFutureCode.getText().toString(), new SinaData.IResult<ArrayList<DailyData>>() {
-                    @Override
-                    public void invoke(ArrayList<DailyData> s) {
-                        dailyDatas = s;
-                        DateExt bd = new DateExt(tvBeginDate.getText().toString(), StringDateFormat);
-                        DateExt ed = new DateExt(tvEndDate.getText().toString(), StringDateFormat);
 
-                        dailyDatas = filterByDate(bd,ed,s);
-                        FuturePriceListAdapter adapter = new FuturePriceListAdapter(getActivity(),dailyDatas);
-                        listView.setAdapter(adapter);
+                lowestPrice = highestPrice = openPrice = closePrice = 0;
 
-                        if(dailyDatas.size() > 0) {
-                            setSummary(dailyDatas);
+                if(!summaryByMonth) {
+                    sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_Day_Method + tvFutureCode.getText().toString(), new SinaData.IResult<ArrayList<DailyData>>() {
+                        @Override
+                        public void invoke(ArrayList<DailyData> s) {
+                            dailyDatas = s;
+                            DateExt bd = new DateExt(tvBeginDate.getText().toString(), StringDateFormat);
+                            DateExt ed = new DateExt(tvEndDate.getText().toString(), StringDateFormat);
+
+                            dailyDatas = filterByDate(bd, ed, s);
+                            FuturePriceListAdapter adapter = new FuturePriceListAdapter(getActivity(), dailyDatas);
+                            listView.setAdapter(adapter);
+
+                            if (dailyDatas.size() > 0) {
+                                setSummary(dailyDatas);
+                            } else {
+                                tvSummary.setText("");
+                            }
                         }
-                        else
-                        {
-                            tvSummary.setText("");
+                    });
+                }
+                else
+                {
+                    sinaData.getDailyDataBySolarTerm(tvFutureCode.getText().toString(), new SinaData.IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>>() {
+                        @Override
+                        public void invoke(HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary> pairDailyDataSummaryHashMap) {
+
+                            List<DailyData> datas = new ArrayList<DailyData>();
+                            for(Pair<SolarTerm,SolarTerm> pair: pairDailyDataSummaryHashMap.keySet())
+                            {
+                                DailyData dailyData = new DailyData();
+                                dailyData.BeginDate = pair.first.getSolarTermDate();
+                                dailyData.EndDate = pair.second.getSolarTermDate();
+
+                                dailyData.OpeningPrice = pairDailyDataSummaryHashMap.get(pair).getOpenPrice();
+                                dailyData.ClosingPrice = pairDailyDataSummaryHashMap.get(pair).getClosePrice();
+                                dailyData.HighestPrice = pairDailyDataSummaryHashMap.get(pair).getHighestPrice();
+                                dailyData.LowestPrice = pairDailyDataSummaryHashMap.get(pair).getLowestPrice();
+                                datas.add(dailyData);
+                            }
+
+                            Collections.sort(datas, new Comparator<DailyData>() {
+                                @Override
+                                public int compare(DailyData d1, DailyData d2) {
+                                    return d1.BeginDate.compareTo(d2.BeginDate).value();
+                                }
+                            });
+
+                            DateExt beginDate = datas.get(0).BeginDate;
+                            DateExt endDate = datas.get(datas.size()-1).BeginDate;
+                            datas = filterByDate(beginDate,endDate,datas);
+
+                            FuturePriceListAdapter adapter = new FuturePriceListAdapter(getActivity(), datas);
+                            listView.setAdapter(adapter);
+
+                            setSummary(datas);
                         }
-                    }
-                });
+                    });
+
+                }
             }
         });
 //        sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_OneHour_Method + "RB1601", new SinaData.IResult< ArrayList<DailyData>>() {
@@ -241,7 +317,17 @@ public class FuturePriceFragment extends Fragment {
             if(lowestPrice == 0)
                 lowestPrice = dailyData.LowestPrice;
 
-            DateExt tempDateExt = new DateExt(dailyData.DateTime, StringDateFormat);
+            DateExt tempDateExt;
+
+            //按节气查询时给Date赋值了，按日的查询没有
+            if(dailyData.BeginDate != null)
+            {
+                tempDateExt = dailyData.BeginDate;
+            }
+            else
+            {
+                tempDateExt = new DateExt(dailyData.DateTime, StringDateFormat);
+            }
             if((tempDateExt.compareTo(beginDate) == DateExt.EnumDateCompareResult.Later || tempDateExt.compareTo(beginDate) == DateExt.EnumDateCompareResult.Equal) &&
                     (tempDateExt.compareTo(endDate) == DateExt.EnumDateCompareResult.Earlier || tempDateExt.compareTo(endDate) == DateExt.EnumDateCompareResult.Equal)    )
             {

@@ -111,6 +111,8 @@ public class FutureCodeSelectorDialog {
             }
         }
 
+        futureCirlecList.add("0");
+
         return futureCirlecList;
     }
 

@@ -103,7 +103,7 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
                     ft.replace(R.id.fl_Image_Select, f);
 
                     FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime(), hexagramId);
-                    futurePriceFragment.setShowCondtion(false);
+                    futurePriceFragment.setShowCondition(false);
                     ft.replace(R.id.fl_Price_List, futurePriceFragment);
                     ft.commit();
 
