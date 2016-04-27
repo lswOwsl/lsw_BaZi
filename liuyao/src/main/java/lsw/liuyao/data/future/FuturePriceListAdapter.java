@@ -83,6 +83,15 @@ public class FuturePriceListAdapter extends BaseAdapter {
             controls.tvResultOpenClose.setBackgroundColor(Color.YELLOW);
         }
 
+        if(dailyData.OpeningPrice > dailyData.ClosingPrice)
+        {
+            controls.tvClosePrice.setBackgroundColor(Color.GREEN);
+        }
+        if(dailyData.OpeningPrice < dailyData.ClosingPrice)
+        {
+            controls.tvClosePrice.setBackgroundColor(Color.RED);
+        }
+
         controls.tvHighestPrice.setText("高:" + String.format("%.2f", dailyData.HighestPrice));
         controls.tvLowestPrice.setText("低:" + String.format("%.2f", dailyData.LowestPrice));
         controls.tvResultHighestLowest.setText("高/低" + String.format("%.2f", dailyData.HighestPrice - dailyData.LowestPrice) +

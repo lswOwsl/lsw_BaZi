@@ -169,6 +169,7 @@ public class FuturePriceFragment extends Fragment {
         String summary = "开:" + String.format("%.2f", openPrice) +
                 "收:" + String.format("%.2f", closePrice) +
                 "-----开/收:" + String.format("%.2f", closePrice - openPrice) + "\n" +
+                "<低/开>:" + String.format("%.2f", lowestPrice - openPrice) + "\n" +
                 "高:" + String.format("%.2f", highestPrice) +
                 "低:" + String.format("%.2f", lowestPrice) +
                 "-----高/低:" + String.format("%.2f", highestPrice - lowestPrice);
