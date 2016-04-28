@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-import lsw.library.DateExt;
-
 /**
  * Created by swli on 4/26/2016.
  */
@@ -19,7 +17,7 @@ public class FuturePriceSearchListActivity extends FragmentActivity {
 
         FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
         FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment();
-        futurePriceFragment.setSummaryByMonth(true);
+        futurePriceFragment.setIsSummaryBySearch(true);
         ftt.replace(R.id.fl_Price_List, futurePriceFragment, null);
         ftt.commit();
 

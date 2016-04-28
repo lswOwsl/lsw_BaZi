@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lsw.library.DatabaseManager;
+import lsw.library.DateExt;
 import lsw.liuyao.R;
 import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.data.future.DailyData;
@@ -177,12 +178,46 @@ public class Database extends DatabaseManager {
         String sqlCondition = " ";
         String[] params = new String[]{};
         if(!TextUtils.isEmpty(str)) {
-            sqlCondition = " where OriginalName = ? Or ShakeDate like ? Or Note like ?";
+            sqlCondition = " where (OriginalName = ? Or ShakeDate like ? Or Note like ?)";
             params = new String[]{ ""+str+"","%"+str+"%","%"+str+"%" };
         }
 
-        String sql = "SELECT * FROM Hexagram "+ MyApplication.getInstance().getSearchCondition() + sqlCondition +" Order By ShakeDate DESC";
-        Cursor cur = database.rawQuery(sql,params);
+        String baseCondition = MyApplication.getInstance().getSearchCondition();
+        if(!baseCondition.isEmpty())
+        {
+            DateExt dateExt = new DateExt();
+            if(baseCondition.contains("{lastMonday}"))
+            {
+                baseCondition = baseCondition.replace("{lastMonday}", new DateExt(dateExt.getDate()).getLastWeekMonday().getFormatDateTime("yyyy-MM-dd"));
+            }
+            if(baseCondition.contains("{lastSunday}"))
+            {
+                baseCondition = baseCondition.replace("{lastSunday}", new DateExt(dateExt.getDate()).getLastWeekMonday().addDays(7).getFormatDateTime("yyyy-MM-dd"));
+            }
+            if(baseCondition.contains("{thisWeek}"))
+            {
+                baseCondition = baseCondition.replace("{thisWeek}",new DateExt(dateExt.getDate()).getThisWeekMonday().getFormatDateTime("yyyy-MM-dd"));
+            }
+            if(baseCondition.contains("{fromLastFriday}"))
+            {
+                baseCondition = baseCondition.replace("{fromLastFriday}",new DateExt(dateExt.getDate()).getThisWeekMonday().addDays(-3).getFormatDateTime("yyyy-MM-dd"));
+            }
+            sqlCondition = sqlCondition.replace("where","and");
+        }
+
+        String sql = "SELECT * FROM Hexagram "+ baseCondition + sqlCondition +" Order By ShakeDate DESC";
+
+        Cursor cur = null;
+
+        try
+        {
+            cur = database.rawQuery(sql, params);
+        }
+        catch (Exception ex)
+        {
+            sql = "SELECT * FROM Hexagram Order By ShakeDate DESC";
+            cur = database.rawQuery(sql, new String[]{});
+        }
 
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
 
@@ -192,7 +227,7 @@ public class Database extends DatabaseManager {
         }
 
         cur.close();
-        database.close();
+        closeDatabase();
         return list;
     }
 
@@ -267,7 +302,7 @@ public class Database extends DatabaseManager {
             cv.put("Note", row.getNote());
             database.insert("Hexagram", null, cv);
         }
-        database.close();
+        closeDatabase();
     }
 
     public void insertImageAttachment(List<ImageAttachment> models)
@@ -374,6 +409,13 @@ public class Database extends DatabaseManager {
         }
         closeDatabase();
         return list;
+    }
+
+    @Override
+    public void closeDatabase()
+    {
+        super.closeDatabase();
+        databaseHexagramNote.close();
     }
 
     DailyData createDailyDataByCursor(Cursor cursor)

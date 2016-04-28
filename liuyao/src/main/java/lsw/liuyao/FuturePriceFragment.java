@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import lsw.library.DateExt;
-import lsw.library.SolarTerm;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.future.DailyData;
@@ -52,16 +51,16 @@ public class FuturePriceFragment extends Fragment {
     int hexagramId;
 
     private boolean isShowCondition = true;
-    private boolean summaryByMonth = false;
+    private boolean isSummaryBySearch = false;
 
     public void setShowCondition(boolean isShowing)
     {
         isShowCondition = isShowing;
     }
 
-    public void setSummaryByMonth(boolean summaryByMonth)
+    public void setIsSummaryBySearch(boolean isSummaryBySearch)
     {
-        this.summaryByMonth = summaryByMonth;
+        this.isSummaryBySearch = isSummaryBySearch;
     }
 
     public static FuturePriceFragment createFragment()
@@ -122,7 +121,7 @@ public class FuturePriceFragment extends Fragment {
 
         bindActions();
 
-        if(!this.summaryByMonth) {
+        if(!this.isSummaryBySearch) {
             bindContent();
         }
         else
@@ -169,12 +168,13 @@ public class FuturePriceFragment extends Fragment {
             openPrice = dailyDatas.get(0).OpeningPrice;
             closePrice = dailyDatas.get(dailyDatas.size() - 1).ClosingPrice;
             String summary = "开:" + String.format("%.2f", openPrice) +
-                    "收:" + String.format("%.2f", closePrice) +
-                    "-----开/收:" + String.format("%.2f", closePrice - openPrice) + "\n" +
-                    "<低/开>:" + String.format("%.2f", lowestPrice - openPrice) + "\n" +
-                    "高:" + String.format("%.2f", highestPrice) +
-                    "低:" + String.format("%.2f", lowestPrice) +
-                    "-----高/低:" + String.format("%.2f", highestPrice - lowestPrice);
+                    "   收:" + String.format("%.2f", closePrice) +
+                    "   高:" + String.format("%.2f", highestPrice) +
+                    "   低:" + String.format("%.2f", lowestPrice) + "\n" +
+                    "<开/收>:" + String.format("%.2f", closePrice - openPrice) +
+                    "    <开/低>:" + String.format("%.2f", lowestPrice - openPrice) + "\n" +
+                    "<高/低>:" + String.format("%.2f", highestPrice - lowestPrice) +
+                    "    <高/收>:" + String.format("%.2f", highestPrice - closePrice);
             tvSummary.setText(summary);
         }
         else
@@ -294,7 +294,7 @@ public class FuturePriceFragment extends Fragment {
 
                 lowestPrice = highestPrice = openPrice = closePrice = 0;
 
-                if (summaryByMonth) {
+                if (isSummaryBySearch) {
 
                     searchAction();
 
@@ -362,42 +362,40 @@ public class FuturePriceFragment extends Fragment {
         tvFutureCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FutureCodeSelectorDialog selectorDialog = new FutureCodeSelectorDialog(tvFutureCode.getText().toString(),getActivity());
+                FutureCodeSelectorDialog selectorDialog = new FutureCodeSelectorDialog(tvFutureCode.getText().toString(), getActivity());
                 selectorDialog.setCallBack(new FutureCodeSelectorDialog.ICallBack() {
                     @Override
                     public void invoke(String code) {
                         tvFutureCode.setText(code);
 
-                        if(code.length() < 4)
-                        {
-                            llDateRange.setVisibility(View.VISIBLE);
-                            tvEndDate.setVisibility(View.GONE);
-                            tvBeginDate.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+                        if (isSummaryBySearch) {
+                            if (code.length() < 4) {
+                                llDateRange.setVisibility(View.VISIBLE);
+                                tvEndDate.setVisibility(View.GONE);
+                                tvBeginDate.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
 
-                            String beginDateStr = tvBeginDate.getText().toString().trim();
-                            if(beginDateStr.length() > 4 && !beginDateStr.isEmpty())
-                            {
-                                tvBeginDate.setText(beginDateStr.substring(0,4));
-                            }
-
-                            tvBeginDate.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    int year  = Integer.valueOf(tvBeginDate.getText().toString());
-                                    DateTimePickerDialog pickerDialog = new DateTimePickerDialog(year, getActivity(),true);
-                                    pickerDialog.show();
-                                    pickerDialog.setCallBack(new DateTimePickerDialog.ICallBack() {
-                                        @Override
-                                        public void invoke(DateExt dateExt) {
-                                            tvBeginDate.setText(dateExt.getFormatDateTime("yyyy"));
-                                        }
-                                    });
+                                String beginDateStr = tvBeginDate.getText().toString().trim();
+                                if (beginDateStr.length() > 4 && !beginDateStr.isEmpty()) {
+                                    tvBeginDate.setText(beginDateStr.substring(0, 4));
                                 }
-                            });
-                        }
-                        else
-                        {
-                            llDateRange.setVisibility(View.GONE);
+
+                                tvBeginDate.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        int year = Integer.valueOf(tvBeginDate.getText().toString());
+                                        DateTimePickerDialog pickerDialog = new DateTimePickerDialog(year, getActivity(), true);
+                                        pickerDialog.show();
+                                        pickerDialog.setCallBack(new DateTimePickerDialog.ICallBack() {
+                                            @Override
+                                            public void invoke(DateExt dateExt) {
+                                                tvBeginDate.setText(dateExt.getFormatDateTime("yyyy"));
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                llDateRange.setVisibility(View.GONE);
+                            }
                         }
                     }
                 });

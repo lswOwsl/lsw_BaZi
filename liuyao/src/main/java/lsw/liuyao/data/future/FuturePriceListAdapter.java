@@ -59,6 +59,8 @@ public class FuturePriceListAdapter extends BaseAdapter {
         controls.tvHighestPrice = (TextView) view.findViewById(R.id.tvHighestPrice);
         controls.tvLowestPrice = (TextView) view.findViewById(R.id.tvLowestPrice);
         controls.tvResultHighestLowest = (TextView) view.findViewById(R.id.tvResultHighestLowest);
+        controls.tvResultOpenLowest = (TextView) view.findViewById(R.id.tvResultOpenLowest);
+        controls.tvResultHighestClose = (TextView) view.findViewById(R.id.tvResultHighestClose);
 
         DailyData dailyData = dailyDatas.get(i);
 
@@ -76,27 +78,26 @@ public class FuturePriceListAdapter extends BaseAdapter {
 
         controls.tvOpenPrice.setText("开:" + String.format("%.2f", dailyData.OpeningPrice));
         controls.tvClosePrice.setText("收:" + String.format("%.2f", dailyData.ClosingPrice));
-        controls.tvResultOpenClose.setText("开/收" + String.format("%.2f", dailyData.ClosingPrice - dailyData.OpeningPrice) +
-                "-----低/开" + String.format("%.2f", openLowestPrice));
+        controls.tvResultOpenClose.setText("开/收:" + String.format("%.2f", dailyData.ClosingPrice - dailyData.OpeningPrice));
+        controls.tvResultOpenLowest.setText("开/低:" + String.format("%.2f", openLowestPrice));
+        controls.tvResultHighestClose.setText("高/收:" + String.format("%.2f", dailyData.HighestPrice - dailyData.ClosingPrice));
+        controls.tvHighestPrice.setText("高:" + String.format("%.2f", dailyData.HighestPrice));
+        controls.tvLowestPrice.setText("低:" + String.format("%.2f", dailyData.LowestPrice));
+        controls.tvResultHighestLowest.setText("高/低:" + String.format("%.2f", dailyData.HighestPrice - dailyData.LowestPrice));
 
-        if(openLowestPrice < 0 && openClosePrice > 0) {
-            controls.tvResultOpenClose.setBackgroundColor(Color.YELLOW);
+        if(openLowestPrice < 0 && openClosePrice > 0)
+        {
+            controls.tvResultOpenLowest.setBackgroundColor(Color.YELLOW);
         }
 
         if(dailyData.OpeningPrice > dailyData.ClosingPrice)
         {
-            controls.tvClosePrice.setBackgroundColor(Color.GREEN);
+            controls.tvResultOpenClose.setBackgroundColor(Color.GREEN);
         }
         if(dailyData.OpeningPrice < dailyData.ClosingPrice)
         {
-            controls.tvClosePrice.setBackgroundColor(Color.RED);
+            controls.tvResultOpenClose.setBackgroundColor(Color.RED);
         }
-
-        controls.tvHighestPrice.setText("高:" + String.format("%.2f", dailyData.HighestPrice));
-        controls.tvLowestPrice.setText("低:" + String.format("%.2f", dailyData.LowestPrice));
-        controls.tvResultHighestLowest.setText("高/低" + String.format("%.2f", dailyData.HighestPrice - dailyData.LowestPrice) +
-                "-----高/收" + String.format("%.2f", dailyData.HighestPrice - dailyData.ClosingPrice));
-
 
         view.setTag(controls);
 //        } else {
@@ -108,7 +109,9 @@ public class FuturePriceListAdapter extends BaseAdapter {
 
     public final class Controls
     {
-        public TextView tvDate, tvOpenPrice, tvClosePrice,tvResultOpenClose, tvHighestPrice, tvLowestPrice, tvResultHighestLowest;
+        public TextView tvDate, tvOpenPrice, tvClosePrice,
+                tvResultOpenClose, tvHighestPrice, tvLowestPrice,
+                tvResultHighestLowest, tvResultOpenLowest,tvResultHighestClose;
     }
 
     private String getTitleByDate(DateExt dateExt, DateExt endDate)

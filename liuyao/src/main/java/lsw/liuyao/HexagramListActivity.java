@@ -44,6 +44,7 @@ import lsw.liuyao.model.HexagramRow;
  */
 public class HexagramListActivity extends Activity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, HexagramListAdapter.OnReload {
 
+    SearchView searchView;
     ListView swipeListView;
     Database database;
     HexagramListAdapter hexagramListAdapter;
@@ -72,7 +73,8 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
                 HexagramMenuData selectedChild = menuData.get(i).getSecondLevelData().get(i1);
                 MyApplication.getInstance().setSearchCondition(selectedChild.getCondition());
-
+                searchView.setIconified(true);
+                searchView.onActionViewCollapsed();
                 hexagramListAdapter.setRows(database.getHexagramList(searchText));
                 hexagramListAdapter.notifyDataSetChanged();
 
@@ -88,6 +90,8 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
                 HexagramMenuData selectedParent = menuData.get(i);
                 MyApplication.getInstance().setSearchCondition(selectedParent.getCondition());
                 if(selectedParent.getSecondLevelData() == null || selectedParent.getSecondLevelData().size() == 0) {
+                    searchView.setIconified(true);
+                    searchView.onActionViewCollapsed();
                     hexagramListAdapter.setRows(database.getHexagramList(searchText));
                     hexagramListAdapter.notifyDataSetChanged();
                     mDrawer.closeMenu();
@@ -143,7 +147,7 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        SearchView searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
         searchView.setQueryHint("主卦 日期(年-月-日) 备注");
         searchView.setOnQueryTextListener(this);
         searchView.setOnQueryTextListener(this);

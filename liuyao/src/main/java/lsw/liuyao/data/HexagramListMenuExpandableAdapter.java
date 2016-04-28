@@ -64,14 +64,14 @@ public class HexagramListMenuExpandableAdapter extends BaseExpandableListAdapter
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
         String string = menuDataList.get(i).getName();
-        return  getGenericView(string);
+        return  getGenericView(string, 18, 70);
 
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
         String string = menuDataList.get(i).getSecondLevelData().get(i1).getName();
-        return  getGenericView(string);
+        return  getGenericView(string,16, 90);
 
     }
 
@@ -80,17 +80,18 @@ public class HexagramListMenuExpandableAdapter extends BaseExpandableListAdapter
         return true;
     }
 
-    public  TextView getGenericView(String string) {
+    public  TextView getGenericView(String string, int textSize, int paddingLeft) {
         // Layout parameters for the ExpandableListView
         AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 64);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TextView text = new TextView(context);
         text.setLayoutParams(layoutParams);
         // Center the text vertically
         text.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
         // Set the text starting position
-        text.setPadding(36, 0, 0, 0);
+        text.setPadding(paddingLeft, 10, 0, 10);
         text.setText(string);
+        text.setTextSize(textSize);
         return text;
     }
 

@@ -22,32 +22,44 @@
             android:text="收:"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tvHighestPrice"
+            android:layout_weight="1.5"
+            android:text="高:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tvLowestPrice"
+            android:layout_weight="1.5"
+            android:text="低:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <TextView android:id="@+id/tvResultOpenClose"
             android:layout_weight="1"
             android:text="差:"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/tvHighestPrice"
-        android:layout_weight="1.5"
-        android:text="高:"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/tvLowestPrice"
-        android:layout_weight="1.5"
-        android:text="低:"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvResultOpenLowest"
+            android:layout_weight="1"
+            android:text="差:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/tvResultHighestLowest"
         android:layout_weight="1"
         android:text="差:"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvResultHighestClose"
+            android:layout_weight="1"
+            android:text="差:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 </LinearLayout>
+
 </LinearLayout>
