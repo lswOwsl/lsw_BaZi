@@ -130,6 +130,12 @@ public class DateExt {
         return new DateExt(calendar.getTime());
     }
 
+    public DateExt addWeeks(int weeks)
+    {
+        calendar.add(Calendar.WEEK_OF_YEAR,weeks);
+        return new DateExt(calendar.getTime());
+    }
+
     public DateExt addDays(int days)
     {
         calendar.add(Calendar.DAY_OF_YEAR,days);

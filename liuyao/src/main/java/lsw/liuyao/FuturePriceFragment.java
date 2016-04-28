@@ -183,9 +183,15 @@ public class FuturePriceFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
+                int year = new DateExt().getYear();
+                if(llDateRange.getVisibility() == View.VISIBLE)
+                    year = Integer.valueOf(tvBeginDate.getText().toString());
+
+                final int paramYear = year;
+
                 if(i == 0)
                 {
-                    searchPriceByLunarYear();
+                    searchPriceByLunarYear(paramYear);
                 }
 
                 if(i== 1)
@@ -198,7 +204,7 @@ public class FuturePriceFragment extends Fragment {
                     new AlertDialog.Builder(getActivity()).setItems(arrayMonth, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            searchPriceByMonth(i+1);
+                            searchPriceByMonth(paramYear, i+1);
                         }
                     }).show();
                 }
@@ -207,9 +213,9 @@ public class FuturePriceFragment extends Fragment {
         }).show();
     }
 
-    private void searchPriceByMonth(int month)
+    private void searchPriceByMonth(int year, int month)
     {
-       sinaData.getWeeklyDailyDataByMonth(tvFutureCode.getText().toString(), month, new SinaData.IResult<HashMap<Pair<DateExt, DateExt>, DailyDataSummary>>() {
+       sinaData.getWeeklyDataByMonth(tvFutureCode.getText().toString(), year, month, new SinaData.IResult<HashMap<Pair<DateExt, DateExt>, DailyDataSummary>>() {
            @Override
            public void invoke(HashMap<Pair<DateExt, DateExt>, DailyDataSummary> pairDailyDataSummaryHashMap) {
 
@@ -247,9 +253,9 @@ public class FuturePriceFragment extends Fragment {
        });
     }
 
-    private void searchPriceByLunarYear()
+    private void searchPriceByLunarYear(int year)
     {
-        sinaData.getMonthlyDailyDataBySolarTerm(tvFutureCode.getText().toString(), new SinaData.IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>>() {
+        sinaData.getSolarTermDataByYear(tvFutureCode.getText().toString(), year, new SinaData.IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>>() {
             @Override
             public void invoke(HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary> pairDailyDataSummaryHashMap) {
 
@@ -287,7 +293,7 @@ public class FuturePriceFragment extends Fragment {
         });
     }
 
-    String [] searhMethodArray = new String[]{"阴历按节气月查询","阳历按周查询"};
+    String [] searhMethodArray = new String[]{"阴历年以节气月统计","阳历月以周统计"};
 
     private void bindActions()
     {
@@ -371,6 +377,38 @@ public class FuturePriceFragment extends Fragment {
                     @Override
                     public void invoke(String code) {
                         tvFutureCode.setText(code);
+
+                        if(code.length() < 4)
+                        {
+                            llDateRange.setVisibility(View.VISIBLE);
+                            tvEndDate.setVisibility(View.GONE);
+                            tvBeginDate.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+
+                            String beginDateStr = tvBeginDate.getText().toString().trim();
+                            if(beginDateStr.length() > 4 && !beginDateStr.isEmpty())
+                            {
+                                tvBeginDate.setText(beginDateStr.substring(0,4));
+                            }
+
+                            tvBeginDate.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    int year  = Integer.valueOf(tvBeginDate.getText().toString());
+                                    DateTimePickerDialog pickerDialog = new DateTimePickerDialog(year, getActivity(),true);
+                                    pickerDialog.show();
+                                    pickerDialog.setCallBack(new DateTimePickerDialog.ICallBack() {
+                                        @Override
+                                        public void invoke(DateExt dateExt) {
+                                            tvBeginDate.setText(dateExt.getFormatDateTime("yyyy"));
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else
+                        {
+                            llDateRange.setVisibility(View.GONE);
+                        }
                     }
                 });
                 selectorDialog.show();

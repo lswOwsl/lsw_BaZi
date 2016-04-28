@@ -1,6 +1,7 @@
 package lsw.liuyao.data.future;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -30,29 +31,37 @@ public class SinaDataSummary extends SinaData {
         return m.replaceAll("");
     }
 
-    public void getWeeklyDailyDataByMonth(final String futureCode, final int month, final IResult<HashMap<Pair<DateExt, DateExt>, DailyDataSummary>> complete)
+    public void getWeeklyDataByMonth(final String futureCode, final int year, final int month, final IResult<HashMap<Pair<DateExt, DateExt>, DailyDataSummary>> complete)
     {
-        final int year = Integer.valueOf("20" + getFutureCodeNumber(futureCode).substring(0,2));
         final HashMap<Pair<DateExt, DateExt>, DailyDataSummary> result = new HashMap<Pair<DateExt, DateExt>, DailyDataSummary>();
 
         getResponeFromURL(Sina_Url + Sina_Day_Method + futureCode, new IResult<ArrayList<DailyData>>() {
             @Override
             public void invoke(ArrayList<DailyData> dailyDatas) {
 
-                DateExt initialDate = new DateExt(year,month,1,0,0,0).getFirstMondayInMonth();
+                Log.d("weekly price by month", Sina_Url + Sina_Day_Method + futureCode);
 
-                for(int i=0; i<4; i++)
-                {
-                    DateExt beginDate = new DateExt(initialDate.getDate()).addDays(i*7);
+                int yearParam = year;
+                if(futureCode.length() > 4) {
+                    yearParam = Integer.valueOf("20" + getFutureCodeNumber(futureCode).substring(0, 2));
+                }
 
-                    DateExt endDate = new DateExt(initialDate.getDate()).addDays((i+1)*7-3);
+                DateExt initialDate = new DateExt(yearParam, month, 1, 0, 0, 0).getFirstMondayInMonth();
+
+                for (int i = 0; i < 4; i++) {
+                    DateExt beginDate = new DateExt(initialDate.getDate()).addWeeks(i);
+
+                    if (beginDate.getMonth() > initialDate.getMonth())
+                        break;
+
+                    DateExt endDate = new DateExt(initialDate.getDate()).addWeeks((i + 1));
 
                     DailyDataSummary filterDate = filterByDate(beginDate, endDate, dailyDatas, futureCode);
 
-                    result.put(new Pair<DateExt, DateExt>(beginDate,endDate), filterDate);
+                    result.put(new Pair<DateExt, DateExt>(beginDate, endDate), filterDate);
                 }
 
-                if(complete != null)
+                if (complete != null && dailyDatas != null && dailyDatas.size() > 0)
                     complete.invoke(result);
 
             }
@@ -60,16 +69,15 @@ public class SinaDataSummary extends SinaData {
 
     }
 
-    public void getMonthlyDailyDataBySolarTerm(final String futureCode, final IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>> complete) {
+    public void getSolarTermDataByYear(final String futureCode, int year, final IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>> complete) {
         final HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary> result = new HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>();
         final ArrayList<SolarTerm> solarTerms;
-        int year = new DateExt().getYear();
         //小于4说明 不是查某一期的而是查连续指数，那么就从当前日期往前倒两年
         if(futureCode.length() < 4)
         {
             solarTerms = BaZiHelper.getSolarTermsInLunarYear(year);
-            solarTerms.addAll(BaZiHelper.getSolarTermsInLunarYear(year-1));
-            solarTerms.addAll(BaZiHelper.getSolarTermsInLunarYear(year-2));
+            //solarTerms.addAll(BaZiHelper.getSolarTermsInLunarYear(year-1));
+            //solarTerms.addAll(BaZiHelper.getSolarTermsInLunarYear(year-2));
         }
         else
         {
@@ -85,6 +93,8 @@ public class SinaDataSummary extends SinaData {
             @Override
             public void invoke(ArrayList<DailyData> dailyDatas) {
 
+                Log.d("solar term price", Sina_Url + Sina_Day_Method + futureCode);
+
                 for (int i = 0; i < solarTerms.size(); i++) {
 
                     if (i + 1 < solarTerms.size()) {
@@ -98,7 +108,7 @@ public class SinaDataSummary extends SinaData {
                     }
                 }
 
-                if(complete != null)
+                if(complete != null && dailyDatas != null && dailyDatas.size() > 0)
                     complete.invoke(result);
             }
         });
