@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
 //import com.baidu.autoupdatesdk.UICheckUpdateCallback;
@@ -56,13 +60,41 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         //setContentView(R.layout.hexagram_list_activity);
         mDrawer = MenuDrawer.attach(this);
         mDrawer.setMenuView(R.layout.hexagram_list_menu);
-        mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+        mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
         mDrawer.setContentView(R.layout.hexagram_list_activity);
 
-        List<HexagramMenuData> menuData = XmlInitialData.getInstance().getMenuData();
+        final List<HexagramMenuData> menuData = XmlInitialData.getInstance().getMenuData();
 
         ExpandableListView expandableListView = (ExpandableListView) findViewById(R.id.lvMenu);
         expandableListView.setAdapter(new HexagramListMenuExpandableAdapter(this, menuData));
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                HexagramMenuData selectedChild = menuData.get(i).getSecondLevelData().get(i1);
+                MyApplication.getInstance().setSearchCondition(selectedChild.getCondition());
+
+                hexagramListAdapter.setRows(database.getHexagramList(searchText));
+                hexagramListAdapter.notifyDataSetChanged();
+
+                mDrawer.closeMenu();
+
+                return false;
+            }
+        });
+
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                HexagramMenuData selectedParent = menuData.get(i);
+                MyApplication.getInstance().setSearchCondition(selectedParent.getCondition());
+                if(selectedParent.getSecondLevelData() == null || selectedParent.getSecondLevelData().size() == 0) {
+                    hexagramListAdapter.setRows(database.getHexagramList(searchText));
+                    hexagramListAdapter.notifyDataSetChanged();
+                    mDrawer.closeMenu();
+                }
+                return false;
+            }
+        });
 
         TextView tvPriceSearch = (TextView) findViewById(R.id.tvFuturePriceSearch);
         tvPriceSearch.setOnClickListener(new View.OnClickListener() {
@@ -77,8 +109,7 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         //BaiDuBanner baiDuBanner = new BaiDuBanner(this);
         //baiDuBanner.create();
 
-        getActionBar().setDisplayHomeAsUpEnabled(false);
-        getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         swipeListView = (ListView) findViewById(R.id.slv_Hexagram);
 
@@ -128,6 +159,14 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id == android.R.id.home)
+        {
+            if(mDrawer.isMenuVisible())
+                mDrawer.closeMenu();
+            else
+                mDrawer.openMenu();
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.menuAdd) {
 
@@ -218,4 +257,42 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         //close open items 必须最后调用，要不删除后不能反应到list页面上
         //swipeListView.closeOpenedItems();
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    // 定义一个变量，来标识是否退出
+    private static boolean isExit = false;
+
+    Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+
+            MyApplication.getInstance().setSearchCondition("");
+
+            finish();
+            System.exit(0);
+        }
+    }
+
 }

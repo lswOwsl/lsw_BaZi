@@ -1,8 +1,12 @@
 <Menu>
+	<Item Name="全部" Condition=""/>
 	<Item Name="本周卦例" Condition="ShakeDate > '{lastWeek}'"/>
 	<Item Name="期货卦例">
+		<SubItem Name="全部品种" Condition=" where Note like '%鸡蛋%' or like '%玉米%' or like '%螺纹%' or like '%郑煤%'"></SubItem>
 		<SubItem Name="鸡蛋" Condition=" where Note like '%鸡蛋%'"></SubItem>
 		<SubItem Name="玉米" Condition=" where Note like '%玉米%'"></SubItem>
+		<SubItem Name="鸡蛋" Condition=" where Note like '%螺纹%'"></SubItem>
+		<SubItem Name="鸡蛋" Condition=" where Note like '%郑煤%'"></SubItem>
 	</Item>
 	<Item Name="自己事" Condition=" where Note like '%自己%'">
 

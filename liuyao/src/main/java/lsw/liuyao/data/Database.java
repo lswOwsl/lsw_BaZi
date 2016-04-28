@@ -177,11 +177,11 @@ public class Database extends DatabaseManager {
         String sqlCondition = " ";
         String[] params = new String[]{};
         if(!TextUtils.isEmpty(str)) {
-            sqlCondition = "where OriginalName = ? Or ShakeDate like ? Or Note like ?";
+            sqlCondition = " where OriginalName = ? Or ShakeDate like ? Or Note like ?";
             params = new String[]{ ""+str+"","%"+str+"%","%"+str+"%" };
         }
 
-        String sql = "SELECT * FROM Hexagram " + sqlCondition +" Order By ShakeDate DESC";
+        String sql = "SELECT * FROM Hexagram "+ MyApplication.getInstance().getSearchCondition() + sqlCondition +" Order By ShakeDate DESC";
         Cursor cur = database.rawQuery(sql,params);
 
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
