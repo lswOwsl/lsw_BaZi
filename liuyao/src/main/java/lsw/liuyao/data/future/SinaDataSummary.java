@@ -58,10 +58,11 @@ public class SinaDataSummary extends SinaData {
 
                     DailyDataSummary filterDate = filterByDate(beginDate, endDate, dailyDatas, futureCode);
 
-                    result.put(new Pair<DateExt, DateExt>(beginDate, endDate), filterDate);
+                    if(filterDate.getDailyDataList().size() > 0)
+                        result.put(new Pair<DateExt, DateExt>(beginDate, endDate), filterDate);
                 }
 
-                if (complete != null && dailyDatas != null && dailyDatas.size() > 0)
+                if (complete != null)
                     complete.invoke(result);
 
             }
@@ -69,8 +70,8 @@ public class SinaDataSummary extends SinaData {
 
     }
 
-    public void getSolarTermDataByYear(final String futureCode, int year, final IResult<HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>> complete) {
-        final HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary> result = new HashMap<Pair<SolarTerm, SolarTerm>, DailyDataSummary>();
+    public void getSolarTermDataByYear(final String futureCode, int year, final IResult<HashMap<Pair<DateExt, DateExt>, DailyDataSummary>> complete) {
+        final HashMap<Pair<DateExt, DateExt>, DailyDataSummary> result = new HashMap<Pair<DateExt, DateExt>, DailyDataSummary>();
         final ArrayList<SolarTerm> solarTerms;
         //小于4说明 不是查某一期的而是查连续指数，那么就从当前日期往前倒两年
         if(futureCode.length() < 4)
@@ -101,14 +102,14 @@ public class SinaDataSummary extends SinaData {
                         SolarTerm beginDate = solarTerms.get(i);
                         SolarTerm endDate = solarTerms.get(i + 1);
 
-                        Pair<SolarTerm, SolarTerm> pair = new Pair<SolarTerm, SolarTerm>(beginDate, endDate);
+                        Pair<DateExt, DateExt> pair = new Pair<DateExt, DateExt>(beginDate.getSolarTermDate(), endDate.getSolarTermDate());
                         DailyDataSummary filterDate = filterByDate(beginDate.getSolarTermDate(), endDate.getSolarTermDate(), dailyDatas, futureCode);
                         if(filterDate.getDailyDataList().size() > 0)
                             result.put(pair, filterDate);
                     }
                 }
 
-                if(complete != null && dailyDatas != null && dailyDatas.size() > 0)
+                if(complete != null)
                     complete.invoke(result);
             }
         });
