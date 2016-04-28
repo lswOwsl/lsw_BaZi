@@ -24,7 +24,7 @@ import lsw.xml.XmlParser;
 public class XmlInitialData {
 
     private static int BUFFER_SIZE = 400000;
-    public static String Menu_List_Path =  Environment.getExternalStorageDirectory() + "/" + Database.PACKAGE_NAME + "/list_menu_data.xml;";
+    public static String Menu_List_Path =  Environment.getExternalStorageDirectory() + "/" + Database.PACKAGE_NAME + "/list_menu_data.xml";
 
     public static  XmlInitialData getInstance()
     {
