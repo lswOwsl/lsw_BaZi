@@ -119,6 +119,20 @@ public class DateExt {
         return beginTime-endTime;
     }
 
+    public DateExt getLastWeekMonday()
+    {
+        int i = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
+        calendar.add(Calendar.DATE, -i - 6);
+        return new DateExt(calendar.getTime());
+    }
+
+    public DateExt getThisWeekMonday()
+    {
+        int i = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
+        calendar.add(Calendar.DATE, -i + 1);
+        return new DateExt(calendar.getTime());
+    }
+
     public DateExt getFirstMondayInMonth()
     {
         int i = 1;
