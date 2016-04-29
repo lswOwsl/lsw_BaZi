@@ -4,6 +4,15 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
 
+    signingConfigs {
+        config {
+            keyAlias 'lsw'
+            keyPassword '88216240'
+            storeFile file('../lsw20150711.jks')
+            storePassword '88216240'
+        }
+    }
+
     defaultConfig {
         applicationId "lsw.lunar_calendar"
         minSdkVersion 15
@@ -15,6 +24,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.config
+        }
+        debug{
+            debuggable true
+            signingConfig signingConfigs.config
         }
     }
 }
