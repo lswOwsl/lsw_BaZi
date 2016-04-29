@@ -205,7 +205,7 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
             @Override
             public void onClick(View view) {
                 Bitmap b1 = CaptureImage.captureViewToImage(mDrawer.getContentContainer());
-                Bitmap b2 = CaptureImage.captureViewToImage(mDrawer.getMenuView());
+                Bitmap b2 = CaptureImage.captureViewToImage((FrameLayout)mDrawer.getMenuView().findViewById(R.id.fl_Image_Select));
                 Bitmap b3 = CaptureImage.combineImages(b2, b1);
                 ListView lvPrice = (ListView)mDrawer.getMenuView().findViewById(R.id.lvPrice);
                 if(lvPrice != null) {

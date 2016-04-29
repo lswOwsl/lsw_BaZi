@@ -2,6 +2,7 @@ package lsw.utility;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.Image;
 import android.os.Environment;
@@ -60,7 +61,7 @@ public class CaptureImage {
         cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
         Canvas comboImage = new Canvas(cs);
-
+        comboImage.drawColor(Color.WHITE);
         comboImage.drawBitmap(c, 0f, 0f, null);
         comboImage.drawBitmap(s, c.getWidth(), 0f, null);
 

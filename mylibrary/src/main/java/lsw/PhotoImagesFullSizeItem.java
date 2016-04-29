@@ -31,7 +31,7 @@ public class PhotoImagesFullSizeItem extends Fragment{
 
     SourceImage image;
 
-    private SquareImageView mImageView;
+    private ImageView mImageView;
     ImageView imageView;
     ImageView imageViewDefault;
 
@@ -52,8 +52,8 @@ public class PhotoImagesFullSizeItem extends Fragment{
 
         final View v = inflater.inflate(R.layout.common_photo_images_full_size_item, null);
 
-        mImageView = (SquareImageView)v.findViewById(R.id.lp_img_image);
-        //mImageView = (ImageView)v.findViewById(R.id.lp_img_image);
+        //mImageView = (SquareImageView)v.findViewById(R.id.lp_img_image);
+        mImageView = (ImageView)v.findViewById(R.id.lp_img_image);
         imageView = (ImageView)v.findViewById(R.id.lp_img_check_mask);
         imageViewDefault = (ImageView)v.findViewById(R.id.lp_img_check_default);
 

@@ -12,9 +12,9 @@
 		<SubItem Name="豆粕" Condition=" where Note like '%豆粕%'"></SubItem>
 		<SubItem Name="菜粕" Condition=" where Note like '%菜粕%'"></SubItem>
 	</Item>
-	<Item Name="自己事" Condition=" where Note like '%自己%'">
+	<Item Name="自己事" Condition=" where Note like '%自己%' or Note like '%自占%'">
 	</Item>
-	<Item Name="他人事" Condition=" where Note not like '%自己%' and Note not like'%走势%'">
+	<Item Name="他人事" Condition=" where Note not like '%自己%' and Note not like'%走势%' and Note not like '%自占%'">
 	</Item>
 	<Item Name="手机起卦" Condition=" where Note like '%锤子%' or Note like'%手机%'">
 	</Item>

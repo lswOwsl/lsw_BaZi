@@ -22,9 +22,9 @@
     <LinearLayout android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
-        <FrameLayout android:id="@+id/fl_Image_Select"
+        <FrameLayout android:id="@+id/fl_Image_Select" android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
         <FrameLayout android:id="@+id/fl_Price_List" android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
