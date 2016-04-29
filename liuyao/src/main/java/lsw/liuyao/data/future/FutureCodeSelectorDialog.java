@@ -101,7 +101,7 @@ public class FutureCodeSelectorDialog {
         DateExt dateExt = new DateExt();
         int year = dateExt.getYear();
 
-        for(int i = year; i>year-3; i-- )
+        for(int i = year + 1; i>year-3; i-- )
         {
             for(int j=1; j<=12; j++)
             {
