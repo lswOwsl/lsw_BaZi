@@ -76,10 +76,12 @@ public class FuturePriceListAdapter extends BaseAdapter {
         double openLowestPrice = dailyData.LowestPrice - dailyData.OpeningPrice;
         double openClosePrice = dailyData.ClosingPrice - dailyData.OpeningPrice;
 
+        double openHighestPrice = dailyData.HighestPrice - dailyData.OpeningPrice;
+
         controls.tvOpenPrice.setText("开:" + String.format("%.2f", dailyData.OpeningPrice));
         controls.tvClosePrice.setText("收:" + String.format("%.2f", dailyData.ClosingPrice));
         controls.tvResultOpenClose.setText("开/收:" + String.format("%.2f", dailyData.ClosingPrice - dailyData.OpeningPrice));
-        controls.tvResultOpenLowest.setText("开/低:" + String.format("%.2f", openLowestPrice));
+
         controls.tvResultHighestClose.setText("高/收:" + String.format("%.2f", dailyData.HighestPrice - dailyData.ClosingPrice));
         controls.tvHighestPrice.setText("高:" + String.format("%.2f", dailyData.HighestPrice));
         controls.tvLowestPrice.setText("低:" + String.format("%.2f", dailyData.LowestPrice));
@@ -88,6 +90,12 @@ public class FuturePriceListAdapter extends BaseAdapter {
         if(openLowestPrice < 0 && openClosePrice > 0)
         {
             controls.tvResultOpenLowest.setBackgroundColor(Color.YELLOW);
+            controls.tvResultOpenLowest.setText("开/低:" + String.format("%.2f", openLowestPrice));
+        }
+        else if (openHighestPrice > 0 && openClosePrice < 0)
+        {
+            controls.tvResultOpenLowest.setBackgroundColor(Color.YELLOW);
+            controls.tvResultOpenLowest.setText("开/高:" + String.format("%.2f", openHighestPrice));
         }
 
         if(dailyData.OpeningPrice > dailyData.ClosingPrice)
