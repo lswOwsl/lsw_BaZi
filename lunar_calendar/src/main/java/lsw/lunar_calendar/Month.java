@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Pair;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -25,6 +28,9 @@ import lsw.lunar_calendar.common.LunarDateSelectorDialog;
 import lsw.lunar_calendar.common.ViewGesture;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
 import lsw.lunar_calendar.data_source.CalendarTitleAdapter;
+
+import net.simonvt.menudrawer.MenuDrawer;
+
 
 
 public class Month extends Activity implements MonthFragment.OnFragmentInteractionListener {
@@ -48,11 +54,37 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
     //private FrameLayout frameLayout;
 
+    private MenuDrawer mDrawer;
+    private int menuWidth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_month);
+        //setContentView(R.layout.activity_month);
 
+        mDrawer = MenuDrawer.attach(this);
+        mDrawer.setMenuView(R.layout.menu_left);
+        mDrawer.setContentView(R.layout.activity_month);
+
+        mDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
+            @Override
+            public void onDrawerStateChange(int oldState, int newState) {
+
+            }
+
+            @Override
+            public void onDrawerSlide(float openRatio, int offsetPixels) {
+
+            }
+        });
+
+
+        //侧边栏宽度，占整窗体的3/2
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        menuWidth = dm.widthPixels / 3 * 2;
+        mDrawer.setMenuSize(menuWidth);
 
         BaiDuBanner banner = new BaiDuBanner(this);
         banner.create();
@@ -143,6 +175,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         //viewGesture.setGestureTo(gridView);
 
         initFragment(initialDate);
+
+
     }
 
     @Override
@@ -218,7 +252,10 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         // TODO Auto-generated method stub
         if(item.getItemId() == android.R.id.home)
         {
-            finish();
+            if(mDrawer.isMenuVisible())
+                mDrawer.closeMenu();
+            else
+                mDrawer.openMenu();
             return true;
         }
         //noinspection SimplifiableIfStatement

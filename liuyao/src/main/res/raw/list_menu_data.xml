@@ -1,5 +1,6 @@
 <Menu>
 	<Item Name="全部" Condition=""/>
+	<Item Name="静卦卦例" Condition=" where ChangedName is null"/>
 	<Item Name="上周卦例" Condition=" where ShakeDate > '{lastMonday}' and '{lastSunday}' > ShakeDate "/>
 	<Item Name="本周卦例" Condition=" where ShakeDate > '{thisWeek}'"/>
 	<Item Name="期货卦例">

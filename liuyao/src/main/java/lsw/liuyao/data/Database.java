@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import lsw.library.CrossAppKey;
 import lsw.library.DatabaseManager;
 import lsw.library.DateExt;
 import lsw.liuyao.R;
@@ -34,14 +35,7 @@ import lsw.utility.FileHelper;
  */
 public class Database extends DatabaseManager {
 
-    public static final String DB_NAME_HEXAGRAM_NOTE = "liuYaoHexagramNote.db";
-    public static final String DB_NAME = "liuYao.db";
-    public static final String PACKAGE_NAME = "lsw.liuyao";
-//    public static final String DB_PATH = "/data"
-//            + Environment.getDataDirectory().getAbsolutePath() + "/"
-//            + PACKAGE_NAME;
-
-    public static final String DB_PATH = Environment.getExternalStorageDirectory() + "/" + PACKAGE_NAME;
+    public static final String DB_PATH = Environment.getExternalStorageDirectory() + "/" + CrossAppKey.PACKAGE_NAME_LIUYAO;
 
     private Context context;
 
@@ -53,7 +47,7 @@ public class Database extends DatabaseManager {
 
     public void openDatabase() {
         FileHelper.createFolder(DB_PATH);
-        super.database = this.openDatabase(DB_PATH + "/" + DB_NAME);
+        super.database = this.openDatabase(DB_PATH + "/" + CrossAppKey.DB_NAME);
     }
 
     private SQLiteDatabase openDatabase(String databaseFile) {
@@ -65,7 +59,7 @@ public class Database extends DatabaseManager {
         //加载64卦数据库
         int resourceIdHexagramNote = R.raw.sixty_four_hexagrams_note;
         InputStream isNote = this.context.getResources().openRawResource(resourceIdHexagramNote);
-        databaseHexagramNote = super.openDatabase(DB_PATH + "/" + DB_NAME_HEXAGRAM_NOTE, isNote);
+        databaseHexagramNote = super.openDatabase(DB_PATH + "/" + CrossAppKey.DB_NAME_HEXAGRAM_NOTE, isNote);
 
         return super.openDatabase(databaseFile,is);
     }

@@ -3,9 +3,12 @@
     xmlns:era="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical" >
+    <lsw.lunar_calendar.view.DayNotifyPointView android:id="@+id/viewDayNotifyPoint"
+        android:layout_width="match_parent" android:layout_gravity="center"
+        android:layout_height="2dp" android:background="@android:color/holo_purple" />
 
-    <LinearLayout android:layout_margin="1dp"
+    <LinearLayout android:layout_marginRight="1dp" android:layout_marginLeft="1dp" android:layout_marginBottom="1dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -16,6 +19,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:orientation="horizontal">
             <lsw.lunar_calendar.view.DayTextView
                 android:layout_marginLeft="3dp" android:layout_marginTop="3dp"
                 android:id="@+id/tvDay"
@@ -24,10 +30,8 @@
                 android:gravity="center"
                 android:textSize="20dp"
                 />
+            </LinearLayout>
 
-            <lsw.lunar_calendar.view.DayNotifyPointView android:id="@+id/viewDayNotifyPoint"
-                android:layout_width="6dp" android:layout_gravity="right"
-                android:layout_height="2dp" android:background="#FFD552" />
 
             <lsw.lunar_calendar.view.LunarDayTextView
                 android:id="@+id/tvLunarDay"
@@ -47,4 +51,9 @@
             era:CelestialText="甲"
             era:TerrestrialText="子"/>
     </LinearLayout>
+
+    <!--<lsw.lunar_calendar.view.DayNotifyPointView -->
+        <!--android:layout_width="10dp" android:layout_gravity="center"-->
+        <!--android:layout_height="4dp" android:background="@android:color/holo_orange_light"-->
+        <!--android:layout_marginBottom="2dp"/>-->
 </LinearLayout>

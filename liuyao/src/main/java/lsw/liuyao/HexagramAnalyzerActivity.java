@@ -28,6 +28,7 @@ import java.util.List;
 import lsw.PhotoImagesFullSizeFragment;
 import lsw.hexagram.Analyzer;
 import lsw.hexagram.Builder;
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendar;
 import lsw.library.LunarCalendarWrapper;
@@ -212,11 +213,11 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
                     Bitmap b4 = CaptureImage.getWholeListViewItemsToBitmap(lvPrice);
                     b3 = CaptureImage.combineImages(b4, b3);
                 }
-                CaptureImage.saveBitmap(b3, "/" + Database.PACKAGE_NAME + "/"
+                CaptureImage.saveBitmap(b3, "/" + CrossAppKey.PACKAGE_NAME_LIUYAO + "/"
                                 + analyzeDate.getFormatDateTime("yyyy-MM-dd") +
                         hexagramRow.getOriginalName() + "-" + hexagramRow.getChangedName() +
                         "(" + new DateExt().getFormatDateTime("yyyy-MM-dd<HH:mm:ss>") + ")"+ ".jpg");
-                        Toast.makeText(getApplicationContext(), "图片保存成功.文件位于" + Database.PACKAGE_NAME, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "图片保存成功.文件位于" + CrossAppKey.PACKAGE_NAME_LIUYAO, Toast.LENGTH_SHORT).show();
             }
         });
 
