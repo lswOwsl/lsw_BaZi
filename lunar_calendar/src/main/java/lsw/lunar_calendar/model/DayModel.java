@@ -15,6 +15,16 @@ public class DayModel {
     private boolean isToday;
     private boolean isSelected;
     private boolean isSolarTerm;
+    private String solarTermText;
+
+    public String getSolarTermText() {
+        return solarTermText;
+    }
+
+    public void setSolarTermText(String solarTermText) {
+        this.solarTermText = solarTermText;
+    }
+
     private boolean isWeekend;
 
     public boolean isWeekend() {

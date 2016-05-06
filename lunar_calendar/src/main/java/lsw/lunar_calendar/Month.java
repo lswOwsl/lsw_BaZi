@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import lsw.ContactAuthor;
+import lsw.PhotoImagesFullSizeFragment;
 import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
@@ -28,8 +29,12 @@ import lsw.lunar_calendar.common.LunarDateSelectorDialog;
 import lsw.lunar_calendar.common.ViewGesture;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
 import lsw.lunar_calendar.data_source.CalendarTitleAdapter;
+import lsw.utility.Image.ImageSelectListener;
+import lsw.utility.Image.SourceImage;
 
 import net.simonvt.menudrawer.MenuDrawer;
+
+import java.util.ArrayList;
 
 public class Month extends Activity implements MonthFragment.OnFragmentInteractionListener {
 
@@ -318,6 +323,11 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
             loadFragment(dateExt, willChange && flag);
         }
         initialDate = dateExt;
+
+        FragmentTransaction ftt = getFragmentManager().beginTransaction();
+        HexagramListFragment fragment = HexagramListFragment.newInstance(initialDate);
+        ftt.replace(R.id.fl_list, fragment, null);
+        ftt.commit();
     }
 
     public void initFragment(DateExt dateExt)
@@ -333,6 +343,9 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
             ft.add(R.id.fl_calendar, f2, "move_calendar");
             ft.hide(f2);
         }
+
+        HexagramListFragment fragment = HexagramListFragment.newInstance(initialDate);
+        ft.replace(R.id.fl_list, fragment, null);
 
         ft.commit();
     }

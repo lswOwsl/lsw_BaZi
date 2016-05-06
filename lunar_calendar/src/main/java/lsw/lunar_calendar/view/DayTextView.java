@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import lsw.library.ColorHelper;
 import lsw.lunar_calendar.R;
 
 /**
@@ -26,13 +27,13 @@ public class DayTextView extends TextView {
         isToday = typedArray.getBoolean(R.styleable.DayTextView_IsToday,false);
 
 
-        setText(isThisMonth, isSelected, isToday, isWeekend, getText().toString());
+        setText(isThisMonth, isSelected, isToday, isWeekend, false, getText().toString());
 
         typedArray.recycle();
 
     }
 
-    public void setText(boolean isThisMonth, boolean isSelected, boolean isToday, boolean isWeekend, String text)
+    public void setText(boolean isThisMonth, boolean isSelected, boolean isToday, boolean isWeekend, boolean isSolarTerm, String text)
     {
 
         if(isToday)
@@ -50,10 +51,15 @@ public class DayTextView extends TextView {
             this.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
             this.setTextColor(Color.LTGRAY);
         }
-        else if(isWeekend)
+        else if(isWeekend && !isSolarTerm)
         {
             this.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
             this.setTextColor(Color.RED);
+        }
+        else if(isSolarTerm)
+        {
+            this.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
+            this.setTextColor(ColorHelper.getSolarTermColor());
         }
         else
         {

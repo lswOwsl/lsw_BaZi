@@ -1,5 +1,6 @@
 package lsw.liuyao;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -124,18 +125,32 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
     private int menuWidth;
 
     FrameLayout flImageSelect, flPriceList;
+
+    String formatDate, originalName, changedName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bundle bundle = getIntent().getExtras();
-        final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
-
-        String originalName = bundle.getString(IntentKeys.OriginalName);
-        String changedName = bundle.getString(IntentKeys.ChangedName);
-        final int hexagramRowId = bundle.getInt(IntentKeys.HexagramRowId);
-
         database = new Database(this);
+
+        Intent intent= getIntent();
+        Bundle bundle = intent.getExtras();
+
+        hexagramRowId = intent.getIntExtra(CrossAppKey.HexagramId, -1);
+        if(hexagramRowId != -1) {
+            HexagramRow row = database.getHexagramById(hexagramRowId);
+            originalName = row.getOriginalName();
+            changedName = row.getChangedName();
+            formatDate = row.getDate();
+        }
+        else {
+            formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
+            originalName = bundle.getString(IntentKeys.OriginalName);
+            changedName = bundle.getString(IntentKeys.ChangedName);
+            hexagramRowId = bundle.getInt(IntentKeys.HexagramRowId);
+        }
+
         // 去掉窗口标题
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -236,13 +251,12 @@ public class HexagramAnalyzerActivity extends FragmentActivity implements View.O
 
         btnNote = (TextView) findViewById(R.id.btnNote);
         //如果不是从列表页 分析 跳转过来的，要隐藏存储备注按钮
-        if( hexagramRowId <= 0)
+        if(hexagramRowId <= 0)
         {
             btnNote.setVisibility(View.GONE);
         }
         else
         {
-            this.hexagramRowId = hexagramRowId;
             hexagramRow =  database.getHexagramById(hexagramRowId);
         }
 

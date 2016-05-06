@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import lsw.library.ColorHelper;
 import lsw.lunar_calendar.R;
 
 /**
@@ -31,7 +32,7 @@ public class LunarDayTextView   extends TextView {
 
     public void setBackground(boolean isSolarTerm) {
         if (isSolarTerm) {
-            this.setTextColor(Color.rgb(255,106,0));
+            this.setTextColor(ColorHelper.getSolarTermColor());
             this.setBackgroundResource(R.drawable.item_border_r);
         } else {
             this.setTextColor(Color.LTGRAY);

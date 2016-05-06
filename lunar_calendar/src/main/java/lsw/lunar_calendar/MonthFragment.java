@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import lsw.library.ColorHelper;
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
@@ -110,6 +111,7 @@ public class MonthFragment extends Fragment {
                     //intent.setPackage("com.example.swli.myapplication20150519");
                     intent.setAction(Intent.ACTION_SEND);
                     String dateExtUri = selectedDate.getFormatDateTime();
+                    //在androidmanifest.xml里面配置的schema
                     intent.setData(Uri.parse("date://" + dateExtUri));
 
                     final List<ResolveInfo> lists = getActivity().getPackageManager().queryIntentActivities(intent, 0);
@@ -171,6 +173,8 @@ public class MonthFragment extends Fragment {
                         preTextView.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
                         if(preDayModel != null && preDayModel.isWeekend())
                             preTextView.setTextColor(Color.RED);
+                        else if(preDayModel != null && preDayModel.isSolarTerm())
+                            preTextView.setTextColor(ColorHelper.getSolarTermColor());
                         else
                             preTextView.setTextColor(Color.BLACK);
                         preDayModel = tempDayModel;

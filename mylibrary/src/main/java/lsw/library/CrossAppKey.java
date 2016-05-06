@@ -8,6 +8,7 @@ import android.os.Environment;
 public class CrossAppKey {
 
     public final static String DateTime = "lunar_calendar_dateTime";
+    public final static String HexagramId = "hexagram_id";
 
     public static final String DB_NAME_HEXAGRAM_NOTE = "liuYaoHexagramNote.db";
     public static final String DB_NAME = "liuYao.db";

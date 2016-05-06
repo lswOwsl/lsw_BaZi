@@ -83,12 +83,12 @@ public class CalendarAdapter extends BaseAdapter {
         }
         DayModel dayModel = dayModels.get(i);
 
-        controls.tvDay.setText(dayModel.isCurrentMonth(),dayModel.isSelected(),dayModel.isToday(),dayModel.isWeekend(), dayModel.getDay());
+        controls.tvDay.setText(dayModel.isCurrentMonth(),dayModel.isSelected(),dayModel.isToday(),dayModel.isWeekend(),dayModel.isSolarTerm(), dayModel.getDay());
         String eraDay = dayModel.getEra_day();
         String c = eraDay.substring(0, 1);
         String t = eraDay.substring(1);
-        controls.tvEraDay.setColorText(c, t, dayModel.isCurrentMonth() && !dayModel.isSolarTerm());
-        controls.tvLunaryDay.setText(dayModel.getLunar_day());
+        controls.tvEraDay.setColorText(c, t, dayModel.isCurrentMonth() && !dayModel.isSolarTerm(), dayModel.isSolarTerm());
+        controls.tvLunaryDay.setText(dayModel.isSolarTerm() ? dayModel.getSolarTermText(): dayModel.getLunar_day());
         controls.tvLunaryDay.setBackground(dayModel.isSolarTerm());
         controls.vDayNotifyPoint.setVisibility(dayModel.isShowNotifyPoint());
 
@@ -181,8 +181,14 @@ public class CalendarAdapter extends BaseAdapter {
                 dayModel.setIsToday(true);
             }
             //当天是不是节气
-            if (st1ForCompare.first.equals(dayShortFormat) || st2ForCompare.first.equals(dayShortFormat)) {
+            if (st1ForCompare.first.equals(dayShortFormat)) {
                 dayModel.setIsSolarTerm(true);
+                dayModel.setSolarTermText(st1ForCompare.second);
+            }
+            if(st2ForCompare.first.equals(dayShortFormat))
+            {
+                dayModel.setIsSolarTerm(true);
+                dayModel.setSolarTermText(st2ForCompare.second);
             }
 
             //获取周几
