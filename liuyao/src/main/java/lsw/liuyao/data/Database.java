@@ -47,7 +47,7 @@ public class Database extends DatabaseManager {
 
     public void openDatabase() {
         FileHelper.createFolder(DB_PATH);
-        super.database = this.openDatabase(DB_PATH + "/" + CrossAppKey.DB_NAME);
+        super.database = this.openDatabase(DB_PATH + "/" + CrossAppKey.DB_NAME_LIUYAO);
     }
 
     private SQLiteDatabase openDatabase(String databaseFile) {

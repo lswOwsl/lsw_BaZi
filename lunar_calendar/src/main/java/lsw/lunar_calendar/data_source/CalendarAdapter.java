@@ -1,6 +1,5 @@
 package lsw.lunar_calendar.data_source;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -13,12 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendarWrapper;
-import lsw.library.LunarSolarTerm;
 import lsw.library.SolarTerm;
 import lsw.lunar_calendar.R;
 import lsw.lunar_calendar.data.DataBase;
@@ -157,7 +154,7 @@ public class CalendarAdapter extends BaseAdapter {
         //查询阳历生日，阴历生日
         //查询当天卦例
 
-        String dataPath = CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME;
+        String dataPath = CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_LIUYAO;
 
         List<String> hasHexagrams = null;
         if(new File(dataPath).exists())

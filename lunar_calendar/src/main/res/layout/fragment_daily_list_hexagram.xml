@@ -2,6 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        android:text="当日卦例" android:gravity="center"
+        android:paddingTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:paddingBottom="3dp" />
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/gray_light"></View>
 <ListView android:id="@+id/lvHexagrams"
     android:layout_width="match_parent"
     android:layout_height="match_parent"></ListView>

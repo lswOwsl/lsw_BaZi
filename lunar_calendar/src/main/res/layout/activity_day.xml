@@ -4,9 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-    <lsw.lunar_calendar.view.DayNotifyPointView android:id="@+id/viewDayNotifyPoint"
-        android:layout_width="match_parent" android:layout_gravity="center"
-        android:layout_height="2dp" android:background="@android:color/holo_purple" />
+    <lsw.lunar_calendar.view.DayNotifyPointView android:layout_marginTop="2dp" android:id="@+id/viewDayNotifyPoint"
+        android:layout_width="15dp" android:layout_gravity="center"
+        android:layout_height="1dp" android:background="@android:color/holo_red_dark" />
 
     <LinearLayout android:layout_marginRight="1dp" android:layout_marginLeft="1dp" android:layout_marginBottom="1dp"
         android:layout_width="wrap_content"
