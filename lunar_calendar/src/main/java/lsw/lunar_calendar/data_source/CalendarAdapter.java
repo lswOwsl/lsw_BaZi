@@ -1,5 +1,6 @@
 package lsw.lunar_calendar.data_source;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
@@ -81,7 +83,7 @@ public class CalendarAdapter extends BaseAdapter {
         }
         DayModel dayModel = dayModels.get(i);
 
-        controls.tvDay.setText(dayModel.isCurrentMonth(),dayModel.isSelected(),dayModel.isToday(),dayModel.getDay());
+        controls.tvDay.setText(dayModel.isCurrentMonth(),dayModel.isSelected(),dayModel.isToday(),dayModel.isWeekend(), dayModel.getDay());
         String eraDay = dayModel.getEra_day();
         String c = eraDay.substring(0, 1);
         String t = eraDay.substring(1);
@@ -100,7 +102,7 @@ public class CalendarAdapter extends BaseAdapter {
         }
         else if(i%7==0)
         {
-            view.setBackgroundResource(R.drawable.gv_border_item_lbr);
+           view.setBackgroundResource(R.drawable.gv_border_item_lbr);
         }
         else {
             view.setBackgroundResource(R.drawable.gv_border_item_rb);
@@ -149,6 +151,7 @@ public class CalendarAdapter extends BaseAdapter {
         String todayForCompare = new DateExt().getFormatDateTime("yyyy-MM-dd");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        //Locale.setDefault(Locale.CHINESE);
         Calendar calendar =  beginDate.getCalendar();
 
         //查询阳历生日，阴历生日
@@ -162,25 +165,40 @@ public class CalendarAdapter extends BaseAdapter {
             hasHexagrams = db.hasHexagramDays(beginDate.getFormatDateTime("yyyy-MM-dd"), new DateExt(beginDate.getDate()).addDays(42).getFormatDateTime("yyyy-MM-dd"));
         }
 
-        for(int i=0;i<42;i++)
-        {
+        //一周第一天是否为星期天
+        boolean isFirstSunday = (calendar.getFirstDayOfWeek() == Calendar.SUNDAY);
+
+        for(int i=0;i<42;i++) {
             calendar.add(Calendar.DAY_OF_YEAR, offsetDay);
             String formatDate = sdf.format(calendar.getTime());
             DayModel dayModel = new DayModel();
-            if(beginMonthForCompare.equals(formatDate.substring(0,7))) {
+            if (beginMonthForCompare.equals(formatDate.substring(0, 7))) {
                 dayModel.setIsCurrentMonth(true);
             }
-            String dayShortFormat = formatDate.substring(0,10);
+            String dayShortFormat = formatDate.substring(0, 10);
             //是不是当天
-            if(todayForCompare.equals(dayShortFormat))
-            {
+            if (todayForCompare.equals(dayShortFormat)) {
                 dayModel.setIsToday(true);
             }
             //当天是不是节气
-            if(st1ForCompare.first.equals(dayShortFormat) || st2ForCompare.first.equals(dayShortFormat))
-            {
+            if (st1ForCompare.first.equals(dayShortFormat) || st2ForCompare.first.equals(dayShortFormat)) {
                 dayModel.setIsSolarTerm(true);
             }
+
+            //获取周几
+            int weekDay = calendar.get(Calendar.DAY_OF_WEEK);
+            //若一周第一天为星期天，则-1
+            if(isFirstSunday){
+                weekDay = weekDay - 1;
+                if(weekDay == 0 || weekDay == 6)
+                    dayModel.setIsWeekend(true);
+            }
+            else
+            {
+                if(weekDay == 7 || weekDay == 6)
+                    dayModel.setIsWeekend(true);
+            }
+
             dayModel.setDay(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)));
             dayModel.setFormatDate(formatDate);
             dayModel.setEra_day(lunarCalendarWrapper.toStringWithSexagenary(getEraDayIndex(eraDayIndex, offsetDay)));
@@ -188,17 +206,18 @@ public class CalendarAdapter extends BaseAdapter {
             calendar.add(Calendar.DAY_OF_YEAR, -offsetDay);
 
             //是不是默认选中的天
-            if(selectedDayForCompare.equals(dayShortFormat)){
+            if (selectedDayForCompare.equals(dayShortFormat)) {
                 dayModel.setIsSelected(true);
             }
-            else
-            {
+            //查询当天是不是存在卦例
+            if (hasHexagrams != null && hasHexagrams.size() > 0) {
                 String dateTemp = dayModel.getDateExt().getFormatDateTime("yyyy-MM-dd");
-                if(hasHexagrams.contains(dateTemp))
+                if (hasHexagrams.contains(dateTemp))
                     dayModel.setShowNotifyPoint(true);
             }
 
-            offsetDay ++;
+
+            offsetDay++;
             listDays.add(dayModel);
             //Log.d("lsw month date time", formatDate);
         }

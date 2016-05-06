@@ -66,12 +66,16 @@ public class MonthFragment extends Fragment {
 
     TextView preTextView, todayTextView;
 
+    DayModel preDayModel;
+
     @Override
     public void onHiddenChanged(boolean hidden)
     {
         //????????¡®??¡§??¡¤?¨C¡ã????????¡­???¨¨????¡è????????????¨¦?????line92??¡è??????????????¡¤???¨¦¡ª?¨¦??
-        if(!hidden)
+        if(!hidden) {
             preTextView = todayTextView = null;
+            preDayModel = null;
+        }
     }
 
     ResolveInfo resolveInfoForInvoke = null;
@@ -153,17 +157,23 @@ public class MonthFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
+                DayModel tempDayModel = calendarAdapter.getDayModels().get(i);
+                DateExt selectedDate = tempDayModel.getDateExt();
                 TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
 
                 //???????????¡ë?????¡°?¡ë?????????¡­????????????¨¦?¡ë????????¡ì???
                 if (dateExt.getMonth() != selectedDate.getMonth()) {
                     preTextView = todayTextView = null;
+                    preDayModel = null;
                 } else {
                     //??¡°?¡ë????????????¡ë?????¡ë?????????¨¦?¡ë???????¡è?
                     if (preTextView != null) {
                         preTextView.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
-                        preTextView.setTextColor(Color.BLACK);
+                        if(preDayModel != null && preDayModel.isWeekend())
+                            preTextView.setTextColor(Color.RED);
+                        else
+                            preTextView.setTextColor(Color.BLACK);
+                        preDayModel = tempDayModel;
                     } else {
                         //??¡­???¨¨¡¤?¨¨?????¨¦??¨¨?¡è¨¦?¡ë???????¡ª????
                         int seletedTextViewIndex = 0;
@@ -173,7 +183,10 @@ public class MonthFragment extends Fragment {
                                 View view1 = adapterView.getChildAt(seletedTextViewIndex);
                                 TextView tvDay1 = (TextView) view1.findViewById(R.id.tvDay);
                                 tvDay1.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
-                                tvDay1.setTextColor(Color.BLACK);
+                                if(!dayModel.isWeekend())
+                                    tvDay1.setTextColor(Color.BLACK);
+                                else
+                                    tvDay1.setTextColor(Color.RED);
                                 break;
                             }
                             seletedTextViewIndex++;
@@ -209,6 +222,7 @@ public class MonthFragment extends Fragment {
                     tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
                     tvDay.setTextColor(Color.WHITE);
                     preTextView = tvDay;
+                    preDayModel = tempDayModel;
                 }
 
                 if (mListener != null) {

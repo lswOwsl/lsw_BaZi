@@ -15,6 +15,16 @@ public class DayModel {
     private boolean isToday;
     private boolean isSelected;
     private boolean isSolarTerm;
+    private boolean isWeekend;
+
+    public boolean isWeekend() {
+        return isWeekend;
+    }
+
+    public void setIsWeekend(boolean isWeekend) {
+        this.isWeekend = isWeekend;
+    }
+
     private boolean showNotifyPoint;
 
     public boolean isShowNotifyPoint() {

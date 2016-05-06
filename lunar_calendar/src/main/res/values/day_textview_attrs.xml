@@ -4,5 +4,6 @@
         <attr name="IsCurrentMonth" format="boolean"/>
         <attr name="IsCurrentSelected" format="boolean"/>
         <attr name="IsToday" format="boolean"/>
+        <attr name="IsWeekend" format="boolean"/>
     </declare-styleable>
 </resources>
