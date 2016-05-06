@@ -15,8 +15,8 @@ android {
 
     defaultConfig {
         applicationId "lsw.lunar_calendar"
-        minSdkVersion 15
-        targetSdkVersion 22
+        minSdkVersion 17
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -35,13 +35,13 @@ android {
 }
 
 dependencies {
-    compile 'net.simonvt.menudrawer:menudrawer:3.0.6'
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':mylibrary')
-    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:support-v4:19+'
 
     compile project(':baidu_appx_android_2.0.0')
     compile project(':baidu_cuid')
 
-
+    compile 'net.simonvt.menudrawer:menudrawer:3.0.6'
 }

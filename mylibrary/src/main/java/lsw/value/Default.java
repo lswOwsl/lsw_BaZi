@@ -136,7 +136,7 @@ public class Default {
             hexagrams.add(createHexagram(56, "比", "水", "地", false, "坤", "||", "||", "||", "||", "|", "||", 3, 6));
             hexagrams.add(createHexagram(57, "兑", "泽", "泽", false, "兑", "|", "|", "||", "|", "|", "||", 6, 3));
             hexagrams.add(createHexagram(58, "困", "泽", "水", false, "兑", "||", "|", "||", "|", "|", "||", 1, 4));
-            hexagrams.add(createHexagram(59, "翠", "泽", "地", false, "兑", "||", "||", "||", "|", "|", "||", 2, 5));
+            hexagrams.add(createHexagram(59, "萃", "泽", "地", false, "兑", "||", "||", "||", "|", "|", "||", 2, 5));
             hexagrams.add(createHexagram(60, "咸", "泽", "山", false, "兑", "||", "||", "|", "|", "|", "||", 3, 6));
             hexagrams.add(createHexagram(61, "蹇", "水", "山", false, "兑", "||", "||", "|", "||", "|", "||", 4, 1));
             hexagrams.add(createHexagram(62, "谦", "地", "山", false, "兑", "||", "||", "|", "||", "||", "||", 5, 2));

@@ -31,8 +31,6 @@ import lsw.lunar_calendar.data_source.CalendarTitleAdapter;
 
 import net.simonvt.menudrawer.MenuDrawer;
 
-
-
 public class Month extends Activity implements MonthFragment.OnFragmentInteractionListener {
 
     //private GridView gridView;
