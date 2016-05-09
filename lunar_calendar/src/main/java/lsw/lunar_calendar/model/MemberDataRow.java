@@ -13,6 +13,15 @@ public class MemberDataRow {
     private String name;
     private DateExt birthday;
     private boolean isMale;
+    private boolean isLunarBirthday;
+
+    public boolean isLunarBirthday() {
+        return isLunarBirthday;
+    }
+
+    public void setIsLunarBirthday(boolean isLunarBirthday) {
+        this.isLunarBirthday = isLunarBirthday;
+    }
 
     public int getId() {
         return id;

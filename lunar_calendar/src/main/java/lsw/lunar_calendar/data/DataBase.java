@@ -152,6 +152,7 @@ public class DataBase extends DatabaseManager {
                     dateLunar.getIsLeapMonth() == tempDateLunar.getIsLeapMonth())
             {
                 MemberDataRow memberDataRow = createMemberDataRowByCursor(cur);
+                memberDataRow.setIsLunarBirthday(true);
                 list.add(memberDataRow);
             }
         }

@@ -3,6 +3,7 @@ package lsw.lunar_calendar.data_source;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import lsw.library.ColorHelper;
 import lsw.lunar_calendar.R;
 import lsw.lunar_calendar.model.MemberDataRow;
 
@@ -70,6 +72,8 @@ public class MemberListAdapter extends BaseAdapter {
         controls.tvLunarBirthday.setText("阴历：" + member.getLunarBirthday());
         controls.tvBirthday.setText("阳历：" + member.getBirthday().getFormatDateTime());
 
+        if(member.isLunarBirthday())
+            controls.tvLunarBirthday.setBackgroundColor(Color.LTGRAY);
 
         return view;
     }
