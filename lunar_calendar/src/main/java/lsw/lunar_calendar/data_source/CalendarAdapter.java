@@ -15,6 +15,7 @@ import java.util.List;
 
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
+import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.SolarTerm;
 import lsw.lunar_calendar.R;
@@ -168,10 +169,14 @@ public class CalendarAdapter extends BaseAdapter {
 
         String dataPathBaZi = CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI;
         List<String> hasMemebers = null;
+        List<DateLunar> hasLunarMembers = null;
         if(new File(dataPathBaZi).exists())
         {
             hasMemebers = db.getBirthdayByMonth(beginDate.getFormatDateTime("MM"));
+            hasLunarMembers = db.getLunarBithdayByMonth(beginDate);
         }
+
+
 
         //一周第一天是否为星期天
         boolean isFirstSunday = (calendar.getFirstDayOfWeek() == Calendar.SUNDAY);
@@ -216,7 +221,8 @@ public class CalendarAdapter extends BaseAdapter {
             dayModel.setDay(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)));
             dayModel.setFormatDate(formatDate);
             dayModel.setEra_day(lunarCalendarWrapper.toStringWithSexagenary(getEraDayIndex(eraDayIndex, offsetDay)));
-            dayModel.setLunar_day(lunarCalendarWrapper.toStringWithChineseDay(lunarCalendarWrapper.getDateLunar(calendar).getLunarDay()));
+            DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(calendar);
+            dayModel.setLunar_day(lunarCalendarWrapper.toStringWithChineseDay(tempDateLunar.getLunarDay()));
             calendar.add(Calendar.DAY_OF_YEAR, -offsetDay);
 
             //是不是默认选中的天
@@ -235,6 +241,19 @@ public class CalendarAdapter extends BaseAdapter {
             {
                 if(hasMemebers.contains(dateTemp.substring(5,10)))
                     dayModel.setShowNotifyPointBottom(true);
+            }
+
+            if(hasLunarMembers != null && hasLunarMembers.size()>0)
+            {
+                for(DateLunar dateLunar: hasLunarMembers)
+                {
+                    if(dateLunar.getIsLeapMonth() == tempDateLunar.getIsLeapMonth() &&
+                            dateLunar.getLunarMonth() == tempDateLunar.getLunarMonth() &&
+                            dateLunar.getLunarDay() == tempDateLunar.getLunarDay())
+                    {
+                        dayModel.setShowNotifyPointBottom(true);
+                    }
+                }
             }
 
             offsetDay++;

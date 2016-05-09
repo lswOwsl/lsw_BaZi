@@ -23,23 +23,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:layout_alignParentBottom="true">
         <TextView
-            android:layout_weight="1"
-            android:id="@+id/tvYangLiBirthday"
+            android:id="@+id/tvAllBirthday"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_margin="3dp"
             android:layout_height="wrap_content"
-            android:text="本月阳历生日"
-            android:textColor="@color/white"
-            android:background="@drawable/button_flatten"/>
-        <TextView
-            android:layout_weight="1"
-            android:id="@+id/tvYinLiBirthday"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_margin="3dp"
-            android:layout_height="wrap_content"
-            android:text="本月阴历生日"
+            android:text="本月全部生日"
             android:textColor="@color/white"
             android:background="@drawable/button_flatten"/>
     </LinearLayout>

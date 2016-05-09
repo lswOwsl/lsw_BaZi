@@ -11,6 +11,8 @@ import java.util.List;
 import lsw.library.CrossAppKey;
 import lsw.library.DatabaseManager;
 import lsw.library.DateExt;
+import lsw.library.DateLunar;
+import lsw.library.LunarCalendarWrapper;
 import lsw.lunar_calendar.model.HexagramDataRow;
 import lsw.lunar_calendar.model.MemberDataRow;
 
@@ -116,6 +118,74 @@ public class DataBase extends DatabaseManager {
 
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             list.add(createMemberDataRowByCursor(cur));
+        }
+
+        cur.close();
+        dbBaZi.close();
+
+        return list;
+    }
+
+    public List<MemberDataRow> getLunarBithdayByDay(DateExt dateExt)
+    {
+        openDatabaseBaZi();
+
+        List<MemberDataRow> list = new ArrayList<MemberDataRow>();
+        String[] params = new String[]{};
+
+        String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
+        String currentMonth = dateExt.getFormatDateTime("MM");
+        String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
+        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+        DateLunar dateLunar = lunarCalendarWrapper.getDateLunar();
+
+        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('"+beforeMonth+"','"+currentMonth+"','"+afterMonth+"') Order By Birthday_Refactor ASC";
+        Cursor cur = dbBaZi.rawQuery(sql,params);
+
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+            String birthdayStr = cur.getString(birthdayIndex);
+            DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
+            DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
+            if(dateLunar.getLunarDay() == tempDateLunar.getLunarDay() &&
+                    dateLunar.getLunarMonth() == tempDateLunar.getLunarMonth() &&
+                    dateLunar.getIsLeapMonth() == tempDateLunar.getIsLeapMonth())
+            {
+                MemberDataRow memberDataRow = createMemberDataRowByCursor(cur);
+                list.add(memberDataRow);
+            }
+        }
+
+        cur.close();
+        dbBaZi.close();
+
+        return list;
+    }
+
+
+    public List<DateLunar> getLunarBithdayByMonth(DateExt dateExt)
+    {
+        openDatabaseBaZi();
+
+        List<DateLunar> list = new ArrayList<DateLunar>();
+        String[] params = new String[]{};
+
+        String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
+        String currentMonth = dateExt.getFormatDateTime("MM");
+        String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
+
+        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('"+beforeMonth+"','"+currentMonth+"','"+afterMonth+"') Order By Birthday_Refactor ASC";
+        Cursor cur = dbBaZi.rawQuery(sql,params);
+
+        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+            String birthdayStr = cur.getString(birthdayIndex);
+            DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
+            DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
+
+            list.add(tempDateLunar);
         }
 
         cur.close();

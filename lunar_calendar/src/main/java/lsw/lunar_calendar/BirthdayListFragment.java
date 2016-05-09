@@ -11,6 +11,7 @@ import android.widget.ListView;
 import java.util.List;
 
 import lsw.library.DateExt;
+import lsw.library.LunarCalendarWrapper;
 import lsw.lunar_calendar.data.DataBase;
 import lsw.lunar_calendar.data_source.MemberListAdapter;
 import lsw.lunar_calendar.model.MemberDataRow;
@@ -48,7 +49,11 @@ public class BirthdayListFragment extends Fragment {
 
         DataBase dataBase = new DataBase();
 
-        final List<MemberDataRow> list = dataBase.getBirthdayByDay(new DateExt(date, "yyyy-MM-dd").getFormatDateTime("MM-dd"));
+        DateExt tempDate = new DateExt(date, "yyyy-MM-dd");
+
+        List<MemberDataRow> list = dataBase.getBirthdayByDay(tempDate.getFormatDateTime("MM-dd"));
+        List<MemberDataRow> listLunar = dataBase.getLunarBithdayByDay(tempDate);
+        list.addAll(listLunar);
 
         ListView lv = (ListView)view.findViewById(R.id.lvBirthday);
         lv.setAdapter(new MemberListAdapter(getActivity(), list));
