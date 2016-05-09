@@ -1,7 +1,9 @@
 package lsw.lunar_calendar.data;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,21 @@ public class DataBase extends DatabaseManager {
         dbLiuYao = SQLiteDatabase.openOrCreateDatabase(CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_LIUYAO,null);
     }
 
+    public void setBaZiDatabase(SQLiteDatabase sqLiteDatabase)
+    {
+        dbBaZi = sqLiteDatabase;
+    }
+
     public void openDatabaseBaZi()
     {
-        dbBaZi = SQLiteDatabase.openOrCreateDatabase(CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI,null);
+        try {
+
+            dbBaZi = SQLiteDatabase.openOrCreateDatabase(CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI, null);
+        }
+        catch (Exception ex)
+        {
+            Log.d("database open", ex.getMessage());
+        }
     }
 
     public List<String> hasHexagramDays(String beginDate, String endDate)
@@ -90,18 +104,40 @@ public class DataBase extends DatabaseManager {
         return hexagramRow;
     }
 
-    public List<MemberDataRow> getMonthBirthday(String monthDay)
+    public List<MemberDataRow> getBirthdayByDay(String day)
     {
         openDatabaseBaZi();
 
         List<MemberDataRow> list = new ArrayList<MemberDataRow>();
         String[] params = new String[]{};
 
-        String sql = "SELECT * FROM Members where strftime('%m-%d',Birthday_Refactor) = '"+monthDay+"' Order By Birthday_Refactor ASC";
+        String sql = "SELECT * FROM Members where strftime('%m-%d',Birthday_Refactor) = '"+day+"' Order By Birthday_Refactor ASC";
         Cursor cur = dbBaZi.rawQuery(sql,params);
 
         for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
             list.add(createMemberDataRowByCursor(cur));
+        }
+
+        cur.close();
+        dbBaZi.close();
+
+        return list;
+    }
+
+    public List<String> getBirthdayByMonth(String month)
+    {
+        openDatabaseBaZi();
+
+        List<String> list = new ArrayList<String>();
+        String[] params = new String[]{};
+
+        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) = '"+month+"' Order By Birthday_Refactor ASC";
+        Cursor cur = dbBaZi.rawQuery(sql,params);
+
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+            String birthdayStr = cur.getString(birthdayIndex);
+            list.add(birthdayStr.substring(5,10));
         }
 
         cur.close();

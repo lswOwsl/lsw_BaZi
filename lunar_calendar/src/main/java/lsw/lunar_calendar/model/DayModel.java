@@ -37,6 +37,16 @@ public class DayModel {
 
     private boolean showNotifyPoint;
 
+    public boolean isShowNotifyPointBottom() {
+        return showNotifyPointBottom;
+    }
+
+    public void setShowNotifyPointBottom(boolean showNotifyPointBottom) {
+        this.showNotifyPointBottom = showNotifyPointBottom;
+    }
+
+    private boolean showNotifyPointBottom;
+
     public boolean isShowNotifyPoint() {
         return showNotifyPoint;
     }

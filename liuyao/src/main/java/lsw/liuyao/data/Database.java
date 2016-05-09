@@ -35,8 +35,6 @@ import lsw.utility.FileHelper;
  */
 public class Database extends DatabaseManager {
 
-    public static final String DB_PATH = Environment.getExternalStorageDirectory() + "/" + CrossAppKey.PACKAGE_NAME_LIUYAO;
-
     private Context context;
 
     private SQLiteDatabase databaseHexagramNote;
@@ -46,8 +44,8 @@ public class Database extends DatabaseManager {
     }
 
     public void openDatabase() {
-        FileHelper.createFolder(DB_PATH);
-        super.database = this.openDatabase(DB_PATH + "/" + CrossAppKey.DB_NAME_LIUYAO);
+        FileHelper.createFolder(CrossAppKey.DB_PATH_LIUYAO);
+        super.database = this.openDatabase(CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_LIUYAO);
     }
 
     private SQLiteDatabase openDatabase(String databaseFile) {
@@ -59,7 +57,7 @@ public class Database extends DatabaseManager {
         //加载64卦数据库
         int resourceIdHexagramNote = R.raw.sixty_four_hexagrams_note;
         InputStream isNote = this.context.getResources().openRawResource(resourceIdHexagramNote);
-        databaseHexagramNote = super.openDatabase(DB_PATH + "/" + CrossAppKey.DB_NAME_HEXAGRAM_NOTE, isNote);
+        databaseHexagramNote = super.openDatabase(CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_HEXAGRAM_NOTE, isNote);
 
         return super.openDatabase(databaseFile,is);
     }

@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import lsw.utility.FileHelper;
+
 /**
  * Created by swli on 8/3/2015.
  */
@@ -36,10 +38,12 @@ public class DatabaseManager {
     protected SQLiteDatabase openDatabase(String databaseFile, InputStream resource) {
 
         try {
+            FileHelper.createFolder(CrossAppKey.DB_PATH_BAZI);
             if (!(new File(databaseFile).exists())) {
                 //判断数据库文件是否存在，若不存在则执行导入，否则直接打开数据库
                 InputStream is = resource; //欲导入的数据库
                 FileOutputStream fos = new FileOutputStream(databaseFile);
+
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int count = 0;
                 while ((count = is.read(buffer)) > 0) {

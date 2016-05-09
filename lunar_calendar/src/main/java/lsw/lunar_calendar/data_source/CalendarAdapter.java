@@ -20,6 +20,7 @@ import lsw.library.SolarTerm;
 import lsw.lunar_calendar.R;
 import lsw.lunar_calendar.data.DataBase;
 import lsw.lunar_calendar.model.DayModel;
+import lsw.lunar_calendar.model.MemberDataRow;
 import lsw.lunar_calendar.view.DayNotifyPointView;
 import lsw.lunar_calendar.view.DayTextView;
 import lsw.lunar_calendar.view.EraDayTextView;
@@ -74,6 +75,7 @@ public class CalendarAdapter extends BaseAdapter {
             controls.tvLunaryDay = (LunarDayTextView) view.findViewById(R.id.tvLunarDay);
             controls.tvEraDay = (EraDayTextView)view.findViewById(R.id.tvEraDay);
             controls.vDayNotifyPoint = (DayNotifyPointView)view.findViewById(R.id.viewDayNotifyPoint);
+            controls.vDayNotifyPointBottom = (DayNotifyPointView)view.findViewById(R.id.viewDayNotifyPointBottom);
             view.setTag(controls);
         } else {
             controls = (ItemHolder) view.getTag();
@@ -85,9 +87,10 @@ public class CalendarAdapter extends BaseAdapter {
         String c = eraDay.substring(0, 1);
         String t = eraDay.substring(1);
         controls.tvEraDay.setColorText(c, t, dayModel.isCurrentMonth() && !dayModel.isSolarTerm(), dayModel.isSolarTerm());
-        controls.tvLunaryDay.setText(dayModel.isSolarTerm() ? dayModel.getSolarTermText(): dayModel.getLunar_day());
+        controls.tvLunaryDay.setText(dayModel.isSolarTerm() ? dayModel.getSolarTermText() : dayModel.getLunar_day());
         controls.tvLunaryDay.setBackground(dayModel.isSolarTerm());
         controls.vDayNotifyPoint.setVisibility(dayModel.isShowNotifyPoint());
+        controls.vDayNotifyPointBottom.setVisibility(dayModel.isShowNotifyPointBottom());
 
 
         if(i == 0) {
@@ -113,6 +116,7 @@ public class CalendarAdapter extends BaseAdapter {
         public EraDayTextView tvEraDay;
         public DayTextView tvDay;
         public DayNotifyPointView vDayNotifyPoint;
+        public DayNotifyPointView vDayNotifyPointBottom;
     }
 
     public static List<DayModel> getOneMonthDays(DateExt dateExt)
@@ -160,6 +164,13 @@ public class CalendarAdapter extends BaseAdapter {
         if(new File(dataPath).exists())
         {
             hasHexagrams = db.hasHexagramDays(beginDate.getFormatDateTime("yyyy-MM-dd"), new DateExt(beginDate.getDate()).addDays(42).getFormatDateTime("yyyy-MM-dd"));
+        }
+
+        String dataPathBaZi = CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI;
+        List<String> hasMemebers = null;
+        if(new File(dataPathBaZi).exists())
+        {
+            hasMemebers = db.getBirthdayByMonth(beginDate.getFormatDateTime("MM"));
         }
 
         //一周第一天是否为星期天
@@ -212,13 +223,19 @@ public class CalendarAdapter extends BaseAdapter {
             if (selectedDayForCompare.equals(dayShortFormat)) {
                 dayModel.setIsSelected(true);
             }
+
+            String dateTemp = dayModel.getDateExt().getFormatDateTime("yyyy-MM-dd");
             //查询当天是不是存在卦例
             if (hasHexagrams != null && hasHexagrams.size() > 0) {
-                String dateTemp = dayModel.getDateExt().getFormatDateTime("yyyy-MM-dd");
                 if (hasHexagrams.contains(dateTemp))
                     dayModel.setShowNotifyPoint(true);
             }
 
+            if(hasMemebers != null && hasMemebers.size() > 0)
+            {
+                if(hasMemebers.contains(dateTemp.substring(5,10)))
+                    dayModel.setShowNotifyPointBottom(true);
+            }
 
             offsetDay++;
             listDays.add(dayModel);

@@ -1,6 +1,8 @@
 package lsw.lunar_calendar.model;
 
 import lsw.library.DateExt;
+import lsw.library.DateLunar;
+import lsw.library.LunarCalendarWrapper;
 
 /**
  * Created by swli on 5/6/2016.
@@ -42,5 +44,22 @@ public class MemberDataRow {
 
     public void setIsMale(boolean isMale) {
         this.isMale = isMale;
+    }
+
+    public String getLunarBirthday()
+    {
+        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(getBirthday());
+        DateLunar dateLunar = lunarCalendarWrapper.getDateLunar(this.getBirthday());
+        if(dateLunar != null) {
+
+            return lunarCalendarWrapper.toStringWithChineseYear(dateLunar.getLunarYear()) + "年" +
+                    (dateLunar.getIsLeapMonth() ? "闰":"") +
+                    lunarCalendarWrapper.toStringWithChineseMonth(dateLunar.getLunarMonth()) + "月" +
+                    lunarCalendarWrapper.toStringWithChineseDay(dateLunar.getLunarDay());
+        }
+        else
+        {
+            return "";
+        }
     }
 }

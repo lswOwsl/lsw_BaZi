@@ -2,7 +2,10 @@ package lsw.lunar_calendar;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Pair;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import lsw.ContactAuthor;
 import lsw.PhotoImagesFullSizeFragment;
 import lsw.library.ColorHelper;
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
@@ -34,6 +38,8 @@ import lsw.utility.Image.SourceImage;
 
 import net.simonvt.menudrawer.MenuDrawer;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
 public class Month extends Activity implements MonthFragment.OnFragmentInteractionListener {
@@ -224,8 +230,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     private void loadSolarTerms(LunarCalendarWrapper lunarCalendarWrapper)
     {
         Pair<SolarTerm,SolarTerm> solarTermPair = lunarCalendarWrapper.getPairSolarTerm();
-        tvSolarTerm1.setText(solarTermPair.first.getName() + ": "+ solarTermPair.first.getSolarTermDate().getFormatDateTime("MM月dd日 HH:mm"));
-        tvSolarTerm2.setText(solarTermPair.second.getName() + ": "+ solarTermPair.second.getSolarTermDate().getFormatDateTime("MM月dd日 HH:mm"));
+        tvSolarTerm1.setText(solarTermPair.first.getName() + ": " + solarTermPair.first.getSolarTermDate().getFormatDateTime("MM月dd日 HH:mm"));
+        tvSolarTerm2.setText(solarTermPair.second.getName() + ": " + solarTermPair.second.getSolarTermDate().getFormatDateTime("MM月dd日 HH:mm"));
     }
 
     private void setEraTextDetail(TextView tv, int eraIndex)
@@ -293,33 +299,25 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         boolean flag = true;
         boolean willChange = false;
 
-        if (initialDate.getYear() == dateExt.getYear())
-        {
-            if(initialDate.getMonth() > dateExt.getMonth())
-            {
+        if (initialDate.getYear() == dateExt.getYear()) {
+            if (initialDate.getMonth() > dateExt.getMonth()) {
                 willChange = true;
                 flag = false;
-            }
-            else if(initialDate.getMonth() < dateExt.getMonth())
-            {
+            } else if (initialDate.getMonth() < dateExt.getMonth()) {
                 willChange = true;
                 flag = true;
             }
-        }
-        else
-        {
-            if(initialDate.getYear() > dateExt.getYear())
-            {
+        } else {
+            if (initialDate.getYear() > dateExt.getYear()) {
                 willChange = true;
                 flag = false;
-            }
-            else {
+            } else {
                 willChange = true;
                 flag = true;
             }
         }
 
-        if(willChange) {
+        if (willChange) {
             loadFragment(dateExt, willChange && flag);
         }
         initialDate = dateExt;
@@ -327,6 +325,10 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         FragmentTransaction ftt = getFragmentManager().beginTransaction();
         HexagramListFragment fragment = HexagramListFragment.newInstance(initialDate);
         ftt.replace(R.id.fl_list, fragment, null);
+
+        BirthdayListFragment birthdayListFragment = BirthdayListFragment.newInstance(initialDate);
+        ftt.replace(R.id.fl_list_birthday, birthdayListFragment, null);
+
         ftt.commit();
     }
 
@@ -346,6 +348,9 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
         HexagramListFragment fragment = HexagramListFragment.newInstance(initialDate);
         ft.replace(R.id.fl_list, fragment, null);
+
+        BirthdayListFragment birthdayListFragment = BirthdayListFragment.newInstance(initialDate);
+        ft.replace(R.id.fl_list_birthday, birthdayListFragment, null);
 
         ft.commit();
     }

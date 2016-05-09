@@ -52,8 +52,8 @@
             era:TerrestrialText="子"/>
     </LinearLayout>
 
-    <!--<lsw.lunar_calendar.view.DayNotifyPointView -->
-        <!--android:layout_width="10dp" android:layout_gravity="center"-->
-        <!--android:layout_height="4dp" android:background="@android:color/holo_orange_light"-->
-        <!--android:layout_marginBottom="2dp"/>-->
+    <lsw.lunar_calendar.view.DayNotifyPointView android:id="@+id/viewDayNotifyPointBottom"
+        android:layout_width="15dp" android:layout_gravity="center"
+        android:layout_height="1dp" android:background="@android:color/holo_orange_dark"
+        android:layout_marginBottom="2dp"/>
 </LinearLayout>
