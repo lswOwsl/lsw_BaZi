@@ -80,6 +80,11 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         mDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
             @Override
             public void onDrawerStateChange(int oldState, int newState) {
+                if(newState == MenuDrawer.STATE_CLOSED) {
+                    loadBirthdayAndHexagram(null);
+                    flHexagrams.setVisibility(View.VISIBLE);
+                    tvAllBirthday.setText("本月全部生日");
+                }
 
             }
 
