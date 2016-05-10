@@ -53,7 +53,7 @@ public class MemberListAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         Controls controls;
-        if (view == null) {
+//        if (view == null) {
             controls = new Controls();
 
             view = layoutInflater.inflate(R.layout.birthday_list_item, null);
@@ -63,9 +63,9 @@ public class MemberListAdapter extends BaseAdapter {
             controls.tvLunarBirthday = (TextView) view.findViewById(R.id.tvLunarBirthday);
 
             view.setTag(controls);
-        } else {
-            controls = (Controls) view.getTag();
-        }
+//        } else {
+//            controls = (Controls) view.getTag();
+//        }
         final MemberDataRow member = data.get(i);
         controls.tvName.setText(member.getName().trim());
         controls.tvGender.setText("性别：" + (member.isMale() ? "男":"女"));

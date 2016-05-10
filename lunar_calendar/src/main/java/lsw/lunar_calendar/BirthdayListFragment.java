@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lsw.library.DateExt;
-import lsw.library.LunarCalendarWrapper;
 import lsw.lunar_calendar.data.DataBase;
 import lsw.lunar_calendar.data_source.MemberListAdapter;
 import lsw.lunar_calendar.model.MemberDataRow;
@@ -34,6 +34,15 @@ public class BirthdayListFragment extends Fragment {
     public BirthdayListFragment() {
     }
 
+    private boolean forCurrentMonth;
+
+    public boolean isForCurrentMonth() {
+        return forCurrentMonth;
+    }
+
+    public void setForCurrentMonth(boolean forCurrentMonth) {
+        this.forCurrentMonth = forCurrentMonth;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,12 +60,38 @@ public class BirthdayListFragment extends Fragment {
 
         DateExt tempDate = new DateExt(date, "yyyy-MM-dd");
 
-        List<MemberDataRow> list = dataBase.getBirthdayByDay(tempDate.getFormatDateTime("MM-dd"));
-        List<MemberDataRow> listLunar = dataBase.getLunarBithdayByDay(tempDate);
-        list.addAll(listLunar);
+        List<MemberDataRow> result = new ArrayList<MemberDataRow>();
+        List<MemberDataRow> list = null;
+        List<MemberDataRow> listLunar = null;
+        if(isForCurrentMonth())
+        {
+            list = dataBase.getBirthdayDataRowsByMonth(tempDate.getFormatDateTime("MM"));
+            listLunar = dataBase.getLunarBithdayDataRowsByMonth(tempDate);
+        } else {
+            list = dataBase.getBirthdayByDay(tempDate.getFormatDateTime("MM-dd"));
+            listLunar = dataBase.getLunarBithdayByDay(tempDate);
+        }
+
+        result.addAll(list);
+
+        for (MemberDataRow dataRow : listLunar) {
+            boolean hasRecord = false;
+            for (MemberDataRow dataRow1 : list) {
+
+                if (dataRow1.getName().equals(dataRow.getName()) &&
+                        dataRow.isMale() == dataRow1.isMale() &&
+                        dataRow1.getBirthday().getFormatDateTime().equals(dataRow.getBirthday().getFormatDateTime())) {
+                    hasRecord = true;
+                    break;
+                }
+            }
+
+            if(!hasRecord)
+                result.add(dataRow);
+        }
 
         ListView lv = (ListView)view.findViewById(R.id.lvBirthday);
-        lv.setAdapter(new MemberListAdapter(getActivity(), list));
+        lv.setAdapter(new MemberListAdapter(getActivity(), result));
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
