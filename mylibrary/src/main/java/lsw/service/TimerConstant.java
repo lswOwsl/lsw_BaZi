@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.service;
+package lsw.service;
 
 /**
  * Created by swli on 6/26/2015.

@@ -1,12 +1,15 @@
 package com.example.swli.myapplication20150519;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -44,6 +47,8 @@ import java.util.List;
 
 import lsw.ContactAuthor;
 import lsw.library.DateExt;
+import lsw.service.TimerConstant;
+import lsw.service.TimerReceiver;
 
 /**
  * Created by swli on 5/27/2015.
@@ -147,15 +152,15 @@ public class MemberHome extends Activity implements SearchView.OnQueryTextListen
 
     private void initTimerService()
     {
-       // IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
-        //TimerReceiver receiver = new TimerReceiver();
-        //registerReceiver(receiver, filter);
+        IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
+        TimerReceiver receiver = new TimerReceiver();
+        registerReceiver(receiver, filter);
 
-//        Intent intent = new Intent(this, TimerReceiver.class);
-//        intent.setAction(TimerConstant.Send_Message);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
-//        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-//        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), INTERVAL_10s, pendingIntent);
+        Intent intent = new Intent(this, TimerReceiver.class);
+        intent.setAction(TimerConstant.Send_Message);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0,intent,0);
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), INTERVAL_10s, pendingIntent);
     }
 
     int mSortMode = -1;

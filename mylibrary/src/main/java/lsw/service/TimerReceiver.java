@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.service;
+package lsw.service;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -19,10 +19,10 @@ public class TimerReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
 
             //检查Service状态
-
+            String name =  TimerService.class.getName();
             ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-                if ("com.example.swli.myapplication20150519.service.TimerService".equals(service.service.getClassName()))
+                if (name.equals(service.service.getClassName()))
 
                 {
                     isServiceRunning = true;

@@ -1,4 +1,4 @@
-package com.example.swli.myapplication20150519.service;
+package lsw.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,12 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.example.swli.myapplication20150519.MemberHome;
 
 /**
  * Created by swli on 6/26/2015.
  */
-public class TimerService extends Service {
+public abstract class TimerService extends Service {
 
 
     @Override
@@ -27,8 +26,10 @@ public class TimerService extends Service {
         int NOTIFICATION_FLAG = 1;
         //Context context = TimerService.this;
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        PendingIntent pendingIntent3 = PendingIntent.getActivity(this, 0,
+//                new Intent(this, MemberHome.class), 0);
         PendingIntent pendingIntent3 = PendingIntent.getActivity(this, 0,
-                new Intent(this, MemberHome.class), 0);
+                getIntent(), 0);
         // 通过Notification.Builder来创建通知，注意API Level
         // API16之后才支持
         Notification notify3 = new Notification.Builder(this)
@@ -52,4 +53,5 @@ public class TimerService extends Service {
        super.onDestroy();
     }
 
+    public abstract Intent getIntent();
 }
