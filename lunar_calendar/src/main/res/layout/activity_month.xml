@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvDateSelect"
@@ -20,22 +20,23 @@
             android:background="@drawable/button_flatten"
             android:gravity="center"
             android:text="2015年7月25日 19:50"
+            android:textSize="20dp" android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/tvLunarDateSelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_flatten"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="二零一五年六月十一"
             android:textSize="20dp" />
 
     </LinearLayout>
 
-    <TextView
-        android:layout_marginBottom="10dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:id="@+id/tvLunarDateSelect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_flatten"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:text="二零一五年六月十一"
-        android:textSize="20dp" />
+
 
     <RelativeLayout
         android:id="@+id/appx_banner_container"
@@ -52,65 +53,68 @@
     <FrameLayout android:id="@+id/fl_calendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
-    <LinearLayout android:gravity="center" android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+       android:paddingBottom="10dp"
+        android:gravity="center"
         android:orientation="horizontal" >
 
-        <LinearLayout  android:gravity="center"
-            android:layout_width="wrap_content"
+        <LinearLayout  android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView android:textColor="@color/gray_medium"
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="年"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-            <TextView android:layout_gravity="center"
-                android:id="@+id/tvEraYear"
+                android:textColor="@color/gray_medium" />
+            <TextView android:id="@+id/tvEraYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:ems="1"
                 android:text="乙未"
                 android:textSize="30dp" />
-            <TextView android:textColor="@color/gray_medium"
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="月"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:textColor="@color/gray_medium" />
 
-            <TextView android:layout_gravity="center"
-                android:id="@+id/tvEraMonth"
+            <TextView android:id="@+id/tvEraMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:ems="1"
                 android:text="癸未"
                 android:textSize="30dp" />
-            <TextView android:textColor="@color/gray_medium"
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="日"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:textColor="@color/gray_medium" />
 
-            <TextView android:layout_gravity="center"
-                android:id="@+id/tvEraDay"
+            <TextView android:id="@+id/tvEraDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:ems="1"
                 android:text="壬寅"
                 android:textSize="30dp" />
-            <TextView android:textColor="@color/gray_medium"
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="时"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:textColor="@color/gray_medium" />
 
-            <TextView android:layout_gravity="center"
-                android:id="@+id/tvEraHour"
+            <TextView android:id="@+id/tvEraHour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:ems="1"
                 android:text="庚戌"
                 android:textSize="30dp" />
@@ -121,20 +125,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView android:layout_gravity="center"
-                android:id="@+id/tvSolarTerm1"
+            <TextView android:id="@+id/tvSolarTerm1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="小暑: 7日18:12"
                 android:textSize="15dp" />
 
-            <TextView android:layout_gravity="center"
-                android:id="@+id/tvSolarTerm2"
+            <TextView android:id="@+id/tvSolarTerm2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="小暑: 7日18:12"
                 android:textSize="15dp" />
         </LinearLayout>
 
     </LinearLayout>
+</ScrollView>
 </LinearLayout>
