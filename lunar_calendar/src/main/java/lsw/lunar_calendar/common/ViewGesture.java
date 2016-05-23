@@ -79,14 +79,14 @@ public class ViewGesture {
                     {
                         callBack.moveUp();
                     }
-                    Toast.makeText(activity, "下个月", Toast.LENGTH_SHORT).show();
+
                     return true;
                 } else if (motionEvent.getY() - motionEvent1.getY() < -60) {
                     if(callBack != null)
                     {
                         callBack.moveDown();
                     }
-                    Toast.makeText(activity, "上个月", Toast.LENGTH_SHORT).show();
+
 
                     return true;
                 }
