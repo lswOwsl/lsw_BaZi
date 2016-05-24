@@ -184,6 +184,8 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             Intent intent = new Intent();
             intent.setClass(HexagramListActivity.this, HexagramBuilderActivity.class);
             startActivityForResult(intent, 0);
+
+            overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             return true;
         }
         if(id == R.id.menuContact)
