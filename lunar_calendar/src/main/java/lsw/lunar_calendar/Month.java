@@ -478,7 +478,6 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
                         ViewGroup.LayoutParams.MATCH_PARENT));
                 textView.setBackgroundColor(Color.parseColor("#66000000"));
             }
-            isExit = false;
             llMask.addView(textView);
 
             textView.setOnTouchListener(new View.OnTouchListener() {
