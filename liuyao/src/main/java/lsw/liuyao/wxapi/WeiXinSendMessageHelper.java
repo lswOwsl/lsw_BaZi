@@ -25,14 +25,18 @@ public class WeiXinSendMessageHelper {
         //String path = SDCARD_ROOT + "/test.png";
         //appdata.fileData = Util.readFromFile(path, 0, -1);
          appdata.extInfo = title;
-//        appdata.fileData = object;
+        //appdata.filePath = "tst";
+        appdata.fileData = new byte[10];
 
-//        Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-//        Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
-//        bmp.recycle();
+        Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
+        bmp.recycle();
+
+        WXTextObject textObject = new WXTextObject();
+        textObject.text = "lsw test";
 
         WXMediaMessage msg = new WXMediaMessage();
-        //msg.setThumbImage(thumbBmp);
+        msg.setThumbImage(thumbBmp);
         msg.title = title;
         msg.description = descpription;
         msg.mediaObject = appdata;
@@ -40,6 +44,7 @@ public class WeiXinSendMessageHelper {
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = String.valueOf(System.currentTimeMillis());
         req.message = msg;
+        //req.scene = SendMessageToWX.Req.WXSceneTimeline;
         req.scene = SendMessageToWX.Req.WXSceneSession;
         api.sendReq(req);
     }

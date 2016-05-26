@@ -660,7 +660,7 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
 
                                 Pair<Hexagram,Hexagram> hexagramPair = getHexagramsByLines();
                                 String description = hexagramPair.first.getName();
-                                if(hexagramPair != null)
+                                if(hexagramPair.second != null)
                                     description = description + "-" + hexagramPair.second.getName();
 
                                 WeiXinSendMessageHelper.sendAppMessage(context, iwxapi, initialDateExt.getFormatDateTime(), description);
