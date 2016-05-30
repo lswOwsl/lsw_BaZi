@@ -226,8 +226,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
                     isExit = true;
                     // 利用handler延迟发送更改状态信息
                     mHandler.sendEmptyMessageDelayed(0, 2000);
+                    mask.show("下个月");
 
-                    mask.show("上个月");
                 }
             }
 
@@ -242,7 +242,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
                     isExit = true;
                     // 利用handler延迟发送更改状态信息
                     mHandler.sendEmptyMessageDelayed(0, 2000);
-                    mask.show("下个月");
+                    mask.show("上个月");
+
                 }
             }
         });
