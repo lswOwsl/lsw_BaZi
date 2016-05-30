@@ -10,6 +10,8 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
 import android.util.Pair;
@@ -165,22 +167,52 @@ public class HexagramBuilderActivity extends Activity implements LineDragListene
         hashMapLineIndex.put(5,linearLayout5);
         hashMapLineIndex.put(6,linearLayout6);
 
-        ShakeListener shakeListener = new ShakeListener(this);//创建一个对象
+        final ShakeListener shakeListener = new ShakeListener(this);//创建一个对象
+        shakeListener.start();
         shakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {//调用setOnShakeListener方法进行监听
 
             public void onShake() {
-                if (shakeTimes < 7) {
-                    EnumLineSymbol enumLineSymbol = setLineImageView(hashMapLineIndex.get(shakeTimes));
-                    lineSymbolHashMap.put(shakeTimes, enumLineSymbol);
-                    onVibrator();
-                    shakeTimes++;
 
-                    setTrigramTitle();
-                    setHexagramTitle();
-                }
+                shakeListener.stop();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (shakeTimes < 7) {
+
+                            shakeListener.start();
+
+                            EnumLineSymbol enumLineSymbol = setLineImageView(hashMapLineIndex.get(shakeTimes));
+                            lineSymbolHashMap.put(shakeTimes, enumLineSymbol);
+                            onVibrator();
+                            shakeTimes++;
+
+                            setTrigramTitle();
+                            setHexagramTitle();
+
+
+                        }
+                    }
+                }, 2000);
+            }
+
+            public void onShakeStop()
+            {
+
             }
         });
     }
+
+    // 定义一个变量，来标识是否滑动
+    private static boolean isExit = false;
+    Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
 
     DateExt initialDateExt;
     String formatDateTime = "yyyy年MM月dd日 HH:mm";

@@ -38,7 +38,7 @@ public class ShakeListener implements SensorEventListener {
     public ShakeListener(Context c) {
         //获得监听对象
         context = c;
-        start();
+        //start();
     }
 
     //开始
@@ -64,6 +64,7 @@ public class ShakeListener implements SensorEventListener {
     //摇晃监听接口
     public interface OnShakeListener {
         public void onShake();
+        public void onShakeStop();
     }
 
     //设置重力感应监听器
@@ -100,9 +101,19 @@ public class ShakeListener implements SensorEventListener {
 
         double speed = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)/timeInterval * 10000;
         //达到速度阀值，发出提示
-        if(speed >= SPEED_SHRESHOLD)
+        if(speed >= SPEED_SHRESHOLD) {
+            isShaking = true;
             onShakeListener.onShake();
+        }
+        else
+        {
+            if(isShaking)
+                onShakeListener.onShakeStop();
+            isShaking = false;
+        }
     }
+
+    public static boolean isShaking = false;
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
