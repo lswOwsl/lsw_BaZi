@@ -18,11 +18,25 @@
         android:layout_height="wrap_content"
         android:text="预测情况"
         android:id="@+id/tvForecast" />
+    <EditText
+        android:id="@+id/etForecastNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="预测情况......"
+        android:textSize="15dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="实际情况"
         android:id="@+id/tvNote" />
+    <EditText
+        android:id="@+id/etNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="实际情况......"
+        android:textSize="15dp" />
     <TextView
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
