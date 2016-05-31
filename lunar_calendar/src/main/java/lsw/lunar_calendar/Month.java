@@ -38,6 +38,7 @@ import lsw.library.LunarCalendarWrapper;
 import lsw.library.SolarTerm;
 import lsw.lunar_calendar.advertising.BaiDuBanner;
 import lsw.lunar_calendar.common.DateSelectorDialog;
+import lsw.lunar_calendar.common.IntentKeys;
 import lsw.lunar_calendar.common.LunarDateSelectorDialog;
 import lsw.lunar_calendar.common.ViewGesture;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
@@ -78,10 +79,14 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     private MenuDrawer mDrawer;
     private int menuWidth;
 
+    private Context currentContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_month);
+
+        currentContext = this;
 
         mDrawer = MenuDrawer.attach(this);
         mDrawer.setMenuView(R.layout.menu_left);
@@ -303,7 +308,12 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         tvEraDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent mIntent = new Intent(currentContext, RelevantNote.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putString(IntentKeys.FormatDate, initialDate.getFormatDateTime());
+                mBundle.putString(IntentKeys.NoteCategory, "day");
+                mIntent.putExtras(mBundle);
+                currentContext.startActivity(mIntent);
             }
         });
 
