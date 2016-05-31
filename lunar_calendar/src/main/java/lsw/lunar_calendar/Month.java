@@ -300,6 +300,14 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         setEraTextDetail(tvEraDay, eraDayIndex);
         setEraTextDetail(tvEraHour, eraHourIndex);
 
+        tvEraDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
         loadSolarTerms(lunarCalendarWrapper);
     }
 
@@ -353,6 +361,14 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
             Intent intentContact = new Intent();
             intentContact.setClass(Month.this, ContactAuthor.class);
             startActivityForResult(intentContact, 0);
+            return true;
+        }
+
+        if(id == R.id.menuSetting)
+        {
+            Intent intent = new Intent();
+            intent.setClass(Month.this, Setting.class);
+            startActivityForResult(intent, 0);
             return true;
         }
 

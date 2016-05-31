@@ -19,6 +19,7 @@ import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.SolarTerm;
 import lsw.lunar_calendar.R;
+import lsw.lunar_calendar.common.MyApplication;
 import lsw.lunar_calendar.data.DataBase;
 import lsw.lunar_calendar.model.DayModel;
 import lsw.lunar_calendar.model.MemberDataRow;
@@ -134,14 +135,24 @@ public class CalendarAdapter extends BaseAdapter {
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
         int beginIndex = beginDate.getIndexOfWeek();
         int offsetDay = 0;
-        //???1???????0????????
-        if(beginIndex != 1 && beginIndex != 0)
-        {
-            offsetDay = 1 - beginIndex;
-        }//index 0是星期日
-        else if(beginIndex == 0)
-        {
-            offsetDay = -6;
+
+        if(!MyApplication.getInstance().isSaturdayForMonthFirstDay()) {
+            //以周一为日历第一天
+            if (beginIndex != 1 && beginIndex != 0) {
+                offsetDay = 1 - beginIndex;
+            }//index 0是星期日
+            else if (beginIndex == 0) {
+                offsetDay = -6;
+            }
+        }
+        else {
+            //以周日为日历第一天
+            //0,1,2,3,4,5,6 日一二三四五六
+            if (beginIndex == 0) {
+                offsetDay = 0;
+            } else {
+                offsetDay = 0 - beginIndex;
+            }
         }
 
         Pair<SolarTerm,SolarTerm> currentMonthSolarTerm = lunarCalendarWrapper.getPairSolarTerm(dateExt);
