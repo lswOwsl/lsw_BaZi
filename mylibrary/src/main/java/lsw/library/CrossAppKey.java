@@ -13,12 +13,7 @@ public class CrossAppKey {
     public static final String DB_NAME_HEXAGRAM_NOTE = "liuYaoHexagramNote.db";
     public static final String DB_NAME_LIUYAO = "liuYao.db";
     public static final String PACKAGE_NAME_LIUYAO = "lsw.liuyao";
-//    public static final String DB_PATH = "/data"
-//            + Environment.getDataDirectory().getAbsolutePath() + "/"
-//            + PACKAGE_NAME;
-
     public static final String DB_PATH_LIUYAO = Environment.getExternalStorageDirectory() + "/" + PACKAGE_NAME_LIUYAO;
-
 
     public static final String DB_NAME_BAZI = "bazi.db"; //保存的数据库文件名
     public static final String PACKAGE_NAME_BAZI = "lsw.bazi";
@@ -27,6 +22,8 @@ public class CrossAppKey {
 //            + Environment.getDataDirectory().getAbsolutePath() + "/"
 //            + PACKAGE_NAME_BAZI;  //在手机里存放数据库的位置(/data/data/com.cssystem.activity/cssystem.db)
 
-
+    public static final String DB_NAME_CALENDAR = "calendar.db";
+    public static final String PACKAGE_NAME_CALENDAR = "lsw.calendar";
+    public static final String DB_PATH_CALENDAR = Environment.getExternalStorageDirectory().getAbsolutePath() +"/" + PACKAGE_NAME_CALENDAR;
 
 }

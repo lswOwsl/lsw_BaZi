@@ -1,11 +1,11 @@
 package lsw.lunar_calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,15 +23,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import lsw.ContactAuthor;
-import lsw.PhotoImagesFullSizeFragment;
 import lsw.library.ColorHelper;
-import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
@@ -43,14 +40,8 @@ import lsw.lunar_calendar.common.LunarDateSelectorDialog;
 import lsw.lunar_calendar.common.ViewGesture;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
 import lsw.lunar_calendar.data_source.CalendarTitleAdapter;
-import lsw.utility.Image.ImageSelectListener;
-import lsw.utility.Image.SourceImage;
 
 import net.simonvt.menudrawer.MenuDrawer;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
 
 public class Month extends Activity implements MonthFragment.OnFragmentInteractionListener {
 
@@ -300,25 +291,53 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
         int eraHourIndex = lunarCalendarWrapper.getChineseEraOfHour();
 
-        setEraTextDetail(tvEraYear, eraYearIndex);
-        setEraTextDetail(tvEraMonth, eraMonthIndex);
-        setEraTextDetail(tvEraDay, eraDayIndex);
+        final String lunarYear = setEraTextDetail(tvEraYear, eraYearIndex);
+        final String lunarMonth = setEraTextDetail(tvEraMonth, eraMonthIndex);
+        final String lunarDay = setEraTextDetail(tvEraDay, eraDayIndex);
         setEraTextDetail(tvEraHour, eraHourIndex);
 
         tvEraDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent mIntent = new Intent(currentContext, RelevantNote.class);
                 Bundle mBundle = new Bundle();
-                mBundle.putString(IntentKeys.FormatDate, initialDate.getFormatDateTime());
-                mBundle.putString(IntentKeys.NoteCategory, "day");
+                mBundle.putString(IntentKeys.BeginDate, initialDate.getFormatDateTime());
+                mBundle.putString(IntentKeys.EndDate, initialDate.getFormatDateTime());
+                mBundle.putString(IntentKeys.RecordCycle, "day");
+                mBundle.putString(IntentKeys.LunarTime, lunarYear+"年 "+lunarMonth+"月 "+lunarDay + "日 ");
                 mIntent.putExtras(mBundle);
-                currentContext.startActivity(mIntent);
+
+                showNoteDialog(mIntent);
+
             }
         });
 
 
         loadSolarTerms(lunarCalendarWrapper);
+    }
+
+    private void showNoteDialog(final Intent intent)
+    {
+        String[] strings = new String[]{"预测 记录","实际/事件 记录"};
+
+        new AlertDialog.Builder(this)
+                .setSingleChoiceItems(
+                        strings, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Bundle bundle = intent.getExtras();
+                                bundle.putInt(IntentKeys.RecordType,which);
+                            }
+                        })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //跳转activity
+                        currentContext.startActivity(intent);
+                    }
+                })
+                .setNegativeButton("取消", null).show();
     }
 
     private void loadSolarTerms(LunarCalendarWrapper lunarCalendarWrapper) {
@@ -327,10 +346,13 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         tvSolarTerm2.setText(solarTermPair.second.getName() + ": " + solarTermPair.second.getSolarTermDate().getFormatDateTime("MM月dd日 HH:mm"));
     }
 
-    private void setEraTextDetail(TextView tv, int eraIndex) {
+    private String setEraTextDetail(TextView tv, int eraIndex) {
+        String celestialStem = lunarCalendarWrapper.toStringWithCelestialStem(eraIndex);
+        String terrestrial = lunarCalendarWrapper.toStringWithTerrestrialBranch(eraIndex);
         tv.setText("");
-        tv.append(ColorHelper.getInstance(this).getColorCelestialStem(lunarCalendarWrapper.toStringWithCelestialStem(eraIndex)));
-        tv.append(ColorHelper.getInstance(this).getColorTerrestrial(lunarCalendarWrapper.toStringWithTerrestrialBranch(eraIndex)));
+        tv.append(ColorHelper.getInstance(this).getColorCelestialStem(celestialStem));
+        tv.append(ColorHelper.getInstance(this).getColorTerrestrial(terrestrial));
+        return celestialStem+terrestrial;
     }
 
     @Override
@@ -388,13 +410,6 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     @Override
     public void onFragmentInteraction(DateExt dateExt) {
 
-        if (isExit) {
-            return;
-        }
-        isExit = true;
-        // 利用handler延迟发送更改状态信息
-        mHandler.sendEmptyMessageDelayed(0, 2000);
-
         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
         loadTitileDate(dateExt);
         loadEraTextDetail(lunarCalendarWrapper);
@@ -414,6 +429,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
                 willChange = true;
                 flag = true;
             }
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
         } else {
             if (initialDate.getYear() > dateExt.getYear()) {
                 mask.show("上个月");
@@ -424,6 +441,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
                 willChange = true;
                 flag = true;
             }
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
         }
 
         if (willChange) {

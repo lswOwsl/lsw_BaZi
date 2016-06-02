@@ -1,12 +1,15 @@
 package lsw.lunar_calendar.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lsw.library.CrossAppKey;
@@ -14,6 +17,9 @@ import lsw.library.DatabaseManager;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
 import lsw.library.LunarCalendarWrapper;
+import lsw.lunar_calendar.R;
+import lsw.lunar_calendar.common.MyApplication;
+import lsw.lunar_calendar.model.EventRecord;
 import lsw.lunar_calendar.model.HexagramDataRow;
 import lsw.lunar_calendar.model.MemberDataRow;
 
@@ -24,15 +30,18 @@ public class DataBase extends DatabaseManager {
 
     SQLiteDatabase dbLiuYao;
     SQLiteDatabase dbBaZi;
+    SQLiteDatabase dbCalendar;
+
+    public void openDataBaseCalendar()
+    {
+        int resourceId = R.raw.calendar_recorder;
+        InputStream is = MyApplication.getInstance().getResources().openRawResource(resourceId);
+        dbCalendar = super.openDatabase(CrossAppKey.DB_PATH_CALENDAR + "/" + CrossAppKey.DB_NAME_CALENDAR, is);
+    }
 
     public void openDatabaseLiuYao()
     {
-        dbLiuYao = SQLiteDatabase.openOrCreateDatabase(CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_LIUYAO,null);
-    }
-
-    public void setBaZiDatabase(SQLiteDatabase sqLiteDatabase)
-    {
-        dbBaZi = sqLiteDatabase;
+        dbLiuYao = SQLiteDatabase.openOrCreateDatabase(CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_LIUYAO, null);
     }
 
     public void openDatabaseBaZi()
@@ -45,6 +54,98 @@ public class DataBase extends DatabaseManager {
         {
             Log.d("database open", ex.getMessage());
         }
+    }
+
+    public EventRecord getEventRecordById(int id) {
+        openDataBaseCalendar();
+        String[] params = new String[]{id + ""};
+        String sql = "SELECT * FROM " + EventRecord.TB_EventRecord + " where Id = ?";
+        Cursor cur = dbCalendar.rawQuery(sql, params);
+        EventRecord eventRecord = null;
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            eventRecord = new EventRecord(cur);
+            break;
+        }
+        dbCalendar.close();
+        return eventRecord;
+    }
+
+    private static final String DateFormater = "yyyy-MM-dd";
+
+    public ArrayList<EventRecord> getEventRecordBySql(String sql)
+    {
+        ArrayList<EventRecord> list = new ArrayList<EventRecord>();
+        String[] params = new String[]{};
+        Cursor cur = dbCalendar.rawQuery(sql,params);
+
+        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+            list.add(new EventRecord(cur));
+        }
+
+        cur.close();
+        dbCalendar.close();
+        return list;
+    }
+
+    public ArrayList<EventRecord> getEventRecordByMonth(DateExt date) {
+        String condition = date.getFormatDateTime("yyyy-MM");
+        String sql = "SELECT * FROM " + EventRecord.TB_EventRecord + " where " +
+                "strftime('%Y-%m'," + EventRecord.DF_BeginTime + ") = '" + condition + "' and " +
+                "strftime('%Y-%m'," + EventRecord.DF_EndTime + ") = '" + condition + "'";
+
+        return getEventRecordBySql(sql);
+    }
+
+    public ArrayList<EventRecord> getEventRecordByWeek(DateExt date)
+    {
+        DateExt begin = new DateExt(date.getDate()).getThisWeekMonday();
+        DateExt end = new DateExt(begin.getDate()).addDays(7);
+        String sql = "SELECT * FROM "+EventRecord.TB_EventRecord+" where " +
+                "strftime('%Y-%m-%d',"+EventRecord.DF_BeginTime+") >= '"+begin.getFormatDateTime(DateFormater)+"' and " +
+                "strftime('%Y-%m-%d',"+EventRecord.DF_EndTime+") <= '"+end.getFormatDateTime(DateFormater)+"'";
+
+        return getEventRecordBySql(sql);
+    }
+
+
+    public ArrayList<EventRecord> getEventRecordByDay(DateExt date)
+    {
+        String sql = "SELECT * FROM "+EventRecord.TB_EventRecord+" where " +
+                "strftime('%Y-%m-%d',"+EventRecord.DF_BeginTime+") = '"+date.getFormatDateTime(DateFormater)+"' and " +
+                "strftime('%Y-%m-%d',"+EventRecord.DF_EndTime+") = '"+date.getFormatDateTime(DateFormater)+"'";
+
+        return getEventRecordBySql(sql);
+    }
+
+
+
+    public void saveEventRecord(EventRecord model)
+    {
+        openDataBaseCalendar();
+
+        if(model.getId() == 0)
+        {
+            ContentValues cv = new ContentValues();
+            cv.put(EventRecord.DF_BeginTime, model.getBeginTime());
+            cv.put(EventRecord.DF_EndTime, model.getEndTime());
+            cv.put(EventRecord.DF_AnalyzeResult, model.getAnalyzeResult());
+            cv.put(EventRecord.DF_ActualResult, model.getAnalyzeResult());
+            cv.put(EventRecord.DF_RecordCycle, model.getRecordCycle());
+            cv.put(EventRecord.DF_LunarTime, model.getLunarTime());
+            dbCalendar.insert(EventRecord.TB_EventRecord, null, cv);
+        }
+        else
+        {
+            ContentValues values = new ContentValues();
+            values.put(EventRecord.DF_ActualResult, model.getActualResult());
+            values.put(EventRecord.DF_AnalyzeResult, model.getAnalyzeResult());
+            String whereClause = EventRecord.DF_Id + "=?";
+            String[] whereArgs = {String.valueOf(model.getId())};
+            dbCalendar.update(EventRecord.TB_EventRecord, values, whereClause, whereArgs);
+            closeDatabase();
+        }
+
+        dbCalendar.close();
     }
 
     public List<String> hasHexagramDays(String beginDate, String endDate)
