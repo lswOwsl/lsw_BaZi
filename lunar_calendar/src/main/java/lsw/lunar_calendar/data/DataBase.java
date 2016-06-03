@@ -145,7 +145,7 @@ public class DataBase extends DatabaseManager {
             cv.put(EventRecord.DF_BeginTime, model.getBeginTime());
             cv.put(EventRecord.DF_EndTime, model.getEndTime());
             cv.put(EventRecord.DF_AnalyzeResult, model.getAnalyzeResult());
-            cv.put(EventRecord.DF_ActualResult, model.getAnalyzeResult());
+            cv.put(EventRecord.DF_ActualResult, model.getActualResult());
             cv.put(EventRecord.DF_RecordCycle, model.getRecordCycle());
             cv.put(EventRecord.DF_LunarTime, model.getLunarTime());
             dbCalendar.insert(EventRecord.TB_EventRecord, null, cv);
