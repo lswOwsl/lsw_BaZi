@@ -22,6 +22,7 @@ import lsw.lunar_calendar.common.MyApplication;
 import lsw.lunar_calendar.model.EventRecord;
 import lsw.lunar_calendar.model.HexagramDataRow;
 import lsw.lunar_calendar.model.MemberDataRow;
+import lsw.utility.FileHelper;
 
 /**
  * Created by swli on 5/5/2016.
@@ -36,6 +37,7 @@ public class DataBase extends DatabaseManager {
     {
         int resourceId = R.raw.calendar_recorder;
         InputStream is = MyApplication.getInstance().getResources().openRawResource(resourceId);
+        FileHelper.createFolder(CrossAppKey.DB_PATH_CALENDAR);
         dbCalendar = super.openDatabase(CrossAppKey.DB_PATH_CALENDAR + "/" + CrossAppKey.DB_NAME_CALENDAR, is);
     }
 
@@ -74,6 +76,7 @@ public class DataBase extends DatabaseManager {
 
     public ArrayList<EventRecord> getEventRecordBySql(String sql)
     {
+        openDataBaseCalendar();
         ArrayList<EventRecord> list = new ArrayList<EventRecord>();
         String[] params = new String[]{};
         Cursor cur = dbCalendar.rawQuery(sql,params);
@@ -85,6 +88,19 @@ public class DataBase extends DatabaseManager {
         cur.close();
         dbCalendar.close();
         return list;
+    }
+
+    public void deleteEventRecordById(int id)
+    {
+        openDataBaseCalendar();
+        dbCalendar.delete(EventRecord.TB_EventRecord, "Id ='" + id + "'", null);
+        dbCalendar.close();
+    }
+
+    public ArrayList<EventRecord> getEventRecords() {
+
+        String sql = "select * from "+EventRecord.TB_EventRecord+" order by ID desc";
+        return getEventRecordBySql(sql);
     }
 
     public ArrayList<EventRecord> getEventRecordByMonth(DateExt date) {
@@ -119,7 +135,7 @@ public class DataBase extends DatabaseManager {
 
 
 
-    public void saveEventRecord(EventRecord model)
+    public EventRecord saveEventRecord(EventRecord model)
     {
         openDataBaseCalendar();
 
@@ -133,6 +149,9 @@ public class DataBase extends DatabaseManager {
             cv.put(EventRecord.DF_RecordCycle, model.getRecordCycle());
             cv.put(EventRecord.DF_LunarTime, model.getLunarTime());
             dbCalendar.insert(EventRecord.TB_EventRecord, null, cv);
+
+            String sql = "select * from "+EventRecord.TB_EventRecord+" order by ID desc limit 1";
+            return getEventRecordBySql(sql).get(0);
         }
         else
         {
@@ -142,10 +161,10 @@ public class DataBase extends DatabaseManager {
             String whereClause = EventRecord.DF_Id + "=?";
             String[] whereArgs = {String.valueOf(model.getId())};
             dbCalendar.update(EventRecord.TB_EventRecord, values, whereClause, whereArgs);
-            closeDatabase();
-        }
 
+        }
         dbCalendar.close();
+        return model;
     }
 
     public List<String> hasHexagramDays(String beginDate, String endDate)

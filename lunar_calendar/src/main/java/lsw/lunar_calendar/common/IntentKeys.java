@@ -12,4 +12,6 @@ public class IntentKeys {
     //用来记录是 实际发生的时间还是预测发生的情况
     public final static String RecordType = "record_type";
     public final static String LunarTime = "lunar_time";
+
+    public final static String EventRecordId = "event_record_id";
 }

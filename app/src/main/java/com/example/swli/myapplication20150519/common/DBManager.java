@@ -19,6 +19,7 @@ import java.io.InputStream;
 
 import lsw.library.CrossAppKey;
 import lsw.library.DatabaseManager;
+import lsw.utility.FileHelper;
 
 
 public class DBManager extends DatabaseManager {
@@ -44,6 +45,7 @@ public class DBManager extends DatabaseManager {
         InputStream is = this.context.getResources().openRawResource(
                 resourceId); //欲导入的数据库
 
+        FileHelper.createFolder(CrossAppKey.DB_PATH_BAZI);
         return super.openDatabase(databaseFile,is);
     }
 

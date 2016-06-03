@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import lsw.library.DateExt;
 import lsw.lunar_calendar.common.IntentKeys;
@@ -16,7 +17,7 @@ import lsw.lunar_calendar.model.EventRecord;
 /**
  * Created by swli on 5/31/2016.
  */
-public class RelevantNote  extends Activity {
+public class Memory extends Activity {
 
     private TextView tvBeginTime, tvEndTime, tvNote, tvForecast, tvSave;
     private EditText etForecast, etNote;
@@ -37,7 +38,7 @@ public class RelevantNote  extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memory);
-
+        dataBase = new DataBase();
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
@@ -49,7 +50,7 @@ public class RelevantNote  extends Activity {
 
         bindAction();
 
-        dataBase = new DataBase();
+
     }
 
     private void initControls()
@@ -67,16 +68,34 @@ public class RelevantNote  extends Activity {
 
     private void loadParamsFromBundle(Bundle bundle)
     {
-        beginTime = new DateExt(bundle.getString(IntentKeys.BeginDate));
-        endTime = new DateExt(bundle.getString(IntentKeys.EndDate));
-        recordCycle = bundle.getString(IntentKeys.RecordCycle);
-        recordType = RecordType.valueOf(bundle.getInt(IntentKeys.RecordType));
-        lunarTime = bundle.getString(IntentKeys.LunarTime);
+        if(bundle.get(IntentKeys.EventRecordId) != null)
+        {
+           eventRecordId = bundle.getInt(IntentKeys.EventRecordId);
+        }
+        else {
+            beginTime = new DateExt(bundle.getString(IntentKeys.BeginDate));
+            endTime = new DateExt(bundle.getString(IntentKeys.EndDate));
+            recordCycle = bundle.getString(IntentKeys.RecordCycle);
+            recordType = RecordType.valueOf(bundle.getInt(IntentKeys.RecordType));
+            lunarTime = bundle.getString(IntentKeys.LunarTime);
+        }
     }
 
     private void loadContent()
     {
-        if(beginTime.equals(endTime))
+        if(eventRecordId != 0)
+        {
+            EventRecord eventRecord = dataBase.getEventRecordById(eventRecordId);
+            beginTime = eventRecord.getBeginDateExt();
+            endTime = eventRecord.getEndDateExt();
+            recordCycle = eventRecord.getRecordCycle();
+            recordType = RecordType.All;
+            lunarTime = eventRecord.getLunarTime();
+            etForecast.setText(eventRecord.getAnalyzeResult());
+            etNote.setText(eventRecord.getActualResult());
+        }
+
+        if(beginTime.compareTo(endTime) == DateExt.EnumDateCompareResult.Equal)
         {
             tvEndTime.setVisibility(View.GONE);
         }
@@ -109,7 +128,11 @@ public class RelevantNote  extends Activity {
                 eventRecord.setAnalyzeResult(etForecast.getText().toString());
                 eventRecord.setActualResult(etNote.getText().toString());
                 eventRecord.setLunarTime(lunarTime);
-                dataBase.saveEventRecord(eventRecord);
+                eventRecord = dataBase.saveEventRecord(eventRecord);
+
+                eventRecordId = eventRecord.getId();
+
+                Toast.makeText(Memory.this,"保存成功"+eventRecord.getId(),Toast.LENGTH_SHORT).show();
             }
         });
     }

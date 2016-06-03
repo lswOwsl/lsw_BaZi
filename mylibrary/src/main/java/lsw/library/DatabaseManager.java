@@ -38,7 +38,6 @@ public class DatabaseManager {
     protected SQLiteDatabase openDatabase(String databaseFile, InputStream resource) {
 
         try {
-            FileHelper.createFolder(CrossAppKey.DB_PATH_BAZI);
             if (!(new File(databaseFile).exists())) {
                 //判断数据库文件是否存在，若不存在则执行导入，否则直接打开数据库
                 InputStream is = resource; //欲导入的数据库

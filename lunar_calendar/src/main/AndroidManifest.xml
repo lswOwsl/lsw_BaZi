@@ -19,7 +19,9 @@
         </activity>
         <activity android:name=".Setting" android:parentActivityName=".Month">
         </activity>
-        <activity android:name=".RelevantNote" android:parentActivityName=".Month">
+        <activity android:name=".Memory" android:parentActivityName=".Month">
+        </activity>
+        <activity android:name=".MemoryEventList" android:parentActivityName=".Month">
         </activity>
         <activity android:name="lsw.ContactAuthor">
         </activity>

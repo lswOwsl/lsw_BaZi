@@ -2,6 +2,7 @@ package lsw.lunar_calendar.model;
 
 import android.database.Cursor;
 
+import lsw.library.DateExt;
 import lsw.library.StringHelper;
 import lsw.lunar_calendar.common.RecordType;
 
@@ -41,12 +42,22 @@ public class EventRecord {
         return beginTime;
     }
 
+    public DateExt getBeginDateExt()
+    {
+        return new DateExt(beginTime,"yyyy-MM-dd");
+    }
+
     public void setBeginTime(String beginTime) {
         this.beginTime = beginTime;
     }
 
     public String getEndTime() {
         return endTime;
+    }
+
+    public DateExt getEndDateExt()
+    {
+        return new DateExt(endTime,"yyyy-MM-dd");
     }
 
     public void setEndTime(String endTime) {
@@ -103,8 +114,8 @@ public class EventRecord {
         setId(cursor.getInt(cursor.getColumnIndex(DF_Id)));
         setBeginTime(cursor.getString(cursor.getColumnIndex(DF_BeginTime)));
         setEndTime(cursor.getString(cursor.getColumnIndex(DF_EndTime)));
-        setActualResult(cursor.getString(cursor.getColumnIndex(DF_ActualResult)));
-        setAnalyzeResult(cursor.getString(cursor.getColumnIndex(DF_AnalyzeResult)));
+        setActualResult(StringHelper.getString(cursor.getString(cursor.getColumnIndex(DF_ActualResult))));
+        setAnalyzeResult(StringHelper.getString(cursor.getString(cursor.getColumnIndex(DF_AnalyzeResult))));
         setRecordCycle(cursor.getString(cursor.getColumnIndex(DF_RecordCycle)));
         setLunarTime(cursor.getString(cursor.getColumnIndex(DF_LunarTime)));
     }

@@ -300,16 +300,13 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
             @Override
             public void onClick(View view) {
 
-                Intent mIntent = new Intent(currentContext, RelevantNote.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putString(IntentKeys.BeginDate, initialDate.getFormatDateTime());
                 mBundle.putString(IntentKeys.EndDate, initialDate.getFormatDateTime());
                 mBundle.putString(IntentKeys.RecordCycle, "day");
-                mBundle.putString(IntentKeys.LunarTime, lunarYear+"年 "+lunarMonth+"月 "+lunarDay + "日 ");
-                mIntent.putExtras(mBundle);
+                mBundle.putString(IntentKeys.LunarTime, lunarYear + "年 " + lunarMonth + "月 " + lunarDay + "日 ");
 
-                showNoteDialog(mIntent);
-
+                showNoteDialog(mBundle);
             }
         });
 
@@ -317,24 +314,29 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         loadSolarTerms(lunarCalendarWrapper);
     }
 
-    private void showNoteDialog(final Intent intent)
+    int bundle_recordType = 0;
+    private void showNoteDialog(final Bundle bundle)
     {
-        String[] strings = new String[]{"预测 记录","实际/事件 记录"};
+        String[] strings = new String[]{"预测 记录","事件 记录"};
 
         new AlertDialog.Builder(this)
                 .setSingleChoiceItems(
                         strings, 0,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Bundle bundle = intent.getExtras();
-                                bundle.putInt(IntentKeys.RecordType,which);
+                                bundle_recordType = which;
                             }
                         })
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(currentContext, Memory.class);
+                        bundle.putInt(IntentKeys.RecordType, bundle_recordType);
+                        intent.putExtras(bundle);
                         //跳转activity
                         currentContext.startActivity(intent);
+                        //阻止回退后recordType没有变成默认
+                        bundle_recordType = 0;
                     }
                 })
                 .setNegativeButton("取消", null).show();
@@ -400,6 +402,14 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         {
             Intent intent = new Intent();
             intent.setClass(Month.this, Setting.class);
+            startActivityForResult(intent, 0);
+            return true;
+        }
+
+        if(id == R.id.menuMemory)
+        {
+            Intent intent = new Intent();
+            intent.setClass(Month.this, MemoryEventList.class);
             startActivityForResult(intent, 0);
             return true;
         }
