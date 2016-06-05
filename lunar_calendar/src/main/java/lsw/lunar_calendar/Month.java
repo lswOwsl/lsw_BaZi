@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import lsw.ContactAuthor;
+import lsw.library.BaZiHelper;
 import lsw.library.ColorHelper;
 import lsw.library.DateExt;
 import lsw.library.DateLunar;
@@ -300,18 +301,41 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
             @Override
             public void onClick(View view) {
 
-                Bundle mBundle = new Bundle();
-                mBundle.putString(IntentKeys.BeginDate, initialDate.getFormatDateTime());
-                mBundle.putString(IntentKeys.EndDate, initialDate.getFormatDateTime());
-                mBundle.putString(IntentKeys.RecordCycle, "day");
-                mBundle.putString(IntentKeys.LunarTime, lunarYear + "年 " + lunarMonth + "月 " + lunarDay + "日 ");
+                Bundle mBundle = createBundleBy(
+                        initialDate.getFormatDateTime(),
+                        initialDate.getFormatDateTime(),
+                        "day",
+                        lunarYear + "年 " + lunarMonth + "月 " + lunarDay + "日 ");
 
                 showNoteDialog(mBundle);
             }
         });
 
+        tvEraMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Pair<SolarTerm,SolarTerm> pair = BaZiHelper.getPairJie(initialDate);
+
+                Bundle bundle = createBundleBy(pair.first.getSolarTermDate().getFormatDateTime(),
+                        pair.second.getSolarTermDate().getFormatDateTime(),
+                        "month",
+                        lunarYear + "年 " + lunarMonth + "月");
+
+                showNoteDialog(bundle);
+            }
+        });
 
         loadSolarTerms(lunarCalendarWrapper);
+    }
+
+    private Bundle createBundleBy(String beginTime,String endTime, String recordCycle, String lunarTime)
+    {
+        Bundle mBundle = new Bundle();
+        mBundle.putString(IntentKeys.BeginDate, beginTime);
+        mBundle.putString(IntentKeys.EndDate, endTime);
+        mBundle.putString(IntentKeys.RecordCycle, recordCycle);
+        mBundle.putString(IntentKeys.LunarTime, lunarTime);
+        return mBundle;
     }
 
     int bundle_recordType = 0;

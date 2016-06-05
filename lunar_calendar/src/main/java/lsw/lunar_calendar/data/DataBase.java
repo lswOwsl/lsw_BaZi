@@ -99,7 +99,7 @@ public class DataBase extends DatabaseManager {
 
     public ArrayList<EventRecord> getEventRecords() {
 
-        String sql = "select * from "+EventRecord.TB_EventRecord+" order by ID desc";
+        String sql = "select * from "+EventRecord.TB_EventRecord+" order by "+ EventRecord.DF_BeginTime + " desc";
         return getEventRecordBySql(sql);
     }
 
@@ -107,7 +107,7 @@ public class DataBase extends DatabaseManager {
         String condition = date.getFormatDateTime("yyyy-MM");
         String sql = "SELECT * FROM " + EventRecord.TB_EventRecord + " where " +
                 "strftime('%Y-%m'," + EventRecord.DF_BeginTime + ") = '" + condition + "' and " +
-                "strftime('%Y-%m'," + EventRecord.DF_EndTime + ") = '" + condition + "'";
+                "strftime('%Y-%m'," + EventRecord.DF_EndTime + ") = '" + condition + "' order by "+ EventRecord.DF_BeginTime + " desc";
 
         return getEventRecordBySql(sql);
     }
@@ -118,7 +118,7 @@ public class DataBase extends DatabaseManager {
         DateExt end = new DateExt(begin.getDate()).addDays(7);
         String sql = "SELECT * FROM "+EventRecord.TB_EventRecord+" where " +
                 "strftime('%Y-%m-%d',"+EventRecord.DF_BeginTime+") >= '"+begin.getFormatDateTime(DateFormater)+"' and " +
-                "strftime('%Y-%m-%d',"+EventRecord.DF_EndTime+") <= '"+end.getFormatDateTime(DateFormater)+"'";
+                "strftime('%Y-%m-%d',"+EventRecord.DF_EndTime+") <= '"+end.getFormatDateTime(DateFormater)+"' order by "+ EventRecord.DF_BeginTime + " desc";
 
         return getEventRecordBySql(sql);
     }
@@ -128,7 +128,7 @@ public class DataBase extends DatabaseManager {
     {
         String sql = "SELECT * FROM "+EventRecord.TB_EventRecord+" where " +
                 "strftime('%Y-%m-%d',"+EventRecord.DF_BeginTime+") = '"+date.getFormatDateTime(DateFormater)+"' and " +
-                "strftime('%Y-%m-%d',"+EventRecord.DF_EndTime+") = '"+date.getFormatDateTime(DateFormater)+"'";
+                "strftime('%Y-%m-%d',"+EventRecord.DF_EndTime+") = '"+date.getFormatDateTime(DateFormater)+"' order by "+ EventRecord.DF_BeginTime + " desc";
 
         return getEventRecordBySql(sql);
     }
