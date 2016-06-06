@@ -32,6 +32,18 @@ public class MemoryListFragment extends Fragment{
     private MemoryListAdapter memoryListAdapter;
     private ListView lv;
 
+    private static final String Bundle_SearchText = "search_text";
+
+    private String searchText;
+
+    public static MemoryListFragment newInstance(String searchText) {
+        MemoryListFragment fragment = new MemoryListFragment();
+        Bundle args = new Bundle();
+        args.putString(Bundle_SearchText, searchText);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static MemoryListFragment newInstance() {
         MemoryListFragment fragment = new MemoryListFragment();
         return fragment;
@@ -52,7 +64,14 @@ public class MemoryListFragment extends Fragment{
 
         final DataBase dataBase = new DataBase();
 
-        list = dataBase.getEventRecords();
+        if(getArguments() != null)
+        {
+            searchText = getArguments().getString(Bundle_SearchText);
+            list = dataBase.getEventRecordsByCondition(searchText);
+        }
+        else {
+            list = dataBase.getEventRecords();
+        }
 
         lv = (ListView)view.findViewById(R.id.lvEvents);
         memoryListAdapter = new MemoryListAdapter(getActivity(), list);

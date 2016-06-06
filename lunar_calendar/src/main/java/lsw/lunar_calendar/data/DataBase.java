@@ -97,6 +97,12 @@ public class DataBase extends DatabaseManager {
         dbCalendar.close();
     }
 
+    public ArrayList<EventRecord> getEventRecordsByCondition(String searchText) {
+
+        String sql = "select * from "+EventRecord.TB_EventRecord+" where "+ EventRecord.DF_LunarTime + " like '%" + searchText +"%' order by "+ EventRecord.DF_BeginTime + " desc";
+        return getEventRecordBySql(sql);
+    }
+
     public ArrayList<EventRecord> getEventRecords() {
 
         String sql = "select * from "+EventRecord.TB_EventRecord+" order by "+ EventRecord.DF_BeginTime + " desc";
