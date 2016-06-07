@@ -46,6 +46,7 @@ public class DateExt {
     public DateExt()
     {
         calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
         //int zoneOffset = calendar.get(java.util.Calendar.ZONE_OFFSET);
         //int dstOffset = calendar.get(java.util.Calendar.DST_OFFSET);
         //calendar.add(java.util.Calendar.MILLISECOND, -(zoneOffset + dstOffset));
@@ -129,7 +130,7 @@ public class DateExt {
     public DateExt getThisWeekMonday()
     {
         int i = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
-        calendar.add(Calendar.DATE, -i + 1);
+        calendar.add(Calendar.DATE, -i - 1);
         return new DateExt(calendar.getTime());
     }
 
@@ -247,6 +248,6 @@ public class DateExt {
     public String getChineseDayOfWeek()
     {
         int indexOfWeek = this.getIndexOfWeek();
-        return indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
+        return  LunarCalendar.toChineseDayInWeek(indexOfWeek);
     }
 }

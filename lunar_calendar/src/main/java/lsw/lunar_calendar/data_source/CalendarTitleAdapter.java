@@ -27,7 +27,7 @@ public class CalendarTitleAdapter extends BaseAdapter {
     }
 
     public String[] getOneMonthTitleFromSaturday() {
-        return new String[]{"六","一","二","三","四","五","日"};
+        return new String[]{"日","一","二","三","四","五","六"};
     }
     public String[] getOneMonthTitle() {
         return new String[]{"一","二","三","四","五","六","日"};

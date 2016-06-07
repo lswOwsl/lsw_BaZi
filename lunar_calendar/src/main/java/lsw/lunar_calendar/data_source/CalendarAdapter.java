@@ -138,20 +138,20 @@ public class CalendarAdapter extends BaseAdapter {
 
         if(!MyApplication.getInstance().isSaturdayForMonthFirstDay()) {
             //以周一为日历第一天
-            if (beginIndex != 1 && beginIndex != 0) {
-                offsetDay = 1 - beginIndex;
+            if (beginIndex != 2) {
+                offsetDay = 2 - beginIndex;
             }//index 0是星期日
-            else if (beginIndex == 0) {
-                offsetDay = -6;
-            }
+//            else if (beginIndex == 7) {
+//                offsetDay = -6;
+//            }
         }
         else {
             //以周日为日历第一天
-            //0,1,2,3,4,5,6 日一二三四五六
-            if (beginIndex == 0) {
-                offsetDay = 0;
+            //1,2,3,4,5,6,7 一二三四五六日
+            if (beginIndex == 7) {
+                offsetDay = 1;
             } else {
-                offsetDay = 0 - beginIndex;
+                offsetDay = 1 - beginIndex;
             }
         }
 
@@ -166,7 +166,6 @@ public class CalendarAdapter extends BaseAdapter {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         //Locale.setDefault(Locale.CHINESE);
         Calendar calendar =  beginDate.getCalendar();
-
         //查询阳历生日，阴历生日
         //查询当天卦例
 
@@ -217,15 +216,14 @@ public class CalendarAdapter extends BaseAdapter {
 
             //获取周几
             int weekDay = calendar.get(Calendar.DAY_OF_WEEK);
-            //若一周第一天为星期天，则-1
+            //周日是1
             if(isFirstSunday){
-                weekDay = weekDay - 1;
-                if(weekDay == 0 || weekDay == 6)
+                if(weekDay == 7 || weekDay == 1)
                     dayModel.setIsWeekend(true);
             }
             else
             {
-                if(weekDay == 7 || weekDay == 6)
+                if(weekDay == 1 || weekDay == 7)
                     dayModel.setIsWeekend(true);
             }
 

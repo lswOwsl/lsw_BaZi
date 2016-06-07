@@ -434,7 +434,11 @@ public class LunarCalendar extends LunarSolarTerm{
     static final String nStr2[] = new String[]{"初","十","廿","卅"};
 
     public static String toChineseDayInWeek(int x) {
-        return nStr1[x % 10 - 1];
+        int value = x % 10;
+        if(value == 1)
+            return "日";
+        else
+            return nStr1[value-2];
     }
 
     public String toStringWithChineseDay(int x)

@@ -66,7 +66,7 @@ public class BirthdayListFragment extends Fragment {
         if(isForCurrentMonth())
         {
             list = dataBase.getBirthdayDataRowsByMonth(tempDate.getFormatDateTime("MM"));
-            listLunar = dataBase.getLunarBithdayDataRowsByMonth(tempDate);
+            listLunar = dataBase.getLunarBirthdayDataRowsByMonth(tempDate);
         } else {
             list = dataBase.getBirthdayByDay(tempDate.getFormatDateTime("MM-dd"));
             listLunar = dataBase.getLunarBithdayByDay(tempDate);

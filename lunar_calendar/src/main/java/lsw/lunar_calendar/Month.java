@@ -66,7 +66,7 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
     private TextView tvSolarTerm1, tvSolarTerm2;
 
-    private FrameLayout flHexagrams;
+    private FrameLayout flHexagrams, flTips;
 
     private MenuDrawer mDrawer;
     private int menuWidth;
@@ -120,6 +120,7 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         tvAllBirthday = (TextView) mDrawer.getMenuView().findViewById(R.id.tvAllBirthday);
 
         flHexagrams = (FrameLayout) findViewById(R.id.fl_list);
+        flTips = (FrameLayout) findViewById(R.id.fl_list_tip);
 
         linearLayout = LayoutInflater.from(this);
         tvDateSelect = (TextView) findViewById(R.id.tvDateSelect);
@@ -161,10 +162,12 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
                     ftt.replace(R.id.fl_list_birthday, birthdayListFragment, null);
                     ftt.commit();
 
+                    flTips.setVisibility(View.GONE);
                     flHexagrams.setVisibility(View.GONE);
                     tvAllBirthday.setText("恢复默认");
                 } else {
                     loadBirthdayAndHexagram(null);
+                    flTips.setVisibility(View.VISIBLE);
                     flHexagrams.setVisibility(View.VISIBLE);
                     tvAllBirthday.setText("本月全部生日");
                 }
@@ -495,6 +498,9 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
         BirthdayListFragment birthdayListFragment = BirthdayListFragment.newInstance(initialDate);
         ftt.replace(R.id.fl_list_birthday, birthdayListFragment, null);
+
+        MemoryListFragment memoryListFragment = MemoryListFragment.newInstance(initialDate);
+        ftt.replace(R.id.fl_list_tip,memoryListFragment,null);
 
         ftt.commit();
     }

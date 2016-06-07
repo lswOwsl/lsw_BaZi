@@ -121,7 +121,7 @@ public class HexagramListAdapter extends BaseSwipeAdapter {
 
         DateExt tempDateExt = new DateExt(item.getDate());
         int indexOfWeek = tempDateExt.getIndexOfWeek();
-        String weekDay = indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
+        String weekDay = LunarCalendar.toChineseDayInWeek(indexOfWeek);
         holder.tvDate.setText(tempDateExt.getFormatDateTime("yyyy年MM月dd日") + " (星期" + weekDay + ")");
         holder.tvOriginalName.setText("主卦: " + item.getOriginalName());
         String changedName = item.getChangedName();

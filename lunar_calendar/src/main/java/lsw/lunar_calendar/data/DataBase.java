@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,20 +42,27 @@ public class DataBase extends DatabaseManager {
         dbCalendar = super.openDatabase(CrossAppKey.DB_PATH_CALENDAR + "/" + CrossAppKey.DB_NAME_CALENDAR, is);
     }
 
-    public void openDatabaseLiuYao()
+    public boolean openDatabaseLiuYao()
     {
-        dbLiuYao = SQLiteDatabase.openOrCreateDatabase(CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_LIUYAO, null);
+        String filePath = CrossAppKey.DB_PATH_LIUYAO + "/" + CrossAppKey.DB_NAME_LIUYAO;
+        File file = new File(filePath);
+        if(!file.exists())
+            return false;
+        else {
+            dbLiuYao = SQLiteDatabase.openDatabase(filePath, null, SQLiteDatabase.OPEN_READONLY);
+            return true;
+        }
     }
 
-    public void openDatabaseBaZi()
+    public boolean openDatabaseBaZi()
     {
-        try {
-
-            dbBaZi = SQLiteDatabase.openOrCreateDatabase(CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI, null);
-        }
-        catch (Exception ex)
-        {
-            Log.d("database open", ex.getMessage());
+        String filePath = CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI;
+        File file = new File(filePath);
+        if(!file.exists())
+            return false;
+        else {
+            dbBaZi = SQLiteDatabase.openDatabase(CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI, null, SQLiteDatabase.OPEN_READONLY);
+            return true;
         }
     }
 
@@ -112,7 +120,7 @@ public class DataBase extends DatabaseManager {
     public ArrayList<EventRecord> getEventRecordByMonth(DateExt date) {
         String condition = date.getFormatDateTime("yyyy-MM");
         String sql = "SELECT * FROM " + EventRecord.TB_EventRecord + " where " +
-                "strftime('%Y-%m'," + EventRecord.DF_BeginTime + ") = '" + condition + "' and " +
+                "strftime('%Y-%m'," + EventRecord.DF_BeginTime + ") = '" + condition + "' or " +
                 "strftime('%Y-%m'," + EventRecord.DF_EndTime + ") = '" + condition + "' order by "+ EventRecord.DF_BeginTime + " desc";
 
         return getEventRecordBySql(sql);
@@ -121,7 +129,7 @@ public class DataBase extends DatabaseManager {
     public ArrayList<EventRecord> getEventRecordByWeek(DateExt date)
     {
         DateExt begin = new DateExt(date.getDate()).getThisWeekMonday();
-        DateExt end = new DateExt(begin.getDate()).addDays(7);
+        DateExt end = new DateExt(begin.getDate()).addDays(6);
         String sql = "SELECT * FROM "+EventRecord.TB_EventRecord+" where " +
                 "strftime('%Y-%m-%d',"+EventRecord.DF_BeginTime+") >= '"+begin.getFormatDateTime(DateFormater)+"' and " +
                 "strftime('%Y-%m-%d',"+EventRecord.DF_EndTime+") <= '"+end.getFormatDateTime(DateFormater)+"' order by "+ EventRecord.DF_BeginTime + " desc";
@@ -175,41 +183,43 @@ public class DataBase extends DatabaseManager {
 
     public List<String> hasHexagramDays(String beginDate, String endDate)
     {
-        openDatabaseLiuYao();
         List<String> list = new ArrayList<String>();
-        String[] params = new String[]{};
 
-        String sql = "SELECT * FROM Hexagram where ShakeDate > '"+beginDate+"' and '"+endDate+"' > ShakeDate Order By ShakeDate DESC";
-        Cursor cur = dbLiuYao.rawQuery(sql,params);
+        if(openDatabaseLiuYao()) {
+            String[] params = new String[]{};
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            String shakeDate = getColumnValue(cur, "ShakeDate");
-            list.add(shakeDate.substring(0,10));
+            String sql = "SELECT * FROM Hexagram where ShakeDate > '" + beginDate + "' and '" + endDate + "' > ShakeDate Order By ShakeDate DESC";
+            Cursor cur = dbLiuYao.rawQuery(sql, params);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                String shakeDate = getColumnValue(cur, "ShakeDate");
+                list.add(shakeDate.substring(0, 10));
+            }
+
+            cur.close();
+            dbLiuYao.close();
         }
-
-        cur.close();
-        dbLiuYao.close();
-
         return list;
     }
 
     public List<HexagramDataRow> getHexagramDataRowByDate(String date)
     {
-        openDatabaseLiuYao();
-
         List<HexagramDataRow> list = new ArrayList<HexagramDataRow>();
-        String[] params = new String[]{};
+        if(openDatabaseLiuYao()) {
 
-        String sql = "SELECT * FROM Hexagram where strftime('%Y-%m-%d',shakedate) = '"+date+"'";
-        Cursor cur = dbLiuYao.rawQuery(sql,params);
+            String[] params = new String[]{};
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            list.add(createHexagramRowByCursor(cur));
+            String sql = "SELECT * FROM Hexagram where strftime('%Y-%m-%d',shakedate) = '" + date + "'";
+            Cursor cur = dbLiuYao.rawQuery(sql, params);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                list.add(createHexagramRowByCursor(cur));
+            }
+
+            cur.close();
+            dbLiuYao.close();
+
         }
-
-        cur.close();
-        dbLiuYao.close();
-
         return list;
     }
 
@@ -235,62 +245,63 @@ public class DataBase extends DatabaseManager {
 
     public List<MemberDataRow> getBirthdayByDay(String day)
     {
-        openDatabaseBaZi();
-
         List<MemberDataRow> list = new ArrayList<MemberDataRow>();
-        String[] params = new String[]{};
 
-        String sql = "SELECT * FROM Members where strftime('%m-%d',Birthday_Refactor) = '"+day+"' Order By Birthday_Refactor ASC";
-        Cursor cur = dbBaZi.rawQuery(sql,params);
+        if(openDatabaseBaZi()) {
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            list.add(createMemberDataRowByCursor(cur));
+            String[] params = new String[]{};
+
+            String sql = "SELECT * FROM Members where strftime('%m-%d',Birthday_Refactor) = '" + day + "' Order By Birthday_Refactor ASC";
+            Cursor cur = dbBaZi.rawQuery(sql, params);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                list.add(createMemberDataRowByCursor(cur));
+            }
+
+            cur.close();
+            dbBaZi.close();
         }
-
-        cur.close();
-        dbBaZi.close();
-
         return list;
     }
 
     public List<MemberDataRow> getLunarBithdayByDay(DateExt dateExt)
     {
-        openDatabaseBaZi();
-
         List<MemberDataRow> list = new ArrayList<MemberDataRow>();
-        String[] params = new String[]{};
 
-        String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
-        String currentMonth = dateExt.getFormatDateTime("MM");
-        String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
-        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
-        DateLunar dateLunar = lunarCalendarWrapper.getDateLunar();
+        if(openDatabaseBaZi()) {
 
-        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('"+beforeMonth+"','"+currentMonth+"','"+afterMonth+"') Order By Birthday_Refactor ASC";
-        Cursor cur = dbBaZi.rawQuery(sql,params);
+            String[] params = new String[]{};
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
-            String birthdayStr = cur.getString(birthdayIndex);
-            DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
-            DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
-            if(dateLunar.getLunarDay() == tempDateLunar.getLunarDay() &&
-                    dateLunar.getLunarMonth() == tempDateLunar.getLunarMonth() &&
-                    dateLunar.getIsLeapMonth() == tempDateLunar.getIsLeapMonth())
-            {
-                MemberDataRow memberDataRow = createMemberDataRowByCursor(cur);
-                memberDataRow.setIsLunarBirthday(true);
-                list.add(memberDataRow);
+            String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
+            String currentMonth = dateExt.getFormatDateTime("MM");
+            String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
+            LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+            DateLunar dateLunar = lunarCalendarWrapper.getDateLunar();
+
+            String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('" + beforeMonth + "','" + currentMonth + "','" + afterMonth + "') Order By Birthday_Refactor ASC";
+            Cursor cur = dbBaZi.rawQuery(sql, params);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+                String birthdayStr = cur.getString(birthdayIndex);
+                DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
+                DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
+                if (dateLunar.getLunarDay() == tempDateLunar.getLunarDay() &&
+                        dateLunar.getLunarMonth() == tempDateLunar.getLunarMonth() &&
+                        dateLunar.getIsLeapMonth() == tempDateLunar.getIsLeapMonth()) {
+                    MemberDataRow memberDataRow = createMemberDataRowByCursor(cur);
+                    memberDataRow.setIsLunarBirthday(true);
+                    list.add(memberDataRow);
+                }
             }
+
+            cur.close();
+            dbBaZi.close();
         }
-
-        cur.close();
-        dbBaZi.close();
-
         return list;
     }
 
-    public List<MemberDataRow> getLunarBithdayDataRowsByMonth(DateExt dateExt)
+    public List<MemberDataRow> getLunarBirthdayDataRowsByMonth(DateExt dateExt)
     {
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
         DateExt begin = new DateExt(dateExt.getYear(),dateExt.getMonth(),1,0,0,0);
@@ -303,111 +314,118 @@ public class DataBase extends DatabaseManager {
             listLunar.add(dateLunar);
         }
 
-        openDatabaseBaZi();
-
         List<MemberDataRow> list = new ArrayList<MemberDataRow>();
-        String[] params = new String[]{};
 
-        String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
-        String currentMonth = dateExt.getFormatDateTime("MM");
-        String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
+        if(openDatabaseBaZi()) {
 
-        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('"+beforeMonth+"','"+currentMonth+"','"+afterMonth+"') Order By Birthday_Refactor ASC";
-        Cursor cur = dbBaZi.rawQuery(sql,params);
+            String[] params = new String[]{};
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
-            String birthdayStr = cur.getString(birthdayIndex);
-            DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
-            DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
+            String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
+            String currentMonth = dateExt.getFormatDateTime("MM");
+            String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
 
-            for(DateLunar dateLunar : listLunar) {
-                if (dateLunar.getLunarDay() == tempDateLunar.getLunarDay() &&
-                        dateLunar.getLunarMonth() == tempDateLunar.getLunarMonth() &&
-                        dateLunar.getIsLeapMonth() == tempDateLunar.getIsLeapMonth()) {
-                    MemberDataRow memberDataRow = createMemberDataRowByCursor(cur);
-                    memberDataRow.setIsLunarBirthday(true);
-                    list.add(memberDataRow);
+            String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('" + beforeMonth + "','" + currentMonth + "','" + afterMonth + "') Order By Birthday_Refactor ASC";
+            Cursor cur = dbBaZi.rawQuery(sql, params);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+                String birthdayStr = cur.getString(birthdayIndex);
+                DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
+                DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
+
+                for (DateLunar dateLunar : listLunar) {
+                    if (dateLunar.getLunarDay() == tempDateLunar.getLunarDay() &&
+                            dateLunar.getLunarMonth() == tempDateLunar.getLunarMonth() &&
+                            dateLunar.getIsLeapMonth() == tempDateLunar.getIsLeapMonth()) {
+                        MemberDataRow memberDataRow = createMemberDataRowByCursor(cur);
+                        memberDataRow.setIsLunarBirthday(true);
+                        list.add(memberDataRow);
+                    }
                 }
             }
+
+            cur.close();
+            dbBaZi.close();
         }
-
-        cur.close();
-        dbBaZi.close();
-
         return list;
     }
 
 
     public List<DateLunar> getLunarBithdayByMonth(DateExt dateExt)
     {
-        openDatabaseBaZi();
-
         List<DateLunar> list = new ArrayList<DateLunar>();
-        String[] params = new String[]{};
 
-        String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
-        String currentMonth = dateExt.getFormatDateTime("MM");
-        String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
+        if(openDatabaseBaZi()) {
 
-        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('"+beforeMonth+"','"+currentMonth+"','"+afterMonth+"') Order By Birthday_Refactor ASC";
-        Cursor cur = dbBaZi.rawQuery(sql,params);
+            String[] params = new String[]{};
 
-        LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+            String beforeMonth = new DateExt(dateExt.getDate()).addMonths(-1).getFormatDateTime("MM");
+            String currentMonth = dateExt.getFormatDateTime("MM");
+            String afterMonth = new DateExt(dateExt.getDate()).addMonths(1).getFormatDateTime("MM");
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
-            String birthdayStr = cur.getString(birthdayIndex);
-            DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
-            DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
+            String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) in ('" + beforeMonth + "','" + currentMonth + "','" + afterMonth + "') Order By Birthday_Refactor ASC";
+            Cursor cur = dbBaZi.rawQuery(sql, params);
 
-            list.add(tempDateLunar);
+            LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+                String birthdayStr = cur.getString(birthdayIndex);
+                DateExt tempDateExt = new DateExt(birthdayStr, "yyyy-MM-dd HH:mm:ss");
+                DateLunar tempDateLunar = lunarCalendarWrapper.getDateLunar(tempDateExt);
+
+                list.add(tempDateLunar);
+            }
+
+            cur.close();
+            dbBaZi.close();
         }
-
-        cur.close();
-        dbBaZi.close();
 
         return list;
     }
 
     public List<String> getBirthdayByMonth(String month)
     {
-        openDatabaseBaZi();
-
         List<String> list = new ArrayList<String>();
-        String[] params = new String[]{};
 
-        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) = '"+month+"' Order By Birthday_Refactor ASC";
-        Cursor cur = dbBaZi.rawQuery(sql,params);
+        if(openDatabaseBaZi()) {
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
-            String birthdayStr = cur.getString(birthdayIndex);
-            list.add(birthdayStr.substring(5, 10));
+            String[] params = new String[]{};
+
+            String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) = '" + month + "' Order By Birthday_Refactor ASC";
+            Cursor cur = dbBaZi.rawQuery(sql, params);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+                String birthdayStr = cur.getString(birthdayIndex);
+                list.add(birthdayStr.substring(5, 10));
+            }
+
+            cur.close();
+            dbBaZi.close();
         }
-
-        cur.close();
-        dbBaZi.close();
 
         return list;
     }
 
     public List<MemberDataRow> getBirthdayDataRowsByMonth(String month)
     {
-        openDatabaseBaZi();
-
         List<MemberDataRow> list = new ArrayList<MemberDataRow>();
-        String[] params = new String[]{};
 
-        String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) = '"+month+"' Order By Birthday_Refactor ASC";
-        Cursor cur = dbBaZi.rawQuery(sql,params);
+        if(openDatabaseBaZi()) {
 
-        for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-            list.add(createMemberDataRowByCursor(cur));
+            String[] params = new String[]{};
+
+            String sql = "SELECT * FROM Members where strftime('%m',Birthday_Refactor) = '" + month + "' Order By Birthday_Refactor ASC";
+            Cursor cur = dbBaZi.rawQuery(sql, params);
+
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                list.add(createMemberDataRowByCursor(cur));
+            }
+
+            cur.close();
+            dbBaZi.close();
         }
-
-        cur.close();
-        dbBaZi.close();
 
         return list;
     }

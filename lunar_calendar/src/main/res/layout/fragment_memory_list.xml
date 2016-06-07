@@ -2,6 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/tvToday"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="wrap_content"
+            android:text="当日"
+            android:textColor="@color/white"
+            android:background="@drawable/button_flatten"/>
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/tvCurrentWeek"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="wrap_content"
+            android:text="本周"
+            android:textColor="@color/white"
+            android:background="@drawable/button_flatten"/>
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/tvCurrentMonth"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="wrap_content"
+            android:text="本月"
+            android:textColor="@color/white"
+            android:background="@drawable/button_flatten"/>
+    </LinearLayout>
 <ListView android:id="@+id/lvEvents"
     android:layout_width="match_parent"
     android:layout_height="match_parent"></ListView>

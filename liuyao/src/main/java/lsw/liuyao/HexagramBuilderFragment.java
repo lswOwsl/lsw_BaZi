@@ -113,7 +113,7 @@ public class HexagramBuilderFragment extends Fragment {
 
         DateExt tempDateExt = new DateExt(dateExt.getDate());
         int indexOfWeek = tempDateExt.getIndexOfWeek();
-        String weekDay = indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
+        String weekDay =  LunarCalendar.toChineseDayInWeek(indexOfWeek);
 
         tvDate.setText(dateExt.getFormatDateTime(formatDateTime) +" (星期"+ weekDay +")");
 
