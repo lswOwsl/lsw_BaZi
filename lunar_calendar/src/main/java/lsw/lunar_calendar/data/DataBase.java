@@ -166,6 +166,7 @@ public class DataBase extends DatabaseManager {
             cv.put(EventRecord.DF_ActualResult, model.getActualResult());
             cv.put(EventRecord.DF_RecordCycle, model.getRecordCycle());
             cv.put(EventRecord.DF_LunarTime, model.getLunarTime());
+            cv.put(EventRecord.DF_ReferenceContent,model.getReferenceContent());
             dbCalendar.insert(EventRecord.TB_EventRecord, null, cv);
 
             String sql = "select * from "+EventRecord.TB_EventRecord+" order by ID desc limit 1";
@@ -176,6 +177,7 @@ public class DataBase extends DatabaseManager {
             ContentValues values = new ContentValues();
             values.put(EventRecord.DF_ActualResult, model.getActualResult());
             values.put(EventRecord.DF_AnalyzeResult, model.getAnalyzeResult());
+            values.put(EventRecord.DF_ReferenceContent,model.getReferenceContent());
             String whereClause = EventRecord.DF_Id + "=?";
             String[] whereArgs = {String.valueOf(model.getId())};
             dbCalendar.update(EventRecord.TB_EventRecord, values, whereClause, whereArgs);

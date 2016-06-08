@@ -19,6 +19,8 @@ import com.example.swli.myapplication20150519.model.Member;
 
 import java.util.List;
 
+import lsw.library.CrossAppKey;
+
 /**
  * Created by swli on 5/27/2015.
  */
@@ -27,6 +29,9 @@ public class MemberAdapter extends BaseAdapter implements SectionIndexer {
     private List<Member> data;
     private Context context;
     private LayoutInflater layoutInflater;
+
+    boolean fromCalendarApp = false;
+    Intent in = null;
 
     private ICallBackDialog<Integer> deleteButtonClick;
     public void setDeleteButtonClick (ICallBackDialog<Integer> deleteButtonClick) {
@@ -38,6 +43,9 @@ public class MemberAdapter extends BaseAdapter implements SectionIndexer {
         this.data = data;
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
+        in = ((Activity)context).getIntent();
+        if(in.getExtras() != null && in.getExtras().containsKey(CrossAppKey.RequestInfo))
+            fromCalendarApp = true;
     }
 
     @Override
@@ -117,22 +125,38 @@ public class MemberAdapter extends BaseAdapter implements SectionIndexer {
             }
         });
 
+        if(fromCalendarApp)
+        {
+            controls.btnEdit.setText("选中");
+            controls.btnDelete.setVisibility(View.GONE);
+        }
+
+
         controls.btnEdit.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
+                if (fromCalendarApp) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(CrossAppKey.MemberId, member.getId());
+                    in.putExtras(bundle);
+                    //设置返回结果成功
+                    activity.setResult(activity.RESULT_OK, in);
+                    //关闭当前activity
+                    activity.finish();
+                } else {
+                    Intent intent = new Intent();
 
-                Bundle bundle = createBundle(member);
-                if(activity instanceof MemberHome)
-                {
-                    bundle.putString("SearchText", ((MemberHome)activity).getSearchText());
+                    Bundle bundle = createBundle(member);
+                    if (activity instanceof MemberHome) {
+                        bundle.putString("SearchText", ((MemberHome) activity).getSearchText());
+                    }
+
+                    intent.putExtras(bundle);
+                    intent.setClass(context, MemberMaintain.class);
+                    Activity activity = (Activity) context;
+                    activity.startActivityForResult(intent, 0);
                 }
-
-                intent.putExtras(bundle);
-                intent.setClass(context, MemberMaintain.class);
-                Activity activity = (Activity) context;
-                activity.startActivityForResult(intent, 0);
             }
         });
 //        controls.btnShensha.setOnClickListener(new View.OnClickListener() {

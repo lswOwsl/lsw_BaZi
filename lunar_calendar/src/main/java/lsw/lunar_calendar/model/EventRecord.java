@@ -19,6 +19,7 @@ public class EventRecord {
     public static final String DF_AnalyzeResult = "AnalyzeResult";
     public static final String DF_RecordCycle = "RecordCycle";
     public static final String DF_LunarTime = "LunarTime";
+    public static final String DF_ReferenceContent = "ReferenceContent";
 
     private int id;
 
@@ -37,6 +38,15 @@ public class EventRecord {
     private String recordCycle;
     private String lunarTime;
     private RecordType recordType;
+    private String referenceContent;
+
+    public String getReferenceContent() {
+        return referenceContent;
+    }
+
+    public void setReferenceContent(String referenceContent) {
+        this.referenceContent = referenceContent;
+    }
 
     public String getBeginTime() {
         return beginTime;
@@ -118,5 +128,6 @@ public class EventRecord {
         setAnalyzeResult(StringHelper.getString(cursor.getString(cursor.getColumnIndex(DF_AnalyzeResult))));
         setRecordCycle(cursor.getString(cursor.getColumnIndex(DF_RecordCycle)));
         setLunarTime(cursor.getString(cursor.getColumnIndex(DF_LunarTime)));
+        setReferenceContent(cursor.getString(cursor.getColumnIndex(DF_ReferenceContent)));
     }
 }

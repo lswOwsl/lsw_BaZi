@@ -25,7 +25,7 @@ import lsw.lunar_calendar.model.EventRecord;
  */
 public class Memory extends Activity {
 
-    private TextView tvBeginTime, tvEndTime, tvNote, tvForecast, tvSave, tvReturnValue;
+    private TextView tvBeginTime, tvEndTime, tvNote, tvForecast, tvSave, tvReturnValueLiuYao, tvReturnValueBaZi;
     private EditText etForecast, etNote;
     private CheckBox cbBaZi, cbLiuYao;
     private LinearLayout llNote, llForecast;
@@ -68,7 +68,8 @@ public class Memory extends Activity {
         tvNote = (TextView)findViewById(R.id.tvNote);
         tvForecast = (TextView)findViewById(R.id.tvForecast);
 
-        tvReturnValue = (TextView)findViewById(R.id.tvReturnValue);
+        tvReturnValueLiuYao = (TextView)findViewById(R.id.tvReturnValueLiuYao);
+        tvReturnValueBaZi = (TextView)findViewById(R.id.tvReturnValueBaZi);
 
         tvSave = (TextView)findViewById(R.id.tvSave);
 
@@ -109,6 +110,22 @@ public class Memory extends Activity {
             lunarTime = eventRecord.getLunarTime();
             etForecast.setText(eventRecord.getAnalyzeResult());
             etNote.setText(eventRecord.getActualResult());
+            String referenceContent = eventRecord.getReferenceContent();
+            if(referenceContent != null && !referenceContent.isEmpty()) {
+                String[] array = referenceContent.split(";");
+                for (String s : array) {
+                    if (s.contains("hexagramId")) {
+                        tvReturnValueLiuYao.setText("所选卦序号" + s.substring(s.indexOf(":")));
+                        paramHexagramId = Integer.valueOf(s.substring(s.indexOf(":")+1));
+                        cbLiuYao.setChecked(true);
+                    }
+                    if (s.contains("memberId")) {
+                        tvReturnValueBaZi.setText("所选八字序号" + s.substring(s.indexOf(":")));
+                        paramMemberId = Integer.valueOf(s.substring(s.indexOf(":")+1));
+                        cbBaZi.setChecked(true);
+                    }
+                }
+            }
         }
 
         if(beginTime.compareTo(endTime) == DateExt.EnumDateCompareResult.Equal)
@@ -142,6 +159,12 @@ public class Memory extends Activity {
                 eventRecord.setAnalyzeResult(etForecast.getText().toString());
                 eventRecord.setActualResult(etNote.getText().toString());
                 eventRecord.setLunarTime(lunarTime);
+                String referenceContent = "";
+                if(paramHexagramId != 0)
+                    referenceContent = "hexagramId:"+paramHexagramId+";";
+                if(paramMemberId != 0)
+                    referenceContent += "memberId:"+paramMemberId+";";
+                eventRecord.setReferenceContent(referenceContent);
                 eventRecord = dataBase.saveEventRecord(eventRecord);
 
                 eventRecordId = eventRecord.getId();
@@ -164,17 +187,40 @@ public class Memory extends Activity {
                     intent.putExtras(bundle);
                     startActivityForResult(intent, 10);
                 }
+                else
+                {
+                    paramHexagramId = 0;
+                    tvReturnValueLiuYao.setText("------绑定信息从六爻排盘");
+                }
             }
         });
 
         cbBaZi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+                if(b)
+                {
+                    Intent intent = new Intent();
+                    ComponentName componetName = new ComponentName(
+                            "com.example.swli.myapplication20150519",
+                            "com.example.swli.myapplication20150519.MemberHome");
+                    intent.setComponent(componetName);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CrossAppKey.RequestInfo, "lsw_bazi");
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, 10);
+                }
+                else
+                {
+                    paramMemberId = 0;
+                    tvReturnValueBaZi.setText("------绑定信息从八字排盘");
+                }
             }
         });
     }
 
+    int paramHexagramId = 0;
+    int paramMemberId = 0;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 10) {
@@ -182,11 +228,18 @@ public class Memory extends Activity {
             //resultcode 区分结果是否属于正常返回
             if (resultCode == Activity.RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                boolean flag =  bundle.containsKey(CrossAppKey.HexagramId);
-                if(flag)
+                boolean flagLiuYao =  bundle.containsKey(CrossAppKey.HexagramId);
+                if(flagLiuYao)
                 {
-                    int hexagramId = bundle.getInt(CrossAppKey.HexagramId);
-                    tvReturnValue.setText(hexagramId);
+                    paramHexagramId = bundle.getInt(CrossAppKey.HexagramId);
+                    tvReturnValueLiuYao.setText("所选卦序号:"+paramHexagramId);
+                }
+
+                boolean flagBaZi = bundle.containsKey(CrossAppKey.MemberId);
+                if(flagBaZi)
+                {
+                    paramMemberId = bundle.getInt(CrossAppKey.MemberId);
+                    tvReturnValueBaZi.setText("所选八字序号:"+paramMemberId);
                 }
             } else if (resultCode == RESULT_CANCELED) {
                 //操作失败

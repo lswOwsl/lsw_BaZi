@@ -79,10 +79,12 @@
             android:text=""
             android:textSize="15dp" />
 
-        <TextView android:id="@+id/tvReturnValue" android:layout_margin="10dp" android:text="------绑定信息从八字排盘或六爻排盘"
+        <TextView android:id="@+id/tvReturnValueLiuYao" android:layout_margin="10dp" android:text="------绑定信息从六爻排盘"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
+        <TextView android:id="@+id/tvReturnValueBaZi" android:layout_margin="10dp" android:text="------绑定信息从八字排盘"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout android:id="@+id/llNote"
