@@ -15,7 +15,37 @@ public class DayModel {
     private boolean isToday;
     private boolean isSelected;
     private boolean isSolarTerm;
+    private String solarTermText;
+
+    public String getSolarTermText() {
+        return solarTermText;
+    }
+
+    public void setSolarTermText(String solarTermText) {
+        this.solarTermText = solarTermText;
+    }
+
+    private boolean isWeekend;
+
+    public boolean isWeekend() {
+        return isWeekend;
+    }
+
+    public void setIsWeekend(boolean isWeekend) {
+        this.isWeekend = isWeekend;
+    }
+
     private boolean showNotifyPoint;
+
+    public boolean isShowNotifyPointBottom() {
+        return showNotifyPointBottom;
+    }
+
+    public void setShowNotifyPointBottom(boolean showNotifyPointBottom) {
+        this.showNotifyPointBottom = showNotifyPointBottom;
+    }
+
+    private boolean showNotifyPointBottom;
 
     public boolean isShowNotifyPoint() {
         return showNotifyPoint;

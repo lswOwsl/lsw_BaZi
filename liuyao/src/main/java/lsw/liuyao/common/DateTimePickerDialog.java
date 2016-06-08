@@ -43,6 +43,14 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
 
     private TextView tvTitle;
 
+    private boolean onlyShowYear;
+
+    public DateTimePickerDialog(int year, Activity activity, boolean onlyShowYear)
+    {
+        this(new DateExt(year,1,1,0,0,0),activity,false);
+        this.onlyShowYear = onlyShowYear;
+    }
+
     public DateTimePickerDialog(DateExt initDateExt, Activity activity, boolean showMinute)
     {
         this.initDateExt = initDateExt;
@@ -105,6 +113,22 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
             tvTitle.setVisibility(View.INVISIBLE);
         }
 
+        if(onlyShowYear)
+        {
+            timePicker.setVisibility(View.GONE);
+
+            int monthId = activity.getResources().getIdentifier("android:id/month", null, null);
+            int dayId = activity.getResources().getIdentifier("android:id/day", null, null);
+
+            ViewGroup monthVP = (ViewGroup)datePicker.findViewById(monthId);
+            monthVP.setVisibility(View.GONE);
+            ViewGroup dayVP = (ViewGroup)datePicker.findViewById(dayId);
+            dayVP.setVisibility(View.GONE);
+
+            //2 是年, 1是日, 0是月 （英文系统）
+            // ((ViewGroup) ((ViewGroup) datePicker.getChildAt(0)).getChildAt(0)).getChildAt(0).setVisibility(View.GONE);
+        }
+
         return ad;
     }
 
@@ -122,6 +146,12 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
         if(!showMinute) {
             tvTitle.setText(getTitleByDate(de));
         }
+        if(onlyShowYear)
+        {
+            LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(de);
+            String yearEra = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfYear());
+            tvTitle.setText(yearEra + "年");
+        }
         initDateExt = de;
     }
 
@@ -133,9 +163,9 @@ public class DateTimePickerDialog implements DatePicker.OnDateChangedListener, T
     private String getTitleByDate(DateExt dateExt)
     {
         LunarCalendarWrapper lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
-        String monthEar = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfMonth());
+        String monthEar = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfMonth(true));
         String dayEra = lunarCalendarWrapper.toStringWithSexagenary(lunarCalendarWrapper.getChineseEraOfDay());
 
-        return monthEar+"月"+"   "+dayEra+"日";
+        return monthEar+"月"+"   "+dayEra+"日 (星期" + dateExt.getChineseDayOfWeek()+")";
     }
 }

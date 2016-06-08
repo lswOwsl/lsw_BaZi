@@ -1,25 +1,40 @@
 package lsw.liuyao.data;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
+import android.util.DisplayMetrics;
+import android.view.ContextThemeWrapper;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import lsw.hexagram.LineComparator;
 import lsw.library.ColorHelper;
+import lsw.liuyao.HexagramAnalyzerActivity;
 import lsw.liuyao.R;
+import lsw.liuyao.model.HexagramLineNote;
 import lsw.model.EnumLineSymbol;
 import lsw.model.Hexagram;
 import lsw.model.Line;
@@ -46,6 +61,11 @@ public class HexagramAdapter extends BaseAdapter {
         return this.sixAnimals;
     }
 
+    private List<HexagramLineNote> lineNotes;
+    private Database database;
+
+    private int easyChangedLineIndex = 0;
+
     public HexagramAdapter(Hexagram hexagram, Context context)
     {
         this(hexagram,context,false);
@@ -60,6 +80,26 @@ public class HexagramAdapter extends BaseAdapter {
         this.layoutInflater = LayoutInflater.from(context);
         this.isChangedHexagram = isChangedHexagram;
         colorHelper = ColorHelper.getInstance(context);
+
+        database = new Database(context);
+        lineNotes = database.getHexagramByNameAndLinePosition(hexagram.getName());
+
+        if(!isChangedHexagram) {
+            int totalLineCount = 55;
+            for (Line line : this.lines) {
+                totalLineCount -= line.getLineSymbol().value();
+            }
+
+            //先用总数除于6，例如7就是从上爻开始数（除6后肯定是奇数），如果是15（除6后余的是偶数）从初爻开始数
+            int totalMod = totalLineCount % 6;
+            totalMod = totalMod == 0 ? 1 : totalMod;
+            //如果不是偶数从上爻开始数
+            if ((totalLineCount / 6) % 2 != 0) {
+                easyChangedLineIndex = 7 - totalMod;
+            } else {
+                easyChangedLineIndex = totalMod;
+            }
+        }
     }
 
     @Override
@@ -95,7 +135,7 @@ public class HexagramAdapter extends BaseAdapter {
         } else {
             controls = (Controls) view.getTag();
         }
-        Line line = lines.get(i);
+        final Line line = lines.get(i);
         //String lineText= line.getSixRelation().toString() +" " + line.getEarthlyBranch().getName() + " " + line.getEarthlyBranch().getFiveElement().toString();
         //controls.tvLine.setText(lineText);
         controls.tvLine.setText("");
@@ -110,15 +150,19 @@ public class HexagramAdapter extends BaseAdapter {
 
         if(!isChangedHexagram) {
 
+            if(line.getPosition() == easyChangedLineIndex)
+            {
+                controls.tvSixAnimal.setBackgroundColor(Color.YELLOW);
+            }
+            else
+                controls.tvSixAnimal.setBackgroundColor(Color.WHITE);
+
             String self = hexagram.getSelf() == line.getPosition() ? "世" : "";
             String target = hexagram.getTarget() == line.getPosition() ? "应" : "";
+
             controls.tvSelfTarget.setText(self+target);
 
             if (line.getEarthlyBranchAttached() != null) {
-//                String attachedLineText = line.getSixRelationAttached().toString() + " "
-//                        + line.getEarthlyBranchAttached().getName() + " "
-//                        + line.getEarthlyBranchAttached().getFiveElement().toString();
-//                controls.tvAttachedLine.setText(attachedLineText);
                 controls.tvAttachedLine.setText("");
                 SpannableString ssSixRelationAttached = ColorHelper.getTextByColor(line.getSixRelationAttached().toString(), Color.GRAY);
                 SpannableString ssNameAttached = colorHelper.getColorTerrestrial(line.getEarthlyBranchAttached().getName());
@@ -145,7 +189,7 @@ public class HexagramAdapter extends BaseAdapter {
         }
 
         int resourceId = R.drawable.yang;
-        EnumLineSymbol lineSymbol = line.getLineSymbol();
+        final EnumLineSymbol lineSymbol = line.getLineSymbol();
         if(lineSymbol.equals(EnumLineSymbol.LaoYang))
             resourceId = R.drawable.laoyang;
         else if(lineSymbol.equals(EnumLineSymbol.LaoYin))
@@ -153,6 +197,88 @@ public class HexagramAdapter extends BaseAdapter {
         else if(lineSymbol.equals(EnumLineSymbol.Yin))
             resourceId = R.drawable.yin;
         controls.ivLineSymbol.setImageResource(resourceId);
+
+
+
+        final HashMap<Integer,String> mappingPosition = new HashMap<Integer, String>();
+        mappingPosition.put(2,"二");
+        mappingPosition.put(3,"三");
+        mappingPosition.put(4,"四");
+        mappingPosition.put(5,"五");
+
+        final int linePosition = 6 - i;
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String noteTuanCi = "";
+                String noteXiangCi = "";
+                String noteTuanCiD = "";
+                String noteXiangCiD = "";
+
+                for(HexagramLineNote lineNote : lineNotes )
+                {
+                    if(lineNote.getPosition() == linePosition)
+                    {
+                        if(lineNote.getNoteType().trim().equals("彖"))
+                        {
+                            noteTuanCi = lineNote.getOriginalNote();
+                            noteTuanCiD = lineNote.getDecoratedNote();
+                        }
+                        else
+                        {
+                            noteXiangCi = lineNote.getOriginalNote();
+                            noteXiangCiD = lineNote.getDecoratedNote();
+                        }
+                    }
+                }
+
+                String title = linePosition + "";
+
+                if (lineSymbol == EnumLineSymbol.LaoYang || lineSymbol == EnumLineSymbol.Yang)
+                    title = "九";
+                else
+                    title = "六";
+
+                if(linePosition == 1)
+                    title = "初" + title;
+                else if(linePosition == 6)
+                    title = "上" + title;
+                else
+                {
+                    title = title + mappingPosition.get(linePosition);
+                }
+
+                LayoutInflater inflater = LayoutInflater.from(context);
+                View lineNoteView = inflater.inflate(R.layout.common_hexagram_description, null);
+                TextView tvTitle = (TextView)lineNoteView.findViewById(R.id.tvTitle);
+                TextView tvTuanCiNote = (TextView)lineNoteView.findViewById(R.id.tvTuanCiNote);
+                TextView tvTuanCiNoteDecorated = (TextView)lineNoteView.findViewById(R.id.tvTuanCiNoteDecorated);
+
+                TextView tvXiangCiNote = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNote);
+                TextView tvXiangCiNoteDecorated = (TextView)lineNoteView.findViewById(R.id.tvXiangCiNoteDecorated);
+
+                tvTitle.setText(title);
+                tvTuanCiNote.setText(noteTuanCi);
+                tvTuanCiNoteDecorated.setText(noteTuanCiD);
+                tvXiangCiNote.setText(noteXiangCi);
+                tvXiangCiNoteDecorated.setText(noteXiangCiD);
+
+                Dialog dialog = new Dialog(context,R.style.CustomDialog);
+                dialog.setContentView(lineNoteView);
+                dialog.show();
+
+                WindowManager windowManager = ((Activity)context).getWindowManager();
+
+                Display display = windowManager.getDefaultDisplay();
+                Window win = dialog.getWindow();
+                DisplayMetrics dm = new DisplayMetrics();
+                display.getMetrics(dm);
+                win.setLayout(dm.widthPixels/3*2, dm.heightPixels /3*2);
+
+            }
+        });
+
         return view;
     }
 

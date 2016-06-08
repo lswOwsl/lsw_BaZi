@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="@color/white">
+    <LinearLayout android:id="@+id/topFunctions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal">
+        <TextView android:text="复 位" android:id="@+id/tvResetImages"
+            android:gravity="center" android:layout_margin="3dp"
+            android:layout_width="match_parent" android:textColor="@color/white"
+            android:layout_height="match_parent"  android:background="@drawable/button_flatten" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/llcontent"
+        android:layout_alignParentEnd="true" android:orientation="vertical"
+        android:layout_above="@+id/bottomFunctions"
+        android:layout_below="@+id/topFunctions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+<HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <FrameLayout android:id="@+id/fl_Image_Select" android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <FrameLayout android:id="@+id/fl_Price_List" android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</HorizontalScrollView>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/bottomFunctions" android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_alignParentBottom="true">
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/tvPrice"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="wrap_content"
+            android:text="价格查询"
+            android:textColor="@color/white"
+            android:background="@drawable/button_flatten"/>
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/tvCapture"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_height="wrap_content"
+            android:text="导出当前卦例图片"
+            android:textColor="@color/white"
+            android:background="@drawable/button_flatten"/>
+    </LinearLayout>
+
+</RelativeLayout>

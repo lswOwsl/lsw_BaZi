@@ -1,6 +1,7 @@
 package lsw.library;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -30,6 +31,11 @@ public class ColorHelper {
 
     private static HashMap<String,Integer> fiveElement_Color;
     private static HashMap<String,String> fiveElement_Chs;
+
+    public static int getSolarTermColor()
+    {
+        return Color.rgb(255,140,0);
+    }
 
     public static int getColorByFiveElement(String fiveElement)
     {

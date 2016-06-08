@@ -9,7 +9,7 @@
     <string name="sliding_button_edit">编辑</string>
     <string name="sliding_button_shensha">神煞</string>
 
-    <bool name="isRelease">false</bool>
+    <bool name="isRelease">true</bool>
     <bool name="includeAD">false</bool>
 
 <!-- TODO: Remove or change this placeholder text -->

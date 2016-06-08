@@ -1,0 +1,22 @@
+<Menu>
+	<Item Name="全部" Condition=""/>
+	<Item Name="静卦卦例" Condition=" where ChangedName is null"/>
+	<Item Name="上周卦例" Condition=" where ShakeDate > '{lastMonday}' and '{lastSunday}' > ShakeDate "/>
+	<Item Name="本周卦例" Condition=" where ShakeDate > '{thisWeek}'"/>
+	<Item Name="期货卦例">
+		<SubItem Name="上周五至今" Condition=" where ShakeDate > '{fromLastFriday}' and Note like '%走势%'"/>
+		<SubItem Name="全部" Condition=" where Note like '%鸡蛋%' or Note like '%玉米%' or Note like '%螺纹%' or Note like '%郑煤%' or Note like '%豆粕%' or Note like '%菜粕%'"></SubItem>
+		<SubItem Name="鸡蛋" Condition=" where Note like '%鸡蛋%'"></SubItem>
+		<SubItem Name="玉米" Condition=" where Note like '%玉米%'"></SubItem>
+		<SubItem Name="螺纹" Condition=" where Note like '%螺纹%'"></SubItem>
+		<SubItem Name="郑煤" Condition=" where Note like '%郑煤%'"></SubItem>
+		<SubItem Name="豆粕" Condition=" where Note like '%豆粕%'"></SubItem>
+		<SubItem Name="菜粕" Condition=" where Note like '%菜粕%'"></SubItem>
+	</Item>
+	<Item Name="自己事" Condition=" where Note like '%自己%' or Note like '%自占%'">
+	</Item>
+	<Item Name="他人事" Condition=" where Note not like '%自己%' and Note not like'%走势%' and Note not like '%自占%'">
+	</Item>
+	<Item Name="手机起卦" Condition=" where Note like '%锤子%' or Note like'%手机%'">
+	</Item>
+</Menu>

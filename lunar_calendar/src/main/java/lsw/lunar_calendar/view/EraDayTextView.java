@@ -31,7 +31,7 @@ public class EraDayTextView extends TextView {
         String t = typedArray.getString(R.styleable.EraDayTextView_TerrestrialText);
         isDisable = typedArray.getBoolean(R.styleable.EraDayTextView_IsDisable, false);
 
-        setColorText(c, t, isDisable);
+        setColorText(c, t, isDisable, false);
 
         typedArray.recycle();
     }
@@ -55,7 +55,7 @@ public class EraDayTextView extends TextView {
         return hashMap.get(t);
     }
 
-    public void setColorText(String c, String t, boolean isNotDisable)
+    public void setColorText(String c, String t, boolean isNotDisable, boolean isSolarTerm)
     {
         setText("");
         if(isNotDisable) {
@@ -63,8 +63,15 @@ public class EraDayTextView extends TextView {
             this.append(getTSapnnable(t));
         }
         else {
-            this.append(ColorHelper.getTextByColor(c, Color.LTGRAY));
-            this.append(ColorHelper.getTextByColor(t, Color.LTGRAY));
+            if(isSolarTerm)
+            {
+                this.append(ColorHelper.getTextByColor(c, ColorHelper.getSolarTermColor()));
+                this.append(ColorHelper.getTextByColor(t, ColorHelper.getSolarTermColor()));
+            }
+            else {
+                this.append(ColorHelper.getTextByColor(c, Color.LTGRAY));
+                this.append(ColorHelper.getTextByColor(t, Color.LTGRAY));
+            }
         }
     }
 

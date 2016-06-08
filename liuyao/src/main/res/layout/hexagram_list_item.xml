@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff">
+    android:background="#fff"
+    android:id="@+id/swipe"  >
 
-    <RelativeLayout android:gravity="center_vertical|right"
+    <LinearLayout android:gravity="center_vertical|right"
         android:id="@+id/back"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:background="@drawable/list_item_background_repeat"
         android:tag="back">
 
         <TextView
             android:textColor="#fff"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:padding="10dp"
             android:textSize="16dp"
@@ -36,7 +38,7 @@
             android:text="删除"
             android:layout_alignParentRight="true" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/front"
@@ -107,5 +109,5 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</FrameLayout>
+</com.daimajia.swipe.SwipeLayout>
 

@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import lsw.utility.FileHelper;
+
 /**
  * Created by swli on 8/3/2015.
  */
@@ -40,6 +42,7 @@ public class DatabaseManager {
                 //判断数据库文件是否存在，若不存在则执行导入，否则直接打开数据库
                 InputStream is = resource; //欲导入的数据库
                 FileOutputStream fos = new FileOutputStream(databaseFile);
+
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int count = 0;
                 while ((count = is.read(buffer)) > 0) {
@@ -76,5 +79,17 @@ public class DatabaseManager {
     {
         int commentIndex = cursor.getColumnIndex(columnName);
         return StringHelper.getString(cursor.getString(commentIndex));
+    }
+
+    public int getColumnIntValue(Cursor cursor,String columnName)
+    {
+        int commentIndex = cursor.getColumnIndex(columnName);
+        return cursor.getInt(commentIndex);
+    }
+
+    public double getColumnDoubleValue(Cursor cursor,String columnName)
+    {
+        int commentIndex = cursor.getColumnIndex(columnName);
+        return cursor.getDouble(commentIndex);
     }
 }

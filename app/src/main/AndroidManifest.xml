@@ -33,10 +33,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.SEND"/>
             </intent-filter>
         </activity>
-        <service android:name=".service.TimerService" android:enabled="true" android:process=":remote"></service>
-        <receiver android:name=".service.TimerReceiver" android:label="@string/app_name">
+        <service android:name=".common.TimerServiceCustomize" android:enabled="true" android:process=":remote"></service>
+        <receiver android:name="lsw.service.TimerReceiver" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -17,18 +17,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import lsw.library.CrossAppKey;
 import lsw.library.DatabaseManager;
+import lsw.utility.FileHelper;
 
 
 public class DBManager extends DatabaseManager {
-
-    public static final String DB_NAME = "myapplication20150519.db"; //保存的数据库文件名
-    public static final String PACKAGE_NAME = "com.example.swli.myapplication20150519";
-    //private final String DB_PATH = Environment
-      //      .getExternalStorageDirectory().getAbsolutePath() +"/"+ PACKAGE_NAME;
-    public static final String DB_PATH = "/data"
-            + Environment.getDataDirectory().getAbsolutePath() + "/"
-            + PACKAGE_NAME;  //在手机里存放数据库的位置(/data/data/com.cssystem.activity/cssystem.db)
 
 
     private Context context;
@@ -38,8 +32,8 @@ public class DBManager extends DatabaseManager {
     }
 
     public void openDatabase() {
-        System.out.println(DB_PATH + "/" + DB_NAME);
-        super.database = this.openDatabase(DB_PATH + "/" + DB_NAME);
+        System.out.println(CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI);
+        super.database = this.openDatabase(CrossAppKey.DB_PATH_BAZI + "/" + CrossAppKey.DB_NAME_BAZI);
     }
 
     private SQLiteDatabase openDatabase(String databaseFile) {
@@ -51,6 +45,7 @@ public class DBManager extends DatabaseManager {
         InputStream is = this.context.getResources().openRawResource(
                 resourceId); //欲导入的数据库
 
+        FileHelper.createFolder(CrossAppKey.DB_PATH_BAZI);
         return super.openDatabase(databaseFile,is);
     }
 

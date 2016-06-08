@@ -1,7 +1,9 @@
 package lsw.liuyao.data;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import lsw.Util;
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendar;
 import lsw.library.StringHelper;
@@ -26,14 +29,15 @@ import lsw.liuyao.model.HexagramRow;
 import lsw.liuyao.wxapi.WXEntryActivity;
 import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
 
-import com.fortysevendeg.swipelistview.SwipeListView;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 /**
  * Created by swli on 8/18/2015.
  */
-public class HexagramListAdapter extends BaseAdapter {
+public class HexagramListAdapter extends BaseSwipeAdapter {
 
     ArrayList<HexagramRow> rows;
     Activity context;
@@ -61,11 +65,17 @@ public class HexagramListAdapter extends BaseAdapter {
         return rows;
     }
 
+    boolean fromCalendarApp = false;
+    Intent in = null;
+
     public HexagramListAdapter(ArrayList<HexagramRow> rows,  Activity context)
     {
         this.rows = rows;
         this.context = context;
         this.database = new Database(context);
+        in = context.getIntent();
+        if(in.getExtras() != null && in.getExtras().containsKey(CrossAppKey.RequestInfo))
+            fromCalendarApp = true;
     }
 
     @Override
@@ -84,11 +94,24 @@ public class HexagramListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public int getSwipeLayoutResourceId(int i) {
+        return R.id.swipe;
+    }
+
+    @Override
+    public View generateView(int i, ViewGroup viewGroup) {
+        return LayoutInflater.from(context).inflate(R.layout.hexagram_list_item, null);
+    }
+
+    @Override
+    public void fillValues(int i, View view) {
+        SwipeLayout swipeLayout = ((SwipeLayout) view);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Right, swipeLayout.findViewById(R.id.back));
+
         final HexagramRow item = rows.get(i);
         ViewHolder holder;
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.hexagram_list_item, null);
+//       if (view == null) {
             holder = new ViewHolder();
             holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
             holder.tvOriginalName = (TextView) view.findViewById(R.id.tvOriginalName);
@@ -98,15 +121,14 @@ public class HexagramListAdapter extends BaseAdapter {
             holder.btnDelete = (TextView) view.findViewById(R.id.btnDelete);
 
             holder.tvNote = (TextView) view.findViewById(R.id.tvNote);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-        //((SwipeListView) viewGroup).recycle(view, i);
+//            view.setTag(holder);
+//        } else {
+//            holder = (ViewHolder) view.getTag();
+//        }
 
         DateExt tempDateExt = new DateExt(item.getDate());
         int indexOfWeek = tempDateExt.getIndexOfWeek();
-        String weekDay = indexOfWeek == 0 ? "日" : LunarCalendar.toChineseDayInWeek(indexOfWeek);
+        String weekDay = LunarCalendar.toChineseDayInWeek(indexOfWeek);
         holder.tvDate.setText(tempDateExt.getFormatDateTime("yyyy年MM月dd日") + " (星期" + weekDay + ")");
         holder.tvOriginalName.setText("主卦: " + item.getOriginalName());
         String changedName = item.getChangedName();
@@ -119,20 +141,37 @@ public class HexagramListAdapter extends BaseAdapter {
         holder.tvNote.setText(item.getNote());
         holder.tvNote.setSelected(true);
 
+        if(fromCalendarApp)
+        {
+            holder.btnAnalyze.setText("选中");
+            holder.btnDelete.setVisibility(View.GONE);
+        }
+
         holder.btnAnalyze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent mIntent = new Intent(context, HexagramAnalyzerActivity.class);
-                Bundle mBundle = new Bundle();
-                mBundle.putString(IntentKeys.FormatDate, item.getDate());
-                mBundle.putString(IntentKeys.OriginalName, item.getOriginalName());
-                mBundle.putString(IntentKeys.ChangedName, item.getChangedName());
-                mBundle.putInt(IntentKeys.HexagramRowId, item.getId());
-                mIntent.putExtras(mBundle);
+               if(fromCalendarApp) {
+                   Bundle bundle = new Bundle();
+                   bundle.putInt(CrossAppKey.HexagramId, item.getId());
+                   in.putExtras(bundle);
+                   //设置返回结果成功
+                   context.setResult(context.RESULT_OK, in);
+                   //关闭当前activity
+                   context.finish();
+               }
+                else {
+                   Intent mIntent = new Intent(context, HexagramAnalyzerActivity.class);
+                   Bundle mBundle = new Bundle();
+                   mBundle.putString(IntentKeys.FormatDate, item.getDate());
+                   mBundle.putString(IntentKeys.OriginalName, item.getOriginalName());
+                   mBundle.putString(IntentKeys.ChangedName, item.getChangedName());
+                   mBundle.putInt(IntentKeys.HexagramRowId, item.getId());
+                   mIntent.putExtras(mBundle);
 
-                context.startActivity(mIntent);
-                context.finish();
+                   context.startActivity(mIntent);
+                   //context.finish();
+               }
             }
         });
 
@@ -140,13 +179,25 @@ public class HexagramListAdapter extends BaseAdapter {
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database.deleteHexagram(item.getId());
-                if(onReload != null)
-                    onReload.invoke(index);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setMessage("删除当前记录？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        database.deleteHexagram(item.getId());
+                        if(onReload != null)
+                            onReload.invoke(index);
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create().show();
+
+
             }
         });
 
-        return view;
     }
 
     static class ViewHolder {

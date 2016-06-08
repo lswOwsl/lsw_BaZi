@@ -2,59 +2,91 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent" android:gravity="center">
-
+<LinearLayout android:orientation="horizontal" android:layout_weight="1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<TextView android:text="上\n卦"
+    android:id="@+id/tvUpperTrigram"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent" />
     <LinearLayout
-        android:id="@+id/llLine6"
-        style="@style/YaoContainerStyle">
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/llLine6"
+            style="@style/YaoContainerStyle">
 
-        <TextView
-            style="@style/YaoTipStyle"
-            android:text="六爻" />
+            <TextView
+                style="@style/YaoTipStyle"
+                android:text="六爻" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLine5"
+            style="@style/YaoContainerStyle">
+
+            <TextView
+                style="@style/YaoTipStyle"
+                android:text="五爻" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLine4"
+            style="@style/YaoContainerStyle">
+
+            <TextView
+                style="@style/YaoTipStyle"
+                android:text="四爻" />
+        </LinearLayout>
     </LinearLayout>
+</LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llLine5"
-        style="@style/YaoContainerStyle">
-
+    <LinearLayout android:orientation="horizontal" android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <TextView
-            style="@style/YaoTipStyle"
-            android:text="五爻" />
-    </LinearLayout>
+            android:id="@+id/tvLowerTrigram"
+            android:text="下\n卦"
+            android:paddingLeft="20dp" android:paddingRight="20dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/llLine3"
+                style="@style/YaoContainerStyle">
 
-    <LinearLayout
-        android:id="@+id/llLine4"
-        style="@style/YaoContainerStyle">
+                <TextView
+                    style="@style/YaoTipStyle"
+                    android:text="三爻" />
+            </LinearLayout>
 
-        <TextView
-            style="@style/YaoTipStyle"
-            android:text="四爻" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llLine2"
+                style="@style/YaoContainerStyle">
 
-    <LinearLayout
-        android:id="@+id/llLine3"
-        style="@style/YaoContainerStyle">
+                <TextView
+                    style="@style/YaoTipStyle"
+                    android:text="二爻" />
+            </LinearLayout>
 
-        <TextView
-            style="@style/YaoTipStyle"
-            android:text="三爻" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llLine1"
+                style="@style/YaoContainerStyle">
 
-    <LinearLayout
-        android:id="@+id/llLine2"
-        style="@style/YaoContainerStyle">
+                <TextView
+                    style="@style/YaoTipStyle"
+                    android:text="一爻" />
+            </LinearLayout>
+        </LinearLayout>
 
-        <TextView
-            style="@style/YaoTipStyle"
-            android:text="二爻" />
-    </LinearLayout>
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llLine1"
-        style="@style/YaoContainerStyle">
-
-        <TextView
-            style="@style/YaoTipStyle"
-            android:text="一爻" />
-    </LinearLayout>
 
 </LinearLayout>

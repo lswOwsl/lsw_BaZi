@@ -3,13 +3,25 @@
     xmlns:era="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <LinearLayout android:layout_margin="1dp"
+    <lsw.lunar_calendar.view.DayNotifyPointView
+        android:id="@+id/viewDayNotifyPoint"
+        android:layout_width="15dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="2dp"
+        android:background="@android:color/holo_red_dark" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
         android:orientation="horizontal"
-        android:paddingBottom="3dp" android:paddingRight="3dp">
+        android:paddingBottom="3dp"
+        android:paddingRight="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,17 +29,13 @@
             android:orientation="vertical">
 
             <lsw.lunar_calendar.view.DayTextView
-                android:layout_marginLeft="3dp" android:layout_marginTop="3dp"
                 android:id="@+id/tvDay"
                 android:layout_width="28dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="3dp"
                 android:gravity="center"
-                android:textSize="20dp"
-                />
-
-            <lsw.lunar_calendar.view.DayNotifyPointView android:id="@+id/viewDayNotifyPoint"
-                android:layout_width="6dp" android:layout_gravity="right"
-                android:layout_height="2dp" android:background="#FFD552" />
+                android:textSize="20dp" />
 
             <lsw.lunar_calendar.view.LunarDayTextView
                 android:id="@+id/tvLunarDay"
@@ -35,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="初一"
-                android:textSize="10dp" android:textColor="#ccc" />
+                android:textColor="#ccc"
+                android:textSize="10dp" />
         </LinearLayout>
 
         <lsw.lunar_calendar.view.EraDayTextView
@@ -45,6 +54,14 @@
             android:ems="1"
             android:gravity="center"
             era:CelestialText="甲"
-            era:TerrestrialText="子"/>
+            era:TerrestrialText="子" />
     </LinearLayout>
+
+    <lsw.lunar_calendar.view.DayNotifyPointView
+        android:id="@+id/viewDayNotifyPointBottom"
+        android:layout_width="15dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="2dp"
+        android:background="@android:color/holo_orange_dark" />
 </LinearLayout>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/lltop"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout android:gravity="center"
+            android:layout_width="match_parent" android:paddingTop="5dp"
+            android:layout_height="wrap_content" android:orientation="horizontal">
+
+            <TextView android:layout_centerInParent="true"
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="备注"
+                android:textSize="16dp" />
+
+        </RelativeLayout>
+
+        <View android:layout_marginTop="0dp"
+            style="@style/PartLine"
+            android:layout_marginBottom="0dp"></View>
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_below="@+id/lltop"
+            android:layout_above="@+id/llend"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText  android:textSize="15dp"
+                    android:text=""
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:maxLines="2"
+                    android:scrollbars="vertical"
+                    android:id="@+id/editText"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="5dp">
+
+
+            </LinearLayout>
+
+            <FrameLayout android:id="@+id/fl_Image_Select"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+
+    <LinearLayout android:id="@+id/llend" android:gravity="center"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:paddingBottom="5dp">
+        <View style="@style/PartLine"
+            android:layout_marginTop="5dp"></View>
+<LinearLayout
+    android:layout_width="match_parent" android:gravity="center"
+    android:layout_height="wrap_content" android:orientation="horizontal">
+        <TextView
+            android:textColor="#fff"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textSize="10dp"
+            android:text="选择图片"
+            android:id="@+id/btnImageNote"
+            android:background="@drawable/button_flatten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="#fff"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textSize="10dp"
+            android:text=" 保 存 "
+            android:id="@+id/btnSaveNote"
+            android:background="@drawable/button_flatten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"  />
+</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

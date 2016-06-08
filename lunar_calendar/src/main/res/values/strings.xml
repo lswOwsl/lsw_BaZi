@@ -3,5 +3,5 @@
 
     <string name="action_settings">Settings</string>
 
-    <bool name="includeAD">true</bool>
+    <bool name="includeAD">false </bool>
 </resources>

@@ -1,28 +1,42 @@
 package lsw.liuyao;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
-import com.baidu.autoupdatesdk.UICheckUpdateCallback;
-import com.fortysevendeg.swipelistview.SwipeListView;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+//import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
+//import com.baidu.autoupdatesdk.UICheckUpdateCallback;
+
+
+import net.simonvt.menudrawer.MenuDrawer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lsw.ContactAuthor;
-import lsw.liuyao.advertising.BaiDuBanner;
+//import lsw.liuyao.advertising.BaiDuBanner;
+import lsw.liuyao.common.MyApplication;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.data.HexagramListAdapter;
+import lsw.liuyao.data.HexagramListMenuExpandableAdapter;
+import lsw.liuyao.data.xml.XmlInitialData;
+import lsw.liuyao.model.HexagramMenuData;
 import lsw.liuyao.model.HexagramRow;
-import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
 
 
 /**
@@ -30,26 +44,79 @@ import lsw.liuyao.wxapi.WeiXinSendMessageHelper;
  */
 public class HexagramListActivity extends Activity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, HexagramListAdapter.OnReload {
 
-    SwipeListView swipeListView;
+    SearchView searchView;
+    ListView swipeListView;
     Database database;
     HexagramListAdapter hexagramListAdapter;
     private String searchText;
 
     private ProgressDialog dialog;
 
+    private MenuDrawer mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hexagram_list_activity);
 
-        BaiDuBanner baiDuBanner = new BaiDuBanner(this);
-        baiDuBanner.create();
+        //setContentView(R.layout.hexagram_list_activity);
+        mDrawer = MenuDrawer.attach(this);
+        mDrawer.setMenuView(R.layout.hexagram_list_menu);
+        mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
+        mDrawer.setContentView(R.layout.hexagram_list_activity);
 
-        getActionBar().setDisplayHomeAsUpEnabled(false);
-        getActionBar().setDisplayShowCustomEnabled(true);
+        final List<HexagramMenuData> menuData = XmlInitialData.getInstance().getMenuData();
 
-        initControls();
+        ExpandableListView expandableListView = (ExpandableListView) findViewById(R.id.lvMenu);
+        expandableListView.setAdapter(new HexagramListMenuExpandableAdapter(this, menuData));
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                HexagramMenuData selectedChild = menuData.get(i).getSecondLevelData().get(i1);
+                MyApplication.getInstance().setSearchCondition(selectedChild.getCondition());
+                searchView.setIconified(true);
+                searchView.onActionViewCollapsed();
+                hexagramListAdapter.setRows(database.getHexagramList(searchText));
+                hexagramListAdapter.notifyDataSetChanged();
+
+                mDrawer.closeMenu();
+
+                return false;
+            }
+        });
+
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                HexagramMenuData selectedParent = menuData.get(i);
+                MyApplication.getInstance().setSearchCondition(selectedParent.getCondition());
+                if(selectedParent.getSecondLevelData() == null || selectedParent.getSecondLevelData().size() == 0) {
+                    searchView.setIconified(true);
+                    searchView.onActionViewCollapsed();
+                    hexagramListAdapter.setRows(database.getHexagramList(searchText));
+                    hexagramListAdapter.notifyDataSetChanged();
+                    mDrawer.closeMenu();
+                }
+                return false;
+            }
+        });
+
+        TextView tvPriceSearch = (TextView) findViewById(R.id.tvFuturePriceSearch);
+        tvPriceSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(HexagramListActivity.this, FuturePriceSearchListActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+
+        //BaiDuBanner baiDuBanner = new BaiDuBanner(this);
+        //baiDuBanner.create();
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        swipeListView = (ListView) findViewById(R.id.slv_Hexagram);
+
         database = new Database(this);
         ArrayList<HexagramRow> hexagrams = database.getHexagramList("");
         hexagramListAdapter = new HexagramListAdapter(hexagrams,this);
@@ -59,44 +126,28 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         swipeListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
 
 
-        //SinaData sinaData = new SinaData(this);
-//        sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_Day_Method + "RB1601", new SinaData.IResult<String>() {
-//            @Override
-//            public void invoke(String s) {
-//                String rr = s;
-//                ArrayList<DailyData> dailyDatas = SinaData.parseDataByString(s);
-//            }
-//        });
+        //dialog = new ProgressDialog(this);
+        //dialog.setIndeterminate(true);
 
-//        sinaData.getResponeFromURL(SinaData.Sina_Url + SinaData.Sina_OneHour_Method + "RB1601", new SinaData.IResult< ArrayList<DailyData>>() {
-//            @Override
-//            public void invoke( ArrayList<DailyData> s) {
-//                String rr = "";
-//            }
-//        });
-
-        dialog = new ProgressDialog(this);
-        dialog.setIndeterminate(true);
-
-        dialog.show();
-        BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
+        //dialog.show();
+        //BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
     }
 
-    private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
-
-        @Override
-        public void onCheckComplete() {
-            dialog.dismiss();
-        }
-
-    }
+//    private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
+//
+//        @Override
+//        public void onCheckComplete() {
+//            dialog.dismiss();
+//        }
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        SearchView searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
         searchView.setQueryHint("主卦 日期(年-月-日) 备注");
         searchView.setOnQueryTextListener(this);
         searchView.setOnQueryTextListener(this);
@@ -112,6 +163,14 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id == android.R.id.home)
+        {
+            if(mDrawer.isMenuVisible())
+                mDrawer.closeMenu();
+            else
+                mDrawer.openMenu();
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.menuAdd) {
 
@@ -125,6 +184,8 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             Intent intent = new Intent();
             intent.setClass(HexagramListActivity.this, HexagramBuilderActivity.class);
             startActivityForResult(intent, 0);
+
+            overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             return true;
         }
         if(id == R.id.menuContact)
@@ -134,13 +195,32 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             startActivityForResult(intentContact, 0);
             return true;
         }
+        if(id == R.id.menuExportHexagram) {
+
+            List<HexagramRow> hexagramList = database.getHexagramList("");
+            String path = Environment.getExternalStorageDirectory() +"/"+
+                    MyApplication.getInstance().getResources().getString(R.string.externalSavingFolder)+"/";
+            database.saveHexagramsToXML(hexagramList, path);
+
+            AlertDialog.Builder dialog = new AlertDialog.Builder(HexagramListActivity.this);
+            dialog.setTitle("倒出记录成功!")
+                    .setMessage("文件位于目录"+path)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).create().show();
+
+        }
+        if(id == R.id.menuImportHexagram){
+            Intent intentImport = new Intent();
+            intentImport.setClass(HexagramListActivity.this, HexagramImportActivity.class);
+            startActivityForResult(intentImport,0);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void initControls()
-    {
-        swipeListView = (SwipeListView) findViewById(R.id.slv_Hexagram);
     }
 
     @Override
@@ -169,7 +249,7 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
             case RESULT_CANCELED:
                 hexagramListAdapter.setRows(database.getHexagramList(""));
                 hexagramListAdapter.notifyDataSetChanged();
-                swipeListView.closeOpenedItems();
+                //swipeListView.closeOpenedItems();
                 break;
             default:
                 break;
@@ -181,6 +261,44 @@ public class HexagramListActivity extends Activity implements SearchView.OnQuery
         hexagramListAdapter.setRows(database.getHexagramList(searchText));
         hexagramListAdapter.notifyDataSetChanged();
         //close open items 必须最后调用，要不删除后不能反应到list页面上
-        swipeListView.closeOpenedItems();
+        //swipeListView.closeOpenedItems();
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    // 定义一个变量，来标识是否退出
+    private static boolean isExit = false;
+
+    Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+
+            MyApplication.getInstance().setSearchCondition("");
+
+            finish();
+            System.exit(0);
+        }
+    }
+
 }

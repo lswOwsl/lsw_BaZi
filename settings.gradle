@@ -1,1 +1,1 @@
-include ':app', ':baidu_appx_android_2.0.0', ':baidu_cuid', ':mylibrary', ':lunar_calendar', ':liuyao', ':BDAutoUpdateSDK_20150605_V1.2.0',':swipelistview'
+include ':app', ':baidu_appx_android_2.0.0', ':baidu_cuid', ':mylibrary', ':lunar_calendar', ':liuyao', ':BDAutoUpdateSDK_20150605_V1.2.0', ':silkbag'

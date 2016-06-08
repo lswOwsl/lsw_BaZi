@@ -1,46 +1,59 @@
 package lsw.liuyao;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
-import android.view.KeyEvent;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lsw.PhotoImagesFullSizeFragment;
 import lsw.hexagram.Analyzer;
 import lsw.hexagram.Builder;
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
+import lsw.library.LunarCalendar;
 import lsw.library.LunarCalendarWrapper;
 import lsw.library.StringHelper;
 import lsw.library.Utility;
-import lsw.liuyao.advertising.BaiDuInterstitial;
+//import lsw.liuyao.advertising.BaiDuInterstitial;
 import lsw.liuyao.common.DateTimePickerDialog;
 import lsw.liuyao.common.IntentKeys;
+import lsw.liuyao.common.NoteFragmentDialog;
 import lsw.liuyao.data.Database;
 import lsw.liuyao.model.HexagramRow;
+import lsw.liuyao.model.ImageAttachment;
 import lsw.model.Hexagram;
 import lsw.model.Line;
+import lsw.utility.CaptureImage;
+import lsw.utility.Image.ImageSelectListener;
+import lsw.utility.Image.SourceImage;
+
+import net.simonvt.menudrawer.MenuDrawer;
 
 /**
  * Created by swli on 8/7/2015.
  */
-public class HexagramAnalyzerActivity extends Activity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
+public class HexagramAnalyzerActivity extends FragmentActivity implements View.OnTouchListener, HexagramAutoAnalyzerFragment.OnFragmentInteractionListener{
 
     String formatDateTime = "yyyy年MM月dd日";
     LunarCalendarWrapper lunarCalendarWrapper;
@@ -56,13 +69,88 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     HexagramRow hexagramRow;
     int hexagramRowId;
 
-    BaiDuInterstitial baiDuInterstitial;
+    private MenuDrawer mDrawer;
+    //private SwipeListView swipeListView;
+
+    //BaiDuInterstitial baiDuInterstitial;
+
+    ArrayList<SourceImage> listImages = new ArrayList<SourceImage>();
+
+    public void loadMenuFragment(int hexagramRowId)
+    {
+        final int hexagramId = hexagramRowId;
+        listImages.clear();
+
+        List<ImageAttachment> imageAttachments = database.getImageAttachmentByHexagramId(hexagramRowId);
+        for(ImageAttachment attachment: imageAttachments)
+        {
+            SourceImage sourceImage = new SourceImage();
+            sourceImage.setFullUrl(attachment.getUrl());
+            listImages.add(sourceImage);
+        }
+
+        if(imageAttachments.size() > 0)
+        {
+            mDrawer.getMenuView().setEnabled(true);
+            mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+            FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+            MenuPhotoImagesFragment menuPhotoImagesFragment = MenuPhotoImagesFragment.createFragment(listImages,true);
+            menuPhotoImagesFragment.setImageSelectListener(new ImageSelectListener() {
+                @Override
+                public void invoke(ArrayList<SourceImage> sourceImages, int index) {
+                    //full image view
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    PhotoImagesFullSizeFragment f = PhotoImagesFullSizeFragment.createFragment(sourceImages, index);
+                    f.setCurrentFragmentManager(getSupportFragmentManager());
+                    ft.replace(R.id.fl_Image_Select, f);
+
+                    FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime(), hexagramId);
+                    futurePriceFragment.setShowCondition(false);
+                    ft.replace(R.id.fl_Price_List, futurePriceFragment);
+                    ft.commit();
+
+                    flPriceList.setVisibility(View.VISIBLE);
+
+                }
+            });
+            ftt.replace(R.id.fl_Image_Select, menuPhotoImagesFragment, null);
+            ftt.commit();
+        }
+        else {
+            mDrawer.getMenuView().setEnabled(false);
+            mDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_NONE);
+        }
+    }
+
+    private int menuWidth;
+
+    FrameLayout flImageSelect, flPriceList;
+
+    String formatDate, originalName, changedName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         database = new Database(this);
+
+        Intent intent= getIntent();
+        Bundle bundle = intent.getExtras();
+
+        hexagramRowId = intent.getIntExtra(CrossAppKey.HexagramId, -1);
+        if(hexagramRowId != -1) {
+            HexagramRow row = database.getHexagramById(hexagramRowId);
+            originalName = row.getOriginalName();
+            changedName = row.getChangedName();
+            formatDate = row.getDate();
+        }
+        else {
+            formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
+            originalName = bundle.getString(IntentKeys.OriginalName);
+            changedName = bundle.getString(IntentKeys.ChangedName);
+            hexagramRowId = bundle.getInt(IntentKeys.HexagramRowId);
+        }
+
         // 去掉窗口标题
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -72,16 +160,85 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         // 第二种：（两种方法效果一样）
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         // WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.hexagram_analyze_activity);
+        mDrawer = MenuDrawer.attach(this);
+        mDrawer.setMenuView(R.layout.menu_left);
 
-        baiDuInterstitial = new BaiDuInterstitial(this);
-        baiDuInterstitial.create();
+        mDrawer.setContentView(R.layout.hexagram_analyze_activity);
 
-        Bundle bundle = getIntent().getExtras();
-        final String formatDate = getIntent().getStringExtra(IntentKeys.FormatDate);
+        mDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
+            @Override
+            public void onDrawerStateChange(int oldState, int newState) {
 
-        String originalName = bundle.getString(IntentKeys.OriginalName);
-        String changedName = bundle.getString(IntentKeys.ChangedName);
+            }
+
+            @Override
+            public void onDrawerSlide(float openRatio, int offsetPixels) {
+
+            }
+        });
+
+        loadMenuFragment(hexagramRowId);
+
+        //侧边栏宽度，占整窗体的3/2
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        menuWidth = dm.widthPixels / 3 * 2;
+        mDrawer.setMenuSize(menuWidth);
+
+        flImageSelect = (FrameLayout) mDrawer.getMenuView().findViewById(R.id.fl_Image_Select);
+        flImageSelect.setLayoutParams(new LinearLayout.LayoutParams(menuWidth, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        flPriceList = (FrameLayout) mDrawer.getMenuView().findViewById(R.id.fl_Price_List);
+        flPriceList.setLayoutParams(new LinearLayout.LayoutParams(menuWidth, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        TextView tvResetImages =  (TextView)mDrawer.getMenuView().findViewById(R.id.tvResetImages);
+        tvResetImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMenuFragment(hexagramRowId);
+
+                flPriceList.setVisibility(View.GONE);
+            }
+        });
+
+        TextView tvPrice = (TextView) mDrawer.getMenuView().findViewById(R.id.tvPrice);
+        tvPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+                FuturePriceFragment futurePriceFragment = FuturePriceFragment.createFragment(initDate.getFormatDateTime(), hexagramRowId);
+                ftt.replace(R.id.fl_Image_Select, futurePriceFragment, null);
+                ftt.commit();
+
+                flPriceList.setVisibility(View.GONE);
+            }
+        });
+
+        TextView tvCapture = (TextView)mDrawer.getMenuView().findViewById(R.id.tvCapture);
+        tvCapture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap b1 = CaptureImage.captureViewToImage(mDrawer.getContentContainer());
+                Bitmap b2 = CaptureImage.captureViewToImage((FrameLayout)mDrawer.getMenuView().findViewById(R.id.fl_Image_Select));
+                Bitmap b3 = CaptureImage.combineImages(b2, b1);
+                ListView lvPrice = (ListView)mDrawer.getMenuView().findViewById(R.id.lvPrice);
+                if(lvPrice != null) {
+                    Bitmap b4 = CaptureImage.getWholeListViewItemsToBitmap(lvPrice);
+                    b3 = CaptureImage.combineImages(b4, b3);
+                }
+                CaptureImage.saveBitmap(b3, "/" + CrossAppKey.PACKAGE_NAME_LIUYAO + "/"
+                                + analyzeDate.getFormatDateTime("yyyy-MM-dd") +
+                        hexagramRow.getOriginalName() + "-" + hexagramRow.getChangedName() +
+                        "(" + new DateExt().getFormatDateTime("yyyy-MM-dd<HH:mm:ss>") + ")"+ ".jpg");
+                        Toast.makeText(getApplicationContext(), "图片保存成功.文件位于" + CrossAppKey.PACKAGE_NAME_LIUYAO, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        baiDuInterstitial = new BaiDuInterstitial(this);
+//        baiDuInterstitial.create();
+
         ArrayList<Line> models = null;
         if(StringHelper.isNullOrEmpty(originalName)) {
             models = (ArrayList<Line>) bundle.getSerializable(IntentKeys.LineModelList);
@@ -93,35 +250,30 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         analyzer = new Analyzer(this);
 
         btnNote = (TextView) findViewById(R.id.btnNote);
-        int hexagramRowId = bundle.getInt(IntentKeys.HexagramRowId);
         //如果不是从列表页 分析 跳转过来的，要隐藏存储备注按钮
-        if( hexagramRowId <= 0)
+        if(hexagramRowId <= 0)
         {
             btnNote.setVisibility(View.GONE);
         }
         else
         {
-            this.hexagramRowId = hexagramRowId;
             hexagramRow =  database.getHexagramById(hexagramRowId);
         }
 
         btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditText et = new EditText(HexagramAnalyzerActivity.this);
-                et.setText(hexagramRow.getNote());
-                new AlertDialog.Builder(HexagramAnalyzerActivity.this).setTitle("备注记录").setIcon(
-                        android.R.drawable.ic_dialog_info)
-                        .setView(et)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                hexagramRow.setNote(et.getText().toString());
-                                database.updateHexagram(hexagramRow);
-                                Toast.makeText(HexagramAnalyzerActivity.this,"更新备注记录成功",Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("取消", null).show();
+
+                NoteFragmentDialog dialog = NoteFragmentDialog.newInstance(hexagramRow);
+                dialog.setOnSaveListener(new NoteFragmentDialog.OnSaveListener() {
+                    @Override
+                    public void afterSave() {
+                        loadMenuFragment(hexagramRowId);
+                    }
+                });
+
+                dialog.show(getSupportFragmentManager(), "");
+
             }
         });
 
@@ -145,7 +297,7 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
             ArrayList<String> list = analyzer.orderedStringResult(stringBuilder.toString());
 
             HexagramBuilderFragment analyzerFragment = HexagramBuilderFragment.newInstance(original, changed, formatDate);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fl_Hexagram_Analyzer, analyzerFragment, null);
 
             HexagramAutoAnalyzerFragment autoAnalyzerFragment = HexagramAutoAnalyzerFragment.newInstance(list);
@@ -191,15 +343,20 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     private void bindAnalyzeResult(DateExt dateExt)
     {
         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
-        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth();
+        int eraMonthIndex = lunarCalendarWrapper.getChineseEraOfMonth(true);
         int eraDayIndex = lunarCalendarWrapper.getChineseEraOfDay();
         Pair<String,String> xunKong = Utility.getXunKong(HexagramAnalyzerActivity.this, lunarCalendarWrapper.toStringWithCelestialStem(eraDayIndex), lunarCalendarWrapper.toStringWithTerrestrialBranch(eraDayIndex));
         String eraText =
                 lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex) + "月   " +
                         lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex) +"日   (" + xunKong.first+ xunKong.second+")空";
-        tvAnalyzeDate.setText(eraText +"     "+ dateExt.getFormatDateTime(formatDateTime));
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        DateExt tempDateExt = new DateExt(dateExt.getDate());
+        int indexOfWeek = tempDateExt.getIndexOfWeek();
+        String weekDay = LunarCalendar.toChineseDayInWeek(indexOfWeek);
+
+        tvAnalyzeDate.setText(eraText +"     "+ dateExt.getFormatDateTime(formatDateTime) + " (星期"+weekDay+")");
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         String eraMonth = lunarCalendarWrapper.toStringWithSexagenary(eraMonthIndex);
         String eraDay = lunarCalendarWrapper.toStringWithSexagenary(eraDayIndex);
@@ -323,14 +480,14 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
     private void scrollToMenu() {
         new ScrollTask().execute(30);
 
-        baiDuInterstitial.loadInterstitialAdOnButton();
+        //baiDuInterstitial.loadInterstitialAdOnButton();
     }
 
 
     private void scrollToContent() {
         new ScrollTask().execute(-30);
 
-        baiDuInterstitial.loadInterstitialAdOnButton();
+        //baiDuInterstitial.loadInterstitialAdOnButton();
     }
 
     private void createVelocityTracker(MotionEvent event) {
@@ -409,17 +566,17 @@ public class HexagramAnalyzerActivity extends Activity implements View.OnTouchLi
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if (keyCode == KeyEvent.KEYCODE_BACK )
-        {
-            Intent intent = new Intent(this,HexagramListActivity.class);
-            setResult(RESULT_OK, intent);
-            startActivity(intent);
-            finish();
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event)
+//    {
+//        if (keyCode == KeyEvent.KEYCODE_BACK )
+//        {
+//            Intent intent = new Intent(this,HexagramListActivity.class);
+//            setResult(RESULT_OK, intent);
+//            startActivity(intent);
+//            finish();
+//        }
+//        return false;
+//    }
 
 }

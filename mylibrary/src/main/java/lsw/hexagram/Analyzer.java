@@ -438,7 +438,9 @@ public class Analyzer  {
                 ArrayList<Integer> tempInt = new ArrayList<Integer>();
                 for(Line line : threeDynamicLineSuit)
                 {
-                    tempInt.add(line.getEarthlyBranch().getId());
+                    int currentId = line.getEarthlyBranch().getId();
+                    if(!tempInt.contains(currentId))
+                        tempInt.add(line.getEarthlyBranch().getId());
                 }
 
                 HashMap<ArrayList<Integer>, EnumFiveElement> existedSuit = funFindSuits(tempInt);
@@ -532,7 +534,7 @@ public class Analyzer  {
             if (withFirstResultLine)
             {
                 //means AnDong Line
-                if (linePairOne.first == null)
+                if (linePairOne.second == null)
                     return null;
                 return createThreeSuitByDynamicLines(linePairOne.first, linePairOne.second, linePairTwo.first, hexagram);
             }

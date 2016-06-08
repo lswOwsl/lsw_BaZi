@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:padding="3dp" android:background="@color/white">
+    <TextView android:id="@+id/tvDate"
+        android:background="@color/gray_light"
+        android:textSize="15dp"
+        android:gravity="center"
+        android:text="2016-4-19"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_marginBottom="3dp" />
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:id="@+id/tvOpenPrice"
+            android:layout_weight="1.5"
+            android:text="开:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"   />
+        <TextView android:id="@+id/tvClosePrice"
+            android:layout_weight="1.5"
+            android:text="收:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tvHighestPrice"
+            android:layout_weight="1.5"
+            android:text="高:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tvLowestPrice"
+            android:layout_weight="1.5"
+            android:text="低:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:id="@+id/tvResultOpenClose"
+            android:layout_weight="1"
+            android:text="差:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvResultOpenLowest"
+            android:layout_weight="1"
+            android:text="差:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/tvResultHighestLowest"
+        android:layout_weight="1"
+        android:text="差:"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvResultHighestClose"
+            android:layout_weight="1"
+            android:text="差:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+</LinearLayout>
+
+</LinearLayout>

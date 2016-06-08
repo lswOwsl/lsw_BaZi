@@ -46,6 +46,7 @@ public class DateExt {
     public DateExt()
     {
         calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
         //int zoneOffset = calendar.get(java.util.Calendar.ZONE_OFFSET);
         //int dstOffset = calendar.get(java.util.Calendar.DST_OFFSET);
         //calendar.add(java.util.Calendar.MILLISECOND, -(zoneOffset + dstOffset));
@@ -119,6 +120,37 @@ public class DateExt {
         return beginTime-endTime;
     }
 
+    public DateExt getLastWeekMonday()
+    {
+        int i = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
+        calendar.add(Calendar.DATE, -i - 6);
+        return new DateExt(calendar.getTime());
+    }
+
+    public DateExt getThisWeekMonday()
+    {
+        int i = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
+        calendar.add(Calendar.DATE, -i - 1);
+        return new DateExt(calendar.getTime());
+    }
+
+    public DateExt getFirstMondayInMonth()
+    {
+        int i = 1;
+
+        while(calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY){
+            calendar.set(Calendar.DAY_OF_MONTH, i++);//设置这个月的星期1 为几号
+        }
+
+        return new DateExt(calendar.getTime());
+    }
+
+    public DateExt addWeeks(int weeks)
+    {
+        calendar.add(Calendar.WEEK_OF_YEAR,weeks);
+        return new DateExt(calendar.getTime());
+    }
+
     public DateExt addDays(int days)
     {
         calendar.add(Calendar.DAY_OF_YEAR,days);
@@ -163,7 +195,8 @@ public class DateExt {
     {
         //默认 index = 1 是星期日
         int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
-        return dayIndex - 1;
+        boolean isFirstSunday = (calendar.getFirstDayOfWeek() == Calendar.SUNDAY);
+        return isFirstSunday ? dayIndex : dayIndex;
     }
 
     public EnumDateCompareResult compareTo(DateExt dateExt)
@@ -210,5 +243,11 @@ public class DateExt {
         {
             return this.value;
         }
+    }
+
+    public String getChineseDayOfWeek()
+    {
+        int indexOfWeek = this.getIndexOfWeek();
+        return  LunarCalendar.toChineseDayInWeek(indexOfWeek);
     }
 }

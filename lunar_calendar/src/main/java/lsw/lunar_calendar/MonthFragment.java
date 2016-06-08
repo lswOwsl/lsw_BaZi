@@ -2,7 +2,6 @@ package lsw.lunar_calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import lsw.library.ColorHelper;
 import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
@@ -66,12 +67,16 @@ public class MonthFragment extends Fragment {
 
     TextView preTextView, todayTextView;
 
+    DayModel preDayModel;
+
     @Override
     public void onHiddenChanged(boolean hidden)
     {
         //????????¡®??¡§??¡¤?¨C¡ã????????¡­???¨¨????¡è????????????¨¦?????line92??¡è??????????????¡¤???¨¦¡ª?¨¦??
-        if(!hidden)
+        if(!hidden) {
             preTextView = todayTextView = null;
+            preDayModel = null;
+        }
     }
 
     ResolveInfo resolveInfoForInvoke = null;
@@ -106,6 +111,7 @@ public class MonthFragment extends Fragment {
                     //intent.setPackage("com.example.swli.myapplication20150519");
                     intent.setAction(Intent.ACTION_SEND);
                     String dateExtUri = selectedDate.getFormatDateTime();
+                    //在androidmanifest.xml里面配置的schema
                     intent.setData(Uri.parse("date://" + dateExtUri));
 
                     final List<ResolveInfo> lists = getActivity().getPackageManager().queryIntentActivities(intent, 0);
@@ -153,17 +159,25 @@ public class MonthFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                DateExt selectedDate = calendarAdapter.getDayModels().get(i).getDateExt();
+                DayModel tempDayModel = calendarAdapter.getDayModels().get(i);
+                DateExt selectedDate = tempDayModel.getDateExt();
                 TextView tvDay = (TextView) view.findViewById(R.id.tvDay);
 
                 //???????????¡ë?????¡°?¡ë?????????¡­????????????¨¦?¡ë????????¡ì???
                 if (dateExt.getMonth() != selectedDate.getMonth()) {
                     preTextView = todayTextView = null;
+                    preDayModel = null;
                 } else {
                     //??¡°?¡ë????????????¡ë?????¡ë?????????¨¦?¡ë???????¡è?
                     if (preTextView != null) {
                         preTextView.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
-                        preTextView.setTextColor(Color.BLACK);
+                        if(preDayModel != null && preDayModel.isWeekend())
+                            preTextView.setTextColor(Color.RED);
+                        else if(preDayModel != null && preDayModel.isSolarTerm())
+                            preTextView.setTextColor(ColorHelper.getSolarTermColor());
+                        else
+                            preTextView.setTextColor(Color.BLACK);
+                        preDayModel = tempDayModel;
                     } else {
                         //??¡­???¨¨¡¤?¨¨?????¨¦??¨¨?¡è¨¦?¡ë???????¡ª????
                         int seletedTextViewIndex = 0;
@@ -173,7 +187,10 @@ public class MonthFragment extends Fragment {
                                 View view1 = adapterView.getChildAt(seletedTextViewIndex);
                                 TextView tvDay1 = (TextView) view1.findViewById(R.id.tvDay);
                                 tvDay1.setBackgroundResource(R.drawable.tv_circle_highlight_clear);
-                                tvDay1.setTextColor(Color.BLACK);
+                                if(!dayModel.isWeekend())
+                                    tvDay1.setTextColor(Color.BLACK);
+                                else
+                                    tvDay1.setTextColor(Color.RED);
                                 break;
                             }
                             seletedTextViewIndex++;
@@ -209,6 +226,7 @@ public class MonthFragment extends Fragment {
                     tvDay.setBackgroundResource(R.drawable.tv_circle_highlight_temp);
                     tvDay.setTextColor(Color.WHITE);
                     preTextView = tvDay;
+                    preDayModel = tempDayModel;
                 }
 
                 if (mListener != null) {
