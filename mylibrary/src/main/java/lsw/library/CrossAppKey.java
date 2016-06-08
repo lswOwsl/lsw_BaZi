@@ -7,6 +7,8 @@ import android.os.Environment;
  */
 public class CrossAppKey {
 
+    public final static String RequestInfo = "request_info";
+
     public final static String DateTime = "lunar_calendar_dateTime";
     public final static String HexagramId = "hexagram_id";
 

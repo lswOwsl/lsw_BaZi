@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import lsw.Util;
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.library.LunarCalendar;
 import lsw.library.StringHelper;
@@ -64,11 +65,17 @@ public class HexagramListAdapter extends BaseSwipeAdapter {
         return rows;
     }
 
+    boolean fromCalendarApp = false;
+    Intent in = null;
+
     public HexagramListAdapter(ArrayList<HexagramRow> rows,  Activity context)
     {
         this.rows = rows;
         this.context = context;
         this.database = new Database(context);
+        in = context.getIntent();
+        if(in.getExtras() != null && in.getExtras().containsKey(CrossAppKey.RequestInfo))
+            fromCalendarApp = true;
     }
 
     @Override
@@ -134,20 +141,37 @@ public class HexagramListAdapter extends BaseSwipeAdapter {
         holder.tvNote.setText(item.getNote());
         holder.tvNote.setSelected(true);
 
+        if(fromCalendarApp)
+        {
+            holder.btnAnalyze.setText("选中");
+            holder.btnDelete.setVisibility(View.GONE);
+        }
+
         holder.btnAnalyze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent mIntent = new Intent(context, HexagramAnalyzerActivity.class);
-                Bundle mBundle = new Bundle();
-                mBundle.putString(IntentKeys.FormatDate, item.getDate());
-                mBundle.putString(IntentKeys.OriginalName, item.getOriginalName());
-                mBundle.putString(IntentKeys.ChangedName, item.getChangedName());
-                mBundle.putInt(IntentKeys.HexagramRowId, item.getId());
-                mIntent.putExtras(mBundle);
+               if(fromCalendarApp) {
+                   Bundle bundle = new Bundle();
+                   bundle.putInt(CrossAppKey.HexagramId, item.getId());
+                   in.putExtras(bundle);
+                   //设置返回结果成功
+                   context.setResult(context.RESULT_OK, in);
+                   //关闭当前activity
+                   context.finish();
+               }
+                else {
+                   Intent mIntent = new Intent(context, HexagramAnalyzerActivity.class);
+                   Bundle mBundle = new Bundle();
+                   mBundle.putString(IntentKeys.FormatDate, item.getDate());
+                   mBundle.putString(IntentKeys.OriginalName, item.getOriginalName());
+                   mBundle.putString(IntentKeys.ChangedName, item.getChangedName());
+                   mBundle.putInt(IntentKeys.HexagramRowId, item.getId());
+                   mIntent.putExtras(mBundle);
 
-                context.startActivity(mIntent);
-                //context.finish();
+                   context.startActivity(mIntent);
+                   //context.finish();
+               }
             }
         });
 

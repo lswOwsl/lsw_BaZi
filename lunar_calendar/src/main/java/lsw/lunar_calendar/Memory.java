@@ -1,13 +1,19 @@
 package lsw.lunar_calendar;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.lunar_calendar.common.IntentKeys;
 import lsw.lunar_calendar.common.RecordType;
@@ -19,8 +25,10 @@ import lsw.lunar_calendar.model.EventRecord;
  */
 public class Memory extends Activity {
 
-    private TextView tvBeginTime, tvEndTime, tvNote, tvForecast, tvSave;
+    private TextView tvBeginTime, tvEndTime, tvNote, tvForecast, tvSave, tvReturnValue;
     private EditText etForecast, etNote;
+    private CheckBox cbBaZi, cbLiuYao;
+    private LinearLayout llNote, llForecast;
 
     private DateExt beginTime, endTime;
     private String lunarTime;
@@ -60,10 +68,18 @@ public class Memory extends Activity {
         tvNote = (TextView)findViewById(R.id.tvNote);
         tvForecast = (TextView)findViewById(R.id.tvForecast);
 
+        tvReturnValue = (TextView)findViewById(R.id.tvReturnValue);
+
         tvSave = (TextView)findViewById(R.id.tvSave);
 
         etForecast = (EditText)findViewById(R.id.etForecastNote);
         etNote = (EditText)findViewById(R.id.etNote);
+
+        cbBaZi = (CheckBox)findViewById(R.id.cbBaZi);
+        cbLiuYao = (CheckBox)findViewById(R.id.cbLiuYao);
+
+        llForecast = (LinearLayout)findViewById(R.id.llForecast);
+        llNote = (LinearLayout)findViewById(R.id.llNote);
     }
 
     private void loadParamsFromBundle(Bundle bundle)
@@ -102,14 +118,12 @@ public class Memory extends Activity {
 
         if(recordType == RecordType.Forecast)
         {
-            tvNote.setVisibility(View.GONE);
-            etNote.setVisibility(View.GONE);
+            llNote.setVisibility(View.GONE);
         }
 
         if(recordType == RecordType.Note)
         {
-            tvForecast.setVisibility(View.GONE);
-            etForecast.setVisibility(View.GONE);
+            llForecast.setVisibility(View.GONE);
         }
 
         tvBeginTime.setText(beginTime.getFormatDateTime(DateFormater));
@@ -135,5 +149,49 @@ public class Memory extends Activity {
                 Toast.makeText(Memory.this,"保存成功"+eventRecord.getId(),Toast.LENGTH_SHORT).show();
             }
         });
+
+        cbLiuYao.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    Intent intent = new Intent();
+                    ComponentName componetName = new ComponentName(
+                            "lsw.liuyao",
+                            "lsw.liuyao.HexagramListActivity");
+                    intent.setComponent(componetName);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CrossAppKey.RequestInfo, "lsw_liuyao");
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, 10);
+                }
+            }
+        });
+
+        cbBaZi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 10) {
+            //第二个页面返回来的数据
+            //resultcode 区分结果是否属于正常返回
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                boolean flag =  bundle.containsKey(CrossAppKey.HexagramId);
+                if(flag)
+                {
+                    int hexagramId = bundle.getInt(CrossAppKey.HexagramId);
+                    tvReturnValue.setText(hexagramId);
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                //操作失败
+            }
+
+        }
     }
 }
