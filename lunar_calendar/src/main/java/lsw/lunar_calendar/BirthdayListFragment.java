@@ -1,12 +1,14 @@
 package lsw.lunar_calendar;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,14 @@ import lsw.lunar_calendar.model.MemberDataRow;
 public class BirthdayListFragment extends Fragment {
 
     static String paramDate;
+
+    private TextView tvAllBirthday;
+    List<MemberDataRow> list = null;
+    List<MemberDataRow> listLunar = null;
+    DataBase dataBase = new DataBase();
+    DateExt tempDate = null;
+    ListView lv;
+    List<MemberDataRow> result = new ArrayList<MemberDataRow>();
 
     public static BirthdayListFragment newInstance(DateExt dateExt) {
         BirthdayListFragment fragment = new BirthdayListFragment();
@@ -44,6 +54,7 @@ public class BirthdayListFragment extends Fragment {
         this.forCurrentMonth = forCurrentMonth;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,22 +67,45 @@ public class BirthdayListFragment extends Fragment {
 
         String date = getArguments().getString(paramDate);
 
-        DataBase dataBase = new DataBase();
+        tempDate = new DateExt(date, "yyyy-MM-dd");
 
-        DateExt tempDate = new DateExt(date, "yyyy-MM-dd");
+        tvAllBirthday = (TextView) view.findViewById(R.id.tvAllBirthday);
+        lv  = (ListView)view.findViewById(R.id.lvBirthday);
 
-        List<MemberDataRow> result = new ArrayList<MemberDataRow>();
-        List<MemberDataRow> list = null;
-        List<MemberDataRow> listLunar = null;
+        loadListView();
+
+        tvAllBirthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isForCurrentMonth()) {
+                    setForCurrentMonth(true);
+                    loadListView();
+                }
+                else
+                {
+                    setForCurrentMonth(false);
+                    loadListView();
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private void loadListView()
+    {
         if(isForCurrentMonth())
         {
+            tvAllBirthday.setText("当日生日");
             list = dataBase.getBirthdayDataRowsByMonth(tempDate.getFormatDateTime("MM"));
             listLunar = dataBase.getLunarBirthdayDataRowsByMonth(tempDate);
         } else {
+            tvAllBirthday.setText("本月全部生日");
             list = dataBase.getBirthdayByDay(tempDate.getFormatDateTime("MM-dd"));
             listLunar = dataBase.getLunarBithdayByDay(tempDate);
         }
 
+        result.clear();
         result.addAll(list);
 
         for (MemberDataRow dataRow : listLunar) {
@@ -90,27 +124,15 @@ public class BirthdayListFragment extends Fragment {
                 result.add(dataRow);
         }
 
-        ListView lv = (ListView)view.findViewById(R.id.lvBirthday);
         lv.setAdapter(new MemberListAdapter(getActivity(), result));
-
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-//                Intent intent = new Intent();
-//                ComponentName componetName = new ComponentName(
-//                        "lsw.liuyao",
-//                        "lsw.liuyao.HexagramAnalyzerActivity");
-//                intent.setComponent(componetName);
-//                Bundle bundle = new Bundle();
-//                bundle.putInt(CrossAppKey.HexagramId, list.get(i).getId());
-//                intent.putExtras(bundle);
-//                startActivity(intent);
+                //redirect to bazi
 
             }
         });
-
-        return view;
     }
 }

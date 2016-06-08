@@ -7,33 +7,20 @@
         android:layout_height="wrap_content" android:orientation="horizontal">
 
     </LinearLayout>
-    <LinearLayout android:id="@+id/llcontent" android:orientation="vertical"
+    <android.support.v4.view.ViewPager
         android:layout_above="@+id/bottomFunctions"
         android:layout_below="@+id/topFunctions"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <FrameLayout android:id="@+id/fl_list" android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <FrameLayout android:id="@+id/fl_list_birthday" android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <FrameLayout android:id="@+id/fl_list_tip" android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        android:id="@+id/vPager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:persistentDrawingCache="animation" >
+
+    </android.support.v4.view.ViewPager>
+
     <LinearLayout android:id="@+id/bottomFunctions" android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:layout_alignParentBottom="true">
-        <TextView
-            android:id="@+id/tvAllBirthday"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_margin="3dp"
-            android:layout_height="wrap_content"
-            android:text="本月全部生日"
-            android:textColor="@color/white"
-            android:background="@drawable/button_flatten"/>
     </LinearLayout>
 
 </RelativeLayout>

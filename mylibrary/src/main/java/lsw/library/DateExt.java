@@ -196,7 +196,7 @@ public class DateExt {
         //默认 index = 1 是星期日
         int dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
         boolean isFirstSunday = (calendar.getFirstDayOfWeek() == Calendar.SUNDAY);
-        return isFirstSunday ? dayIndex - 1 : dayIndex;
+        return isFirstSunday ? dayIndex : dayIndex;
     }
 
     public EnumDateCompareResult compareTo(DateExt dateExt)

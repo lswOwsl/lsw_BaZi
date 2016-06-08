@@ -1,8 +1,6 @@
 package lsw.lunar_calendar;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,24 +8,19 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Pair;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import lsw.ContactAuthor;
 import lsw.library.BaZiHelper;
 import lsw.library.ColorHelper;
 import lsw.library.DateExt;
@@ -42,16 +35,14 @@ import lsw.lunar_calendar.common.ViewGesture;
 import lsw.lunar_calendar.data_source.CalendarAdapter;
 import lsw.lunar_calendar.data_source.CalendarTitleAdapter;
 
-import net.simonvt.menudrawer.MenuDrawer;
-
-public class Month extends Activity implements MonthFragment.OnFragmentInteractionListener {
+public class Month extends BaseMenu implements MonthFragment.OnFragmentInteractionListener {
 
     private RelativeLayout llMask;
     //private GridView gridView;
     private GridView gridViewTitle;
 
     private LayoutInflater linearLayout;
-    private DateExt initialDate;
+
 
     private TextView tvDateSelect;
     private TextView tvDateLunarSelect;
@@ -66,12 +57,8 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
     private TextView tvSolarTerm1, tvSolarTerm2;
 
-    private FrameLayout flHexagrams, flTips;
-
-    private MenuDrawer mDrawer;
-    private int menuWidth;
-
     private Context currentContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,37 +67,10 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
 
         currentContext = this;
 
-        mDrawer = MenuDrawer.attach(this);
-        mDrawer.setMenuView(R.layout.menu_left);
+
         mDrawer.setContentView(R.layout.activity_month);
 
         llMask = (RelativeLayout) findViewById(R.id.layoutMask);
-
-        mDrawer.setOnDrawerStateChangeListener(new MenuDrawer.OnDrawerStateChangeListener() {
-            @Override
-            public void onDrawerStateChange(int oldState, int newState) {
-                if (newState == MenuDrawer.STATE_CLOSED) {
-                    loadBirthdayAndHexagram(null);
-                    flHexagrams.setVisibility(View.VISIBLE);
-                    tvAllBirthday.setText("本月全部生日");
-                }
-
-            }
-
-            @Override
-            public void onDrawerSlide(float openRatio, int offsetPixels) {
-
-            }
-        });
-
-
-        //侧边栏宽度，占整窗体的3/2
-        WindowManager windowManager = getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-        menuWidth = dm.widthPixels / 3 * 2;
-        mDrawer.setMenuSize(menuWidth);
 
         BaiDuBanner banner = new BaiDuBanner(this);
         banner.create();
@@ -118,9 +78,6 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvAllBirthday = (TextView) mDrawer.getMenuView().findViewById(R.id.tvAllBirthday);
-
-        flHexagrams = (FrameLayout) findViewById(R.id.fl_list);
-        flTips = (FrameLayout) findViewById(R.id.fl_list_tip);
 
         linearLayout = LayoutInflater.from(this);
         tvDateSelect = (TextView) findViewById(R.id.tvDateSelect);
@@ -152,27 +109,6 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     }
 
     private void bindAction() {
-        tvAllBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (tvAllBirthday.getText().toString().equals("本月全部生日")) {
-                    FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                    BirthdayListFragment birthdayListFragment = BirthdayListFragment.newInstance(initialDate);
-                    birthdayListFragment.setForCurrentMonth(true);
-                    ftt.replace(R.id.fl_list_birthday, birthdayListFragment, null);
-                    ftt.commit();
-
-                    flTips.setVisibility(View.GONE);
-                    flHexagrams.setVisibility(View.GONE);
-                    tvAllBirthday.setText("恢复默认");
-                } else {
-                    loadBirthdayAndHexagram(null);
-                    flTips.setVisibility(View.VISIBLE);
-                    flHexagrams.setVisibility(View.VISIBLE);
-                    tvAllBirthday.setText("本月全部生日");
-                }
-            }
-        });
 
         tvDateSelect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -317,7 +253,7 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         tvEraMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Pair<SolarTerm,SolarTerm> pair = BaZiHelper.getPairJie(initialDate);
+                Pair<SolarTerm, SolarTerm> pair = BaZiHelper.getPairJie(initialDate);
 
                 Bundle bundle = createBundleBy(pair.first.getSolarTermDate().getFormatDateTime(),
                         pair.second.getSolarTermDate().getFormatDateTime(),
@@ -385,66 +321,6 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_month, menu);
-
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        // TODO Auto-generated method stub
-        if (item.getItemId() == android.R.id.home) {
-            if (mDrawer.isMenuVisible())
-                mDrawer.closeMenu();
-            else
-                mDrawer.openMenu();
-            return true;
-        }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menuToday) {
-            initialDate = new DateExt();
-            initFragment(initialDate);
-            loadTitileDate(initialDate);
-            lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
-            loadEraTextDetail(lunarCalendarWrapper);
-            return true;
-        }
-
-        if (id == R.id.menuContact) {
-            Intent intentContact = new Intent();
-            intentContact.setClass(Month.this, ContactAuthor.class);
-            startActivityForResult(intentContact, 0);
-            return true;
-        }
-
-        if(id == R.id.menuSetting)
-        {
-            Intent intent = new Intent();
-            intent.setClass(Month.this, Setting.class);
-            startActivityForResult(intent, 0);
-            return true;
-        }
-
-        if(id == R.id.menuMemory)
-        {
-            Intent intent = new Intent();
-            intent.setClass(Month.this, MemoryEventList.class);
-            startActivityForResult(intent, 0);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onFragmentInteraction(DateExt dateExt) {
 
         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
@@ -487,27 +363,13 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         }
         initialDate = dateExt;
 
-        loadBirthdayAndHexagram(null);
-    }
+        loadBirthdayAndHexagram();
 
-    private void loadBirthdayAndHexagram(FragmentTransaction ftt) {
-        if (ftt == null)
-            ftt = getFragmentManager().beginTransaction();
-        HexagramListFragment fragment = HexagramListFragment.newInstance(initialDate);
-        ftt.replace(R.id.fl_list, fragment, null);
-
-        BirthdayListFragment birthdayListFragment = BirthdayListFragment.newInstance(initialDate);
-        ftt.replace(R.id.fl_list_birthday, birthdayListFragment, null);
-
-        MemoryListFragment memoryListFragment = MemoryListFragment.newInstance(initialDate);
-        ftt.replace(R.id.fl_list_tip,memoryListFragment,null);
-
-        ftt.commit();
     }
 
     public void initFragment(DateExt dateExt) {
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         MonthFragment f1 = MonthFragment.newInstance(dateExt);
         ft.replace(R.id.fl_calendar, f1, "begin_calendar");
@@ -518,21 +380,23 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
             ft.hide(f2);
         }
 
-        loadBirthdayAndHexagram(ft);
+        ft.commit();
+
+        loadBirthdayAndHexagram();
     }
 
     public void loadFragment(DateExt dateExt, boolean moveDirection) {
-        MonthFragment f2 = (MonthFragment) getFragmentManager().findFragmentByTag("move_calendar");
-        MonthFragment f1 = (MonthFragment) getFragmentManager().findFragmentByTag("begin_calendar");
+        MonthFragment f2 = (MonthFragment) getSupportFragmentManager().findFragmentByTag("move_calendar");
+        MonthFragment f1 = (MonthFragment) getSupportFragmentManager().findFragmentByTag("begin_calendar");
         f1.setDateExt(dateExt);
         f2.setDateExt(dateExt);
         GridView gridView = f1.getGridView();
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (moveDirection) {
-            ft.setCustomAnimations(R.animator.vertical_bottom_enter, R.animator.vertical_top_out, 0, 0);
+            ft.setCustomAnimations(R.anim.bottom_enter, R.anim.top_out);
         } else {
-            ft.setCustomAnimations(R.animator.vertical_top_enter, R.animator.vertical_bottom_out, 0, 0);
+            ft.setCustomAnimations(R.anim.top_enter, R.anim.bottom_out);
         }
 
         if (f2.isHidden()) {
@@ -546,6 +410,23 @@ public class Month extends Activity implements MonthFragment.OnFragmentInteracti
         calendarAdapter.setDayModels(CalendarAdapter.getOneMonthDays(dateExt));
         calendarAdapter.notifyDataSetChanged();
         ft.commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.menuToday) {
+            initialDate = new DateExt();
+            initFragment(initialDate);
+            loadTitileDate(initialDate);
+            lunarCalendarWrapper = new LunarCalendarWrapper(initialDate);
+            loadEraTextDetail(lunarCalendarWrapper);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private TextView textView = null;

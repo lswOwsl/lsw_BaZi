@@ -2,11 +2,11 @@ package lsw.lunar_calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,13 +28,13 @@ import lsw.lunar_calendar.model.HexagramDataRow;
 /**
  * Created by swli on 6/3/2016.
  */
-public class MemoryListFragment extends Fragment{
+public class MemoryListFragment extends Fragment {
 
     private List<EventRecord> list;
     private MemoryListAdapter memoryListAdapter;
     private ListView lv;
 
-    private TextView tvToday,tvCurrentWeek,tvCurrentMonth;
+    private TextView tvToday,tvCurrentWeek,tvCurrentMonth, tvAll, tvTitle;
 
     private static final String Bundle_SearchText = "search_text";
     private String searchText;
@@ -83,6 +83,8 @@ public class MemoryListFragment extends Fragment{
         tvCurrentMonth = (TextView)view.findViewById(R.id.tvCurrentMonth);
         tvCurrentWeek = (TextView)view.findViewById(R.id.tvCurrentWeek);
         tvToday = (TextView)view.findViewById(R.id.tvToday);
+        tvAll = (TextView)view.findViewById(R.id.tvAll);
+        tvTitle = (TextView)view.findViewById(R.id.tvTitle);
 
         if(getArguments() != null)
         {
@@ -102,8 +104,11 @@ public class MemoryListFragment extends Fragment{
                 tvToday.setText(initDateExt.getFormatDateTime("MM-dd"));
 
                 list = dataBase.getEventRecordByDay(initDateExt);
-            }
 
+                tvCurrentWeek.setVisibility(View.GONE);
+                tvAll.setVisibility(View.GONE);
+                tvTitle.setVisibility(View.VISIBLE);
+            }
         }
         else {
             list = dataBase.getEventRecords();
@@ -177,6 +182,15 @@ public class MemoryListFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 list = dataBase.getEventRecordByDay(initDateExt);
+                memoryListAdapter = new MemoryListAdapter(getActivity(), list);
+                lv.setAdapter(memoryListAdapter);
+            }
+        });
+
+        tvAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                list = dataBase.getEventRecords();
                 memoryListAdapter = new MemoryListAdapter(getActivity(), list);
                 lv.setAdapter(memoryListAdapter);
             }

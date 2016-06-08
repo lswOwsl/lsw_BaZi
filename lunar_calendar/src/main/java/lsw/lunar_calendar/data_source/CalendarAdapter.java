@@ -137,19 +137,24 @@ public class CalendarAdapter extends BaseAdapter {
         int offsetDay = 0;
 
         if(!MyApplication.getInstance().isSaturdayForMonthFirstDay()) {
-            //以周一为日历第一天
-            if (beginIndex != 2) {
-                offsetDay = 2 - beginIndex;
-            }//index 0是星期日
-//            else if (beginIndex == 7) {
-//                offsetDay = -6;
-//            }
+            //周一是2,
+            if (beginIndex ==2) {
+                offsetDay = 0;
+            }else if(beginIndex == 1)
+            {
+                offsetDay = -6;
+            }
+            else
+            {
+                offsetDay = 2- beginIndex;
+            }
         }
         else {
             //以周日为日历第一天
-            //1,2,3,4,5,6,7 一二三四五六日
-            if (beginIndex == 7) {
-                offsetDay = 1;
+            //1,2,3,4,5,6,7 日一二三四五六
+            //当周日为第一天的时候那么设置offsetDay=0天
+            if (beginIndex == 1) {
+                offsetDay = 0;
             } else {
                 offsetDay = 1 - beginIndex;
             }

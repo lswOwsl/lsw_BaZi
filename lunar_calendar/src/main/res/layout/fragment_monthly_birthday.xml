@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView android:background="@color/gray_medium" android:textColor="@color/white"
+    <TextView
+        android:id="@+id/tvTitle"
+        android:background="@color/gray_medium" android:textColor="@color/white"
         android:text="生日" android:gravity="center"
         android:paddingTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:paddingBottom="3dp" />
 
-    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/gray_light"></View>
     <ListView android:id="@+id/lvBirthday"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tvTitle"
+        android:layout_above="@+id/tvAllBirthday"></ListView>
+
+    <TextView
+        android:layout_alignParentBottom="true"
+        android:id="@+id/tvAllBirthday"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_margin="3dp"
+        android:layout_height="wrap_content"
+        android:text="本月全部生日"
+        android:textColor="@color/white"
+        android:background="@drawable/button_flatten"/>
+</RelativeLayout>

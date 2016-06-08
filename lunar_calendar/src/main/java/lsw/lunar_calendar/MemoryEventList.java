@@ -1,9 +1,11 @@
 package lsw.lunar_calendar;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -13,7 +15,7 @@ import java.lang.reflect.Field;
 /**
  * Created by swli on 6/3/2016.
  */
-public class MemoryEventList extends Activity {
+public class MemoryEventList extends FragmentActivity {
 
     String searchText;
 
@@ -22,7 +24,7 @@ public class MemoryEventList extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memory_list);
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft =  getSupportFragmentManager().beginTransaction();
 
         MemoryListFragment f1 = MemoryListFragment.newInstance();
         ft.replace(R.id.flMemoryList, f1, "memory_list_all");
@@ -36,7 +38,7 @@ public class MemoryEventList extends Activity {
         getMenuInflater().inflate(R.menu.menu_event_list, menu);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
-        searchView.setQueryHint("阴历日期");
+        searchView.setQueryHint("日期/事件");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -46,7 +48,7 @@ public class MemoryEventList extends Activity {
             @Override
             public boolean onQueryTextChange(String s) {
                 searchText = s;
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
                 MemoryListFragment f1 = MemoryListFragment.newInstance(s);
                 ft.replace(R.id.flMemoryList, f1, "memory_list_all");
