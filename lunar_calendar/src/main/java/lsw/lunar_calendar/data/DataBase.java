@@ -151,7 +151,16 @@ public class DataBase extends DatabaseManager {
         return getEventRecordBySql(sql);
     }
 
+    public ArrayList<EventRecord> getForecastEventRecordByMonth(DateExt date)
+    {
+        String condition = date.getFormatDateTime("yyyy-MM");
+        String sql = "SELECT * FROM " + EventRecord.TB_EventRecord + " where " +
+                EventRecord.DF_AnalyzeResult + " <> '' and (" +
+                "strftime('%Y-%m'," + EventRecord.DF_BeginTime + ") = '" + condition + "' or " +
+                "strftime('%Y-%m'," + EventRecord.DF_EndTime + ") = '" + condition + "') order by "+ EventRecord.DF_BeginTime + " desc";
 
+        return getEventRecordBySql(sql);
+    }
 
     public EventRecord saveEventRecord(EventRecord model)
     {

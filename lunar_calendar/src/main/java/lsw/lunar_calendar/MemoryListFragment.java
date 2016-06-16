@@ -103,7 +103,7 @@ public class MemoryListFragment extends Fragment {
                 tvCurrentWeek.setText(beginDay.getFormatDateTime("MM-dd")+"至"+endDay.getFormatDateTime("MM-dd"));
                 tvToday.setText(initDateExt.getFormatDateTime("MM-dd"));
 
-                list = dataBase.getEventRecordByDay(initDateExt);
+                list = dataBase.getForecastEventRecordByMonth(initDateExt);
 
                 tvCurrentWeek.setVisibility(View.GONE);
                 tvAll.setVisibility(View.GONE);
