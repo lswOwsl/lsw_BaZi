@@ -115,10 +115,13 @@ public class MemoryListFragment extends Fragment {
         }
 
         lv = (ListView)view.findViewById(R.id.lvEvents);
-        memoryListAdapter = new MemoryListAdapter(getActivity(), list);
-        lv.setAdapter(memoryListAdapter);
 
-        bindAction();
+        if(list != null && list.size() > 0) {
+            memoryListAdapter = new MemoryListAdapter(getActivity(), list);
+            lv.setAdapter(memoryListAdapter);
+
+            bindAction();
+        }
 
         return view;
     }

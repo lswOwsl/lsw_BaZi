@@ -1,7 +1,10 @@
 package com.example.swli.myapplication20150519;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
@@ -10,17 +13,22 @@ import com.example.swli.myapplication20150519.activity.DaYunPickDialog;
 import com.example.swli.myapplication20150519.activity.FlowYearPickDialog;
 import com.example.swli.myapplication20150519.activity.ICallBackDialog;
 import com.example.swli.myapplication20150519.activity.MemberAnalyzeViewPager;
+import com.example.swli.myapplication20150519.activity.sidebar.SortModel;
 import com.example.swli.myapplication20150519.advertising.BaiDuBanner;
 import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
 import com.example.swli.myapplication20150519.common.BaZiHelperExtender;
+import com.example.swli.myapplication20150519.common.DBManager;
 import com.example.swli.myapplication20150519.common.EnumPart;
 import com.example.swli.myapplication20150519.model.CallBackArgs;
+import com.example.swli.myapplication20150519.model.Member;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import lsw.library.BaZiHelper;
+import lsw.library.CrossAppKey;
+import lsw.library.DatabaseManager;
 import lsw.library.DateExt;
 import lsw.library.LunarSolarTerm;
 import lsw.library.SolarTerm;
@@ -110,14 +118,64 @@ public class MemberAnalyze extends MemberBase {
 
     }
 
+    Member createMemberByCursor(Cursor cur)
+    {
+        int idIndex = cur.getColumnIndex("Id");
+        int nameIndex = cur.getColumnIndex("Name");
+        int birthdayIndex = cur.getColumnIndex("Birthday_Refactor");
+        int isMaleIndex = cur.getColumnIndex("IsMale");
+
+        String name = cur.getString(nameIndex);
+        String birthdayStr = cur.getString(birthdayIndex);
+        String isMale = cur.getString(isMaleIndex);
+        DateExt birthdayDE = new DateExt(birthdayStr,"yyyy-MM-dd HH:mm:ss");
+        int isMaleI = Integer.parseInt(isMale);
+        int id = cur.getInt(idIndex);
+
+        Member member = new Member();
+        member.setId(id);
+        member.setName(name);
+        member.setIsMale(isMaleI == 1 ? true : false);
+        member.setBirthday(birthdayDE);
+
+        return member;
+    }
+
+    int memberId;
+    String name;
+    boolean ismale;
+    DateExt birthdayDateExt;
+
     private void initContent() {
         Bundle bundle = this.getIntent().getExtras();
 
-        String name = bundle.getString("Name");
-        boolean ismale = bundle.getBoolean("Ismale");
-        final String birthday = bundle.getString("Birthday");
+        memberId = this.getIntent().getIntExtra(CrossAppKey.MemberId, -1);
+        if(memberId != -1) {
+            DBManager dbManager = new DBManager(this);
+            SQLiteDatabase database = dbManager.getDatabase();
+
+            String[] params = new String[]{ memberId+"" };
+            String sql = "SELECT * FROM Members where Id = ?";
+            Cursor cur = database.rawQuery(sql, params);
+            Member member = null;
+            for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                member = createMemberByCursor(cur);
+                break;
+            }
+
+            name = member.getName();
+            ismale = member.getIsMale();
+            birthdayDateExt = member.getBirthday();
+
+        }
+        else {
+            name = bundle.getString("Name");
+            ismale = bundle.getBoolean("Ismale");
+            String birthday = bundle.getString("Birthday");
+            birthdayDateExt = new DateExt(birthday);
+        }
+
         String isMaleText = ismale ? "男" : "女";
-        final DateExt birthdayDateExt = new DateExt(birthday);
 
         getActionBar().setTitle("姓名: " + name);
         getActionBar().setSubtitle("性别:" + isMaleText);
