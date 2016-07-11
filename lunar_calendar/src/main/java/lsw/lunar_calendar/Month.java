@@ -120,11 +120,10 @@ public class Month extends BaseMenu implements MonthFragment.OnFragmentInteracti
                         loadTitileDate(dateExt);
                         lunarCalendarWrapper = new LunarCalendarWrapper(dateExt);
                         loadEraTextDetail(lunarCalendarWrapper);
-
                         initFragment(dateExt);
-
                         initialDate = dateExt;
 
+                        loadBirthdayAndHexagram();
                     }
                 });
                 dialog.show();
@@ -143,6 +142,8 @@ public class Month extends BaseMenu implements MonthFragment.OnFragmentInteracti
                         loadEraTextDetail(lunarCalendarWrapper);
                         initFragment(dateExt);
                         initialDate = dateExt;
+
+                        loadBirthdayAndHexagram();
                     }
                 });
                 dialog.show();
