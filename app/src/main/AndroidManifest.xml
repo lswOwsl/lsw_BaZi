@@ -28,6 +28,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MemberAnalyze">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.SEND"/>
+            </intent-filter>
         </activity>
         <activity android:name=".MemberHome">
             <intent-filter>

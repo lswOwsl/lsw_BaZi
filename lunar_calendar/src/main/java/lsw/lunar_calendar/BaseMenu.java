@@ -83,14 +83,14 @@ public class BaseMenu extends FragmentActivity {
             @Override
             public Fragment getItem(int position) {
                 Fragment fragment = null;
-                if(position == 0) {
+                if(position == 2) {
                     fragment = HexagramListFragment.newInstance(initialDate);
                 }
                 if(position == 1)
                 {
                     fragment = BirthdayListFragment.newInstance(initialDate);
                 }
-                if(position == 2)
+                if(position == 0)
                 {
                     fragment = MemoryListFragment.newInstance(initialDate);
                 }

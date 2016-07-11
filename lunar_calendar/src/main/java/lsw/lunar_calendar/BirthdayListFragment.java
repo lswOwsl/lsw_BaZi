@@ -1,5 +1,7 @@
 package lsw.lunar_calendar;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import lsw.library.CrossAppKey;
 import lsw.library.DateExt;
 import lsw.lunar_calendar.data.DataBase;
 import lsw.lunar_calendar.data_source.MemberListAdapter;
@@ -130,7 +133,15 @@ public class BirthdayListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                //redirect to bazi
+                Intent intent = new Intent();
+                ComponentName componetName = new ComponentName(
+                        "com.example.swli.myapplication20150519",
+                        "com.example.swli.myapplication20150519.MemberAnalyze");
+                intent.setComponent(componetName);
+                Bundle bundle = new Bundle();
+                bundle.putInt(CrossAppKey.MemberId, list.get(i).getId());
+                intent.putExtras(bundle);
+                startActivity(intent);
 
             }
         });

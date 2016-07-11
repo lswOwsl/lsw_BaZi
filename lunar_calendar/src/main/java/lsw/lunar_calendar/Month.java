@@ -164,6 +164,7 @@ public class Month extends BaseMenu implements MonthFragment.OnFragmentInteracti
                     mHandler.sendEmptyMessageDelayed(0, 2000);
                     mask.show("下个月");
 
+                    loadBirthdayAndHexagram();
                 }
             }
 
@@ -180,6 +181,7 @@ public class Month extends BaseMenu implements MonthFragment.OnFragmentInteracti
                     mHandler.sendEmptyMessageDelayed(0, 2000);
                     mask.show("上个月");
 
+                    loadBirthdayAndHexagram();
                 }
             }
         });
