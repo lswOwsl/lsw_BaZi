@@ -139,7 +139,7 @@ public class BirthdayListFragment extends Fragment {
                         "com.example.swli.myapplication20150519.MemberAnalyze");
                 intent.setComponent(componetName);
                 Bundle bundle = new Bundle();
-                bundle.putInt(CrossAppKey.MemberId, list.get(i).getId());
+                bundle.putInt(CrossAppKey.MemberId, result.get(i).getId());
                 intent.putExtras(bundle);
                 startActivity(intent);
 
