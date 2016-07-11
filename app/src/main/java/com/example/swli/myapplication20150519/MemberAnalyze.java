@@ -152,6 +152,7 @@ public class MemberAnalyze extends MemberBase {
         memberId = this.getIntent().getIntExtra(CrossAppKey.MemberId, -1);
         if(memberId != -1) {
             DBManager dbManager = new DBManager(this);
+            dbManager.openDatabase();
             SQLiteDatabase database = dbManager.getDatabase();
 
             String[] params = new String[]{ memberId+"" };
