@@ -561,18 +561,7 @@ public class Builder
         return gh;
     }
 
-    public EnumLineSymbol getSybmleByString(String sybmle) {
-        if (sybmle.equals("|"))
-            return EnumLineSymbol.Yang;
-        else if (sybmle.equals("||"))
-            return EnumLineSymbol.Yin;
-        else if (sybmle.equals("x"))
-            return EnumLineSymbol.LaoYin;
-        else
-            return EnumLineSymbol.LaoYang;
-    }
-
-    public Line createLine(String place, int position, String earthlyBranch, String symble)
+    public Line createLine(String place, int position, String earthlyBranch, int symble)
     {
         Line line = new Line();
         EarthlyBranch tempEarthlyBranch = new EarthlyBranch();
@@ -584,7 +573,7 @@ public class Builder
 
         line.setEarthlyBranch(tempEarthlyBranch);
         line.setPosition(position);
-        line.setLineSymbol(getSybmleByString(symble));
+        line.setLineSymbol(EnumLineSymbol.valueOf(symble));
         line.setFiveElement(parseFiveElementByEarthlyBranch(earthlyBranch));
         line.setSixRelation(parseSixRelationByFiveElement(parseFiveElementByPalace(place), line.getFiveElement()));
         return line;

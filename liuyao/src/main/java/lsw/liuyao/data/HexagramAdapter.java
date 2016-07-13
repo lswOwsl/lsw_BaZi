@@ -38,6 +38,7 @@ import lsw.liuyao.model.HexagramLineNote;
 import lsw.model.EnumLineSymbol;
 import lsw.model.Hexagram;
 import lsw.model.Line;
+import lsw.value.Default;
 
 /**
  * Created by swli on 8/7/2015.
@@ -65,6 +66,8 @@ public class HexagramAdapter extends BaseAdapter {
     private Database database;
 
     private int easyChangedLineIndex = 0;
+
+    private int bodyIndex = 0;
 
     public HexagramAdapter(Hexagram hexagram, Context context)
     {
@@ -98,6 +101,14 @@ public class HexagramAdapter extends BaseAdapter {
                 easyChangedLineIndex = 7 - totalMod;
             } else {
                 easyChangedLineIndex = totalMod;
+            }
+        }
+
+        //卦身所在爻位
+        for (Line line : this.lines) {
+            if(hexagram.getSelf() == line.getPosition())
+            {
+                bodyIndex = Default.getHexagramBodyIndex(line.getEarthlyBranch().getId());
             }
         }
     }
@@ -162,6 +173,13 @@ public class HexagramAdapter extends BaseAdapter {
 
             controls.tvSelfTarget.setText(self+target);
 
+            if(bodyIndex != 0 && bodyIndex == line.getPosition()) {
+                if((self+target).isEmpty())
+                    controls.tvSelfTarget.setText("身");
+                else
+                    controls.tvSelfTarget.setText(self+target+"/身");
+            }
+
             if (line.getEarthlyBranchAttached() != null) {
                 controls.tvAttachedLine.setText("");
                 SpannableString ssSixRelationAttached = ColorHelper.getTextByColor(line.getSixRelationAttached().toString(), Color.GRAY);
@@ -178,6 +196,7 @@ public class HexagramAdapter extends BaseAdapter {
         }
         else {
             controls.tvSelfTarget.setText("");
+            controls.tvSelfTarget.setVisibility(View.GONE);
             controls.tvAttachedLine.setVisibility(View.GONE);
         }
 
