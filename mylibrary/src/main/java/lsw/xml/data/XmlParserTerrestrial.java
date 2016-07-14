@@ -43,6 +43,7 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
         xmlModelTerrestrial.setThreeSuits(new HashMap<String, ArrayList<String>>());
         xmlModelTerrestrial.setThreeConverge(new HashMap<String, ArrayList<String>>());
         xmlModelTerrestrial.setPunishment(new ArrayList<Pair<String, String>>());
+        xmlModelTerrestrial.setHarm(new ArrayList<Pair<String, String>>());
         xmlModelTerrestrial.setThreePunishment(new ArrayList<ArrayList<String>>());
         xmlModelTerrestrial.setFourPunishment(new ArrayList<ArrayList<String>>());
         xmlModelTerrestrial.setSpecial(new HashMap<String, ArrayList<String>>());
@@ -133,6 +134,11 @@ public class XmlParserTerrestrial extends XmlParser<XmlModelTerrestrial> {
         else if(nodeName.equals("Punishment"))
         {
             xmlModelTerrestrial.getPunishment().add(Pair.create(name1, name2));
+            name1 = name2 = null;
+        }
+        else if(nodeName.equals("Harm"))
+        {
+            xmlModelTerrestrial.getHarm().add(Pair.create(name1, name2));
             name1 = name2 = null;
         }
         else if(nodeName.equals("ThreePunishment"))

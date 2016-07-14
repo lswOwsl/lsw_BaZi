@@ -58,9 +58,18 @@ public class XmlModelTerrestrial {
     private HashMap<String,ArrayList<String>> threeSuits;
     private HashMap<String,ArrayList<String>> threeConverge;
     private ArrayList<Pair<String,String>> punishment;
+    private ArrayList<Pair<String,String>> harm;
     private ArrayList<ArrayList<String>> threePunishment;
     private ArrayList<ArrayList<String>> fourPunishment;
     private HashMap<String,ArrayList<String>> special;
+
+    public ArrayList<Pair<String, String>> getHarm() {
+        return harm;
+    }
+
+    public void setHarm(ArrayList<Pair<String, String>> harm) {
+        this.harm = harm;
+    }
 
     public void setPunishment(ArrayList<Pair<String, String>> punishment) {
         this.punishment = punishment;

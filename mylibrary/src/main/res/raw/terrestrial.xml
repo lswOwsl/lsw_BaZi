@@ -196,4 +196,57 @@
     <Name>巳</Name>
     <Name>申</Name>
   </ThreePunishment>
+
+  <FourPunishment><Name>亥</Name><Name>巳</Name><Name>申</Name><Name>申</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>巳</Name><Name>寅</Name><Name>寅</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>巳</Name><Name>寅</Name><Name>申</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>寅</Name><Name>巳</Name><Name>巳</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>寅</Name><Name>申</Name><Name>申</Name></FourPunishment>
+  <FourPunishment><Name>亥</Name><Name>亥</Name><Name>申</Name><Name>寅</Name></FourPunishment>
+  <FourPunishment><Name>申</Name><Name>寅</Name><Name>巳</Name><Name>巳</Name></FourPunishment>
+  <FourPunishment><Name>子</Name><Name>子</Name><Name>卯</Name><Name>卯</Name></FourPunishment>
+  <FourPunishment><Name>子</Name><Name>子</Name><Name>午</Name><Name>午</Name></FourPunishment>
+  <FourPunishment><Name>丑</Name><Name>丑</Name><Name>未</Name><Name>戌</Name></FourPunishment>
+  <FourPunishment><Name>丑</Name><Name>未</Name><Name>辰</Name><Name>辰</Name></FourPunishment>
+  <FourPunishment><Name>丑</Name><Name>未</Name><Name>辰</Name><Name>戌</Name></FourPunishment>
+  <FourPunishment><Name>未</Name><Name>未</Name><Name>辰</Name><Name>戌</Name></FourPunishment>
+  <FourPunishment><Name>未</Name><Name>辰</Name><Name>辰</Name><Name>戌</Name></FourPunishment>
+
+  <Special name="罗网">
+    <Name>辰</Name><Name>巳</Name><Name>戌</Name><Name>亥</Name>
+  </Special>
+  <Special name="四旺">
+    <Name>子</Name><Name>午</Name><Name>卯</Name><Name>酉</Name>
+  </Special>
+  <Special name="四库">
+    <Name>丑</Name><Name>未</Name><Name>辰</Name><Name>戌</Name>
+  </Special>
+  <Special name="四生">
+    <Name>亥</Name><Name>巳</Name><Name>寅</Name><Name>申</Name>
+  </Special>
+
+  <Harm>
+    <Name>子</Name>
+    <Name>未</Name>
+  </Harm>
+  <Harm>
+    <Name>丑</Name>
+    <Name>午</Name>
+  </Harm>
+  <Harm>
+    <Name>寅</Name>
+    <Name>巳</Name>
+  </Harm>
+  <Harm>
+    <Name>卯</Name>
+    <Name>辰</Name>
+  </Harm>
+  <Harm>
+    <Name>戌</Name>
+    <Name>酉</Name>
+  </Harm>
+  <Harm>
+    <Name>亥</Name>
+    <Name>申</Name>
+  </Harm>
 </Root>

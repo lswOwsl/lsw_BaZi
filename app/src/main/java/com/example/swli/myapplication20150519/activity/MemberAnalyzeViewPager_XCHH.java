@@ -290,6 +290,17 @@ public class MemberAnalyzeViewPager_XCHH {
                     }
                 }
 
+                //害
+                for (Pair<String,String> key: xmlTerrestrial.getHarm()) {
+
+                    boolean option1 = arrayList.get(i).equals(key.first) && arrayList.get(j).equals(key.second);
+                    boolean option2 = arrayList.get(i).equals(key.second) && arrayList.get(j).equals(key.first);
+                    if (option1 || option2) {
+                        linearLayout.addView(createRowView(arrayList.get(i), arrayList.get(j), "害", "", i, j));
+                    }
+
+                }
+
                 for(int m=j+1; m<arrayList.size(); m++)
                 {
                     //因为流月占了流年的位置是0,并且流月只跟大运有关，大运的索引是1，所以大于大运的索引全不处理
