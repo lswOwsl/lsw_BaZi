@@ -494,7 +494,7 @@ public class MemberAnalyzeViewPager {
         Window win = dialog.getWindow();
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
-        win.setLayout(dm.widthPixels/3*2, dm.heightPixels /3*2);
+        win.setLayout(dm.widthPixels-30, dm.heightPixels /3);
     }
 
     private String buildShenShaContent(int eraIndex, String name, String compareName, String compareValue)
