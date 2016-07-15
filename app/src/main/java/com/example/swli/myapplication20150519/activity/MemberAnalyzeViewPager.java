@@ -1,16 +1,27 @@
 package com.example.swli.myapplication20150519.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.DisplayMetrics;
 import android.util.Pair;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.swli.myapplication20150519.R;
 import com.example.swli.myapplication20150519.common.BaZiActivityWrapper;
@@ -291,8 +302,8 @@ public class MemberAnalyzeViewPager {
             String ganLu = dbManager.getColumnValue(dayCursorC,"GanLu");
             String hongYanSha = dbManager.getColumnValue(dayCursorC,"HongYanSha");
 
-            dayContent+=" 天乙贵人-"+tianYiGuiRen1+"/"+tianYiGuiRen2+"\n";
-            dayContent+=" 文昌贵人-"+wenChangGuiRen+"\n";
+            dayContent+=" 天乙-"+tianYiGuiRen1+"/"+tianYiGuiRen2+"\n";
+            dayContent+=" 文昌-"+wenChangGuiRen+"\n";
             dayContent+=" 羊刃-"+yangRen+"\n";
             dayContent+=" 干禄-"+ganLu+"\n";
             dayContent+=" 红艳煞-"+hongYanSha+"\n";
@@ -306,12 +317,12 @@ public class MemberAnalyzeViewPager {
             names.add(ganLu);
             names.add(hongYanSha);
 
-            values.add("天乙贵人");
-            values.add("天乙贵人");
-            values.add("文昌贵人");
+            values.add("天乙");
+            values.add("天乙");
+            values.add("文昌");
             values.add("羊刃");
             values.add("干禄");
-            values.add("红艳煞");
+            values.add("红艳");
         }
         dayCursorC.close();
 
@@ -353,36 +364,137 @@ public class MemberAnalyzeViewPager {
         return Pair.create(names,values);
     }
 
+    private void setClickableString(SpannableString spStr, int begin, int end, final String compareValue)
+    {
+        spStr.setSpan(new ClickableSpan() {
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(Color.BLUE);
+                ds.setUnderlineText(true);      //设置下划线
+            }
+
+            @Override
+            public void onClick(View widget) {
+                showShenShaDialog(compareValue, getShenShaContentByName(compareValue));
+            }
+        }, begin, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private String getShenShaContentByName(String name)
+    {
+        String content = "";
+        dbManager.openDatabase();
+        Cursor cursor = dbManager.execute("SELECT * FROM ShenSha where name = ?"
+                ,new String[] { name });
+        if(cursor.getCount()>0) {
+            cursor.moveToFirst();
+            content = dbManager.getColumnValue(cursor, "Note");
+        }
+
+        cursor.close();
+        dbManager.closeDatabase();
+
+        return content;
+    }
+
     private void loadShenShaInUsing(Pair<ArrayList<String>,ArrayList<String>> pair,Integer flowYearEraIndex, int daYunEraIndex, Integer flowMonthEraIndex)
     {
         tvShenShaContent = (TextView) activity.findViewById(R.id.tvShenShaContent);
-        String contentDaYun = "";
-        String contentFlowYear = "";
-        String contentYear="";
-        String contentMonth="";
-        String contentDay="";
-        String contentHour="";
+        tvShenShaContent.setText("");
+
+        SpannableString contentDaYun = null;
+        SpannableString contentFlowYear = null;
+        SpannableString contentYear= null;
+        SpannableString contentMonth= null;
+        SpannableString contentDay= null;
+        SpannableString contentHour = null;
+
+        List<SpannableString> daYunList = new ArrayList<SpannableString>();
+        List<SpannableString> flowYearList = new ArrayList<SpannableString>();
+        List<SpannableString> yearList = new ArrayList<SpannableString>();
+        List<SpannableString> monthList = new ArrayList<SpannableString>();
+        List<SpannableString> dayList = new ArrayList<SpannableString>();
+        List<SpannableString> hourList = new ArrayList<SpannableString>();
+
         for(int i=0; i<pair.first.size(); i++)
         {
             if(flowYearEraIndex != null)
             {
-                contentFlowYear += buildShenShaContent(flowYearEraIndex,"流年",pair.first.get(i),pair.second.get(i));
+                contentFlowYear = buildShenShaContentClick(flowYearEraIndex, "流年", pair.first.get(i), pair.second.get(i));
+                flowYearList.add(contentFlowYear);
             }
 
             if(flowMonthEraIndex != null)
             {
-                contentFlowYear += buildShenShaContent(flowMonthEraIndex,"流月",pair.first.get(i),pair.second.get(i));
+                contentFlowYear = buildShenShaContentClick(flowMonthEraIndex, "流月", pair.first.get(i), pair.second.get(i));
+                flowYearList.add(contentFlowYear);
             }
 
-            contentDaYun += buildShenShaContent(daYunEraIndex,"大运",pair.first.get(i),pair.second.get(i));
-            contentYear += buildShenShaContent(baZiActivityWrapper.getYearEraIndex(),"年",pair.first.get(i),pair.second.get(i));
-            contentMonth += buildShenShaContent(baZiActivityWrapper.getMonthEraIndex(),"月",pair.first.get(i),pair.second.get(i));
-            contentDay += buildShenShaContent(baZiActivityWrapper.getDayEraIndex(),"日",pair.first.get(i),pair.second.get(i));
-            contentHour += buildShenShaContent(baZiActivityWrapper.getHourEraIndex(),"时",pair.first.get(i),pair.second.get(i));
-        }
-        String content = contentFlowYear + contentDaYun +"\n"+ contentYear + contentMonth + contentDay + contentHour;
+            contentDaYun = buildShenShaContentClick(daYunEraIndex, "大运", pair.first.get(i), pair.second.get(i));
+            daYunList.add(contentDaYun);
 
-        tvShenShaContent.setText(content);
+            contentYear = buildShenShaContentClick(baZiActivityWrapper.getYearEraIndex(),"年",pair.first.get(i),pair.second.get(i));
+            yearList.add(contentYear);
+
+            contentMonth = buildShenShaContentClick(baZiActivityWrapper.getMonthEraIndex(), "月", pair.first.get(i), pair.second.get(i));
+            monthList.add(contentMonth);
+
+            contentDay = buildShenShaContentClick(baZiActivityWrapper.getDayEraIndex(), "日", pair.first.get(i), pair.second.get(i));
+            dayList.add(contentDay);
+
+            contentHour = buildShenShaContentClick(baZiActivityWrapper.getHourEraIndex(), "时", pair.first.get(i), pair.second.get(i));
+            hourList.add(contentHour);
+        }
+
+        setTvShenShaContent(flowYearList);
+        tvShenShaContent.append("\n");
+        setTvShenShaContent(daYunList);
+        tvShenShaContent.append("\n");
+        setTvShenShaContent(yearList);
+        setTvShenShaContent(monthList);
+        setTvShenShaContent(dayList);
+        setTvShenShaContent(hourList);
+        tvShenShaContent.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void setTvShenShaContent(List<SpannableString> list)
+    {
+        for(SpannableString sp: list)
+        {
+            appendContentToShenSha(sp);
+        }
+    }
+
+    private void appendContentToShenSha(SpannableString spannableString)
+    {
+        if(spannableString != null && spannableString.length() > 0)
+        {
+            tvShenShaContent.append(spannableString);
+        }
+    }
+
+    private void showShenShaDialog(String title, String content)
+    {
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View lineNoteView = inflater.inflate(R.layout.common_shensha_description, null);
+        TextView tvTitle = (TextView)lineNoteView.findViewById(R.id.tvTitle);
+        TextView tvShenSha = (TextView)lineNoteView.findViewById(R.id.tvShenShaContent);
+
+        tvTitle.setText(title);
+        tvShenSha.setText(content);
+
+        Dialog dialog = new Dialog(getActivity(),R.style.CustomDialog);
+        dialog.setContentView(lineNoteView);
+        dialog.show();
+
+        WindowManager windowManager = getActivity().getWindowManager();
+
+        Display display = windowManager.getDefaultDisplay();
+        Window win = dialog.getWindow();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        win.setLayout(dm.widthPixels/3*2, dm.heightPixels /3*2);
     }
 
     private String buildShenShaContent(int eraIndex, String name, String compareName, String compareValue)
@@ -401,6 +513,39 @@ public class MemberAnalyzeViewPager {
         }
 
         return content;
+    }
+
+    private SpannableString buildShenShaContentClick(int eraIndex, String name, String compareName, String compareValue)
+    {
+        String content = "";
+        String fT = baZiActivityWrapper.getT(eraIndex);
+        String fC = baZiActivityWrapper.getC(eraIndex);
+
+        int firstBegin = 0;
+        int firstEnd = 0;
+        int secondBegin = 0;
+        int secondEnd = 0;
+
+        if(fC.equals(compareName))
+        {
+            String part = name + "("+fC+")-";
+            firstBegin = part.length();
+            content += part + compareValue + "\n";
+            firstEnd = content.length();
+        }
+        if(fT.equals(compareName))
+        {
+            String part = name + "("+fT+")-";
+            secondBegin = part.length() + content.length();
+            content += part + compareValue + "\n";
+            secondEnd = content.length();
+        }
+
+        SpannableString spannableString = new SpannableString(content);
+        setClickableString(spannableString,firstBegin,firstEnd, compareValue);
+        setClickableString(spannableString,secondBegin,secondEnd, compareValue);
+
+        return spannableString;
     }
 
     private void loadJiaGongControls()
