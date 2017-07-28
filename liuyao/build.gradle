@@ -11,7 +11,7 @@ android {
         }
     }
     compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "lsw.liuyao"
         minSdkVersion 17

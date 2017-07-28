@@ -10,7 +10,7 @@ android {
         }
     }
     compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.example.swli.myapplication20150519"
         minSdkVersion 15

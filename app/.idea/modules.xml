@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Android.iml" filepath="$PROJECT_DIR$/../Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../BDAutoUpdateSDK_20150605_V1.2.0/BDAutoUpdateSDK_20150605_V1.2.0.iml" filepath="$PROJECT_DIR$/../BDAutoUpdateSDK_20150605_V1.2.0/BDAutoUpdateSDK_20150605_V1.2.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app.iml" filepath="$PROJECT_DIR$/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../baidu_appx_android_2.0.0/baidu_appx_android_2.0.0.iml" filepath="$PROJECT_DIR$/../baidu_appx_android_2.0.0/baidu_appx_android_2.0.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../baidu_cuid/baidu_cuid.iml" filepath="$PROJECT_DIR$/../baidu_cuid/baidu_cuid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../liuyao/liuyao.iml" filepath="$PROJECT_DIR$/../liuyao/liuyao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../lunar_calendar/lunar_calendar.iml" filepath="$PROJECT_DIR$/../lunar_calendar/lunar_calendar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mylibrary/mylibrary.iml" filepath="$PROJECT_DIR$/../mylibrary/mylibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../silkbag/silkbag.iml" filepath="$PROJECT_DIR$/../silkbag/silkbag.iml" />
+    </modules>
+  </component>
+</project>
